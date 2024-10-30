@@ -27,6 +27,7 @@ import androidx.recyclerview.widget.RecyclerView
 import coil3.load
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.progressindicator.LinearProgressIndicator
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.lineageos.twelve.R
@@ -34,7 +35,6 @@ import org.lineageos.twelve.ext.getParcelable
 import org.lineageos.twelve.ext.getViewProperty
 import org.lineageos.twelve.ext.setProgressCompat
 import org.lineageos.twelve.ext.updatePadding
-import org.lineageos.twelve.models.Audio
 import org.lineageos.twelve.models.RequestStatus
 import org.lineageos.twelve.ui.recyclerview.SimpleListAdapter
 import org.lineageos.twelve.ui.recyclerview.UniqueItemDiffCallback
@@ -65,42 +65,90 @@ class AlbumFragment : Fragment(R.layout.fragment_album) {
 
     // Recyclerview
     private val adapter by lazy {
-        object : SimpleListAdapter<Audio, ListItem>(
+        object : SimpleListAdapter<AlbumViewModel.AlbumContent, ListItem>(
             UniqueItemDiffCallback(),
             ::ListItem,
         ) {
-            override fun ViewHolder.onPrepareView() {
-                view.setLeadingIconImage(R.drawable.ic_music_note)
-                view.setOnClickListener {
-                    item?.let {
-                        viewModel.playAudio(currentList, bindingAdapterPosition)
+            private val ViewHolder.trackTextView
+                get() = view.leadingView!!.findViewById<TextView>(R.id.trackTextView)
 
-                        findNavController().navigate(
-                            R.id.action_albumFragment_to_fragment_now_playing
-                        )
+            override fun ViewHolder.onPrepareView() {
+                view.setLeadingView(R.layout.audio_track_index)
+
+                view.setOnClickListener {
+                    when (val item = item) {
+                        is AlbumViewModel.AlbumContent.AudioItem -> {
+                            val audios = currentList.mapNotNull {
+                                item.audio
+                            }
+
+                            viewModel.playAudio(audios, audios.indexOf(item.audio))
+
+                            findNavController().navigate(
+                                R.id.action_albumFragment_to_fragment_now_playing
+                            )
+                        }
+
+                        else -> {}
                     }
                 }
-                view.setOnLongClickListener {
-                    item?.let {
-                        findNavController().navigate(
-                            R.id.action_albumFragment_to_fragment_audio_bottom_sheet_dialog,
-                            AudioBottomSheetDialogFragment.createBundle(
-                                it.uri,
-                                fromAlbum = true,
-                            )
-                        )
-                    }
 
-                    true
+                view.setOnLongClickListener {
+                    when (val item = item) {
+                        is AlbumViewModel.AlbumContent.AudioItem -> {
+                            findNavController().navigate(
+                                R.id.action_albumFragment_to_fragment_audio_bottom_sheet_dialog,
+                                AudioBottomSheetDialogFragment.createBundle(
+                                    item.audio.uri,
+                                    fromAlbum = true,
+                                )
+                            )
+
+                            true
+                        }
+
+                        else -> false
+                    }
                 }
             }
 
-            override fun ViewHolder.onBindView(item: Audio) {
-                view.headlineText = item.title
-                view.supportingText = item.artistName
-                view.trailingSupportingText = TimestampFormatter.formatTimestampMillis(
-                    item.durationMs
-                )
+            override fun ViewHolder.onBindView(item: AlbumViewModel.AlbumContent) {
+                when (item) {
+                    is AlbumViewModel.AlbumContent.DiscHeader -> {
+                        view.setLeadingIconImage(R.drawable.ic_album)
+                        view.leadingViewIsVisible = false
+                        view.setHeadlineText(
+                            R.string.album_disc_header,
+                            item.discNumber,
+                        )
+                        view.supportingText = null
+                        view.trailingSupportingText = null
+                        view.isClickable = false
+                        view.isLongClickable = false
+                    }
+
+                    is AlbumViewModel.AlbumContent.AudioItem -> {
+                        item.audio.trackNumber?.also {
+                            view.leadingIconImage = null
+                            trackTextView.text = getString(
+                                R.string.track_number,
+                                it
+                            )
+                            view.leadingViewIsVisible = true
+                        } ?: run {
+                            view.setLeadingIconImage(R.drawable.ic_music_note)
+                            view.leadingViewIsVisible = false
+                        }
+
+                        view.headlineText = item.audio.title
+                        view.supportingText = item.audio.artistName
+                        view.trailingSupportingText = TimestampFormatter.formatTimestampMillis(
+                            item.audio.durationMs
+                        )
+                        view.isClickable = true
+                        view.isLongClickable = true
+                    }
+                }
             }
         }
     }
@@ -187,83 +235,86 @@ class AlbumFragment : Fragment(R.layout.fragment_album) {
     }
 
     private suspend fun loadData() {
-        viewModel.album.collectLatest {
-            linearProgressIndicator.setProgressCompat(it, true)
+        coroutineScope {
+            launch {
+                viewModel.album.collectLatest {
+                    linearProgressIndicator.setProgressCompat(it, true)
 
-            when (it) {
-                is RequestStatus.Loading -> {
-                    // Do nothing
+                    when (it) {
+                        is RequestStatus.Loading -> {
+                            // Do nothing
+                        }
+
+                        is RequestStatus.Success -> {
+                            val (album, audios) = it.data
+
+                            toolbar.title = album.title
+                            albumTitleTextView.text = album.title
+
+                            album.thumbnail?.uri?.also { uri ->
+                                thumbnailImageView.load(uri)
+                            } ?: album.thumbnail?.bitmap?.also { bitmap ->
+                                thumbnailImageView.load(bitmap)
+                            } ?: thumbnailImageView.setImageResource(R.drawable.ic_album)
+
+                            artistNameTextView.text = album.artistName
+                            artistNameTextView.setOnClickListener {
+                                findNavController().navigate(
+                                    R.id.action_albumFragment_to_fragment_artist,
+                                    ArtistFragment.createBundle(album.artistUri)
+                                )
+                            }
+
+                            album.year?.also { year ->
+                                yearTextView.isVisible = true
+                                yearTextView.text = year.toString()
+                            } ?: run {
+                                yearTextView.isVisible = false
+                            }
+
+                            val totalDurationMs = audios.sumOf { audio ->
+                                audio.durationMs
+                            }
+                            val totalDurationMinutes = totalDurationMs / 1000 / 60
+
+                            val tracksCount = resources.getQuantityString(
+                                R.plurals.tracks_count,
+                                audios.size,
+                                audios.size
+                            )
+                            val tracksDuration = resources.getQuantityString(
+                                R.plurals.tracks_duration,
+                                totalDurationMinutes,
+                                totalDurationMinutes
+                            )
+                            tracksInfoTextView.text = getString(
+                                R.string.tracks_info,
+                                tracksCount, tracksDuration
+                            )
+                        }
+
+                        is RequestStatus.Error -> {
+                            Log.e(LOG_TAG, "Error loading album, error: ${it.type}")
+
+                            toolbar.title = ""
+                            albumTitleTextView.text = ""
+
+                            if (it.type == RequestStatus.Error.Type.NOT_FOUND) {
+                                // Get out of here
+                                findNavController().navigateUp()
+                            }
+                        }
+                    }
                 }
+            }
 
-                is RequestStatus.Success -> {
-                    val (album, audios) = it.data
+            launch {
+                viewModel.albumContent.collectLatest {
+                    adapter.submitList(it)
 
-                    toolbar.title = album.title
-                    albumTitleTextView.text = album.title
-
-                    album.thumbnail?.uri?.also { uri ->
-                        thumbnailImageView.load(uri)
-                    } ?: album.thumbnail?.bitmap?.also { bitmap ->
-                        thumbnailImageView.load(bitmap)
-                    } ?: thumbnailImageView.setImageResource(R.drawable.ic_album)
-
-                    artistNameTextView.text = album.artistName
-                    artistNameTextView.setOnClickListener {
-                        findNavController().navigate(
-                            R.id.action_albumFragment_to_fragment_artist,
-                            ArtistFragment.createBundle(album.artistUri)
-                        )
-                    }
-
-                    album.year?.also { year ->
-                        yearTextView.isVisible = true
-                        yearTextView.text = year.toString()
-                    } ?: run {
-                        yearTextView.isVisible = false
-                    }
-
-                    val totalDurationMs = audios.sumOf { audio ->
-                        audio.durationMs
-                    }
-                    val totalDurationMinutes = totalDurationMs / 1000 / 60
-
-                    val tracksCount = resources.getQuantityString(
-                        R.plurals.tracks_count,
-                        audios.size,
-                        audios.size
-                    )
-                    val tracksDuration = resources.getQuantityString(
-                        R.plurals.tracks_duration,
-                        totalDurationMinutes,
-                        totalDurationMinutes
-                    )
-                    tracksInfoTextView.text = getString(
-                        R.string.tracks_info,
-                        tracksCount, tracksDuration
-                    )
-
-                    adapter.submitList(audios)
-
-                    val isEmpty = audios.isEmpty()
+                    val isEmpty = it.isEmpty()
                     recyclerView.isVisible = !isEmpty
                     noElementsNestedScrollView.isVisible = isEmpty
-                }
-
-                is RequestStatus.Error -> {
-                    Log.e(LOG_TAG, "Error loading album, error: ${it.type}")
-
-                    toolbar.title = ""
-                    albumTitleTextView.text = ""
-
-                    adapter.submitList(listOf())
-
-                    recyclerView.isVisible = false
-                    noElementsNestedScrollView.isVisible = true
-
-                    if (it.type == RequestStatus.Error.Type.NOT_FOUND) {
-                        // Get out of here
-                        findNavController().navigateUp()
-                    }
                 }
             }
         }

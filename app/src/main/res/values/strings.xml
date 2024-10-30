@@ -143,4 +143,8 @@
     <string name="now_playing_widget_dummy_title">Title</string>
     <string name="now_playing_widget_dummy_artist">Artist</string>
     <string name="now_playing_widget_dummy_album">Album</string>
+
+    <!-- Album fragment -->
+    <string name="album_disc_header">Disc %1$d</string>
+    <string name="track_number">%1$d</string>
 </resources>

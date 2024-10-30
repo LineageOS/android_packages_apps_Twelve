@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     SPDX-FileCopyrightText: 2024 The LineageOS Project
+     SPDX-License-Identifier: Apache-2.0
+-->
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    style="@style/Widget.Material3.CardView.Filled"
+    android:layout_width="24dp"
+    android:layout_height="24dp"
+    app:cardBackgroundColor="?attr/colorPrimaryContainer"
+    app:cardCornerRadius="4dp">
+
+    <TextView
+        android:id="@+id/trackTextView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:textAlignment="gravity"
+        android:textAppearance="?attr/textAppearanceLabelMedium"
+        android:textColor="?attr/colorOnPrimaryContainer"
+        tools:text="99" />
+
+</com.google.android.material.card.MaterialCardView>
