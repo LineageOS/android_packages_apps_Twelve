@@ -12,7 +12,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOn
@@ -72,12 +71,20 @@ class AlbumViewModel(application: Application) : TwelveViewModel(application) {
 
                 is RequestStatus.Success -> {
                     val discToTracks = it.data.second.groupBy { audio ->
-                        audio.discNumber ?: 1
+                        audio.discNumber
+                    }
+
+                    val hideHeaders = with (discToTracks.keys) {
+                        size == 1 && firstOrNull() == 1
                     }
 
                     mutableListOf<AlbumContent>().apply {
-                        discToTracks.keys.sorted().forEach { discNumber ->
-                            add(AlbumContent.DiscHeader(discNumber))
+                        discToTracks.keys.sortedBy { disc ->
+                            disc ?: 0
+                        }.forEach { discNumber ->
+                            discNumber?.takeUnless { hideHeaders }?.let { i ->
+                                add(AlbumContent.DiscHeader(i))
+                            }
 
                             discToTracks[discNumber]?.let { tracks ->
                                 addAll(
