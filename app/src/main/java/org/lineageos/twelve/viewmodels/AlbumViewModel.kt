@@ -72,12 +72,14 @@ class AlbumViewModel(application: Application) : TwelveViewModel(application) {
 
                 is RequestStatus.Success -> {
                     val discToTracks = it.data.second.groupBy { audio ->
-                        audio.discNumber ?: 1
+                        audio.discNumber ?: -1
                     }
 
                     mutableListOf<AlbumContent>().apply {
                         discToTracks.keys.sorted().forEach { discNumber ->
-                            add(AlbumContent.DiscHeader(discNumber))
+                            if (discNumber != -1) {
+                                add(AlbumContent.DiscHeader(discNumber))
+                            }
 
                             discToTracks[discNumber]?.let { tracks ->
                                 addAll(
