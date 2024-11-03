@@ -27,6 +27,7 @@ import androidx.recyclerview.widget.RecyclerView
 import coil3.load
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.card.MaterialCardView
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.progressindicator.LinearProgressIndicator
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.collectLatest
@@ -60,6 +61,7 @@ class AlbumFragment : Fragment(R.layout.fragment_album) {
     private val infoNestedScrollView by getViewProperty<NestedScrollView?>(R.id.infoNestedScrollView)
     private val linearProgressIndicator by getViewProperty<LinearProgressIndicator>(R.id.linearProgressIndicator)
     private val noElementsNestedScrollView by getViewProperty<NestedScrollView>(R.id.noElementsNestedScrollView)
+    private val playAllFloatingActionButton by getViewProperty<FloatingActionButton>(R.id.playAllFloatingActionButton)
     private val recyclerView by getViewProperty<RecyclerView>(R.id.recyclerView)
     private val thumbnailImageView by getViewProperty<ImageView>(R.id.thumbnailImageView)
     private val toolbar by getViewProperty<MaterialToolbar>(R.id.toolbar)
@@ -81,11 +83,7 @@ class AlbumFragment : Fragment(R.layout.fragment_album) {
                 view.setOnClickListener {
                     when (val item = item) {
                         is AlbumViewModel.AlbumContent.AudioItem -> {
-                            val audios = currentList.mapNotNull {
-                                (it as? AlbumViewModel.AlbumContent.AudioItem)?.audio
-                            }
-
-                            viewModel.playAudio(audios, audios.indexOf(item.audio))
+                            viewModel.playAlbum(item.audio)
 
                             findNavController().navigate(
                                 R.id.action_albumFragment_to_fragment_now_playing
@@ -220,6 +218,12 @@ class AlbumFragment : Fragment(R.layout.fragment_album) {
 
         recyclerView.adapter = adapter
 
+        playAllFloatingActionButton.setOnClickListener {
+            viewModel.playAlbum()
+
+            findNavController().navigate(R.id.action_albumFragment_to_fragment_now_playing)
+        }
+
         viewModel.loadAlbum(albumUri)
 
         viewLifecycleOwner.lifecycleScope.launch {
@@ -318,6 +322,10 @@ class AlbumFragment : Fragment(R.layout.fragment_album) {
                     val isEmpty = it.isEmpty()
                     recyclerView.isVisible = !isEmpty
                     noElementsNestedScrollView.isVisible = isEmpty
+                    when (isEmpty) {
+                        true -> playAllFloatingActionButton.hide()
+                        false -> playAllFloatingActionButton.show()
+                    }
                 }
             }
 

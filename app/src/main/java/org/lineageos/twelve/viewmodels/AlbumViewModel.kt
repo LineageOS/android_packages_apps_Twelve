@@ -139,4 +139,12 @@ class AlbumViewModel(application: Application) : TwelveViewModel(application) {
     fun loadAlbum(albumUri: Uri) {
         this.albumUri.value = albumUri
     }
+
+    fun playAlbum(startFrom: Audio? = null) {
+        albumContent.value.mapNotNull {
+            (it as? AlbumContent.AudioItem)?.audio
+        }.takeUnless { it.isEmpty() }?.let { audios ->
+            playAudio(audios, startFrom?.let { audios.indexOf(it) } ?: 0)
+        }
+    }
 }
