@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "fa0eeecd_781b67e8",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2024-11-03T21:37:46Z",
+      "side": 1,
+      "message": "It might be the rounded corners of p9, but I think the padding needs to be reworked\nTake gmail as example, the bottom padding is ~2x what we have, and right padding is slight bigger",
+      "revId": "2358d800cbdd3bab53d0f4409f04b0a356f77634",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
