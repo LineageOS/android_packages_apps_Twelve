@@ -7,6 +7,7 @@ package org.lineageos.twelve.ui.views
 
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.Icon
 import android.net.Uri
@@ -20,8 +21,8 @@ import androidx.annotation.AttrRes
 import androidx.annotation.DrawableRes
 import androidx.annotation.LayoutRes
 import androidx.annotation.StringRes
-import androidx.annotation.StyleRes
 import androidx.core.view.isVisible
+import com.google.android.material.card.MaterialCardView
 import org.lineageos.twelve.R
 
 /**
@@ -32,8 +33,7 @@ class ListItem @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     @AttrRes defStyleAttr: Int = 0,
-    @StyleRes defStyleRes: Int = 0,
-) : FrameLayout(context, attrs, defStyleAttr, defStyleRes) {
+) : MaterialCardView(context, attrs, defStyleAttr) {
     private val headlineTextView by lazy { findViewById<TextView>(R.id.headlineTextView) }
     private val leadingIconImageView by lazy { findViewById<ImageView>(R.id.leadingIconImageView) }
     private val leadingTextView by lazy { findViewById<TextView>(R.id.leadingTextView) }
@@ -104,6 +104,9 @@ class ListItem @JvmOverloads constructor(
         }
 
     init {
+        setCardBackgroundColor(Color.TRANSPARENT)
+        cardElevation = 0f
+
         inflate(context, R.layout.list_item, this)
 
         context.obtainStyledAttributes(attrs, R.styleable.ListItem, 0, 0).apply {
