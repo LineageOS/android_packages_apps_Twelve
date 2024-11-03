@@ -50,4 +50,12 @@ class PlaylistViewModel(application: Application) : TwelveViewModel(application)
             mediaRepository.deletePlaylist(playlistUri)
         }
     }
+
+    fun playPlaylist(position: Int = 0) {
+        (playlist.value as? RequestStatus.Success)?.data?.second?.takeUnless {
+            it.isEmpty()
+        }?.mapNotNull { it }?.let {
+            playAudio(it, position)
+        }
+    }
 }
