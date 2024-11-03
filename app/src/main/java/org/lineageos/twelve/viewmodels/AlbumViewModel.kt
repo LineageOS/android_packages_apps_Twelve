@@ -20,6 +20,7 @@ import kotlinx.coroutines.flow.stateIn
 import org.lineageos.twelve.models.Audio
 import org.lineageos.twelve.models.RequestStatus
 import org.lineageos.twelve.models.UniqueItem
+import org.lineageos.twelve.utils.MimeUtils
 import kotlin.reflect.safeCast
 
 class AlbumViewModel(application: Application) : TwelveViewModel(application) {
@@ -95,6 +96,33 @@ class AlbumViewModel(application: Application) : TwelveViewModel(application) {
                             }
                         }
                     }.toList()
+                }
+
+                is RequestStatus.Error -> listOf()
+            }
+        }
+        .filterNotNull()
+        .flowOn(Dispatchers.IO)
+        .stateIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(),
+            listOf()
+        )
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val albumFileTypes = album
+        .filterNotNull()
+        .mapLatest {
+            when (it) {
+                is RequestStatus.Loading -> null
+
+                is RequestStatus.Success -> {
+                    it.data.second
+                        .map { audio -> audio.mimeType }
+                        .distinct()
+                        .takeIf { mimeTypes -> mimeTypes.size <= 2 }
+                        ?.mapNotNull { mimeType -> MimeUtils.mimeTypeToDisplayName(mimeType) }
+                        .orEmpty()
                 }
 
                 is RequestStatus.Error -> listOf()

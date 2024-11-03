@@ -26,6 +26,7 @@ import androidx.navigation.ui.setupWithNavController
 import androidx.recyclerview.widget.RecyclerView
 import coil3.load
 import com.google.android.material.appbar.MaterialToolbar
+import com.google.android.material.card.MaterialCardView
 import com.google.android.material.progressindicator.LinearProgressIndicator
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.collectLatest
@@ -54,6 +55,8 @@ class AlbumFragment : Fragment(R.layout.fragment_album) {
     // Views
     private val albumTitleTextView by getViewProperty<TextView>(R.id.albumTitleTextView)
     private val artistNameTextView by getViewProperty<TextView>(R.id.artistNameTextView)
+    private val fileTypeMaterialCardView by getViewProperty<MaterialCardView>(R.id.fileTypeMaterialCardView)
+    private val fileTypeTextView by getViewProperty<TextView>(R.id.fileTypeTextView)
     private val infoNestedScrollView by getViewProperty<NestedScrollView?>(R.id.infoNestedScrollView)
     private val linearProgressIndicator by getViewProperty<LinearProgressIndicator>(R.id.linearProgressIndicator)
     private val noElementsNestedScrollView by getViewProperty<NestedScrollView>(R.id.noElementsNestedScrollView)
@@ -315,6 +318,13 @@ class AlbumFragment : Fragment(R.layout.fragment_album) {
                     val isEmpty = it.isEmpty()
                     recyclerView.isVisible = !isEmpty
                     noElementsNestedScrollView.isVisible = isEmpty
+                }
+            }
+
+            launch {
+                viewModel.albumFileTypes.collectLatest {
+                    fileTypeMaterialCardView.isVisible = it.isNotEmpty()
+                    fileTypeTextView.text = it.joinToString(" / ")
                 }
             }
         }

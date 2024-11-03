@@ -52,4 +52,29 @@
         android:textColor="?attr/colorOnSurfaceVariant"
         tools:text="7 tracks, 51 minutes" />
 
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/fileTypeMaterialCardView"
+        style="@style/Widget.Material3.CardView.Filled"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:visibility="gone"
+        app:cardBackgroundColor="?attr/colorPrimaryContainer"
+        app:cardCornerRadius="4dp"
+        app:contentPaddingLeft="4dp"
+        app:contentPaddingRight="4dp"
+        tools:visibility="visible">
+
+        <TextView
+            android:id="@+id/fileTypeTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="24dp"
+            android:gravity="center"
+            android:textAlignment="gravity"
+            android:textAppearance="?attr/textAppearanceLabelMedium"
+            android:textColor="?attr/colorOnPrimaryContainer"
+            tools:text="FLAC / MPEG" />
+
+    </com.google.android.material.card.MaterialCardView>
+
 </LinearLayout>
