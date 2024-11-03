@@ -16,6 +16,24 @@
       "message": "do we need a string for that? if so, make it untranslatable.",
       "revId": "b434f529d14f527942a71b8f57bb78749353fbdc",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b430ab7f_2bb4578c",
+        "filename": "app/src/main/res/values/strings.xml",
+        "patchSetId": 2
+      },
+      "lineNbr": 149,
+      "author": {
+        "id": 25732
+      },
+      "writtenOn": "2024-11-03T18:39:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "39708b0d_58772f36",
+      "revId": "b434f529d14f527942a71b8f57bb78749353fbdc",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
