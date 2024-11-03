@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2c8fe456_5af0a36a",
+        "filename": "app/src/main/res/values/strings.xml",
+        "patchSetId": 3
+      },
+      "lineNbr": 149,
+      "author": {
+        "id": 25732
+      },
+      "writtenOn": "2024-11-03T18:37:48Z",
+      "side": 1,
+      "message": "Should we set this as translatable\u003dfalse?",
+      "range": {
+        "startLine": 149,
+        "startChar": 18,
+        "endLine": 149,
+        "endChar": 30
+      },
+      "revId": "7eb73af633ec07af254e5710b6817959679599b9",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
