@@ -16,6 +16,24 @@
       "message": "We have enough space next to the author/track item, I\u0027d say create a LinearLayout that contains the item and the card view, and make it anchor to the right-most?",
       "revId": "4a76edbf6c5ec8d4c8466aad70ce925949591d84",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "565c9023_e3d0722f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 25732
+      },
+      "writtenOn": "2024-11-03T20:03:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "eb9af4ef_65530e29",
+      "revId": "4a76edbf6c5ec8d4c8466aad70ce925949591d84",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
