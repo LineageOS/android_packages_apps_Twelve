@@ -20,6 +20,7 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import org.lineageos.twelve.datasources.MediaError
 import org.lineageos.twelve.models.ProviderType
 import org.lineageos.twelve.models.RequestStatus
 
@@ -57,8 +58,8 @@ class ManageProviderViewModel(application: Application) : ProvidersViewModel(app
                 providerIds.first, providerIds.second
             ).mapLatest { provider ->
                 provider?.let {
-                    RequestStatus.Success(it)
-                } ?: RequestStatus.Error(RequestStatus.Error.Type.NOT_FOUND)
+                    RequestStatus.Success<_, MediaError>(it)
+                } ?: RequestStatus.Error(MediaError.NOT_FOUND)
             }
         } ?: flowOf(RequestStatus.Success(null))
     }

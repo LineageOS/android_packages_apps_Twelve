@@ -31,6 +31,7 @@ import com.google.android.material.progressindicator.LinearProgressIndicator
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.lineageos.twelve.R
+import org.lineageos.twelve.datasources.MediaError
 import org.lineageos.twelve.ext.getParcelable
 import org.lineageos.twelve.ext.getViewProperty
 import org.lineageos.twelve.ext.setProgressCompat
@@ -257,7 +258,7 @@ class ArtistFragment : Fragment(R.layout.fragment_artist) {
                     nestedScrollView.isVisible = false
                     noElementsNestedScrollView.isVisible = true
 
-                    if (it.error == RequestStatus.Error.Type.NOT_FOUND) {
+                    if (it.error == MediaError.NOT_FOUND) {
                         // Get out of here
                         findNavController().navigateUp()
                     }

@@ -268,26 +268,24 @@ class SubsonicDataSource(arguments: Bundle) : MediaDataSource {
 
     private suspend fun <T, O> SubsonicClient.MethodResult<T>.toRequestStatus(
         resultGetter: suspend T.() -> O
-    ) = when (this) {
+    ): RequestStatus<O, MediaError> = when (this) {
         is SubsonicClient.MethodResult.Success -> RequestStatus.Success(result.resultGetter())
-        is SubsonicClient.MethodResult.HttpError -> RequestStatus.Error(RequestStatus.Error.Type.IO)
+        is SubsonicClient.MethodResult.HttpError -> RequestStatus.Error(MediaError.IO)
         is SubsonicClient.MethodResult.SubsonicError -> RequestStatus.Error(
-            error?.code?.toRequestStatusType() ?: RequestStatus.Error.Type.IO
+            error?.code?.toRequestStatusType() ?: MediaError.IO
         )
     }
 
     private fun Error.Code.toRequestStatusType() = when (this) {
-        Error.Code.GENERIC_ERROR -> RequestStatus.Error.Type.IO
-        Error.Code.REQUIRED_PARAMETER_MISSING -> RequestStatus.Error.Type.IO
-        Error.Code.OUTDATED_CLIENT -> RequestStatus.Error.Type.IO
-        Error.Code.OUTDATED_SERVER -> RequestStatus.Error.Type.IO
-        Error.Code.WRONG_CREDENTIALS -> RequestStatus.Error.Type.INVALID_CREDENTIALS
-        Error.Code.TOKEN_AUTHENTICATION_NOT_SUPPORTED ->
-            RequestStatus.Error.Type.INVALID_CREDENTIALS
-
-        Error.Code.USER_NOT_AUTHORIZED -> RequestStatus.Error.Type.INVALID_CREDENTIALS
-        Error.Code.SUBSONIC_PREMIUM_TRIAL_ENDED -> RequestStatus.Error.Type.INVALID_CREDENTIALS
-        Error.Code.NOT_FOUND -> RequestStatus.Error.Type.NOT_FOUND
+        Error.Code.GENERIC_ERROR -> MediaError.IO
+        Error.Code.REQUIRED_PARAMETER_MISSING -> MediaError.IO
+        Error.Code.OUTDATED_CLIENT -> MediaError.IO
+        Error.Code.OUTDATED_SERVER -> MediaError.IO
+        Error.Code.WRONG_CREDENTIALS -> MediaError.INVALID_CREDENTIALS
+        Error.Code.TOKEN_AUTHENTICATION_NOT_SUPPORTED -> MediaError.INVALID_CREDENTIALS
+        Error.Code.USER_NOT_AUTHORIZED -> MediaError.INVALID_CREDENTIALS
+        Error.Code.SUBSONIC_PREMIUM_TRIAL_ENDED -> MediaError.INVALID_CREDENTIALS
+        Error.Code.NOT_FOUND -> MediaError.NOT_FOUND
     }
 
     private fun getAlbumUri(albumId: String) = albumsUri.buildUpon()

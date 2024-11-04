@@ -19,7 +19,7 @@ import org.lineageos.twelve.models.RequestStatus
 open class ProvidersViewModel(application: Application) : TwelveViewModel(application) {
     @OptIn(ExperimentalCoroutinesApi::class)
     val providers = mediaRepository.allProviders
-        .mapLatest { RequestStatus.Success(it) }
+        .mapLatest { RequestStatus.Success<_, Nothing>(it) }
         .flowOn(Dispatchers.IO)
         .stateIn(
             viewModelScope,

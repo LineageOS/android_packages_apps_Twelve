@@ -11,8 +11,8 @@ import org.lineageos.twelve.models.RequestStatus
 /**
  * @see LinearProgressIndicator.setProgressCompat
  */
-fun <T> LinearProgressIndicator.setProgressCompat(
-    status: RequestStatus<T>, animated: Boolean
+fun <T, E> LinearProgressIndicator.setProgressCompat(
+    status: RequestStatus<T, E>, animated: Boolean
 ) {
     when (status) {
         is RequestStatus.Loading -> {

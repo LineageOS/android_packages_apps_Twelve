@@ -198,26 +198,26 @@ class LocalDataSource(context: Context, private val database: TwelveDatabase) : 
         albumsUri,
         albumsProjection,
     ).mapEachRow(albumsProjection, mapAlbum).map {
-        RequestStatus.Success(it)
+        RequestStatus.Success<_, MediaError>(it)
     }
 
     override fun artists() = contentResolver.queryFlow(
         artistsUri,
         artistsProjection,
     ).mapEachRow(artistsProjection, mapArtist).map {
-        RequestStatus.Success(it)
+        RequestStatus.Success<_, MediaError>(it)
     }
 
     override fun genres() = contentResolver.queryFlow(
         genresUri,
         genresProjection,
     ).mapEachRow(genresProjection, mapGenre).map {
-        RequestStatus.Success(it)
+        RequestStatus.Success<_, MediaError>(it)
     }
 
     override fun playlists() = database.getPlaylistDao().getAll()
         .mapLatest { playlists ->
-            RequestStatus.Success(playlists.map { it.toModel() })
+            RequestStatus.Success<_, MediaError>(playlists.map { it.toModel() })
         }
 
     override fun search(query: String) = combine(
@@ -263,7 +263,7 @@ class LocalDataSource(context: Context, private val database: TwelveDatabase) : 
         ).mapEachRow(genresProjection, mapGenre),
     ) { albums, artists, audios, genres ->
         albums + artists + audios + genres
-    }.map { RequestStatus.Success(it) }
+    }.map { RequestStatus.Success<_, MediaError>(it) }
 
     override fun audio(audioUri: Uri) = contentResolver.queryFlow(
         audiosUri,
@@ -278,8 +278,8 @@ class LocalDataSource(context: Context, private val database: TwelveDatabase) : 
         )
     ).mapEachRow(audiosProjection, mapAudio).mapLatest { audios ->
         audios.firstOrNull()?.let {
-            RequestStatus.Success(it)
-        } ?: RequestStatus.Error(RequestStatus.Error.Type.NOT_FOUND)
+            RequestStatus.Success<_, MediaError>(it)
+        } ?: RequestStatus.Error(MediaError.NOT_FOUND)
     }
 
     override fun album(albumUri: Uri) = combine(
@@ -312,8 +312,8 @@ class LocalDataSource(context: Context, private val database: TwelveDatabase) : 
         ).mapEachRow(audiosProjection, mapAudio)
     ) { albums, audios ->
         albums.firstOrNull()?.let {
-            RequestStatus.Success(Pair(it, audios))
-        } ?: RequestStatus.Error(RequestStatus.Error.Type.NOT_FOUND)
+            RequestStatus.Success<_, MediaError>(Pair(it, audios))
+        } ?: RequestStatus.Error(MediaError.NOT_FOUND)
     }
 
     override fun artist(artistUri: Uri) = combine(
@@ -384,8 +384,8 @@ class LocalDataSource(context: Context, private val database: TwelveDatabase) : 
                 listOf(),
             )
 
-            RequestStatus.Success(Pair(it, artistWorks))
-        } ?: RequestStatus.Error(RequestStatus.Error.Type.NOT_FOUND)
+            RequestStatus.Success<_, MediaError>(Pair(it, artistWorks))
+        } ?: RequestStatus.Error(MediaError.NOT_FOUND)
     }
 
     override fun genre(genreUri: Uri) = combine(
@@ -415,8 +415,8 @@ class LocalDataSource(context: Context, private val database: TwelveDatabase) : 
         ).mapEachRow(audiosProjection, mapAudio)
     ) { genres, audios ->
         genres.firstOrNull()?.let {
-            RequestStatus.Success(Pair(it, audios))
-        } ?: RequestStatus.Error(RequestStatus.Error.Type.NOT_FOUND)
+            RequestStatus.Success<_, MediaError>(Pair(it, audios))
+        } ?: RequestStatus.Error(MediaError.NOT_FOUND)
     }
 
     override fun playlist(playlistUri: Uri) = database.getPlaylistDao().getPlaylistWithItems(
@@ -427,11 +427,11 @@ class LocalDataSource(context: Context, private val database: TwelveDatabase) : 
 
             audios(playlistWithItems.items.map(Item::audioUri))
                 .mapLatest {
-                    RequestStatus.Success(Pair(playlist, it))
+                    RequestStatus.Success<_, MediaError>(Pair(playlist, it))
                 }
         } ?: flowOf(
             RequestStatus.Error(
-                RequestStatus.Error.Type.NOT_FOUND
+                MediaError.NOT_FOUND
             )
         )
     }
@@ -440,7 +440,7 @@ class LocalDataSource(context: Context, private val database: TwelveDatabase) : 
         database.getPlaylistWithItemsDao().getPlaylistsWithItemStatus(
             audioUri
         ).mapLatest { data ->
-            RequestStatus.Success(
+            RequestStatus.Success<_, MediaError>(
                 data.map {
                     it.playlist.toModel() to it.value
                 }
@@ -450,20 +450,20 @@ class LocalDataSource(context: Context, private val database: TwelveDatabase) : 
     override suspend fun createPlaylist(name: String) = database.getPlaylistDao().create(
         name
     ).let {
-        RequestStatus.Success(ContentUris.withAppendedId(playlistsBaseUri, it))
+        RequestStatus.Success<_, MediaError>(ContentUris.withAppendedId(playlistsBaseUri, it))
     }
 
     override suspend fun renamePlaylist(playlistUri: Uri, name: String) =
         database.getPlaylistDao().rename(
             ContentUris.parseId(playlistUri), name
         ).let {
-            RequestStatus.Success(Unit)
+            RequestStatus.Success<_, MediaError>(Unit)
         }
 
     override suspend fun deletePlaylist(playlistUri: Uri) = database.getPlaylistDao().delete(
         ContentUris.parseId(playlistUri)
     ).let {
-        RequestStatus.Success(Unit)
+        RequestStatus.Success<_, MediaError>(Unit)
     }
 
     override suspend fun addAudioToPlaylist(
@@ -473,7 +473,7 @@ class LocalDataSource(context: Context, private val database: TwelveDatabase) : 
         ContentUris.parseId(playlistUri),
         audioUri
     ).let {
-        RequestStatus.Success(Unit)
+        RequestStatus.Success<_, MediaError>(Unit)
     }
 
     override suspend fun removeAudioFromPlaylist(
@@ -483,7 +483,7 @@ class LocalDataSource(context: Context, private val database: TwelveDatabase) : 
         ContentUris.parseId(playlistUri),
         audioUri
     ).let {
-        RequestStatus.Success(Unit)
+        RequestStatus.Success<_, MediaError>(Unit)
     }
 
     /**

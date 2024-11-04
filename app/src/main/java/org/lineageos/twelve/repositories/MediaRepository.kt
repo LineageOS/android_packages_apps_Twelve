@@ -25,14 +25,8 @@ import kotlinx.coroutines.flow.stateIn
 import org.lineageos.twelve.database.TwelveDatabase
 import org.lineageos.twelve.datasources.LocalDataSource
 import org.lineageos.twelve.datasources.MediaDataSource
+import org.lineageos.twelve.datasources.MediaError
 import org.lineageos.twelve.datasources.SubsonicDataSource
-import org.lineageos.twelve.models.Album
-import org.lineageos.twelve.models.Artist
-import org.lineageos.twelve.models.ArtistWorks
-import org.lineageos.twelve.models.Audio
-import org.lineageos.twelve.models.Genre
-import org.lineageos.twelve.models.MediaItem
-import org.lineageos.twelve.models.Playlist
 import org.lineageos.twelve.models.Provider
 import org.lineageos.twelve.models.ProviderArgument.Companion.requireArgument
 import org.lineageos.twelve.models.ProviderType
@@ -309,87 +303,78 @@ class MediaRepository(
     /**
      * @see MediaDataSource.albums
      */
-    fun albums(): Flow<RequestStatus<List<Album>>> =
-        navigationDataSource.flatMapLatest { it.albums() }
+    fun albums() = navigationDataSource.flatMapLatest { it.albums() }
 
     /**
      * @see MediaDataSource.artists
      */
-    fun artists(): Flow<RequestStatus<List<Artist>>> =
-        navigationDataSource.flatMapLatest { it.artists() }
+    fun artists() = navigationDataSource.flatMapLatest { it.artists() }
 
     /**
      * @see MediaDataSource.genres
      */
-    fun genres(): Flow<RequestStatus<List<Genre>>> =
-        navigationDataSource.flatMapLatest { it.genres() }
+    fun genres() = navigationDataSource.flatMapLatest { it.genres() }
 
     /**
      * @see MediaDataSource.playlists
      */
-    fun playlists(): Flow<RequestStatus<List<Playlist>>> =
-        navigationDataSource.flatMapLatest { it.playlists() }
+    fun playlists() = navigationDataSource.flatMapLatest { it.playlists() }
 
     /**
      * @see MediaDataSource.search
      */
-    fun search(query: String): Flow<RequestStatus<List<MediaItem<*>>>> =
-        navigationDataSource.flatMapLatest { it.search(query) }
+    fun search(query: String) = navigationDataSource.flatMapLatest { it.search(query) }
 
     /**
      * @see MediaDataSource.audio
      */
-    fun audio(audioUri: Uri): Flow<RequestStatus<Audio>> = withMediaItemsDataSourceFlow(audioUri) {
+    fun audio(audioUri: Uri) = withMediaItemsDataSourceFlow(audioUri) {
         audio(audioUri)
     }
 
     /**
      * @see MediaDataSource.album
      */
-    fun album(albumUri: Uri): Flow<RequestStatus<Pair<Album, List<Audio>>>> =
-        withMediaItemsDataSourceFlow(albumUri) {
-            album(albumUri)
-        }
+    fun album(albumUri: Uri) = withMediaItemsDataSourceFlow(albumUri) {
+        album(albumUri)
+    }
 
     /**
      * @see MediaDataSource.artist
      */
-    fun artist(artistUri: Uri): Flow<RequestStatus<Pair<Artist, ArtistWorks>>> =
-        withMediaItemsDataSourceFlow(artistUri) {
-            artist(artistUri)
-        }
+    fun artist(artistUri: Uri) = withMediaItemsDataSourceFlow(artistUri) {
+        artist(artistUri)
+    }
 
     /**
      * @see MediaDataSource.playlist
      */
-    fun playlist(playlistUri: Uri): Flow<RequestStatus<Pair<Playlist, List<Audio?>>>> =
-        withMediaItemsDataSourceFlow(playlistUri) {
-            playlist(playlistUri)
-        }
+    fun playlist(playlistUri: Uri) = withMediaItemsDataSourceFlow(playlistUri) {
+        playlist(playlistUri)
+    }
 
     /**
      * @see MediaDataSource.audioPlaylistsStatus
      */
-    fun audioPlaylistsStatus(audioUri: Uri): Flow<RequestStatus<List<Pair<Playlist, Boolean>>>> =
-        withMediaItemsDataSourceFlow(audioUri) {
-            audioPlaylistsStatus(audioUri)
-        }
+    fun audioPlaylistsStatus(audioUri: Uri) = withMediaItemsDataSourceFlow(audioUri) {
+        audioPlaylistsStatus(audioUri)
+    }
 
     /**
      * @see MediaDataSource.createPlaylist
      */
     suspend fun createPlaylist(
         provider: Provider, name: String
-    ): RequestStatus<Uri> = getDataSource(provider)?.createPlaylist(
+    ) = getDataSource(provider)?.createPlaylist(
         name
     ) ?: RequestStatus.Error(
-        RequestStatus.Error.Type.NOT_FOUND
+        MediaError.NOT_FOUND
     )
 
     /**
      * @see MediaDataSource.renamePlaylist
      */
-    suspend fun renamePlaylist(playlistUri: Uri, name: String): RequestStatus<Unit> =
+    suspend fun renamePlaylist(playlistUri: Uri, name: String) =
         withMediaItemsDataSource(playlistUri) {
             renamePlaylist(playlistUri, name)
         }
@@ -397,15 +382,14 @@ class MediaRepository(
     /**
      * @see MediaDataSource.deletePlaylist
      */
-    suspend fun deletePlaylist(playlistUri: Uri): RequestStatus<Unit> =
-        withMediaItemsDataSource(playlistUri) {
-            deletePlaylist(playlistUri)
-        }
+    suspend fun deletePlaylist(playlistUri: Uri) = withMediaItemsDataSource(playlistUri) {
+        deletePlaylist(playlistUri)
+    }
 
     /**
      * @see MediaDataSource.addAudioToPlaylist
      */
-    suspend fun addAudioToPlaylist(playlistUri: Uri, audioUri: Uri): RequestStatus<Unit> =
+    suspend fun addAudioToPlaylist(playlistUri: Uri, audioUri: Uri) =
         withMediaItemsDataSource(playlistUri, audioUri) {
             addAudioToPlaylist(playlistUri, audioUri)
         }
@@ -413,7 +397,7 @@ class MediaRepository(
     /**
      * @see MediaDataSource.removeAudioFromPlaylist
      */
-    suspend fun removeAudioFromPlaylist(playlistUri: Uri, audioUri: Uri): RequestStatus<Unit> =
+    suspend fun removeAudioFromPlaylist(playlistUri: Uri, audioUri: Uri) =
         withMediaItemsDataSource(playlistUri, audioUri) {
             removeAudioFromPlaylist(playlistUri, audioUri)
         }
@@ -463,11 +447,11 @@ class MediaRepository(
      *   no [MediaDataSource] can handle the given URIs
      */
     private fun <T> withMediaItemsDataSourceFlow(
-        vararg uris: Uri, predicate: MediaDataSource.() -> Flow<RequestStatus<T>>
+        vararg uris: Uri, predicate: MediaDataSource.() -> Flow<RequestStatus<T, MediaError>>
     ) = allProvidersToDataSource.flatMapLatest {
         it.firstOrNull { (_, dataSource) ->
             uris.all { uri -> dataSource.isMediaItemCompatible(uri) }
-        }?.second?.predicate() ?: flowOf(RequestStatus.Error(RequestStatus.Error.Type.NOT_FOUND))
+        }?.second?.predicate() ?: flowOf(RequestStatus.Error(MediaError.NOT_FOUND))
     }
 
     /**
@@ -479,10 +463,10 @@ class MediaRepository(
      *   error if no [MediaDataSource] can handle the given URIs
      */
     private suspend fun <T> withMediaItemsDataSource(
-        vararg uris: Uri, predicate: suspend MediaDataSource.() -> RequestStatus<T>
+        vararg uris: Uri, predicate: suspend MediaDataSource.() -> RequestStatus<T, MediaError>
     ) = allProvidersToDataSource.value.firstOrNull { (_, dataSource) ->
         uris.all { uri -> dataSource.isMediaItemCompatible(uri) }
-    }?.second?.predicate() ?: RequestStatus.Error(RequestStatus.Error.Type.NOT_FOUND)
+    }?.second?.predicate() ?: RequestStatus.Error(MediaError.NOT_FOUND)
 
     companion object {
         private const val LOCAL_PROVIDER_ID = 0L

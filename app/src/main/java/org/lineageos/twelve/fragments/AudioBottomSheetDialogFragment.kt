@@ -20,6 +20,7 @@ import androidx.navigation.fragment.findNavController
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import kotlinx.coroutines.launch
 import org.lineageos.twelve.R
+import org.lineageos.twelve.datasources.MediaError
 import org.lineageos.twelve.ext.getParcelable
 import org.lineageos.twelve.ext.getViewProperty
 import org.lineageos.twelve.models.RequestStatus
@@ -141,7 +142,7 @@ class AudioBottomSheetDialogFragment : BottomSheetDialogFragment(
                 is RequestStatus.Error -> {
                     Log.e(LOG_TAG, "Failed to load audio, error: ${it.error}")
 
-                    if (it.error == RequestStatus.Error.Type.NOT_FOUND) {
+                    if (it.error == MediaError.NOT_FOUND) {
                         // Get out of here
                         findNavController().navigateUp()
                     }

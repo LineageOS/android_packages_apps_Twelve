@@ -157,7 +157,7 @@ open class NowPlayingViewModel(application: Application) : TwelveViewModel(appli
         when (playbackState) {
             PlaybackState.BUFFERING -> RequestStatus.Loading()
 
-            else -> RequestStatus.Success(
+            else -> RequestStatus.Success<_, Nothing>(
                 mediaMetadata.artworkUri?.let {
                     Thumbnail(uri = it)
                 } ?: mediaMetadata.artworkData?.let {

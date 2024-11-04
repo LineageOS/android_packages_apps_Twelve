@@ -29,6 +29,7 @@ import com.google.android.material.textfield.TextInputLayout
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.lineageos.twelve.R
+import org.lineageos.twelve.datasources.MediaError
 import org.lineageos.twelve.ext.getSerializable
 import org.lineageos.twelve.ext.getViewProperty
 import org.lineageos.twelve.ext.selectItem
@@ -247,7 +248,7 @@ class ManageProviderFragment : Fragment(R.layout.fragment_manage_provider) {
                             is RequestStatus.Error -> {
                                 Log.e(LOG_TAG, "Failed to load provider")
 
-                                if (it.error == RequestStatus.Error.Type.NOT_FOUND) {
+                                if (it.error == MediaError.NOT_FOUND) {
                                     // Get out of here
                                     findNavController().navigateUp()
                                 }
