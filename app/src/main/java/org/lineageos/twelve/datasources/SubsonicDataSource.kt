@@ -266,7 +266,7 @@ class SubsonicDataSource(arguments: Bundle) : MediaDataSource {
         else -> Audio.Type.MUSIC
     }
 
-    private suspend fun <T : Any, O : Any> SubsonicClient.MethodResult<T>.toRequestStatus(
+    private suspend fun <T, O> SubsonicClient.MethodResult<T>.toRequestStatus(
         resultGetter: suspend T.() -> O
     ) = when (this) {
         is SubsonicClient.MethodResult.Success -> RequestStatus.Success(result.resultGetter())

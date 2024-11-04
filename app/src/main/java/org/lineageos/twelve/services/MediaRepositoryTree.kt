@@ -261,7 +261,7 @@ class MediaRepositoryTree(
          * Converts a flow of [RequestStatus] to a one-shot result of [T].
          * Raises an exception on error.
          */
-        private suspend fun <T : Any> Flow<RequestStatus<T>>.toOneShotResult() = mapNotNull {
+        private suspend fun <T> Flow<RequestStatus<T>>.toOneShotResult() = mapNotNull {
             when (it) {
                 is RequestStatus.Loading -> {
                     null
