@@ -313,12 +313,12 @@ class AlbumFragment : Fragment(R.layout.fragment_album) {
                         }
 
                         is RequestStatus.Error -> {
-                            Log.e(LOG_TAG, "Error loading album, error: ${it.type}")
+                            Log.e(LOG_TAG, "Error loading album, error: ${it.error}")
 
                             toolbar.title = ""
                             albumTitleTextView.text = ""
 
-                            if (it.type == RequestStatus.Error.Type.NOT_FOUND) {
+                            if (it.error == RequestStatus.Error.Type.NOT_FOUND) {
                                 // Get out of here
                                 findNavController().navigateUp()
                             }

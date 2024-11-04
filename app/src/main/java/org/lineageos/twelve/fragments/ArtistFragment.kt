@@ -246,7 +246,7 @@ class ArtistFragment : Fragment(R.layout.fragment_artist) {
                 }
 
                 is RequestStatus.Error -> {
-                    Log.e(LOG_TAG, "Error loading artist, error: ${it.type}")
+                    Log.e(LOG_TAG, "Error loading artist, error: ${it.error}")
 
                     toolbar.title = ""
 
@@ -257,7 +257,7 @@ class ArtistFragment : Fragment(R.layout.fragment_artist) {
                     nestedScrollView.isVisible = false
                     noElementsNestedScrollView.isVisible = true
 
-                    if (it.type == RequestStatus.Error.Type.NOT_FOUND) {
+                    if (it.error == RequestStatus.Error.Type.NOT_FOUND) {
                         // Get out of here
                         findNavController().navigateUp()
                     }

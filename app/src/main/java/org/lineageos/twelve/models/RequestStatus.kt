@@ -28,9 +28,9 @@ sealed class RequestStatus<T> {
     /**
      * The request failed.
      *
-     * @param type The error type
+     * @param error The error
      */
-    class Error<T>(val type: Type) : RequestStatus<T>() {
+    class Error<T>(val error: Type) : RequestStatus<T>() {
         enum class Type {
             /**
              * This feature isn't implemented.

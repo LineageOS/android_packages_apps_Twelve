@@ -184,7 +184,7 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
                 }
 
                 is RequestStatus.Error -> {
-                    Log.e(LOG_TAG, "Failed to load search results, error: ${it.type}")
+                    Log.e(LOG_TAG, "Failed to load search results, error: ${it.error}")
 
                     adapter.submitList(listOf())
 

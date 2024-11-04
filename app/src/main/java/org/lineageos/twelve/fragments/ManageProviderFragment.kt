@@ -247,7 +247,7 @@ class ManageProviderFragment : Fragment(R.layout.fragment_manage_provider) {
                             is RequestStatus.Error -> {
                                 Log.e(LOG_TAG, "Failed to load provider")
 
-                                if (it.type == RequestStatus.Error.Type.NOT_FOUND) {
+                                if (it.error == RequestStatus.Error.Type.NOT_FOUND) {
                                     // Get out of here
                                     findNavController().navigateUp()
                                 }

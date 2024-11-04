@@ -266,7 +266,7 @@ class PlaylistFragment : Fragment(R.layout.fragment_playlist) {
                 }
 
                 is RequestStatus.Error -> {
-                    Log.e(LOG_TAG, "Error loading playlist, error: ${it.type}")
+                    Log.e(LOG_TAG, "Error loading playlist, error: ${it.error}")
 
                     toolbar.title = ""
                     playlistNameTextView.text = ""
@@ -277,7 +277,7 @@ class PlaylistFragment : Fragment(R.layout.fragment_playlist) {
                     noElementsNestedScrollView.isVisible = true
                     playAllFloatingActionButton.isVisible = false
 
-                    if (it.type == RequestStatus.Error.Type.NOT_FOUND) {
+                    if (it.error == RequestStatus.Error.Type.NOT_FOUND) {
                         // Get out of here
                         findNavController().navigateUp()
                     }

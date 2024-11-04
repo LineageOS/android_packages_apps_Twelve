@@ -139,9 +139,9 @@ class AudioBottomSheetDialogFragment : BottomSheetDialogFragment(
                 }
 
                 is RequestStatus.Error -> {
-                    Log.e(LOG_TAG, "Failed to load audio, error: ${it.type}")
+                    Log.e(LOG_TAG, "Failed to load audio, error: ${it.error}")
 
-                    if (it.type == RequestStatus.Error.Type.NOT_FOUND) {
+                    if (it.error == RequestStatus.Error.Type.NOT_FOUND) {
                         // Get out of here
                         findNavController().navigateUp()
                     }

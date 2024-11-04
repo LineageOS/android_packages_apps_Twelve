@@ -111,7 +111,7 @@ class ArtistsFragment : Fragment(R.layout.fragment_artists) {
                 }
 
                 is RequestStatus.Error -> {
-                    Log.e(LOG_TAG, "Failed to load artists, error: ${it.type}")
+                    Log.e(LOG_TAG, "Failed to load artists, error: ${it.error}")
 
                     adapter.submitList(emptyList())
 

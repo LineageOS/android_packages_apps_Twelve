@@ -109,7 +109,7 @@ class GenresFragment : Fragment(R.layout.fragment_genres) {
                 }
 
                 is RequestStatus.Error -> {
-                    Log.e(LOG_TAG, "Failed to load genres, error: ${it.type}")
+                    Log.e(LOG_TAG, "Failed to load genres, error: ${it.error}")
 
                     adapter.submitList(emptyList())
 

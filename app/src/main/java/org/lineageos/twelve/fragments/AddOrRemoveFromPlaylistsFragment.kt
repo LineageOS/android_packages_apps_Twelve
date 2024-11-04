@@ -161,7 +161,7 @@ class AddOrRemoveFromPlaylistsFragment : Fragment(R.layout.fragment_add_or_remov
                 }
 
                 is RequestStatus.Error -> {
-                    Log.e(LOG_TAG, "Failed to load data, error: ${it.type}")
+                    Log.e(LOG_TAG, "Failed to load data, error: ${it.error}")
 
                     adapter.submitList(emptyList())
 

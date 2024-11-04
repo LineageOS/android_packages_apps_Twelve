@@ -272,7 +272,7 @@ class MediaRepositoryTree(
                 }
 
                 is RequestStatus.Error -> throw Exception(
-                    "Error while loading data, ${it.type}"
+                    "Error while loading data, ${it.error}"
                 )
             }
         }.first()
