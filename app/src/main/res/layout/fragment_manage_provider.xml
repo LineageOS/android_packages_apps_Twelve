@@ -96,4 +96,11 @@
 
     </androidx.core.widget.NestedScrollView>
 
+    <org.lineageos.twelve.ui.views.FullscreenLoadingProgressBar
+        android:id="@+id/fullscreenLoadingProgressBar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true"
+        android:visibility="gone" />
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

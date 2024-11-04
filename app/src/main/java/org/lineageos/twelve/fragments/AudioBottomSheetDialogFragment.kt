@@ -24,6 +24,7 @@ import org.lineageos.twelve.datasources.MediaError
 import org.lineageos.twelve.ext.getParcelable
 import org.lineageos.twelve.ext.getViewProperty
 import org.lineageos.twelve.models.RequestStatus
+import org.lineageos.twelve.ui.views.FullscreenLoadingProgressBar
 import org.lineageos.twelve.ui.views.ListItem
 import org.lineageos.twelve.utils.PermissionsChecker
 import org.lineageos.twelve.utils.PermissionsUtils
@@ -43,6 +44,7 @@ class AudioBottomSheetDialogFragment : BottomSheetDialogFragment(
     private val addToQueueListItem by getViewProperty<ListItem>(R.id.addToQueueListItem)
     private val artistNameTextView by getViewProperty<TextView>(R.id.artistNameTextView)
     private val albumTitleTextView by getViewProperty<TextView>(R.id.albumTitleTextView)
+    private val fullscreenLoadingProgressBar by getViewProperty<FullscreenLoadingProgressBar>(R.id.fullscreenLoadingProgressBar)
     private val openAlbumListItem by getViewProperty<ListItem>(R.id.openAlbumListItem)
     private val openArtistListItem by getViewProperty<ListItem>(R.id.openArtistListItem)
     private val playNextListItem by getViewProperty<ListItem>(R.id.playNextListItem)
@@ -69,11 +71,15 @@ class AudioBottomSheetDialogFragment : BottomSheetDialogFragment(
 
         removeFromPlaylistListItem.isVisible = playlistUri != null
         removeFromPlaylistListItem.setOnClickListener {
-            playlistUri?.let {
-                viewModel.removeFromPlaylist(it)
-            }
+            viewLifecycleOwner.lifecycleScope.launch {
+                fullscreenLoadingProgressBar.withProgress {
+                    playlistUri?.let {
+                        viewModel.removeFromPlaylist(it)
 
-            findNavController().navigateUp()
+                        findNavController().navigateUp()
+                    }
+                }
+            }
         }
 
         addOrRemoveFromPlaylistsListItem.setOnClickListener {

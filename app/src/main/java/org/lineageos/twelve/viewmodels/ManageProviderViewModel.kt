@@ -20,6 +20,7 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.lineageos.twelve.datasources.MediaError
 import org.lineageos.twelve.models.ProviderType
 import org.lineageos.twelve.models.RequestStatus
@@ -137,27 +138,33 @@ class ManageProviderViewModel(application: Application) : ProvidersViewModel(app
     /**
      * Add a new provider.
      */
-    fun addProvider(
+    suspend fun addProvider(
         providerType: ProviderType, name: String, arguments: Bundle
-    ) = viewModelScope.launch {
-        mediaRepository.addProvider(providerType, name, arguments)
+    ) {
+        withContext(Dispatchers.IO) {
+            mediaRepository.addProvider(providerType, name, arguments)
+        }
     }
 
     /**
      * Update the provider.
      */
-    fun updateProvider(name: String, arguments: Bundle) = viewModelScope.launch {
-        val (providerType, providerTypeId) = providerIds.value ?: return@launch
+    suspend fun updateProvider(name: String, arguments: Bundle) {
+        val (providerType, providerTypeId) = providerIds.value ?: return
 
-        mediaRepository.updateProvider(providerType, providerTypeId, name, arguments)
+        withContext(Dispatchers.IO) {
+            mediaRepository.updateProvider(providerType, providerTypeId, name, arguments)
+        }
     }
 
     /**
      * Delete the provider.
      */
-    fun deleteProvider() = viewModelScope.launch {
-        val (providerType, providerTypeId) = providerIds.value ?: return@launch
+    suspend fun deleteProvider() {
+        val (providerType, providerTypeId) = providerIds.value ?: return
 
-        mediaRepository.deleteProvider(providerType, providerTypeId)
+        withContext(Dispatchers.IO) {
+            mediaRepository.deleteProvider(providerType, providerTypeId)
+        }
     }
 }

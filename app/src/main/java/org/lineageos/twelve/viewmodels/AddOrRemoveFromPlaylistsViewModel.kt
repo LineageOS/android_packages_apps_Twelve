@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.lineageos.twelve.models.RequestStatus
 
 class AddOrRemoveFromPlaylistsViewModel(application: Application) : AudioViewModel(application) {
@@ -34,10 +35,12 @@ class AddOrRemoveFromPlaylistsViewModel(application: Application) : AudioViewMod
     /**
      * Create a new playlist in the same provider as the audio.
      */
-    fun createPlaylist(name: String) = viewModelScope.launch {
-        audioUri.value?.let {
-            mediaRepository.getProviderOfMediaItems(it)?.let { provider ->
-                mediaRepository.createPlaylist(provider, name)
+    suspend fun createPlaylist(name: String) {
+        withContext(Dispatchers.IO) {
+            audioUri.value?.let {
+                mediaRepository.getProviderOfMediaItems(it)?.let { provider ->
+                    mediaRepository.createPlaylist(provider, name)
+                }
             }
         }
     }

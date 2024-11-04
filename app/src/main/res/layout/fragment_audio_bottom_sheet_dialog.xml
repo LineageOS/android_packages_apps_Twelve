@@ -3,89 +3,101 @@
      SPDX-FileCopyrightText: 2024 The LineageOS Project
      SPDX-License-Identifier: Apache-2.0
 -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:paddingBottom="8dp">
+    android:layout_height="match_parent">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="20dp"
-        android:layout_marginVertical="16dp"
-        android:orientation="vertical">
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:paddingBottom="8dp">
 
-        <TextView
-            android:id="@+id/titleTextView"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="4dp"
-            android:textAppearance="?attr/textAppearanceTitleLarge"
-            android:textColor="?attr/colorOnSurface" />
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginVertical="16dp"
+            android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/artistNameTextView"
+            <TextView
+                android:id="@+id/titleTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="4dp"
+                android:textAppearance="?attr/textAppearanceTitleLarge"
+                android:textColor="?attr/colorOnSurface" />
+
+            <TextView
+                android:id="@+id/artistNameTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="?attr/textAppearanceBodyMedium"
+                android:textColor="?attr/colorOnSurface" />
+
+            <TextView
+                android:id="@+id/albumTitleTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="?attr/textAppearanceBodyMedium"
+                android:textColor="?attr/colorOnSurface" />
+
+        </LinearLayout>
+
+        <com.google.android.material.divider.MaterialDivider
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <org.lineageos.twelve.ui.views.ListItem
+            android:id="@+id/addToQueueListItem"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textAppearance="?attr/textAppearanceBodyMedium"
-            android:textColor="?attr/colorOnSurface" />
+            app:headlineText="@string/audio_add_to_queue"
+            app:leadingIconImage="@drawable/ic_add_to_queue" />
 
-        <TextView
-            android:id="@+id/albumTitleTextView"
+        <org.lineageos.twelve.ui.views.ListItem
+            android:id="@+id/playNextListItem"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textAppearance="?attr/textAppearanceBodyMedium"
-            android:textColor="?attr/colorOnSurface" />
+            app:headlineText="@string/audio_play_next"
+            app:leadingIconImage="@drawable/ic_queue_play_next" />
+
+        <org.lineageos.twelve.ui.views.ListItem
+            android:id="@+id/removeFromPlaylistListItem"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:headlineText="@string/audio_remove_from_playlist"
+            app:leadingIconImage="@drawable/ic_playlist_remove" />
+
+        <org.lineageos.twelve.ui.views.ListItem
+            android:id="@+id/addOrRemoveFromPlaylistsListItem"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:headlineText="@string/audio_add_or_remove_from_playlists"
+            app:leadingIconImage="@drawable/ic_playlist_add" />
+
+        <org.lineageos.twelve.ui.views.ListItem
+            android:id="@+id/openAlbumListItem"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:headlineText="@string/open_album"
+            app:leadingIconImage="@drawable/ic_album" />
+
+        <org.lineageos.twelve.ui.views.ListItem
+            android:id="@+id/openArtistListItem"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:headlineText="@string/open_artist"
+            app:leadingIconImage="@drawable/ic_person" />
 
     </LinearLayout>
 
-    <com.google.android.material.divider.MaterialDivider
+    <org.lineageos.twelve.ui.views.FullscreenLoadingProgressBar
+        android:id="@+id/fullscreenLoadingProgressBar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="match_parent"
+        android:visibility="gone" />
 
-    <org.lineageos.twelve.ui.views.ListItem
-        android:id="@+id/addToQueueListItem"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:headlineText="@string/audio_add_to_queue"
-        app:leadingIconImage="@drawable/ic_add_to_queue" />
-
-    <org.lineageos.twelve.ui.views.ListItem
-        android:id="@+id/playNextListItem"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:headlineText="@string/audio_play_next"
-        app:leadingIconImage="@drawable/ic_queue_play_next" />
-
-    <org.lineageos.twelve.ui.views.ListItem
-        android:id="@+id/removeFromPlaylistListItem"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        app:headlineText="@string/audio_remove_from_playlist"
-        app:leadingIconImage="@drawable/ic_playlist_remove" />
-
-    <org.lineageos.twelve.ui.views.ListItem
-        android:id="@+id/addOrRemoveFromPlaylistsListItem"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:headlineText="@string/audio_add_or_remove_from_playlists"
-        app:leadingIconImage="@drawable/ic_playlist_add" />
-
-    <org.lineageos.twelve.ui.views.ListItem
-        android:id="@+id/openAlbumListItem"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:headlineText="@string/open_album"
-        app:leadingIconImage="@drawable/ic_album" />
-
-    <org.lineageos.twelve.ui.views.ListItem
-        android:id="@+id/openArtistListItem"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:headlineText="@string/open_artist"
-        app:leadingIconImage="@drawable/ic_person" />
-
-</LinearLayout>
+</FrameLayout>

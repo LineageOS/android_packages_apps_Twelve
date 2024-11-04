@@ -41,6 +41,7 @@ import org.lineageos.twelve.models.RequestStatus
 import org.lineageos.twelve.ui.dialogs.EditTextMaterialAlertDialogBuilder
 import org.lineageos.twelve.ui.recyclerview.SimpleListAdapter
 import org.lineageos.twelve.ui.recyclerview.UniqueItemDiffCallback
+import org.lineageos.twelve.ui.views.FullscreenLoadingProgressBar
 import org.lineageos.twelve.ui.views.ListItem
 import org.lineageos.twelve.utils.PermissionsChecker
 import org.lineageos.twelve.utils.PermissionsUtils
@@ -55,6 +56,7 @@ class PlaylistFragment : Fragment(R.layout.fragment_playlist) {
     private val viewModel by viewModels<PlaylistViewModel>()
 
     // Views
+    private val fullscreenLoadingProgressBar by getViewProperty<FullscreenLoadingProgressBar>(R.id.fullscreenLoadingProgressBar)
     private val infoNestedScrollView by getViewProperty<NestedScrollView?>(R.id.infoNestedScrollView)
     private val linearProgressIndicator by getViewProperty<LinearProgressIndicator>(R.id.linearProgressIndicator)
     private val noElementsNestedScrollView by getViewProperty<NestedScrollView>(R.id.noElementsNestedScrollView)
@@ -291,7 +293,11 @@ class PlaylistFragment : Fragment(R.layout.fragment_playlist) {
         EditTextMaterialAlertDialogBuilder(requireContext())
             .setText(toolbar.title.toString())
             .setPositiveButton(R.string.rename_playlist_positive) { text ->
-                viewModel.renamePlaylist(text)
+                viewLifecycleOwner.lifecycleScope.launch {
+                    fullscreenLoadingProgressBar.withProgress {
+                        viewModel.renamePlaylist(text)
+                    }
+                }
             }
             .setTitle(R.string.rename_playlist)
             .setNegativeButton(android.R.string.cancel, null)
@@ -303,7 +309,11 @@ class PlaylistFragment : Fragment(R.layout.fragment_playlist) {
             .setTitle(R.string.delete_playlist)
             .setMessage(R.string.delete_playlist_message)
             .setPositiveButton(android.R.string.ok) { _, _ ->
-                viewModel.deletePlaylist()
+                viewLifecycleOwner.lifecycleScope.launch {
+                    fullscreenLoadingProgressBar.withProgress {
+                        viewModel.deletePlaylist()
+                    }
+                }
             }
             .setNegativeButton(android.R.string.cancel, null)
             .show()

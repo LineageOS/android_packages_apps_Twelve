@@ -38,6 +38,7 @@ import org.lineageos.twelve.models.ProviderArgument.Companion.validateArgument
 import org.lineageos.twelve.models.ProviderType
 import org.lineageos.twelve.models.RequestStatus
 import org.lineageos.twelve.ui.recyclerview.SimpleListAdapter
+import org.lineageos.twelve.ui.views.FullscreenLoadingProgressBar
 import org.lineageos.twelve.viewmodels.ManageProviderViewModel
 
 /**
@@ -51,6 +52,7 @@ class ManageProviderFragment : Fragment(R.layout.fragment_manage_provider) {
     private val argumentsRecyclerView by getViewProperty<RecyclerView>(R.id.argumentsRecyclerView)
     private val confirmMaterialButton by getViewProperty<MaterialButton>(R.id.confirmMaterialButton)
     private val deleteMaterialButton by getViewProperty<MaterialButton>(R.id.deleteMaterialButton)
+    private val fullscreenLoadingProgressBar by getViewProperty<FullscreenLoadingProgressBar>(R.id.fullscreenLoadingProgressBar)
     private val providerNameTextInputLayout by getViewProperty<TextInputLayout>(R.id.providerNameTextInputLayout)
     private val providerTypeAutoCompleteTextView by getViewProperty<MaterialAutoCompleteTextView>(R.id.providerTypeAutoCompleteTextView)
     private val providerTypeTextInputLayout by getViewProperty<TextInputLayout>(R.id.providerTypeTextInputLayout)
@@ -181,13 +183,17 @@ class ManageProviderFragment : Fragment(R.layout.fragment_manage_provider) {
                 return@setOnClickListener
             }
 
-            if (viewModel.inEditMode.value) {
-                viewModel.updateProvider(name, providerArguments)
-            } else {
-                viewModel.addProvider(providerType, name, providerArguments)
-            }
+            viewLifecycleOwner.lifecycleScope.launch {
+                fullscreenLoadingProgressBar.withProgress {
+                    if (viewModel.inEditMode.value) {
+                        viewModel.updateProvider(name, providerArguments)
+                    } else {
+                        viewModel.addProvider(providerType, name, providerArguments)
+                    }
 
-            findNavController().navigateUp()
+                    findNavController().navigateUp()
+                }
+            }
         }
 
         deleteMaterialButton.setOnClickListener {
@@ -331,7 +337,11 @@ class ManageProviderFragment : Fragment(R.layout.fragment_manage_provider) {
         MaterialAlertDialogBuilder(requireContext())
             .setMessage(R.string.delete_provider_confirmation)
             .setPositiveButton(android.R.string.ok) { _, _ ->
-                viewModel.deleteProvider()
+                viewLifecycleOwner.lifecycleScope.launch {
+                    fullscreenLoadingProgressBar.withProgress {
+                        viewModel.deleteProvider()
+                    }
+                }
             }
             .setNegativeButton(android.R.string.cancel) { _, _ ->
                 // Do nothing

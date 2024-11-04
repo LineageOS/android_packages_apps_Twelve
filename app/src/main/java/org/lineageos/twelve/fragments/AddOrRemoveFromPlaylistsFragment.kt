@@ -33,6 +33,7 @@ import org.lineageos.twelve.models.Playlist
 import org.lineageos.twelve.models.RequestStatus
 import org.lineageos.twelve.ui.dialogs.EditTextMaterialAlertDialogBuilder
 import org.lineageos.twelve.ui.recyclerview.SimpleListAdapter
+import org.lineageos.twelve.ui.views.FullscreenLoadingProgressBar
 import org.lineageos.twelve.ui.views.ListItem
 import org.lineageos.twelve.utils.PermissionsChecker
 import org.lineageos.twelve.utils.PermissionsUtils
@@ -47,6 +48,7 @@ class AddOrRemoveFromPlaylistsFragment : Fragment(R.layout.fragment_add_or_remov
 
     // Views
     private val createNewPlaylistButton by getViewProperty<Button>(R.id.createNewPlaylistButton)
+    private val fullscreenLoadingProgressBar by getViewProperty<FullscreenLoadingProgressBar>(R.id.fullscreenLoadingProgressBar)
     private val linearProgressIndicator by getViewProperty<LinearProgressIndicator>(R.id.linearProgressIndicator)
     private val noElementsLinearLayout by getViewProperty<LinearLayout>(R.id.noElementsLinearLayout)
     private val recyclerView by getViewProperty<RecyclerView>(R.id.recyclerView)
@@ -64,9 +66,13 @@ class AddOrRemoveFromPlaylistsFragment : Fragment(R.layout.fragment_add_or_remov
                     item?.let {
                         when (it === addNewPlaylistItem) {
                             true -> openCreateNewPlaylistDialog()
-                            false -> when (it.second) {
-                                true -> viewModel.removeFromPlaylist(it.first.uri)
-                                false -> viewModel.addToPlaylist(it.first.uri)
+                            false -> viewLifecycleOwner.lifecycleScope.launch {
+                                fullscreenLoadingProgressBar.withProgress {
+                                    when (it.second) {
+                                        true -> viewModel.removeFromPlaylist(it.first.uri)
+                                        false -> viewModel.addToPlaylist(it.first.uri)
+                                    }
+                                }
                             }
                         }
                     }
@@ -175,7 +181,11 @@ class AddOrRemoveFromPlaylistsFragment : Fragment(R.layout.fragment_add_or_remov
     private fun openCreateNewPlaylistDialog() {
         EditTextMaterialAlertDialogBuilder(requireContext())
             .setPositiveButton(R.string.create_playlist_confirm) { text ->
-                viewModel.createPlaylist(text)
+                viewLifecycleOwner.lifecycleScope.launch {
+                    fullscreenLoadingProgressBar.withProgress {
+                        viewModel.createPlaylist(text)
+                    }
+                }
             }
             .setTitle(R.string.create_playlist)
             .setNegativeButton(android.R.string.cancel, null)

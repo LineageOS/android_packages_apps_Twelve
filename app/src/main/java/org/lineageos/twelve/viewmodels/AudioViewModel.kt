@@ -17,6 +17,7 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.lineageos.twelve.models.Audio
 import org.lineageos.twelve.models.RequestStatus
 
@@ -40,11 +41,11 @@ open class AudioViewModel(application: Application) : TwelveViewModel(applicatio
         this.audioUri.value = audioUri
     }
 
-    fun addToQueue(audio: Audio) = viewModelScope.launch {
+    fun addToQueue(audio: Audio) {
         mediaController.value?.addMediaItem(audio.toMedia3MediaItem())
     }
 
-    fun playNext(audio: Audio) = viewModelScope.launch {
+    fun playNext(audio: Audio) {
         mediaController.value?.let { controller ->
             controller.addMediaItem(
                 controller.currentMediaItemIndex + 1,
@@ -53,15 +54,19 @@ open class AudioViewModel(application: Application) : TwelveViewModel(applicatio
         }
     }
 
-    fun addToPlaylist(playlistUri: Uri) = viewModelScope.launch {
+    suspend fun addToPlaylist(playlistUri: Uri) {
         audioUri.value?.let {
-            mediaRepository.addAudioToPlaylist(playlistUri, it)
+            withContext(Dispatchers.IO) {
+                mediaRepository.addAudioToPlaylist(playlistUri, it)
+            }
         }
     }
 
-    fun removeFromPlaylist(playlistUri: Uri) = viewModelScope.launch {
+    suspend fun removeFromPlaylist(playlistUri: Uri) {
         audioUri.value?.let {
-            mediaRepository.removeAudioFromPlaylist(playlistUri, it)
+            withContext(Dispatchers.IO) {
+                mediaRepository.removeAudioFromPlaylist(playlistUri, it)
+            }
         }
     }
 }

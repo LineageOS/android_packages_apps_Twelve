@@ -17,6 +17,7 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.lineageos.twelve.models.RequestStatus
 
 class PlaylistViewModel(application: Application) : TwelveViewModel(application) {
@@ -39,15 +40,19 @@ class PlaylistViewModel(application: Application) : TwelveViewModel(application)
         this.playlistUri.value = playlistUri
     }
 
-    fun renamePlaylist(name: String) = viewModelScope.launch {
+    suspend fun renamePlaylist(name: String) {
         playlistUri.value?.let { playlistUri ->
-            mediaRepository.renamePlaylist(playlistUri, name)
+            withContext(Dispatchers.IO) {
+                mediaRepository.renamePlaylist(playlistUri, name)
+            }
         }
     }
 
-    fun deletePlaylist() = viewModelScope.launch {
+    suspend fun deletePlaylist() {
         playlistUri.value?.let { playlistUri ->
-            mediaRepository.deletePlaylist(playlistUri)
+            withContext(Dispatchers.IO) {
+                mediaRepository.deletePlaylist(playlistUri)
+            }
         }
     }
 

@@ -11,7 +11,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.lineageos.twelve.models.RequestStatus
 
 class PlaylistsViewModel(application: Application) : TwelveViewModel(application) {
@@ -23,7 +23,9 @@ class PlaylistsViewModel(application: Application) : TwelveViewModel(application
             RequestStatus.Loading()
         )
 
-    fun createPlaylist(name: String) = viewModelScope.launch {
-        mediaRepository.createPlaylist(mediaRepository.navigationProvider.value, name)
+    suspend fun createPlaylist(name: String) {
+        withContext(Dispatchers.IO) {
+            mediaRepository.createPlaylist(mediaRepository.navigationProvider.value, name)
+        }
     }
 }
