@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f122ece2_bedc5679",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 25732
+      },
+      "writtenOn": "2024-11-05T13:03:31Z",
+      "side": 1,
+      "message": "This fixes mostly just Subsonic requests where the fragment gets closed before requests are completed",
+      "revId": "5417d16f52433bb6f27bd8e9ba9e51196f0a6a47",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
