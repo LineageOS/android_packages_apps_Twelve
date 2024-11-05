@@ -42,9 +42,13 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
     }
 
     private fun handleIntent(intent: Intent) {
-        // Handle now playing
-        if (intent.getBooleanExtra(EXTRA_OPEN_NOW_PLAYING, false)) {
-            navController.navigate(R.id.fragment_now_playing)
+        when (intent.action) {
+            Intent.ACTION_MAIN -> {
+                // Handle now playing
+                if (intent.getBooleanExtra(EXTRA_OPEN_NOW_PLAYING, false)) {
+                    navController.navigate(R.id.fragment_now_playing)
+                }
+            }
         }
     }
 
