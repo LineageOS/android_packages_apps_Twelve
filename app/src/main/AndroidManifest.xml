@@ -63,6 +63,33 @@
 
         </activity>
 
+        <activity
+            android:name=".ViewActivity"
+            android:excludeFromRecents="true"
+            android:exported="true"
+            android:theme="@style/Theme.Twelve.Dialog">
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:mimeType="application/itunes" />
+                <data android:mimeType="application/ogg" />
+                <data android:mimeType="application/x-ogg" />
+                <data android:mimeType="audio/*" />
+                <data android:mimeType="vnd.android.cursor.item/audio" />
+
+                <data android:scheme="content" />
+                <data android:scheme="file" />
+                <data android:scheme="http" />
+                <data android:scheme="https" />
+                <data android:scheme="rtsp" />
+            </intent-filter>
+
+        </activity>
+
         <service
             android:name=".services.PlaybackService"
             android:exported="true"
