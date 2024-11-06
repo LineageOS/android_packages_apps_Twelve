@@ -301,6 +301,13 @@ class MediaRepository(
     }
 
     /**
+     * @see MediaDataSource.mediaTypeOf
+     */
+    suspend fun mediaTypeOf(mediaItemUri: Uri) = withMediaItemsDataSource(mediaItemUri) {
+        mediaTypeOf(mediaItemUri)
+    }
+
+    /**
      * @see MediaDataSource.albums
      */
     fun albums() = navigationDataSource.flatMapLatest { it.albums() }
