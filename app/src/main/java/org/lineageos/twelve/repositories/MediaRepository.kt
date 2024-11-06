@@ -300,6 +300,10 @@ class MediaRepository(
         _navigationProvider.value = provider.type to provider.typeId
     }
 
+    suspend fun mediaTypeOf(mediaItemUri: Uri) = withMediaItemsDataSource(mediaItemUri) {
+        mediaTypeOf(mediaItemUri)
+    }
+
     /**
      * @see MediaDataSource.albums
      */
