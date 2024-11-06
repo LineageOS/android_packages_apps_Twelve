@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7225c99a_f3fc5661",
+        "filename": "app/src/main/java/org/lineageos/twelve/ViewActivity.kt",
+        "patchSetId": 4
+      },
+      "lineNbr": 68,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2024-11-06T23:00:47Z",
+      "side": 1,
+      "message": "i don\u0027t think that\u0027s required at all?\nwhoever sends you there should give you the required permissions to read stuff",
+      "revId": "cd0f35cc3b7ee05fb5ded1615ddf6e1958966010",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e2949187_0cc69e52",
+        "filename": "app/src/main/java/org/lineageos/twelve/viewmodels/LocalPlayerViewModel.kt",
+        "patchSetId": 4
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2024-11-06T23:00:47Z",
+      "side": 1,
+      "message": "you still want noisy handling in case user starts playing another source (ex via notification)\njust steal what I have in the other change?",
+      "revId": "cd0f35cc3b7ee05fb5ded1615ddf6e1958966010",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
