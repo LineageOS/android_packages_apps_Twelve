@@ -18,7 +18,6 @@ import org.lineageos.twelve.datasources.subsonic.models.AlbumID3
 import org.lineageos.twelve.datasources.subsonic.models.ArtistID3
 import org.lineageos.twelve.datasources.subsonic.models.Child
 import org.lineageos.twelve.datasources.subsonic.models.Error
-import org.lineageos.twelve.datasources.subsonic.models.MediaType
 import org.lineageos.twelve.models.Album
 import org.lineageos.twelve.models.Artist
 import org.lineageos.twelve.models.ArtistWorks
@@ -70,6 +69,19 @@ class SubsonicDataSource(arguments: Bundle) : MediaDataSource {
     override fun isMediaItemCompatible(mediaItemUri: Uri) = mediaItemUri.toString().startsWith(
         dataSourceBaseUri.toString()
     )
+
+    override fun mediaTypeOf(mediaItemUri: Uri) = with(mediaItemUri.toString()) {
+        when {
+            startsWith(albumsUri.toString()) -> MediaType.ALBUM
+            startsWith(artistsUri.toString()) -> MediaType.ARTIST
+            startsWith(audiosUri.toString()) -> MediaType.AUDIO
+            startsWith(genresUri.toString()) -> MediaType.GENRE
+            startsWith(playlistsUri.toString()) -> MediaType.PLAYLIST
+            else -> null
+        }?.let {
+            RequestStatus.Success<_, MediaError>(it)
+        } ?: RequestStatus.Error(MediaError.NOT_FOUND)
+    }
 
     override fun albums() = suspend {
         subsonicClient.getAlbumList2("alphabeticalByName", 500).toRequestStatus {
@@ -258,11 +270,16 @@ class SubsonicDataSource(arguments: Bundle) : MediaDataSource {
         name = name,
     )
 
-    private fun MediaType?.toAudioType() = when (this) {
-        MediaType.MUSIC -> Audio.Type.MUSIC
-        MediaType.PODCAST -> Audio.Type.PODCAST
-        MediaType.AUDIOBOOK -> Audio.Type.AUDIOBOOK
-        MediaType.VIDEO -> throw Exception("Invalid media type, got VIDEO")
+    private fun org.lineageos.twelve.datasources.subsonic.models.MediaType?.toAudioType() = when (
+        this
+    ) {
+        org.lineageos.twelve.datasources.subsonic.models.MediaType.MUSIC -> Audio.Type.MUSIC
+        org.lineageos.twelve.datasources.subsonic.models.MediaType.PODCAST -> Audio.Type.PODCAST
+        org.lineageos.twelve.datasources.subsonic.models.MediaType.AUDIOBOOK -> Audio.Type.AUDIOBOOK
+        org.lineageos.twelve.datasources.subsonic.models.MediaType.VIDEO -> throw Exception(
+            "Invalid media type, got VIDEO"
+        )
+
         else -> Audio.Type.MUSIC
     }
 

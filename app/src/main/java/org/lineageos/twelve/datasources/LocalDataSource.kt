@@ -194,6 +194,19 @@ class LocalDataSource(context: Context, private val database: TwelveDatabase) : 
         mediaItemUri.toString().startsWith(it.toString())
     }
 
+    override fun mediaTypeOf(mediaItemUri: Uri) = with(mediaItemUri.toString()) {
+        when {
+            startsWith(albumsUri.toString()) -> MediaType.ALBUM
+            startsWith(artistsUri.toString()) -> MediaType.ARTIST
+            startsWith(genresUri.toString()) -> MediaType.GENRE
+            startsWith(audiosUri.toString()) -> MediaType.AUDIO
+            startsWith(playlistsBaseUri.toString()) -> MediaType.PLAYLIST
+            else -> null
+        }?.let {
+            RequestStatus.Success<_, MediaError>(it)
+        } ?: RequestStatus.Error(MediaError.NOT_FOUND)
+    }
+
     override fun albums() = contentResolver.queryFlow(
         albumsUri,
         albumsProjection,
