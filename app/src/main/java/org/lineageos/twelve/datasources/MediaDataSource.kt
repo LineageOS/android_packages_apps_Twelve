@@ -31,6 +31,14 @@ interface MediaDataSource {
     fun isMediaItemCompatible(mediaItemUri: Uri): Boolean
 
     /**
+     * Given a compatible media item URI, get its type.
+     *
+     * @param mediaItemUri The media item to check
+     * @return [RequestStatus.Success] if success, [RequestStatus.Error] with an error otherwise
+     */
+    suspend fun mediaTypeOf(mediaItemUri: Uri): MediaRequestStatus<MediaType>
+
+    /**
      * Get all the albums. All albums must have at least one audio associated with them.
      */
     fun albums(): Flow<MediaRequestStatus<List<Album>>>
