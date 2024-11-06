@@ -16,6 +16,24 @@
       "message": "that\u0027s just stupid",
       "revId": "60e0afd252aef53cdc0e92b646c0f9864ed9cc5c",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8b435d21_295cc33c",
+        "filename": "app/src/main/java/org/lineageos/twelve/viewmodels/MiniAudioPlayerViewModel.kt",
+        "patchSetId": 1
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2024-11-06T21:20:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1c639fb8_6c9857d6",
+      "revId": "60e0afd252aef53cdc0e92b646c0f9864ed9cc5c",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
