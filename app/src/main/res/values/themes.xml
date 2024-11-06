@@ -7,6 +7,8 @@
     <!-- Application theme -->
     <style name="Theme.Twelve" parent="Theme.Material3.DayNight.NoActionBar" />
 
+    <style name="Theme.Twelve.MiniAudioPlayer" parent="Theme.Material3.DayNight.Dialog" />
+
     <!-- No elements styles -->
     <style name="Theme.Twelve.NoElements" />
 
