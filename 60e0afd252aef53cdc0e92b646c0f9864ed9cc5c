@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1c639fb8_6c9857d6",
+        "filename": "app/src/main/java/org/lineageos/twelve/viewmodels/MiniAudioPlayerViewModel.kt",
+        "patchSetId": 1
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2024-11-06T20:48:34Z",
+      "side": 1,
+      "message": "that\u0027s just stupid",
+      "revId": "60e0afd252aef53cdc0e92b646c0f9864ed9cc5c",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
