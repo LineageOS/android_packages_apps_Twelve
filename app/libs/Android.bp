@@ -258,6 +258,38 @@ android_library {
 }
 
 android_library_import {
+    name: "Twelve_androidx.media3_media3-exoplayer-hls-nodeps",
+    aars: ["androidx/media3/media3-exoplayer-hls/1.5.0-alpha01/media3-exoplayer-hls-1.5.0-alpha01.aar"],
+    sdk_version: "35",
+    min_sdk_version: "14",
+    apex_available: [
+        "//apex_available:platform",
+        "//apex_available:anyapex",
+    ],
+    static_libs: [
+        "Twelve_androidx.media3_media3-exoplayer",
+        "androidx.annotation_annotation",
+    ],
+}
+
+android_library {
+    name: "Twelve_androidx.media3_media3-exoplayer-hls",
+    sdk_version: "35",
+    min_sdk_version: "14",
+    apex_available: [
+        "//apex_available:platform",
+        "//apex_available:anyapex",
+    ],
+    manifest: "androidx/media3/media3-exoplayer-hls/1.5.0-alpha01/AndroidManifest.xml",
+    static_libs: [
+        "Twelve_androidx.media3_media3-exoplayer-hls-nodeps",
+        "Twelve_androidx.media3_media3-exoplayer",
+        "androidx.annotation_annotation",
+    ],
+    java_version: "1.7",
+}
+
+android_library_import {
     name: "Twelve_androidx.media3_media3-exoplayer-midi-nodeps",
     aars: ["androidx/media3/media3-exoplayer-midi/1.5.0-alpha01/media3-exoplayer-midi-1.5.0-alpha01.aar"],
     sdk_version: "35",
@@ -292,6 +324,70 @@ android_library {
         "Twelve_androidx.media3_media3-exoplayer",
         "Twelve_androidx.media3_media3-extractor",
         "Twelve_com.github.philburk_jsyn",
+        "androidx.annotation_annotation",
+    ],
+    java_version: "1.7",
+}
+
+android_library_import {
+    name: "Twelve_androidx.media3_media3-exoplayer-rtsp-nodeps",
+    aars: ["androidx/media3/media3-exoplayer-rtsp/1.5.0-alpha01/media3-exoplayer-rtsp-1.5.0-alpha01.aar"],
+    sdk_version: "35",
+    min_sdk_version: "14",
+    apex_available: [
+        "//apex_available:platform",
+        "//apex_available:anyapex",
+    ],
+    static_libs: [
+        "Twelve_androidx.media3_media3-exoplayer",
+        "androidx.annotation_annotation",
+    ],
+}
+
+android_library {
+    name: "Twelve_androidx.media3_media3-exoplayer-rtsp",
+    sdk_version: "35",
+    min_sdk_version: "14",
+    apex_available: [
+        "//apex_available:platform",
+        "//apex_available:anyapex",
+    ],
+    manifest: "androidx/media3/media3-exoplayer-rtsp/1.5.0-alpha01/AndroidManifest.xml",
+    static_libs: [
+        "Twelve_androidx.media3_media3-exoplayer-rtsp-nodeps",
+        "Twelve_androidx.media3_media3-exoplayer",
+        "androidx.annotation_annotation",
+    ],
+    java_version: "1.7",
+}
+
+android_library_import {
+    name: "Twelve_androidx.media3_media3-exoplayer-smoothstreaming-nodeps",
+    aars: ["androidx/media3/media3-exoplayer-smoothstreaming/1.5.0-alpha01/media3-exoplayer-smoothstreaming-1.5.0-alpha01.aar"],
+    sdk_version: "35",
+    min_sdk_version: "14",
+    apex_available: [
+        "//apex_available:platform",
+        "//apex_available:anyapex",
+    ],
+    static_libs: [
+        "Twelve_androidx.media3_media3-exoplayer",
+        "androidx.annotation_annotation",
+    ],
+}
+
+android_library {
+    name: "Twelve_androidx.media3_media3-exoplayer-smoothstreaming",
+    sdk_version: "35",
+    min_sdk_version: "14",
+    apex_available: [
+        "//apex_available:platform",
+        "//apex_available:anyapex",
+    ],
+    manifest: "androidx/media3/media3-exoplayer-smoothstreaming/1.5.0-alpha01/AndroidManifest.xml",
+    static_libs: [
+        "Twelve_androidx.media3_media3-exoplayer-smoothstreaming-nodeps",
+        "Twelve_androidx.media3_media3-exoplayer",
         "androidx.annotation_annotation",
     ],
     java_version: "1.7",
