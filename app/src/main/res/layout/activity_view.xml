@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     SPDX-FileCopyrightText: 2024 The LineageOS Project
+     SPDX-License-Identifier: Apache-2.0
+-->
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/Widget.Material3.CardView.Filled"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:cardBackgroundColor="?attr/colorSurface"
+    app:cardCornerRadius="28dp"
+    app:contentPadding="24dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <com.google.android.material.card.MaterialCardView
+            style="@style/Widget.Material3.CardView.Filled"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_marginBottom="8dp"
+            app:cardBackgroundColor="?attr/colorSecondaryContainer"
+            app:cardCornerRadius="8dp">
+
+            <ImageView
+                android:id="@+id/dummyThumbnailImageView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="8dp"
+                android:src="@drawable/ic_music_note"
+                app:tint="?attr/colorOnSecondaryContainer" />
+
+            <ImageView
+                android:id="@+id/thumbnailImageView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone" />
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/audioTitleTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="marquee"
+                android:marqueeRepeatLimit="marquee_forever"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:textAppearance="?attr/textAppearanceHeadlineSmall"
+                android:textColor="?attr/colorOnSurface"
+                tools:text="Tokyo Story" />
+
+            <TextView
+                android:id="@+id/artistNameTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="marquee"
+                android:marqueeRepeatLimit="marquee_forever"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:textAppearance="?attr/textAppearanceLabelLarge"
+                android:textColor="?attr/colorOnSurface"
+                tools:text="Ryuichi Sakamoto" />
+
+            <TextView
+                android:id="@+id/albumTitleTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="marquee"
+                android:marqueeRepeatLimit="marquee_forever"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:textAppearance="?attr/textAppearanceLabelLarge"
+                android:textColor="?attr/colorOnSurface"
+                tools:text="Sweet Revenge" />
+
+        </LinearLayout>
+
+        <com.google.android.material.slider.Slider
+            android:id="@+id/progressSlider"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="8dp"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/currentTimestampTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?attr/textAppearanceLabelMedium"
+                android:textColor="?attr/colorOnSurface"
+                tools:text="0:13" />
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1" />
+
+            <TextView
+                android:id="@+id/durationTimestampTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?attr/textAppearanceLabelMedium"
+                android:textColor="?attr/colorOnSurface"
+                tools:text="1:16" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:orientation="horizontal">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/playPauseMaterialButton"
+                style="@style/Widget.Material3.Button.IconButton.Filled"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:icon="@drawable/ic_play_arrow" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/playbackSpeedMaterialButton"
+                style="@style/Widget.Material3.Button.IconButton"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:padding="0dp"
+                tools:text="1×" />
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1" />
+
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/shuffleMarkerImageView"
+                    android:layout_width="8dp"
+                    android:layout_height="4dp"
+                    android:layout_gravity="bottom|center_horizontal"
+                    android:importantForAccessibility="no"
+                    android:src="@drawable/now_playing_marker"
+                    android:visibility="gone"
+                    app:tint="?attr/colorPrimary" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/shuffleMaterialButton"
+                    style="@style/Widget.Material3.Button.IconButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:icon="@drawable/ic_shuffle" />
+
+            </FrameLayout>
+
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/repeatMarkerImageView"
+                    android:layout_width="8dp"
+                    android:layout_height="4dp"
+                    android:layout_gravity="bottom|center_horizontal"
+                    android:importantForAccessibility="no"
+                    android:src="@drawable/now_playing_marker"
+                    android:visibility="gone"
+                    app:tint="?attr/colorPrimary" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/repeatMaterialButton"
+                    style="@style/Widget.Material3.Button.IconButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:icon="@drawable/ic_repeat" />
+
+            </FrameLayout>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/previousTrackMaterialButton"
+                style="@style/Widget.Material3.Button.IconButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:icon="@drawable/ic_skip_previous" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/nextTrackMaterialButton"
+                style="@style/Widget.Material3.Button.IconButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:icon="@drawable/ic_skip_next" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>
