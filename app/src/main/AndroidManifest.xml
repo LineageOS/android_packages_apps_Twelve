@@ -42,6 +42,21 @@
                 <category android:name="android.intent.category.APP_MUSIC" />
             </intent-filter>
 
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <action android:name="android.provider.action.REVIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:mimeType="vnd.android.cursor.item/album" />
+                <data android:mimeType="vnd.android.cursor.item/artist" />
+                <!-- Deprecated, we cannot handle those as we use our internal database -->
+                <!--<data android:mimeType="vnd.android.cursor.item/playlist" />-->
+
+                <data android:scheme="content" />
+            </intent-filter>
+
         </activity>
 
         <service
