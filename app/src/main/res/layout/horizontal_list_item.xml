@@ -47,4 +47,17 @@
         android:textColor="?attr/colorOnSurfaceVariant"
         tools:text="Supporting" />
 
+    <TextView
+        android:id="@+id/tertiaryTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:hyphenationFrequency="normal"
+        android:maxLines="1"
+        android:textAppearance="?attr/textAppearanceLabelMedium"
+        android:textColor="?attr/colorOnSurfaceVariant"
+        android:visibility="gone"
+        tools:text="Tertiary"
+        tools:visibility="visible" />
+
 </LinearLayout>
