@@ -33,6 +33,8 @@ import org.lineageos.twelve.models.Genre
 import org.lineageos.twelve.models.MediaType
 import org.lineageos.twelve.models.Playlist
 import org.lineageos.twelve.models.RequestStatus
+import org.lineageos.twelve.models.SortingRule
+import org.lineageos.twelve.models.SortingStrategy
 import org.lineageos.twelve.models.Thumbnail
 import org.lineageos.twelve.query.Query
 import org.lineageos.twelve.query.and
@@ -208,28 +210,68 @@ class LocalDataSource(context: Context, private val database: TwelveDatabase) : 
         } ?: RequestStatus.Error(MediaError.NOT_FOUND)
     }
 
-    override fun albums() = contentResolver.queryFlow(
+    override fun albums(sortingRules: List<SortingRule>) = contentResolver.queryFlow(
         albumsUri,
         albumsProjection,
+        bundleOf(
+            ContentResolver.QUERY_ARG_SORT_COLUMNS to sortingRules.map {
+                when (it.strategy) {
+                    SortingStrategy.CREATION_DATE -> MediaStore.Audio.AlbumColumns.LAST_YEAR
+                    SortingStrategy.NAME -> MediaStore.Audio.AlbumColumns.ALBUM
+                    else -> null
+                }?.let { column ->
+                    when (it.reverse) {
+                        true -> "$column DESC"
+                        false -> column
+                    }
+                } ?: MediaStore.Audio.AlbumColumns.ALBUM
+            }.distinct().toTypedArray()
+        )
     ).mapEachRow(albumsProjection, mapAlbum).map {
         RequestStatus.Success<_, MediaError>(it)
     }
 
-    override fun artists() = contentResolver.queryFlow(
+    override fun artists(sortingRules: List<SortingRule>) = contentResolver.queryFlow(
         artistsUri,
         artistsProjection,
+        bundleOf(
+            ContentResolver.QUERY_ARG_SORT_COLUMNS to sortingRules.map {
+                when (it.strategy) {
+                    SortingStrategy.NAME -> MediaStore.Audio.ArtistColumns.ARTIST
+                    else -> null
+                }?.let { column ->
+                    when (it.reverse) {
+                        true -> "$column DESC"
+                        false -> column
+                    }
+                } ?: MediaStore.Audio.ArtistColumns.ARTIST
+            }.distinct().toTypedArray()
+        )
     ).mapEachRow(artistsProjection, mapArtist).map {
         RequestStatus.Success<_, MediaError>(it)
     }
 
-    override fun genres() = contentResolver.queryFlow(
+    override fun genres(sortingRules: List<SortingRule>) = contentResolver.queryFlow(
         genresUri,
         genresProjection,
+        bundleOf(
+            ContentResolver.QUERY_ARG_SORT_COLUMNS to sortingRules.map {
+                when (it.strategy) {
+                    SortingStrategy.NAME -> MediaStore.Audio.GenresColumns.NAME
+                    else -> null
+                }?.let { column ->
+                    when (it.reverse) {
+                        true -> "$column DESC"
+                        false -> column
+                    }
+                } ?: MediaStore.Audio.GenresColumns.NAME
+            }.distinct().toTypedArray()
+        )
     ).mapEachRow(genresProjection, mapGenre).map {
         RequestStatus.Success<_, MediaError>(it)
     }
 
-    override fun playlists() = database.getPlaylistDao().getAll()
+    override fun playlists(sortingRules: List<SortingRule>) = database.getPlaylistDao().getAll()
         .mapLatest { playlists ->
             RequestStatus.Success<_, MediaError>(playlists.map { it.toModel() })
         }
