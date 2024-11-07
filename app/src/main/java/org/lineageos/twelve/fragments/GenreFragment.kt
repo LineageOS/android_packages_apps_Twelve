@@ -144,7 +144,10 @@ class GenreFragment : Fragment(R.layout.fragment_genre) {
                     item?.let {
                         findNavController().navigate(
                             R.id.action_genreFragment_to_fragment_audio_bottom_sheet_dialog,
-                            AudioBottomSheetDialogFragment.createBundle(it.uri)
+                            AudioBottomSheetDialogFragment.createBundle(
+                                it.uri,
+                                fromGenre = true,
+                            )
                         )
 
                         true

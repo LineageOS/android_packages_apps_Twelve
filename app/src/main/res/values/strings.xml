@@ -67,6 +67,7 @@
     <string name="audio_add_or_remove_from_playlists">Add or remove from playlists</string>
     <string name="open_album">Open album</string>
     <string name="open_artist">Open artist</string>
+    <string name="open_genre">Open genre</string>
 
     <!-- Playlist fragment -->
     <string name="playlist_tracks_info">%1$d tracks, %2$d minutes</string>

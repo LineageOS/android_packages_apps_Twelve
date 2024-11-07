@@ -92,6 +92,13 @@
             app:headlineText="@string/open_artist"
             app:leadingIconImage="@drawable/ic_person" />
 
+        <org.lineageos.twelve.ui.views.ListItem
+            android:id="@+id/openGenreListItem"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:headlineText="@string/open_genre"
+            app:leadingIconImage="@drawable/ic_genres" />
+
     </LinearLayout>
 
     <org.lineageos.twelve.ui.views.FullscreenLoadingProgressBar
