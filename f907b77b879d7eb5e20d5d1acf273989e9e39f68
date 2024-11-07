@@ -16,6 +16,24 @@
       "message": "also\n                \u003caction android:name\u003d\"android.intent.action.MUSIC_PLAYER\" /\u003e\n\nsomehow exists and is valid",
       "revId": "f907b77b879d7eb5e20d5d1acf273989e9e39f68",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "910ea984_9b1b3b47",
+        "filename": "app/src/main/AndroidManifest.xml",
+        "patchSetId": 2
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 25732
+      },
+      "writtenOn": "2024-11-07T00:25:33Z",
+      "side": 1,
+      "message": "https://developer.android.com/reference/android/provider/MediaStore.html#INTENT_ACTION_MUSIC_PLAYER",
+      "parentUuid": "9fd369a1_e78b7249",
+      "revId": "f907b77b879d7eb5e20d5d1acf273989e9e39f68",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
