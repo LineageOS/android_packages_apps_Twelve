@@ -12,6 +12,7 @@ import org.lineageos.twelve.models.Artist
 import org.lineageos.twelve.models.ArtistWorks
 import org.lineageos.twelve.models.Audio
 import org.lineageos.twelve.models.Genre
+import org.lineageos.twelve.models.GenreContent
 import org.lineageos.twelve.models.MediaItem
 import org.lineageos.twelve.models.MediaType
 import org.lineageos.twelve.models.Playlist
@@ -83,7 +84,7 @@ interface MediaDataSource {
     /**
      * Get the genre information and all the tracks of the given genre.
      */
-    fun genre(genreUri: Uri): Flow<MediaRequestStatus<Pair<Genre, List<Audio>>>>
+    fun genre(genreUri: Uri): Flow<MediaRequestStatus<Pair<Genre, GenreContent>>>
 
     /**
      * Get the playlist information and all the tracks of the given playlist.

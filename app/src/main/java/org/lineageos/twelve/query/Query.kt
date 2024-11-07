@@ -12,11 +12,17 @@ sealed interface Query {
 
     companion object {
         const val ARG = "?"
+        const val NULL = "NULL"
     }
 }
 
 enum class Operator(val symbol: String) {
-    AND("AND"), OR("OR"), EQUALS("="), NOT_EQUALS("!="), LIKE("LIKE"),
+    AND("AND"),
+    OR("OR"),
+    EQUALS("="),
+    NOT_EQUALS("!="),
+    LIKE("LIKE"),
+    IS("IS"),
 }
 
 class LogicalOp(private val lhs: Query, private val op: Operator, private val rhs: Query) : Query {
@@ -37,6 +43,7 @@ infix fun Query.or(other: Query) = LogicalOp(this, Operator.OR, other)
 infix fun Column.eq(other: String) = StringOp(this, Operator.EQUALS, other)
 infix fun Column.neq(other: String) = StringOp(this, Operator.NOT_EQUALS, other)
 infix fun Column.like(other: String) = StringOp(this, Operator.LIKE, other)
+infix fun Column.`is`(other: String) = StringOp(this, Operator.IS, other)
 infix fun <T> Column.`in`(values: Collection<T>) = In(this, values)
 
 inline fun query(block: () -> Query) = block().build()
