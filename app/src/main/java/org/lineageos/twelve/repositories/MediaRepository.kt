@@ -354,6 +354,13 @@ class MediaRepository(
     }
 
     /**
+     * @see MediaDataSource.genre
+     */
+    fun genre(genreUri: Uri) = withMediaItemsDataSourceFlow(genreUri) {
+        genre(genreUri)
+    }
+
+    /**
      * @see MediaDataSource.playlist
      */
     fun playlist(playlistUri: Uri) = withMediaItemsDataSourceFlow(playlistUri) {

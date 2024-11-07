@@ -30,6 +30,7 @@ import org.lineageos.twelve.models.Artist
 import org.lineageos.twelve.models.ArtistWorks
 import org.lineageos.twelve.models.Audio
 import org.lineageos.twelve.models.Genre
+import org.lineageos.twelve.models.GenreContent
 import org.lineageos.twelve.models.MediaType
 import org.lineageos.twelve.models.Playlist
 import org.lineageos.twelve.models.RequestStatus
@@ -417,6 +418,39 @@ class LocalDataSource(context: Context, private val database: TwelveDatabase) : 
         ).mapEachRow(genresProjection, mapGenre),
         contentResolver.queryFlow(
             audiosUri,
+            audioAlbumIdsProjection,
+            bundleOf(
+                ContentResolver.QUERY_ARG_SQL_SELECTION to query {
+                    MediaStore.Audio.AudioColumns.GENRE_ID eq Query.ARG
+                },
+                ContentResolver.QUERY_ARG_SQL_SELECTION_ARGS to arrayOf(
+                    ContentUris.parseId(genreUri).toString(),
+                ),
+                ContentResolver.QUERY_ARG_SQL_GROUP_BY to MediaStore.Audio.AudioColumns.GENRE_ID,
+            )
+        ).mapEachRow(audioAlbumIdsProjection) { it, indexCache ->
+            // albumId
+            it.getLong(indexCache[0])
+        }.flatMapLatest { albumIds ->
+            contentResolver.queryFlow(
+                albumsUri,
+                albumsProjection,
+                bundleOf(
+                    ContentResolver.QUERY_ARG_SQL_SELECTION to query {
+                        MediaStore.Audio.AudioColumns._ID `in` List(albumIds.size) {
+                            Query.ARG
+                        }
+                    },
+                    ContentResolver.QUERY_ARG_SQL_SELECTION_ARGS to arrayOf(
+                        *albumIds
+                            .map { it.toString() }
+                            .toTypedArray(),
+                    ),
+                )
+            ).mapEachRow(albumsProjection, mapAlbum)
+        },
+        contentResolver.queryFlow(
+            audiosUri,
             audiosProjection,
             bundleOf(
                 ContentResolver.QUERY_ARG_SQL_SELECTION to query {
@@ -427,9 +461,15 @@ class LocalDataSource(context: Context, private val database: TwelveDatabase) : 
                 ),
             )
         ).mapEachRow(audiosProjection, mapAudio)
-    ) { genres, audios ->
+    ) { genres, appearsInAlbums, audios ->
         genres.firstOrNull()?.let {
-            RequestStatus.Success<_, MediaError>(Pair(it, audios))
+            val genreContent = GenreContent(
+                appearsInAlbums,
+                listOf(),
+                audios,
+            )
+
+            RequestStatus.Success<_, MediaError>(Pair(it, genreContent))
         } ?: RequestStatus.Error(MediaError.NOT_FOUND)
     }
 

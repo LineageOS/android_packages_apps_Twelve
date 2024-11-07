@@ -106,7 +106,15 @@ class MediaRepositoryTree(
 
             is Audio -> listOf()
 
-            is Genre -> listOf()
+            is Genre -> repository.genre(it.uri).toOneShotResult().second.let { genreContent ->
+                listOf(
+                    genreContent.appearsInAlbums,
+                    genreContent.appearsInPlaylists,
+                    genreContent.audios,
+                ).flatten().map { allRelatedMediaItems ->
+                    allRelatedMediaItems.toMedia3MediaItem()
+                }
+            }
 
             is Playlist -> repository.playlist(
                 it.uri
@@ -152,13 +160,8 @@ class MediaRepositoryTree(
         }
 
         mediaId.startsWith(Genre.GENRE_MEDIA_ITEM_ID_PREFIX) -> {
-            // TODO
-            /*
-            repository.genre(Uri.parse(mediaId.removePrefix(GENRE_MEDIA_ITEM_ID_PREFIX)))
+            repository.genre(Uri.parse(mediaId.removePrefix(Genre.GENRE_MEDIA_ITEM_ID_PREFIX)))
                 .toOneShotResult().first
-
-             */
-            null
         }
 
         mediaId.startsWith(Playlist.PLAYLIST_MEDIA_ITEM_ID_PREFIX) -> {

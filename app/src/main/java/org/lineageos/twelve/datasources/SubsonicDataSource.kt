@@ -23,6 +23,7 @@ import org.lineageos.twelve.models.Artist
 import org.lineageos.twelve.models.ArtistWorks
 import org.lineageos.twelve.models.Audio
 import org.lineageos.twelve.models.Genre
+import org.lineageos.twelve.models.GenreContent
 import org.lineageos.twelve.models.MediaType
 import org.lineageos.twelve.models.Playlist
 import org.lineageos.twelve.models.ProviderArgument
@@ -142,8 +143,44 @@ class SubsonicDataSource(arguments: Bundle) : MediaDataSource {
 
     override fun genre(genreUri: Uri) = suspend {
         val genreName = genreUri.lastPathSegment!!
-        subsonicClient.getSongsByGenre(genreName).toRequestStatus {
-            Genre(genreUri, genreName) to song.map { it.toMediaItem() }
+
+        val appearsInAlbums = subsonicClient.getAlbumList2(
+            "byGenre",
+            size = 500,
+            genre = genreName
+        ).toRequestStatus {
+            album.map { it.toMediaItem() }
+        }.let {
+            when (it) {
+                is RequestStatus.Success -> it.data
+                else -> null
+            }
+        }
+
+        val audios = subsonicClient.getSongsByGenre(genreName).toRequestStatus {
+            song.map { it.toMediaItem() }
+        }.let {
+            when (it) {
+                is RequestStatus.Success -> it.data
+                else -> null
+            }
+        }
+
+        val exists = listOf(
+            appearsInAlbums,
+            audios,
+        ).any { it != null }
+
+        if (exists) {
+            RequestStatus.Success<_, MediaError>(
+                Genre(genreUri, genreName) to GenreContent(
+                    appearsInAlbums.orEmpty(),
+                    listOf(),
+                    audios.orEmpty(),
+                )
+            )
+        } else {
+            RequestStatus.Error(MediaError.NOT_FOUND)
         }
     }.asFlow()
 
