@@ -47,6 +47,8 @@ data class Audio(
     val genreName: String?,
     val year: Int?,
 ) : MediaItem<Audio> {
+    override val mediaType = MediaType.AUDIO
+
     enum class Type(
         val media3MediaType: @MediaMetadata.MediaType Int,
     ) {

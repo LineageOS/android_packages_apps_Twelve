@@ -22,6 +22,8 @@ data class Artist(
     val name: String,
     val thumbnail: Thumbnail?,
 ) : MediaItem<Artist> {
+    override val mediaType = MediaType.ARTIST
+
     override fun areContentsTheSame(other: Artist) = compareValuesBy(
         this, other,
         Artist::name,

@@ -19,6 +19,8 @@ data class Playlist(
     override val uri: Uri,
     val name: String,
 ) : MediaItem<Playlist> {
+    override val mediaType = MediaType.PLAYLIST
+
     override fun areContentsTheSame(other: Playlist) = compareValuesBy(
         this,
         other,

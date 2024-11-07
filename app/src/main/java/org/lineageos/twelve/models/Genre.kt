@@ -20,6 +20,8 @@ data class Genre(
     override val uri: Uri,
     val name: String?,
 ) : MediaItem<Genre> {
+    override val mediaType = MediaType.GENRE
+
     override fun areContentsTheSame(other: Genre) = compareValuesBy(
         other,
         this,
