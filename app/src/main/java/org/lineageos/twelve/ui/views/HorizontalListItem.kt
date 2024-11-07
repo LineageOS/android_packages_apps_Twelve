@@ -29,6 +29,7 @@ class HorizontalListItem @JvmOverloads constructor(
     private val thumbnailImageView by lazy { findViewById<ImageView>(R.id.thumbnailImageView) }
     private val headlineTextView by lazy { findViewById<TextView>(R.id.headlineTextView) }
     private val supportingTextView by lazy { findViewById<TextView>(R.id.supportingTextView) }
+    private val tertiaryTextView by lazy { findViewById<TextView>(R.id.tertiaryTextView) }
 
     var thumbnailImage: Drawable?
         get() = thumbnailImageView.drawable
@@ -60,6 +61,18 @@ class HorizontalListItem @JvmOverloads constructor(
             supportingTextView.maxLines = value
         }
 
+    var tertiaryText: CharSequence?
+        get() = tertiaryTextView.text
+        set(value) {
+            tertiaryTextView.setTextAndUpdateVisibility(value)
+        }
+
+    var tertiaryMaxLines: Int
+        get() = tertiaryTextView.maxLines
+        set(value) {
+            tertiaryTextView.maxLines = value
+        }
+
     init {
         inflate(context, R.layout.horizontal_list_item, this)
     }
@@ -81,6 +94,10 @@ class HorizontalListItem @JvmOverloads constructor(
 
     fun setSupportingText(@StringRes resId: Int, vararg formatArgs: Any) =
         supportingTextView.setTextAndUpdateVisibility(resId, *formatArgs)
+
+    fun setTertiaryText(@StringRes resId: Int) = tertiaryTextView.setTextAndUpdateVisibility(resId)
+    fun setTertiaryText(@StringRes resId: Int, vararg formatArgs: Any) =
+        tertiaryTextView.setTextAndUpdateVisibility(resId, *formatArgs)
 
     // TextView utils
 
