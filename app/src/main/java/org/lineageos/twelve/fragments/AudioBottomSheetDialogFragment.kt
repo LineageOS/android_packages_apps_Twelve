@@ -47,6 +47,7 @@ class AudioBottomSheetDialogFragment : BottomSheetDialogFragment(
     private val fullscreenLoadingProgressBar by getViewProperty<FullscreenLoadingProgressBar>(R.id.fullscreenLoadingProgressBar)
     private val openAlbumListItem by getViewProperty<ListItem>(R.id.openAlbumListItem)
     private val openArtistListItem by getViewProperty<ListItem>(R.id.openArtistListItem)
+    private val openGenreListItem by getViewProperty<ListItem>(R.id.openGenreListItem)
     private val playNextListItem by getViewProperty<ListItem>(R.id.playNextListItem)
     private val removeFromPlaylistListItem by getViewProperty<ListItem>(R.id.removeFromPlaylistListItem)
     private val titleTextView by getViewProperty<TextView>(R.id.titleTextView)
@@ -58,6 +59,8 @@ class AudioBottomSheetDialogFragment : BottomSheetDialogFragment(
         get() = requireArguments().getBoolean(ARG_FROM_ALBUM)
     private val fromArtist: Boolean
         get() = requireArguments().getBoolean(ARG_FROM_ARTIST)
+    private val fromGenre: Boolean
+        get() = requireArguments().getBoolean(ARG_FROM_GENRE)
     private val playlistUri: Uri?
         get() = requireArguments().getParcelable(ARG_PLAYLIST_URI, Uri::class)
 
@@ -143,6 +146,16 @@ class AudioBottomSheetDialogFragment : BottomSheetDialogFragment(
                             ArtistFragment.createBundle(audio.artistUri)
                         )
                     }
+
+                    openGenreListItem.isVisible = !fromGenre && audio.genreUri != null
+                    openGenreListItem.setOnClickListener {
+                        audio.genreUri?.let { genreUri ->
+                            findNavController().navigate(
+                                R.id.action_audioBottomSheetDialogFragment_to_fragment_genre,
+                                GenreFragment.createBundle(genreUri)
+                            )
+                        }
+                    }
                 }
 
                 is RequestStatus.Error -> {
@@ -163,6 +176,7 @@ class AudioBottomSheetDialogFragment : BottomSheetDialogFragment(
         private const val ARG_AUDIO_URI = "audio_uri"
         private const val ARG_FROM_ALBUM = "from_album"
         private const val ARG_FROM_ARTIST = "from_artist"
+        private const val ARG_FROM_GENRE = "from_genre"
         private const val ARG_PLAYLIST_URI = "playlist_uri"
 
         /**
@@ -170,17 +184,20 @@ class AudioBottomSheetDialogFragment : BottomSheetDialogFragment(
          * @param audioUri The URI of the audio to display
          * @param fromAlbum Whether this fragment was opened from an album
          * @param fromArtist Whether this fragment was opened from an artist
+         * @param fromGenre Whether this fragment was opened from a genre
          * @param playlistUri If the audio has been opened from a playlist, the URI of the playlist
          */
         fun createBundle(
             audioUri: Uri,
             fromAlbum: Boolean = false,
             fromArtist: Boolean = false,
+            fromGenre: Boolean = false,
             playlistUri: Uri? = null,
         ) = bundleOf(
             ARG_AUDIO_URI to audioUri,
             ARG_FROM_ALBUM to fromAlbum,
             ARG_FROM_ARTIST to fromArtist,
+            ARG_FROM_GENRE to fromGenre,
             ARG_PLAYLIST_URI to playlistUri,
         )
     }
