@@ -9,6 +9,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.os.bundleOf
 import androidx.core.view.ViewCompat
@@ -63,6 +64,7 @@ class PlaylistFragment : Fragment(R.layout.fragment_playlist) {
     private val playAllFloatingActionButton by getViewProperty<FloatingActionButton>(R.id.playAllFloatingActionButton)
     private val playlistNameTextView by getViewProperty<TextView>(R.id.playlistNameTextView)
     private val recyclerView by getViewProperty<RecyclerView>(R.id.recyclerView)
+    private val thumbnailImageView by getViewProperty<ImageView>(R.id.thumbnailImageView)
     private val toolbar by getViewProperty<MaterialToolbar>(R.id.toolbar)
     private val tracksInfoTextView by getViewProperty<TextView>(R.id.tracksInfoTextView)
 
@@ -236,6 +238,8 @@ class PlaylistFragment : Fragment(R.layout.fragment_playlist) {
 
                     toolbar.title = playlist.name
                     playlistNameTextView.text = playlist.name
+
+                    thumbnailImageView.setImageResource(R.drawable.ic_playlist_play)
 
                     val totalDurationMs = audios.sumOf { audio ->
                         audio?.durationMs ?: 0
