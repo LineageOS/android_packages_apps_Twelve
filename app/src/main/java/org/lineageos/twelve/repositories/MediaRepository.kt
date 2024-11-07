@@ -31,6 +31,8 @@ import org.lineageos.twelve.models.Provider
 import org.lineageos.twelve.models.ProviderArgument.Companion.requireArgument
 import org.lineageos.twelve.models.ProviderType
 import org.lineageos.twelve.models.RequestStatus
+import org.lineageos.twelve.models.SortingRule
+import org.lineageos.twelve.models.SortingStrategy
 
 /**
  * Media repository. This class coordinates all the providers and their data source.
@@ -310,7 +312,11 @@ class MediaRepository(
     /**
      * @see MediaDataSource.albums
      */
-    fun albums() = navigationDataSource.flatMapLatest { it.albums() }
+    fun albums(
+        sortingRules: List<SortingRule> = defaultAlbumsSorting,
+    ) = navigationDataSource.flatMapLatest {
+        it.albums(sortingRules)
+    }
 
     /**
      * @see MediaDataSource.artists
@@ -477,5 +483,24 @@ class MediaRepository(
 
     companion object {
         private const val LOCAL_PROVIDER_ID = 0L
+
+        private val defaultAlbumsSorting = listOf(
+            SortingRule(SortingStrategy.CREATION_DATE, true),
+            SortingRule(SortingStrategy.NAME),
+        )
+
+        private val defaultArtistsSorting = listOf(
+            SortingRule(SortingStrategy.MODIFICATION_DATE, true),
+            SortingRule(SortingStrategy.NAME),
+        )
+
+        private val defaultGenresSorting = listOf(
+            SortingRule(SortingStrategy.MODIFICATION_DATE, true),
+            SortingRule(SortingStrategy.NAME),
+        )
+
+        private val defaultPlaylistsSorting = listOf(
+            SortingRule(SortingStrategy.MODIFICATION_DATE),
+        )
     }
 }

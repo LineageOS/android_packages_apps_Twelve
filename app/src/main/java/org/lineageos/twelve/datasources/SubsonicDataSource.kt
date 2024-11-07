@@ -28,6 +28,7 @@ import org.lineageos.twelve.models.Playlist
 import org.lineageos.twelve.models.ProviderArgument
 import org.lineageos.twelve.models.ProviderArgument.Companion.requireArgument
 import org.lineageos.twelve.models.RequestStatus
+import org.lineageos.twelve.models.SortingRule
 import org.lineageos.twelve.models.Thumbnail
 
 /**
@@ -84,7 +85,7 @@ class SubsonicDataSource(arguments: Bundle) : MediaDataSource {
         } ?: RequestStatus.Error(MediaError.NOT_FOUND)
     }
 
-    override fun albums() = suspend {
+    override fun albums(sortingRules: List<SortingRule>) = suspend {
         subsonicClient.getAlbumList2("alphabeticalByName", 500).toRequestStatus {
             album.map { it.toMediaItem() }
         }

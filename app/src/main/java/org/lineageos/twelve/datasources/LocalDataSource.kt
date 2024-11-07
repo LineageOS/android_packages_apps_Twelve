@@ -33,6 +33,8 @@ import org.lineageos.twelve.models.Genre
 import org.lineageos.twelve.models.MediaType
 import org.lineageos.twelve.models.Playlist
 import org.lineageos.twelve.models.RequestStatus
+import org.lineageos.twelve.models.SortingRule
+import org.lineageos.twelve.models.SortingStrategy
 import org.lineageos.twelve.models.Thumbnail
 import org.lineageos.twelve.query.Query
 import org.lineageos.twelve.query.and
@@ -208,9 +210,25 @@ class LocalDataSource(context: Context, private val database: TwelveDatabase) : 
         } ?: RequestStatus.Error(MediaError.NOT_FOUND)
     }
 
-    override fun albums() = contentResolver.queryFlow(
+    override fun albums(sortingRules: List<SortingRule>) = contentResolver.queryFlow(
         albumsUri,
         albumsProjection,
+        bundleOf(
+            ContentResolver.QUERY_ARG_SORT_COLUMNS to sortingRules.map {
+                when (it.strategy) {
+                    SortingStrategy.CREATION_DATE -> MediaStore.Audio.AlbumColumns.LAST_YEAR
+                    SortingStrategy.INTERACTION -> MediaStore.Audio.AlbumColumns.LAST_YEAR // TODO
+                    SortingStrategy.MODIFICATION_DATE -> MediaStore.Audio.AlbumColumns.LAST_YEAR
+                    SortingStrategy.NAME -> MediaStore.Audio.AlbumColumns.ALBUM
+                    SortingStrategy.PLAY_COUNT -> MediaStore.Audio.AlbumColumns.ALBUM // TODO
+                }.let { column ->
+                    when (it.reverse) {
+                        true -> "$column DESC"
+                        false -> column
+                    }
+                }
+            }.toTypedArray()
+        )
     ).mapEachRow(albumsProjection, mapAlbum).map {
         RequestStatus.Success<_, MediaError>(it)
     }
