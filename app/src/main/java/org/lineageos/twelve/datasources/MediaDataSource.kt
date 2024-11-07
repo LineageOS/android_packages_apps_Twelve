@@ -17,6 +17,7 @@ import org.lineageos.twelve.models.MediaItem
 import org.lineageos.twelve.models.MediaType
 import org.lineageos.twelve.models.Playlist
 import org.lineageos.twelve.models.RequestStatus
+import org.lineageos.twelve.models.SortingRule
 
 typealias MediaRequestStatus<T> = RequestStatus<T, MediaError>
 
@@ -43,22 +44,22 @@ interface MediaDataSource {
     /**
      * Get all the albums. All albums must have at least one audio associated with them.
      */
-    fun albums(): Flow<MediaRequestStatus<List<Album>>>
+    fun albums(sortingRule: SortingRule): Flow<MediaRequestStatus<List<Album>>>
 
     /**
      * Get all the artists. All artists must have at least one audio associated with them.
      */
-    fun artists(): Flow<MediaRequestStatus<List<Artist>>>
+    fun artists(sortingRule: SortingRule): Flow<MediaRequestStatus<List<Artist>>>
 
     /**
      * Get all the genres. All genres must have at least one audio associated with them.
      */
-    fun genres(): Flow<MediaRequestStatus<List<Genre>>>
+    fun genres(sortingRule: SortingRule): Flow<MediaRequestStatus<List<Genre>>>
 
     /**
      * Get all the playlists. A playlist can be empty.
      */
-    fun playlists(): Flow<MediaRequestStatus<List<Playlist>>>
+    fun playlists(sortingRule: SortingRule): Flow<MediaRequestStatus<List<Playlist>>>
 
     /**
      * Start a search for the given query.

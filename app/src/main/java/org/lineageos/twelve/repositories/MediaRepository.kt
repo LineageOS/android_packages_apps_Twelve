@@ -31,6 +31,8 @@ import org.lineageos.twelve.models.Provider
 import org.lineageos.twelve.models.ProviderArgument.Companion.requireArgument
 import org.lineageos.twelve.models.ProviderType
 import org.lineageos.twelve.models.RequestStatus
+import org.lineageos.twelve.models.SortingRule
+import org.lineageos.twelve.models.SortingStrategy
 
 /**
  * Media repository. This class coordinates all the providers and their data source.
@@ -310,22 +312,32 @@ class MediaRepository(
     /**
      * @see MediaDataSource.albums
      */
-    fun albums() = navigationDataSource.flatMapLatest { it.albums() }
+    fun albums(
+        sortingRule: SortingRule = defaultAlbumsSortingRule,
+    ) = navigationDataSource.flatMapLatest {
+        it.albums(sortingRule)
+    }
 
     /**
      * @see MediaDataSource.artists
      */
-    fun artists() = navigationDataSource.flatMapLatest { it.artists() }
+    fun artists(
+        sortingRule: SortingRule = defaultArtistsSortingRule,
+    ) = navigationDataSource.flatMapLatest { it.artists(sortingRule) }
 
     /**
      * @see MediaDataSource.genres
      */
-    fun genres() = navigationDataSource.flatMapLatest { it.genres() }
+    fun genres(
+        sortingRule: SortingRule = defaultGenresSortingRule,
+    ) = navigationDataSource.flatMapLatest { it.genres(sortingRule) }
 
     /**
      * @see MediaDataSource.playlists
      */
-    fun playlists() = navigationDataSource.flatMapLatest { it.playlists() }
+    fun playlists(
+        sortingRule: SortingRule = defaultPlaylistsSortingRule,
+    ) = navigationDataSource.flatMapLatest { it.playlists(sortingRule) }
 
     /**
      * @see MediaDataSource.search
@@ -484,5 +496,21 @@ class MediaRepository(
 
     companion object {
         private const val LOCAL_PROVIDER_ID = 0L
+
+        val defaultAlbumsSortingRule = SortingRule(
+            SortingStrategy.CREATION_DATE, true
+        )
+
+        val defaultArtistsSortingRule = SortingRule(
+            SortingStrategy.MODIFICATION_DATE, true
+        )
+
+        val defaultGenresSortingRule = SortingRule(
+            SortingStrategy.NAME
+        )
+
+        val defaultPlaylistsSortingRule = SortingRule(
+            SortingStrategy.MODIFICATION_DATE, true
+        )
     }
 }
