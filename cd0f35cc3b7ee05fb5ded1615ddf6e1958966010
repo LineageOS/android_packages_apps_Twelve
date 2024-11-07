@@ -33,6 +33,24 @@
       "message": "you still want noisy handling in case user starts playing another source (ex via notification)\njust steal what I have in the other change?",
       "revId": "cd0f35cc3b7ee05fb5ded1615ddf6e1958966010",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "218667f4_7e81bdd4",
+        "filename": "app/src/main/java/org/lineageos/twelve/viewmodels/LocalPlayerViewModel.kt",
+        "patchSetId": 4
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 25732
+      },
+      "writtenOn": "2024-11-07T00:32:01Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e2949187_0cc69e52",
+      "revId": "cd0f35cc3b7ee05fb5ded1615ddf6e1958966010",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
