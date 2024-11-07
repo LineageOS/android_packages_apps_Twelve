@@ -147,4 +147,9 @@
     <!-- Album fragment -->
     <string name="album_disc_header">Disc %1$d</string>
     <string name="track_number" translatable="false">%1$d</string>
+
+    <!-- Genre fragment -->
+    <string name="genre_appears_in_albums_header">Appears in albums</string>
+    <string name="genre_appears_in_playlists_header">Appears in playlists</string>
+    <string name="genre_audios_header">Audios</string>
 </resources>
