@@ -29,6 +29,8 @@ import org.lineageos.twelve.models.Playlist
 import org.lineageos.twelve.models.ProviderArgument
 import org.lineageos.twelve.models.ProviderArgument.Companion.requireArgument
 import org.lineageos.twelve.models.RequestStatus
+import org.lineageos.twelve.models.SortingRule
+import org.lineageos.twelve.models.SortingStrategy
 import org.lineageos.twelve.models.Thumbnail
 
 /**
@@ -85,27 +87,69 @@ class SubsonicDataSource(arguments: Bundle) : MediaDataSource {
         } ?: RequestStatus.Error(MediaError.NOT_FOUND)
     }
 
-    override fun albums() = suspend {
-        subsonicClient.getAlbumList2("alphabeticalByName", 500).toRequestStatus {
-            album.map { it.toMediaItem() }
+    override fun albums(sortingRule: SortingRule) = suspend {
+        subsonicClient.getAlbumList2(
+            "alphabeticalByName",
+            500
+        ).toRequestStatus {
+            album.maybeSortedBy(
+                sortingRule.reverse,
+                when (sortingRule.strategy) {
+                    SortingStrategy.CREATION_DATE -> { album -> album.year }
+                    SortingStrategy.NAME -> { album -> album.name }
+                    SortingStrategy.PLAY_COUNT -> { album -> album.playCount }
+                    else -> null
+                }
+            ).map { it.toMediaItem() }
         }
     }.asFlow()
 
-    override fun artists() = suspend {
+    override fun artists(sortingRule: SortingRule) = suspend {
         subsonicClient.getArtists().toRequestStatus {
-            index.flatMap { it.artist }.map { it.toMediaItem() }
+            index.flatMap { it.artist }.maybeSortedBy(
+                sortingRule.reverse,
+                when (sortingRule.strategy) {
+                    SortingStrategy.NAME -> { artist -> artist.name }
+
+                    else -> null
+                }
+            ).map { it.toMediaItem() }
         }
     }.asFlow()
 
-    override fun genres() = suspend {
+    override fun genres(sortingRule: SortingRule) = suspend {
         subsonicClient.getGenres().toRequestStatus {
-            genre.map { it.toMediaItem() }
+            genre.maybeSortedBy(
+                sortingRule.reverse,
+                when (sortingRule.strategy) {
+                    SortingStrategy.NAME -> { genre -> genre.value }
+
+                    else -> null
+                }
+            ).map { it.toMediaItem() }
         }
     }.asFlow()
 
-    override fun playlists() = _playlistsChanged.mapLatest {
+    override fun playlists(sortingRule: SortingRule) = _playlistsChanged.mapLatest {
         subsonicClient.getPlaylists().toRequestStatus {
-            playlist.map { it.toMediaItem() }
+            playlist.maybeSortedBy(
+                sortingRule.reverse,
+                when (sortingRule.strategy) {
+                    SortingStrategy.CREATION_DATE -> { playlist ->
+                        playlist.created
+                    }
+
+                    SortingStrategy.MODIFICATION_DATE -> { playlist ->
+                        playlist.changed
+                    }
+
+                    SortingStrategy.NAME -> { playlist ->
+                        playlist.name
+                    }
+
+                    else -> null
+                }
+            ).map { it.toMediaItem() }
         }
     }
 
@@ -366,6 +410,28 @@ class SubsonicDataSource(arguments: Bundle) : MediaDataSource {
     private fun onPlaylistsChanged() {
         _playlistsChanged.value = Any()
     }
+
+    /**
+     * Apply [List.asReversed] if [condition] is true.
+     * Reminder that [List.asReversed] returns a new list view, thus being O(1).
+     */
+    private fun <T> List<T>.asMaybeReversed(
+        condition: Boolean,
+    ) = when (condition) {
+        true -> asReversed()
+        else -> this
+    }
+
+    /**
+     * Sort this list by the [selector] and apply [List.asReversed] if [reverse] is true.
+     * If [selector] is null, return the original list.
+     */
+    private fun <T> List<T>.maybeSortedBy(
+        reverse: Boolean,
+        selector: ((T) -> Comparable<*>?)?,
+    ) = selector?.let {
+        sortedBy { t -> it(t) as? Comparable<Any?> }.asMaybeReversed(reverse)
+    } ?: this
 
     companion object {
         private const val ALBUMS_PATH = "albums"
