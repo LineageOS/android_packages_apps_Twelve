@@ -18,6 +18,24 @@
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "d4cc51b0_5493f89d",
+        "filename": "app/src/main/java/org/lineageos/twelve/ViewActivity.kt",
+        "patchSetId": 4
+      },
+      "lineNbr": 68,
+      "author": {
+        "id": 25732
+      },
+      "writtenOn": "2024-11-07T00:34:05Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7225c99a_f3fc5661",
+      "revId": "cd0f35cc3b7ee05fb5ded1615ddf6e1958966010",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "e2949187_0cc69e52",
