@@ -103,6 +103,7 @@ data class Audio(
         mimeType = mimeType,
         discNumber = discNumber,
         trackNumber = trackNumber,
+        durationMs = durationMs.toLong(),
     )
 
     companion object {
