@@ -37,9 +37,9 @@
             app:icon="@drawable/ic_graphic_eq" />
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/moreMaterialButton"
+            android:id="@+id/queueMaterialButton"
             style="@style/Theme.Twelve.NowPlayingFragment.BottomBarButton"
-            app:icon="@drawable/ic_more_vert" />
+            app:icon="@drawable/ic_queue_play_next" />
 
     </LinearLayout>
 
