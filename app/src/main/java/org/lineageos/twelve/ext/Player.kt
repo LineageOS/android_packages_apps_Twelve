@@ -152,6 +152,36 @@ fun Player.tracksFlow() = conflatedCallbackFlow {
     }
 }
 
+fun Player.queueFlow() = conflatedCallbackFlow {
+    val emitQueue = {
+        val currentMediaItemIndex = currentMediaItemIndex
+
+        trySend(
+            mediaItems.mapIndexed { index, mediaItem ->
+                mediaItem to (index == currentMediaItemIndex)
+            }
+        )
+    }
+
+    val listener = object : Player.Listener {
+        override fun onEvents(player: Player, events: Player.Events) {
+            if (events.containsAny(
+                Player.EVENT_TIMELINE_CHANGED,
+                Player.EVENT_MEDIA_ITEM_TRANSITION,
+            )) {
+                emitQueue()
+            }
+        }
+    }
+
+    addListener(listener)
+    emitQueue()
+
+    awaitClose {
+        removeListener(listener)
+    }
+}
+
 var Player.typedRepeatMode: RepeatMode
     get() = when (repeatMode) {
         Player.REPEAT_MODE_OFF -> RepeatMode.NONE
@@ -174,4 +204,9 @@ val Player.typedPlaybackState: PlaybackState
         Player.STATE_READY -> PlaybackState.READY
         Player.STATE_ENDED -> PlaybackState.ENDED
         else -> throw Exception("Unknown playback state")
+    }
+
+val Player.mediaItems: List<MediaItem>
+    get() = (0 until mediaItemCount).map {
+        getMediaItemAt(it)
     }

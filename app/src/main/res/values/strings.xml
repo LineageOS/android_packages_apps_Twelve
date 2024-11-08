@@ -153,4 +153,7 @@
     <string name="genre_appears_in_albums_header">Appears in albums</string>
     <string name="genre_appears_in_playlists_header">Appears in playlists</string>
     <string name="genre_audios_header">Audios</string>
+
+    <!-- Queue fragment -->
+    <string name="queue">Queue</string>
 </resources>
