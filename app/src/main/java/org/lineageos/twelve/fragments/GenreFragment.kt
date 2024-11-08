@@ -37,6 +37,8 @@ import org.lineageos.twelve.ext.setProgressCompat
 import org.lineageos.twelve.ext.updatePadding
 import org.lineageos.twelve.models.Album
 import org.lineageos.twelve.models.Audio
+import org.lineageos.twelve.models.Genre
+import org.lineageos.twelve.models.GenreContent
 import org.lineageos.twelve.models.Playlist
 import org.lineageos.twelve.models.RequestStatus
 import org.lineageos.twelve.ui.recyclerview.SimpleListAdapter
@@ -229,7 +231,9 @@ class GenreFragment : Fragment(R.layout.fragment_genre) {
         appearsInPlaylistsRecyclerView.adapter = appearsInPlaylistsAdapter
         audiosRecyclerView.adapter = audiosAdapter
 
-        viewModel.loadGenre(genreUri)
+        if (genreUri.toString() != Genre.UNKNOWN_GENRE_URI) {
+            viewModel.loadGenre(genreUri)
+        }
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -249,67 +253,78 @@ class GenreFragment : Fragment(R.layout.fragment_genre) {
     }
 
     private suspend fun loadData() {
-        viewModel.genre.collectLatest {
-            linearProgressIndicator.setProgressCompat(it, true)
+        if (genreUri.toString() == Genre.UNKNOWN_GENRE_URI) {
+            viewModel.genreUnknown.collectLatest {
+                loadGenreContent(it)
+            }
+        } else {
+            viewModel.genre.collectLatest {
+                loadGenreContent(it)
+            }
+        }
+    }
 
-            when (it) {
-                is RequestStatus.Loading -> {
-                    // Do nothing
+    private fun loadGenreContent(it: RequestStatus<Pair<Genre, GenreContent>, MediaError>) {
+        linearProgressIndicator.setProgressCompat(it, true)
+
+        when (it) {
+            is RequestStatus.Loading -> {
+                // Do nothing
+            }
+
+            is RequestStatus.Success -> {
+                val (genre, genreContent) = it.data
+
+                (genre.name ?: getString(R.string.genre_unknown)).let { genreName ->
+                    toolbar.title = genreName
+                    genreNameTextView.text = genreName
                 }
 
-                is RequestStatus.Success -> {
-                    val (genre, genreContent) = it.data
+                thumbnailImageView.setImageResource(R.drawable.ic_genres)
 
-                    (genre.name ?: getString(R.string.genre_unknown)).let { genreName ->
-                        toolbar.title = genreName
-                        genreNameTextView.text = genreName
-                    }
+                appearsInAlbumsAdapter.submitList(genreContent.appearsInAlbums)
+                appearsInPlaylistsAdapter.submitList(genreContent.appearsInPlaylists)
+                audiosAdapter.submitList(genreContent.audios)
 
-                    thumbnailImageView.setImageResource(R.drawable.ic_genres)
+                val isAppearsInAlbumsEmpty = genreContent.appearsInAlbums.isEmpty()
+                appearsInAlbumsLinearLayout.isVisible = !isAppearsInAlbumsEmpty
 
-                    appearsInAlbumsAdapter.submitList(genreContent.appearsInAlbums)
-                    appearsInPlaylistsAdapter.submitList(genreContent.appearsInPlaylists)
-                    audiosAdapter.submitList(genreContent.audios)
+                val isAppearsInPlaylistsEmpty = genreContent.appearsInPlaylists.isEmpty()
+                appearsInPlaylistsLinearLayout.isVisible = !isAppearsInPlaylistsEmpty
 
-                    val isAppearsInAlbumsEmpty = genreContent.appearsInAlbums.isEmpty()
-                    appearsInAlbumsLinearLayout.isVisible = !isAppearsInAlbumsEmpty
+                val isAudiosEmpty = genreContent.audios.isEmpty()
+                audiosLinearLayout.isVisible = !isAudiosEmpty
 
-                    val isAppearsInPlaylistsEmpty = genreContent.appearsInPlaylists.isEmpty()
-                    appearsInPlaylistsLinearLayout.isVisible = !isAppearsInPlaylistsEmpty
+                val isEmpty = listOf(
+                    isAppearsInAlbumsEmpty,
+                    isAppearsInPlaylistsEmpty,
+                    isAudiosEmpty,
+                ).all { isEmpty -> isEmpty }
+                nestedScrollView.isVisible = !isEmpty
+                noElementsNestedScrollView.isVisible = isEmpty
+            }
 
-                    val isAudiosEmpty = genreContent.audios.isEmpty()
-                    audiosLinearLayout.isVisible = !isAudiosEmpty
+            is RequestStatus.Error -> {
+                Log.e(LOG_TAG, "Error loading genre, error: ${it.error}")
 
-                    val isEmpty = listOf(
-                        isAppearsInAlbumsEmpty,
-                        isAppearsInPlaylistsEmpty,
-                        isAudiosEmpty,
-                    ).all { isEmpty -> isEmpty }
-                    nestedScrollView.isVisible = !isEmpty
-                    noElementsNestedScrollView.isVisible = isEmpty
-                }
+                toolbar.title = ""
+                genreNameTextView.text = ""
 
-                is RequestStatus.Error -> {
-                    Log.e(LOG_TAG, "Error loading genre, error: ${it.error}")
+                appearsInAlbumsAdapter.submitList(listOf())
+                appearsInPlaylistsAdapter.submitList(listOf())
+                audiosAdapter.submitList(listOf())
 
-                    toolbar.title = ""
-                    genreNameTextView.text = ""
+                nestedScrollView.isVisible = false
+                noElementsNestedScrollView.isVisible = true
 
-                    appearsInAlbumsAdapter.submitList(listOf())
-                    appearsInPlaylistsAdapter.submitList(listOf())
-                    audiosAdapter.submitList(listOf())
-
-                    nestedScrollView.isVisible = false
-                    noElementsNestedScrollView.isVisible = true
-
-                    if (it.error == MediaError.NOT_FOUND) {
-                        // Get out of here
-                        findNavController().navigateUp()
-                    }
+                if (it.error == MediaError.NOT_FOUND) {
+                    // Get out of here
+                    findNavController().navigateUp()
                 }
             }
         }
     }
+
 
     companion object {
         private val LOG_TAG = GenreFragment::class.simpleName!!

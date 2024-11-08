@@ -39,6 +39,7 @@ import org.lineageos.twelve.query.Query
 import org.lineageos.twelve.query.and
 import org.lineageos.twelve.query.eq
 import org.lineageos.twelve.query.`in`
+import org.lineageos.twelve.query.`is`
 import org.lineageos.twelve.query.like
 import org.lineageos.twelve.query.neq
 import org.lineageos.twelve.query.query
@@ -426,7 +427,7 @@ class LocalDataSource(context: Context, private val database: TwelveDatabase) : 
                 ContentResolver.QUERY_ARG_SQL_SELECTION_ARGS to arrayOf(
                     ContentUris.parseId(genreUri).toString(),
                 ),
-                ContentResolver.QUERY_ARG_SQL_GROUP_BY to MediaStore.Audio.AudioColumns.GENRE_ID,
+                ContentResolver.QUERY_ARG_SQL_GROUP_BY to MediaStore.Audio.AudioColumns.ALBUM_ID,
             )
         ).mapEachRow(audioAlbumIdsProjection) { it, indexCache ->
             // albumId
@@ -471,6 +472,61 @@ class LocalDataSource(context: Context, private val database: TwelveDatabase) : 
 
             RequestStatus.Success<_, MediaError>(Pair(it, genreContent))
         } ?: RequestStatus.Error(MediaError.NOT_FOUND)
+    }
+
+    override fun genreUnknown() = combine(
+        contentResolver.queryFlow(
+            audiosUri,
+            audioAlbumIdsProjection,
+            bundleOf(
+                ContentResolver.QUERY_ARG_SQL_SELECTION to query {
+                    MediaStore.Audio.AudioColumns.GENRE_ID `is` Query.NULL
+                },
+                ContentResolver.QUERY_ARG_SQL_GROUP_BY to MediaStore.Audio.AudioColumns.ALBUM_ID,
+            )
+        ).mapEachRow(audioAlbumIdsProjection) { it, indexCache ->
+            // albumId
+            it.getLong(indexCache[0])
+        }.flatMapLatest { albumIds ->
+            contentResolver.queryFlow(
+                albumsUri,
+                albumsProjection,
+                bundleOf(
+                    ContentResolver.QUERY_ARG_SQL_SELECTION to query {
+                        MediaStore.Audio.AudioColumns._ID `in` List(albumIds.size) {
+                            Query.ARG
+                        }
+                    },
+                    ContentResolver.QUERY_ARG_SQL_SELECTION_ARGS to arrayOf(
+                        *albumIds
+                            .map { it.toString() }
+                            .toTypedArray(),
+                    ),
+                )
+            ).mapEachRow(albumsProjection, mapAlbum)
+        },
+        contentResolver.queryFlow(
+            audiosUri,
+            audiosProjection,
+            bundleOf(
+                ContentResolver.QUERY_ARG_SQL_SELECTION to query {
+                    MediaStore.Audio.AudioColumns.GENRE_ID `is` Query.NULL
+                },
+            )
+        ).mapEachRow(audiosProjection, mapAudio)
+    ) { appearsInAlbums, audios ->
+        val genre = Genre(
+            Uri.EMPTY,
+            null,
+        )
+
+        val genreContent = GenreContent(
+            appearsInAlbums,
+            listOf(),
+            audios,
+        )
+
+        RequestStatus.Success<_, MediaError>(Pair(genre, genreContent))
     }
 
     override fun playlist(playlistUri: Uri) = database.getPlaylistDao().getPlaylistWithItems(

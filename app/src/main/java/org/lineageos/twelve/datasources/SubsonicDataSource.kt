@@ -8,6 +8,7 @@ package org.lineageos.twelve.datasources
 import android.net.Uri
 import android.os.Bundle
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.mapLatest
@@ -183,6 +184,10 @@ class SubsonicDataSource(arguments: Bundle) : MediaDataSource {
             RequestStatus.Error(MediaError.NOT_FOUND)
         }
     }.asFlow()
+
+    override fun genreUnknown(): Flow<RequestStatus.Success<Pair<Genre, GenreContent>, MediaError>> {
+        TODO("Not yet implemented")
+    }
 
     override fun playlist(playlistUri: Uri) = _playlistsChanged.mapLatest {
         subsonicClient.getPlaylist(playlistUri.lastPathSegment!!.toInt()).toRequestStatus {

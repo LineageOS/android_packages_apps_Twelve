@@ -39,5 +39,7 @@ data class Genre(
 
     companion object {
         const val GENRE_MEDIA_ITEM_ID_PREFIX = "[genre]"
+
+        const val UNKNOWN_GENRE_URI = "content://media/external/audio/genres/0"
     }
 }

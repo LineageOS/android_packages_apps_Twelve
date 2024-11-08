@@ -9,6 +9,7 @@ import android.content.Context
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.provider.MediaStore
 import androidx.core.os.bundleOf
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -358,6 +359,13 @@ class MediaRepository(
      */
     fun genre(genreUri: Uri) = withMediaItemsDataSourceFlow(genreUri) {
         genre(genreUri)
+    }
+
+    /**
+     * @see MediaDataSource.genreUnknown
+     */
+    fun genreUnknown() = withMediaItemsDataSourceFlow(MediaStore.Audio.Genres.EXTERNAL_CONTENT_URI) {
+        genreUnknown()
     }
 
     /**

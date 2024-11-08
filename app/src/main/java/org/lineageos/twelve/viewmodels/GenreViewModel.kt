@@ -34,6 +34,14 @@ class GenreViewModel(application: Application) : TwelveViewModel(application) {
             RequestStatus.Loading()
         )
 
+    val genreUnknown = mediaRepository.genreUnknown()
+        .flowOn(Dispatchers.IO)
+        .stateIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(),
+            RequestStatus.Loading()
+        )
+
     fun loadGenre(genreUri: Uri) {
         this.genreUri.value = genreUri
     }

@@ -87,6 +87,11 @@ interface MediaDataSource {
     fun genre(genreUri: Uri): Flow<MediaRequestStatus<Pair<Genre, GenreContent>>>
 
     /**
+     * Get all the tracks with an unknown genre.
+     */
+    fun genreUnknown(): Flow<RequestStatus.Success<Pair<Genre, GenreContent>, MediaError>>
+
+    /**
      * Get the playlist information and all the tracks of the given playlist.
      * If the playlist contains an audio that is unavailable, it will be mapped to null.
      */
