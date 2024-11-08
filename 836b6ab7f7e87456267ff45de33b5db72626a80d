@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "71188e69_dedaa069",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2024-11-08T17:05:33Z",
+      "side": 1,
+      "message": "unknown doesn\u0027t work properly, automatically closes fragment",
+      "revId": "836b6ab7f7e87456267ff45de33b5db72626a80d",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
