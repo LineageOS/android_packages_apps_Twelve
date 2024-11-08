@@ -8,7 +8,9 @@ package org.lineageos.twelve.ext
 import android.net.Uri
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
+import androidx.media3.common.util.UnstableApi
 
+@androidx.annotation.OptIn(UnstableApi::class)
 fun buildMediaItem(
     title: String,
     mediaId: String,
@@ -25,6 +27,7 @@ fun buildMediaItem(
     artworkUri: Uri? = null,
     discNumber: Int? = null,
     trackNumber: Int? = null,
+    durationMs: Long? = null,
 ): MediaItem {
     val metadata =
         MediaMetadata.Builder()
@@ -39,6 +42,7 @@ fun buildMediaItem(
             .setMediaType(mediaType)
             .setDiscNumber(discNumber)
             .setTrackNumber(trackNumber)
+            .setDurationMs(durationMs)
             .build()
 
     return MediaItem.Builder()
