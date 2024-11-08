@@ -75,13 +75,13 @@ class NowPlayingFragment : Fragment(R.layout.fragment_now_playing) {
     private val fileTypeMaterialCardView by getViewProperty<MaterialCardView>(R.id.fileTypeMaterialCardView)
     private val fileTypeTextView by getViewProperty<TextView>(R.id.fileTypeTextView)
     private val linearProgressIndicator by getViewProperty<LinearProgressIndicator>(R.id.linearProgressIndicator)
-    private val moreMaterialButton by getViewProperty<MaterialButton>(R.id.moreMaterialButton)
     private val nestedScrollView by getViewProperty<NestedScrollView>(R.id.nestedScrollView)
     private val nextTrackMaterialButton by getViewProperty<MaterialButton>(R.id.nextTrackMaterialButton)
     private val playPauseMaterialButton by getViewProperty<MaterialButton>(R.id.playPauseMaterialButton)
     private val playbackSpeedMaterialButton by getViewProperty<MaterialButton>(R.id.playbackSpeedMaterialButton)
     private val previousTrackMaterialButton by getViewProperty<MaterialButton>(R.id.previousTrackMaterialButton)
     private val progressSlider by getViewProperty<Slider>(R.id.progressSlider)
+    private val queueMaterialButton by getViewProperty<MaterialButton>(R.id.queueMaterialButton)
     private val repeatMarkerImageView by getViewProperty<ImageView>(R.id.repeatMarkerImageView)
     private val repeatMaterialButton by getViewProperty<MaterialButton>(R.id.repeatMaterialButton)
     private val shuffleMarkerImageView by getViewProperty<ImageView>(R.id.shuffleMarkerImageView)
@@ -279,6 +279,10 @@ class NowPlayingFragment : Fragment(R.layout.fragment_now_playing) {
         visualizerMaterialButton.setOnLongClickListener {
             viewModel.disableVisualizer()
             true
+        }
+
+        queueMaterialButton.setOnClickListener {
+            findNavController().navigate(R.id.action_nowPlayingFragment_to_fragment_queue)
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
