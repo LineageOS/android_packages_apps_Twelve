@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c5900f72_e7e71b77",
+        "filename": "app/src/main/java/org/lineageos/twelve/datasources/LocalDataSource.kt",
+        "patchSetId": 1
+      },
+      "lineNbr": 489,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2024-11-08T18:07:31Z",
+      "side": 1,
+      "message": "also this is uselessly expansive, just select the only column we care about \nI\u0027ll go over those tomorrow",
+      "revId": "38820090d5335bf73a39f69455bff9c8a09ee428",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
