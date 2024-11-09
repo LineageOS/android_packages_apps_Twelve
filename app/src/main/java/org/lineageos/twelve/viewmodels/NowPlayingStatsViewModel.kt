@@ -21,7 +21,7 @@ import kotlinx.coroutines.flow.stateIn
 import org.lineageos.twelve.models.AudioOutputMode
 import org.lineageos.twelve.models.AudioStreamInformation
 import org.lineageos.twelve.models.Encoding
-import org.lineageos.twelve.services.ProxyAudioProcessor
+import org.lineageos.twelve.services.InfoAudioProcessor
 import org.lineageos.twelve.services.ProxyDefaultAudioTrackBufferSizeProvider
 
 class NowPlayingStatsViewModel(application: Application) : NowPlayingViewModel(application) {
@@ -126,7 +126,7 @@ class NowPlayingStatsViewModel(application: Application) : NowPlayingViewModel(a
      */
     @androidx.annotation.OptIn(UnstableApi::class)
     val outputAudioStreamInformation = combine(
-        ProxyAudioProcessor.audioFormatFlow,
+        InfoAudioProcessor.audioFormatFlow,
         hasOutputInformation,
     ) { audioFormat, hasOutputInformation ->
         audioFormat?.takeIf { hasOutputInformation != false }?.let {
