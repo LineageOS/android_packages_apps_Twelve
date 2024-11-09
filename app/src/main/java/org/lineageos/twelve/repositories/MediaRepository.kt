@@ -235,7 +235,7 @@ class MediaRepository(
                 name, server, username, password, useLegacyAuthentication
             )
 
-            Pair(providerType, typeId)
+            providerType to typeId
         }
     }
 
