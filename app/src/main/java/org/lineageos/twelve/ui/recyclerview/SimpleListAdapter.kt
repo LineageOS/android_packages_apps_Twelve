@@ -8,6 +8,7 @@ package org.lineageos.twelve.ui.recyclerview
 import android.content.Context
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -21,6 +22,10 @@ abstract class SimpleListAdapter<T, V : View>(
     diffCallback: DiffUtil.ItemCallback<T>,
     private val factory: (Context) -> V,
 ) : ListAdapter<T, SimpleListAdapter<T, V>.ViewHolder>(diffCallback) {
+    private val differ = ListAdapter::class.java.getDeclaredField("mDiffer").apply {
+        isAccessible = true
+    }.get(this) as AsyncListDiffer<*>
+
     abstract fun ViewHolder.onBindView(item: T)
 
     open fun ViewHolder.onPrepareView() {}
@@ -31,6 +36,15 @@ abstract class SimpleListAdapter<T, V : View>(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.bind(getItem(position))
+    }
+
+    fun setListWithoutDiffing(list: List<T>) {
+        setOf("mList", "mReadOnlyList").forEach { fieldName ->
+            differ::class.java.getDeclaredField(fieldName).apply {
+                isAccessible = true
+                set(differ, list)
+            }
+        }
     }
 
     inner class ViewHolder(val view: V) : RecyclerView.ViewHolder(view) {
