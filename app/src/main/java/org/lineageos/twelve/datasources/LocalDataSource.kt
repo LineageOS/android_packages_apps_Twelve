@@ -327,8 +327,8 @@ class LocalDataSource(context: Context, private val database: TwelveDatabase) : 
             )
         ).mapEachRow(audiosProjection, mapAudio)
     ) { albums, audios ->
-        albums.firstOrNull()?.let {
-            RequestStatus.Success<_, MediaError>(Pair(it, audios))
+        albums.firstOrNull()?.let { album ->
+            RequestStatus.Success<_, MediaError>(album to audios)
         } ?: RequestStatus.Error(MediaError.NOT_FOUND)
     }
 
@@ -393,14 +393,14 @@ class LocalDataSource(context: Context, private val database: TwelveDatabase) : 
             ).mapEachRow(albumsProjection, mapAlbum)
         }
     ) { artists, albums, appearsInAlbum ->
-        artists.firstOrNull()?.let {
+        artists.firstOrNull()?.let { artist ->
             val artistWorks = ArtistWorks(
                 albums,
                 appearsInAlbum,
                 listOf(),
             )
 
-            RequestStatus.Success<_, MediaError>(Pair(it, artistWorks))
+            RequestStatus.Success<_, MediaError>(artist to artistWorks)
         } ?: RequestStatus.Error(MediaError.NOT_FOUND)
     }
 
@@ -490,7 +490,7 @@ class LocalDataSource(context: Context, private val database: TwelveDatabase) : 
                     audios,
                 )
 
-                RequestStatus.Success<_, MediaError>(Pair(it, genreContent))
+                RequestStatus.Success<_, MediaError>(it to genreContent)
             } ?: RequestStatus.Error(MediaError.NOT_FOUND)
         }
     }
@@ -502,8 +502,8 @@ class LocalDataSource(context: Context, private val database: TwelveDatabase) : 
             val playlist = playlistWithItems.playlist.toModel()
 
             audios(playlistWithItems.items.map(Item::audioUri))
-                .mapLatest {
-                    RequestStatus.Success<_, MediaError>(Pair(playlist, it))
+                .mapLatest { items ->
+                    RequestStatus.Success<_, MediaError>(playlist to items)
                 }
         } ?: flowOf(
             RequestStatus.Error(
