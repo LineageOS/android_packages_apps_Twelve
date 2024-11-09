@@ -16,6 +16,24 @@
       "message": "mediaController.value?.apply { ... }",
       "revId": "81b13a99ff47ef17ac3fcac66421b1fef47577cd",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5fd8a9f9_2ab7a616",
+        "filename": "app/src/main/java/org/lineageos/twelve/viewmodels/QueueViewModel.kt",
+        "patchSetId": 8
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2024-11-09T18:21:30Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9b6abf75_94796c26",
+      "revId": "81b13a99ff47ef17ac3fcac66421b1fef47577cd",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
