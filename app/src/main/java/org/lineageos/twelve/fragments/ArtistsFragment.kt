@@ -55,7 +55,7 @@ class ArtistsFragment : Fragment(R.layout.fragment_artists) {
                 view.setOnClickListener {
                     item?.let {
                         findNavController().navigate(
-                            R.id.action_mainFragment_to_fragment_artist,
+                            R.id.action_artistsFragment_to_fragment_artist,
                             ArtistFragment.createBundle(it.uri)
                         )
                     }

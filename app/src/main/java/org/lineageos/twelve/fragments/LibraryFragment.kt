@@ -8,12 +8,11 @@ package org.lineageos.twelve.fragments
 import android.os.Bundle
 import android.view.View
 import androidx.annotation.DrawableRes
+import androidx.annotation.IdRes
 import androidx.annotation.StringRes
 import androidx.fragment.app.Fragment
-import androidx.viewpager2.adapter.FragmentStateAdapter
-import androidx.viewpager2.widget.ViewPager2
+import androidx.navigation.fragment.findNavController
 import com.google.android.material.tabs.TabLayout
-import com.google.android.material.tabs.TabLayoutMediator
 import org.lineageos.twelve.R
 import org.lineageos.twelve.ext.getViewProperty
 
@@ -23,59 +22,60 @@ import org.lineageos.twelve.ext.getViewProperty
 class LibraryFragment : Fragment(R.layout.fragment_library) {
     // Views
     private val tabLayout by getViewProperty<TabLayout>(R.id.tabLayout)
-    private val viewPager2 by getViewProperty<ViewPager2>(R.id.viewPager2)
 
     // ViewPager2
     private enum class Menus(
         @StringRes val titleStringResId: Int,
         @DrawableRes val iconDrawableResId: Int,
-        val fragment: () -> Fragment,
+        @IdRes val navigationId: Int,
     ) {
         ALBUMS(
             R.string.library_fragment_menu_albums,
             R.drawable.ic_album,
-            { AlbumsFragment() },
+            R.id.action_libraryFragment_to_fragment_albums,
         ),
         ARTISTS(
             R.string.library_fragment_menu_artists,
             R.drawable.ic_person,
-            { ArtistsFragment() },
+            R.id.action_libraryFragment_to_fragment_artists,
         ),
         GENRES(
             R.string.library_fragment_menu_genres,
             R.drawable.ic_genres,
-            { GenresFragment() },
+            R.id.action_libraryFragment_to_fragment_genres,
         ),
         PLAYLISTS(
             R.string.library_fragment_menu_playlists,
             R.drawable.ic_playlist_play,
-            { PlaylistsFragment() },
+            R.id.action_libraryFragment_to_fragment_playlists,
         ),
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewPager2.adapter = object : FragmentStateAdapter(
-            childFragmentManager, viewLifecycleOwner.lifecycle
-        ) {
-            override fun getItemCount() = Menus.entries.size
-            override fun createFragment(position: Int) = Menus.entries[position].fragment()
+        Menus.entries.forEach {
+            tabLayout.addTab(
+                tabLayout.newTab().apply {
+                    setText(it.titleStringResId)
+                    setContentDescription(it.titleStringResId)
+                    setIcon(it.iconDrawableResId)
+                    setTag(it.navigationId)
+                }
+            )
         }
-        viewPager2.offscreenPageLimit = Menus.entries.size
 
-        TabLayoutMediator(tabLayout, viewPager2) { tab, position ->
-            val menu = Menus.entries[position]
+        tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+            override fun onTabSelected(tab: TabLayout.Tab?) {
+                if (tab == null) return
 
-            tab.setText(menu.titleStringResId)
-            tab.setContentDescription(menu.titleStringResId)
-            tab.setIcon(menu.iconDrawableResId)
-        }.attach()
-    }
+                findNavController().navigate(tab.tag as Int)
+            }
 
-    override fun onDestroyView() {
-        viewPager2.adapter = null
+            override fun onTabUnselected(tab: TabLayout.Tab?) {}
 
-        super.onDestroyView()
+            override fun onTabReselected(tab: TabLayout.Tab?) {}
+        })
+
     }
 }

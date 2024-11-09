@@ -70,12 +70,12 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
                     item?.let {
                         when (it) {
                             is Album -> findNavController().navigate(
-                                R.id.action_mainFragment_to_fragment_album,
+                                R.id.action_searchFragment_to_fragment_album,
                                 AlbumFragment.createBundle(it.uri)
                             )
 
                             is Artist -> findNavController().navigate(
-                                R.id.action_mainFragment_to_fragment_artist,
+                                R.id.action_searchFragment_to_fragment_artist,
                                 ArtistFragment.createBundle(it.uri)
                             )
 

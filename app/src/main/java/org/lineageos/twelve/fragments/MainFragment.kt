@@ -16,8 +16,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
-import androidx.viewpager2.adapter.FragmentStateAdapter
-import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.navigation.NavigationBarView
@@ -45,18 +43,6 @@ class MainFragment : Fragment(R.layout.fragment_main) {
     private val nowPlayingBar by getViewProperty<NowPlayingBar>(R.id.nowPlayingBar)
     private val providerMaterialButton by getViewProperty<MaterialButton>(R.id.providerMaterialButton)
     private val toolbar by getViewProperty<MaterialToolbar>(R.id.toolbar)
-    private val viewPager2 by getViewProperty<ViewPager2>(R.id.viewPager2)
-
-    // ViewPager2
-    private val onPageChangeCallback by lazy {
-        object : ViewPager2.OnPageChangeCallback() {
-            override fun onPageSelected(position: Int) {
-                super.onPageSelected(position)
-
-                navigationBarView.menu.getItem(position).isChecked = true
-            }
-        }
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -92,53 +78,13 @@ class MainFragment : Fragment(R.layout.fragment_main) {
             }
         }
 
-        ViewCompat.setOnApplyWindowInsetsListener(viewPager2) { v, windowInsets ->
-            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.displayCutout())
-
-            v.updatePadding(
-                insets,
-                start = !resources.configuration.isLandscape,
-                end = true,
-            )
-
-            windowInsets
-        }
-
         toolbar.setupWithNavController(findNavController())
+        navigationBarView.setupWithNavController(findNavController())
 
         providerMaterialButton.setOnClickListener {
             findNavController().navigate(
                 R.id.action_mainFragment_to_fragment_provider_selector_dialog
             )
-        }
-
-        viewPager2.isUserInputEnabled = false
-        viewPager2.adapter = object : FragmentStateAdapter(this) {
-            override fun getItemCount() = fragments.size
-            override fun createFragment(position: Int) = fragments[position]()
-        }
-        viewPager2.offscreenPageLimit = fragments.size
-        viewPager2.registerOnPageChangeCallback(onPageChangeCallback)
-
-        navigationBarView.setOnItemSelectedListener { item ->
-            when (item.itemId) {
-                R.id.activityFragment -> {
-                    viewPager2.currentItem = 0
-                    true
-                }
-
-                R.id.searchFragment -> {
-                    viewPager2.currentItem = 1
-                    true
-                }
-
-                R.id.libraryFragment -> {
-                    viewPager2.currentItem = 2
-                    true
-                }
-
-                else -> false
-            }
         }
 
         nowPlayingBar.setOnPlayPauseClickListener {
@@ -203,20 +149,5 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                 }
             }
         }
-    }
-
-    override fun onDestroyView() {
-        viewPager2.adapter = null
-
-        super.onDestroyView()
-    }
-
-    companion object {
-        // Keep in sync with the BottomNavigationView menu
-        private val fragments = arrayOf(
-            { ActivityFragment() },
-            { SearchFragment() },
-            { LibraryFragment() },
-        )
     }
 }

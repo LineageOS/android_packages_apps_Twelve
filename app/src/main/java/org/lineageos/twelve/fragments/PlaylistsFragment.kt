@@ -62,7 +62,7 @@ class PlaylistsFragment : Fragment(R.layout.fragment_playlists) {
                     when (it === addNewPlaylistItem) {
                         true -> openCreateNewPlaylistDialog()
                         false -> findNavController().navigate(
-                            R.id.action_mainFragment_to_fragment_playlist,
+                            R.id.action_playlistsFragment_to_fragment_playlist,
                             PlaylistFragment.createBundle(it.uri)
                         )
                     }

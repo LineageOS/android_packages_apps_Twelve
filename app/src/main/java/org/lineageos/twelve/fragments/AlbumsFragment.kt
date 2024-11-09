@@ -55,7 +55,7 @@ class AlbumsFragment : Fragment(R.layout.fragment_albums) {
                 view.setOnClickListener {
                     item?.let {
                         findNavController().navigate(
-                            R.id.action_mainFragment_to_fragment_album,
+                            R.id.action_albumsFragment_to_fragment_album,
                             AlbumFragment.createBundle(it.uri)
                         )
                     }
