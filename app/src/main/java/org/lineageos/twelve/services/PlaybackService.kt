@@ -219,6 +219,7 @@ class PlaybackService : MediaLibraryService(), Player.Listener, LifecycleOwner {
         )
 
         exoPlayer.audioSessionId = (application as TwelveApplication).audioSessionId
+        openAudioEffectSession()
     }
 
     override fun onBind(intent: Intent?): IBinder? {
@@ -253,20 +254,6 @@ class PlaybackService : MediaLibraryService(), Player.Listener, LifecycleOwner {
     override fun onGetSession(controllerInfo: MediaSession.ControllerInfo) = mediaLibrarySession
 
     override fun onEvents(player: Player, events: Player.Events) {
-        if (events.containsAny(
-                Player.EVENT_PLAYBACK_STATE_CHANGED,
-                Player.EVENT_PLAY_WHEN_READY_CHANGED,
-                Player.EVENT_IS_PLAYING_CHANGED,
-                Player.EVENT_POSITION_DISCONTINUITY
-            )
-        ) {
-            if (player.playbackState != Player.STATE_ENDED && player.playWhenReady) {
-                openAudioEffectSession()
-            } else {
-                closeAudioEffectSession()
-            }
-        }
-
         // Update startIndex and startPositionMs in resumption playlist.
         if (events.containsAny(Player.EVENT_MEDIA_ITEM_TRANSITION)) {
             lifecycle.coroutineScope.launch {
