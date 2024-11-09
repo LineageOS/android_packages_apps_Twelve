@@ -7,19 +7,19 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/activityFragment"
+        android:id="@+id/action_mainFragment_to_activity_fragment"
         android:icon="@drawable/ic_home"
         android:title="@string/main_fragment_section_activity"
         app:tint="?attr/colorOnSurface" />
 
     <item
-        android:id="@+id/searchFragment"
+        android:id="@+id/action_mainFragment_to_search_fragment"
         android:icon="@drawable/ic_search"
         android:title="@string/main_fragment_section_search"
         app:tint="?attr/colorOnSurface" />
 
     <item
-        android:id="@+id/libraryFragment"
+        android:id="@+id/action_mainFragment_to_library_fragment"
         android:icon="@drawable/ic_library_music"
         android:title="@string/main_fragment_section_library"
         app:tint="?attr/colorOnSurface" />

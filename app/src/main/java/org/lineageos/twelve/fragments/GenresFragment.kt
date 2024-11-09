@@ -55,7 +55,7 @@ class GenresFragment : Fragment(R.layout.fragment_genres) {
                 view.setOnClickListener {
                     item?.let {
                         findNavController().navigate(
-                            R.id.action_mainFragment_to_fragment_genre,
+                            R.id.action_libraryFragment_to_fragment_genre,
                             GenreFragment.createBundle(it.uri)
                         )
                     }

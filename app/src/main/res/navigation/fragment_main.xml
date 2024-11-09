@@ -9,6 +9,8 @@
     android:id="@+id/fragment_main"
     app:startDestination="@id/mainFragment">
 
+    <include app:graph="@navigation/fragment_library" />
+    <include app:graph="@navigation/fragment_search" />
     <include app:graph="@navigation/fragment_add_or_remove_from_playlists" />
     <include app:graph="@navigation/fragment_album" />
     <include app:graph="@navigation/fragment_artist" />
@@ -27,24 +29,24 @@
         tools:layout="@layout/fragment_main">
 
         <action
-            android:id="@+id/action_mainFragment_to_fragment_album"
-            app:destination="@+id/fragment_album"
+            android:id="@+id/action_mainFragment_to_activity_fragment"
+            app:destination="@+id/fragment_activity"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
 
         <action
-            android:id="@+id/action_mainFragment_to_fragment_artist"
-            app:destination="@+id/fragment_artist"
+            android:id="@+id/action_mainFragment_to_search_fragment"
+            app:destination="@+id/fragment_search"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
 
         <action
-            android:id="@+id/action_mainFragment_to_fragment_genre"
-            app:destination="@+id/fragment_genre"
+            android:id="@+id/action_mainFragment_to_library_fragment"
+            app:destination="@+id/fragment_library"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
@@ -53,14 +55,6 @@
         <action
             android:id="@+id/action_mainFragment_to_fragment_now_playing"
             app:destination="@+id/fragment_now_playing"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
-
-        <action
-            android:id="@+id/action_mainFragment_to_fragment_playlist"
-            app:destination="@+id/fragment_playlist"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
