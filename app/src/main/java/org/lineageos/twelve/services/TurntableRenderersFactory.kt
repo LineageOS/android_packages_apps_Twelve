@@ -26,7 +26,7 @@ class TurntableRenderersFactory(context: Context) : DefaultRenderersFactory(cont
     ) = DefaultAudioSink.Builder(context)
         .setEnableFloatOutput(enableFloatOutput)
         .setEnableAudioTrackPlaybackParams(enableAudioTrackPlaybackParams)
-        .setAudioProcessors(arrayOf(ProxyAudioProcessor()))
+        .setAudioProcessors(arrayOf(InfoAudioProcessor()))
         .setAudioTrackBufferSizeProvider(ProxyDefaultAudioTrackBufferSizeProvider)
         .build()
 }
