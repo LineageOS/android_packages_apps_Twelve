@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "63d973bc_89960d60",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 25732
+      },
+      "writtenOn": "2024-11-09T17:00:16Z",
+      "side": 1,
+      "message": "idk, I also considered it but it looks like this class was made to ease up actual processing implementations, with current impl we don\u0027t allocate nor copy buffers",
+      "revId": "eb518ff5143725286c7fe24ae6d8f57e6a926040",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
