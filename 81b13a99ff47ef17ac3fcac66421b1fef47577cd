@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9b6abf75_94796c26",
+        "filename": "app/src/main/java/org/lineageos/twelve/viewmodels/QueueViewModel.kt",
+        "patchSetId": 8
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 25732
+      },
+      "writtenOn": "2024-11-09T18:17:23Z",
+      "side": 1,
+      "message": "mediaController.value?.apply { ... }",
+      "revId": "81b13a99ff47ef17ac3fcac66421b1fef47577cd",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
