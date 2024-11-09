@@ -93,10 +93,10 @@
     <string name="audio_channel_count_unknown">Unknown</string>
     <string name="audio_encoding">Encoding</string>
     <string name="audio_encoding_unknown">Unknown</string>
-    <string name="audio_float_mode_enabled">PCM float mode enabled</string>
-    <string name="audio_float_mode_enabled_unknown">Unknown</string>
-    <string name="audio_float_mode_enabled_true">True</string>
-    <string name="audio_float_mode_enabled_false">False</string>
+    <string name="audio_float_mode">PCM float mode</string>
+    <string name="audio_float_mode_unknown">Unknown</string>
+    <string name="audio_float_mode_enabled">Enabled</string>
+    <string name="audio_float_mode_disabled">Disabled</string>
     <string name="audio_output_mode">Output mode</string>
     <string name="audio_output_mode_unknown">Unknown</string>
     <string name="audio_output_mode_pcm">PCM</string>

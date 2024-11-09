@@ -96,9 +96,9 @@ class NowPlayingStatsDialogFragment : DialogFragment(R.layout.fragment_now_playi
                     viewModel.transcodingFloatModeEnabled.collectLatest {
                         transcodingFloatModeEnabledListItem.setSupportingText(
                             when (it) {
-                                true -> R.string.audio_float_mode_enabled_true
-                                false -> R.string.audio_float_mode_enabled_false
-                                null -> R.string.audio_float_mode_enabled_unknown
+                                true -> R.string.audio_float_mode_enabled
+                                false -> R.string.audio_float_mode_disabled
+                                null -> R.string.audio_float_mode_unknown
                             }
                         )
                     }

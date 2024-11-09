@@ -59,8 +59,8 @@
             android:id="@+id/transcodingFloatModeEnabledListItem"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:headlineText="@string/audio_float_mode_enabled"
-            app:supportingText="@string/audio_float_mode_enabled_unknown" />
+            app:headlineText="@string/audio_float_mode"
+            app:supportingText="@string/audio_float_mode_unknown" />
 
         <org.lineageos.twelve.ui.views.ListItem
             android:id="@+id/transcodingEncodingListItem"
