@@ -7,7 +7,7 @@
 
 android_library_import {
     name: "Twelve_androidx.media3_media3-common-nodeps",
-    aars: ["androidx/media3/media3-common/1.5.0-alpha01/media3-common-1.5.0-alpha01.aar"],
+    aars: ["androidx/media3/media3-common/1.5.0-beta01/media3-common-1.5.0-beta01.aar"],
     sdk_version: "35",
     min_sdk_version: "14",
     apex_available: [
@@ -29,7 +29,7 @@ android_library {
         "//apex_available:platform",
         "//apex_available:anyapex",
     ],
-    manifest: "androidx/media3/media3-common/1.5.0-alpha01/AndroidManifest.xml",
+    manifest: "androidx/media3/media3-common/1.5.0-beta01/AndroidManifest.xml",
     static_libs: [
         "Twelve_androidx.media3_media3-common-nodeps",
         "androidx.annotation_annotation",
@@ -41,7 +41,7 @@ android_library {
 
 android_library_import {
     name: "Twelve_androidx.media3_media3-common-ktx-nodeps",
-    aars: ["androidx/media3/media3-common-ktx/1.5.0-alpha01/media3-common-ktx-1.5.0-alpha01.aar"],
+    aars: ["androidx/media3/media3-common-ktx/1.5.0-beta01/media3-common-ktx-1.5.0-beta01.aar"],
     sdk_version: "35",
     min_sdk_version: "14",
     apex_available: [
@@ -65,7 +65,7 @@ android_library {
         "//apex_available:platform",
         "//apex_available:anyapex",
     ],
-    manifest: "androidx/media3/media3-common-ktx/1.5.0-alpha01/AndroidManifest.xml",
+    manifest: "androidx/media3/media3-common-ktx/1.5.0-beta01/AndroidManifest.xml",
     static_libs: [
         "Twelve_androidx.media3_media3-common-ktx-nodeps",
         "Twelve_androidx.media3_media3-common",
@@ -79,7 +79,7 @@ android_library {
 
 android_library_import {
     name: "Twelve_androidx.media3_media3-container-nodeps",
-    aars: ["androidx/media3/media3-container/1.5.0-alpha01/media3-container-1.5.0-alpha01.aar"],
+    aars: ["androidx/media3/media3-container/1.5.0-beta01/media3-container-1.5.0-beta01.aar"],
     sdk_version: "35",
     min_sdk_version: "14",
     apex_available: [
@@ -100,7 +100,7 @@ android_library {
         "//apex_available:platform",
         "//apex_available:anyapex",
     ],
-    manifest: "androidx/media3/media3-container/1.5.0-alpha01/AndroidManifest.xml",
+    manifest: "androidx/media3/media3-container/1.5.0-beta01/AndroidManifest.xml",
     static_libs: [
         "Twelve_androidx.media3_media3-container-nodeps",
         "Twelve_androidx.media3_media3-common",
@@ -111,7 +111,7 @@ android_library {
 
 android_library_import {
     name: "Twelve_androidx.media3_media3-database-nodeps",
-    aars: ["androidx/media3/media3-database/1.5.0-alpha01/media3-database-1.5.0-alpha01.aar"],
+    aars: ["androidx/media3/media3-database/1.5.0-beta01/media3-database-1.5.0-beta01.aar"],
     sdk_version: "35",
     min_sdk_version: "14",
     apex_available: [
@@ -132,7 +132,7 @@ android_library {
         "//apex_available:platform",
         "//apex_available:anyapex",
     ],
-    manifest: "androidx/media3/media3-database/1.5.0-alpha01/AndroidManifest.xml",
+    manifest: "androidx/media3/media3-database/1.5.0-beta01/AndroidManifest.xml",
     static_libs: [
         "Twelve_androidx.media3_media3-database-nodeps",
         "Twelve_androidx.media3_media3-common",
@@ -143,7 +143,7 @@ android_library {
 
 android_library_import {
     name: "Twelve_androidx.media3_media3-datasource-nodeps",
-    aars: ["androidx/media3/media3-datasource/1.5.0-alpha01/media3-datasource-1.5.0-alpha01.aar"],
+    aars: ["androidx/media3/media3-datasource/1.5.0-beta01/media3-datasource-1.5.0-beta01.aar"],
     sdk_version: "35",
     min_sdk_version: "14",
     apex_available: [
@@ -166,7 +166,7 @@ android_library {
         "//apex_available:platform",
         "//apex_available:anyapex",
     ],
-    manifest: "androidx/media3/media3-datasource/1.5.0-alpha01/AndroidManifest.xml",
+    manifest: "androidx/media3/media3-datasource/1.5.0-beta01/AndroidManifest.xml",
     static_libs: [
         "Twelve_androidx.media3_media3-datasource-nodeps",
         "Twelve_androidx.media3_media3-common",
@@ -179,7 +179,7 @@ android_library {
 
 android_library_import {
     name: "Twelve_androidx.media3_media3-decoder-nodeps",
-    aars: ["androidx/media3/media3-decoder/1.5.0-alpha01/media3-decoder-1.5.0-alpha01.aar"],
+    aars: ["androidx/media3/media3-decoder/1.5.0-beta01/media3-decoder-1.5.0-beta01.aar"],
     sdk_version: "35",
     min_sdk_version: "14",
     apex_available: [
@@ -200,7 +200,7 @@ android_library {
         "//apex_available:platform",
         "//apex_available:anyapex",
     ],
-    manifest: "androidx/media3/media3-decoder/1.5.0-alpha01/AndroidManifest.xml",
+    manifest: "androidx/media3/media3-decoder/1.5.0-beta01/AndroidManifest.xml",
     static_libs: [
         "Twelve_androidx.media3_media3-decoder-nodeps",
         "Twelve_androidx.media3_media3-common",
@@ -211,7 +211,7 @@ android_library {
 
 android_library_import {
     name: "Twelve_androidx.media3_media3-exoplayer-nodeps",
-    aars: ["androidx/media3/media3-exoplayer/1.5.0-alpha01/media3-exoplayer-1.5.0-alpha01.aar"],
+    aars: ["androidx/media3/media3-exoplayer/1.5.0-beta01/media3-exoplayer-1.5.0-beta01.aar"],
     sdk_version: "35",
     min_sdk_version: "14",
     apex_available: [
@@ -240,7 +240,7 @@ android_library {
         "//apex_available:platform",
         "//apex_available:anyapex",
     ],
-    manifest: "androidx/media3/media3-exoplayer/1.5.0-alpha01/AndroidManifest.xml",
+    manifest: "androidx/media3/media3-exoplayer/1.5.0-beta01/AndroidManifest.xml",
     static_libs: [
         "Twelve_androidx.media3_media3-exoplayer-nodeps",
         "Twelve_androidx.media3_media3-common",
@@ -259,7 +259,7 @@ android_library {
 
 android_library_import {
     name: "Twelve_androidx.media3_media3-exoplayer-hls-nodeps",
-    aars: ["androidx/media3/media3-exoplayer-hls/1.5.0-alpha01/media3-exoplayer-hls-1.5.0-alpha01.aar"],
+    aars: ["androidx/media3/media3-exoplayer-hls/1.5.0-beta01/media3-exoplayer-hls-1.5.0-beta01.aar"],
     sdk_version: "35",
     min_sdk_version: "14",
     apex_available: [
@@ -280,7 +280,7 @@ android_library {
         "//apex_available:platform",
         "//apex_available:anyapex",
     ],
-    manifest: "androidx/media3/media3-exoplayer-hls/1.5.0-alpha01/AndroidManifest.xml",
+    manifest: "androidx/media3/media3-exoplayer-hls/1.5.0-beta01/AndroidManifest.xml",
     static_libs: [
         "Twelve_androidx.media3_media3-exoplayer-hls-nodeps",
         "Twelve_androidx.media3_media3-exoplayer",
@@ -291,7 +291,7 @@ android_library {
 
 android_library_import {
     name: "Twelve_androidx.media3_media3-exoplayer-midi-nodeps",
-    aars: ["androidx/media3/media3-exoplayer-midi/1.5.0-alpha01/media3-exoplayer-midi-1.5.0-alpha01.aar"],
+    aars: ["androidx/media3/media3-exoplayer-midi/1.5.0-beta01/media3-exoplayer-midi-1.5.0-beta01.aar"],
     sdk_version: "35",
     min_sdk_version: "14",
     apex_available: [
@@ -316,7 +316,7 @@ android_library {
         "//apex_available:platform",
         "//apex_available:anyapex",
     ],
-    manifest: "androidx/media3/media3-exoplayer-midi/1.5.0-alpha01/AndroidManifest.xml",
+    manifest: "androidx/media3/media3-exoplayer-midi/1.5.0-beta01/AndroidManifest.xml",
     static_libs: [
         "Twelve_androidx.media3_media3-exoplayer-midi-nodeps",
         "Twelve_androidx.media3_media3-common",
@@ -331,7 +331,7 @@ android_library {
 
 android_library_import {
     name: "Twelve_androidx.media3_media3-exoplayer-rtsp-nodeps",
-    aars: ["androidx/media3/media3-exoplayer-rtsp/1.5.0-alpha01/media3-exoplayer-rtsp-1.5.0-alpha01.aar"],
+    aars: ["androidx/media3/media3-exoplayer-rtsp/1.5.0-beta01/media3-exoplayer-rtsp-1.5.0-beta01.aar"],
     sdk_version: "35",
     min_sdk_version: "14",
     apex_available: [
@@ -352,7 +352,7 @@ android_library {
         "//apex_available:platform",
         "//apex_available:anyapex",
     ],
-    manifest: "androidx/media3/media3-exoplayer-rtsp/1.5.0-alpha01/AndroidManifest.xml",
+    manifest: "androidx/media3/media3-exoplayer-rtsp/1.5.0-beta01/AndroidManifest.xml",
     static_libs: [
         "Twelve_androidx.media3_media3-exoplayer-rtsp-nodeps",
         "Twelve_androidx.media3_media3-exoplayer",
@@ -363,7 +363,7 @@ android_library {
 
 android_library_import {
     name: "Twelve_androidx.media3_media3-exoplayer-smoothstreaming-nodeps",
-    aars: ["androidx/media3/media3-exoplayer-smoothstreaming/1.5.0-alpha01/media3-exoplayer-smoothstreaming-1.5.0-alpha01.aar"],
+    aars: ["androidx/media3/media3-exoplayer-smoothstreaming/1.5.0-beta01/media3-exoplayer-smoothstreaming-1.5.0-beta01.aar"],
     sdk_version: "35",
     min_sdk_version: "14",
     apex_available: [
@@ -384,7 +384,7 @@ android_library {
         "//apex_available:platform",
         "//apex_available:anyapex",
     ],
-    manifest: "androidx/media3/media3-exoplayer-smoothstreaming/1.5.0-alpha01/AndroidManifest.xml",
+    manifest: "androidx/media3/media3-exoplayer-smoothstreaming/1.5.0-beta01/AndroidManifest.xml",
     static_libs: [
         "Twelve_androidx.media3_media3-exoplayer-smoothstreaming-nodeps",
         "Twelve_androidx.media3_media3-exoplayer",
@@ -395,7 +395,7 @@ android_library {
 
 android_library_import {
     name: "Twelve_androidx.media3_media3-extractor-nodeps",
-    aars: ["androidx/media3/media3-extractor/1.5.0-alpha01/media3-extractor-1.5.0-alpha01.aar"],
+    aars: ["androidx/media3/media3-extractor/1.5.0-beta01/media3-extractor-1.5.0-beta01.aar"],
     sdk_version: "35",
     min_sdk_version: "14",
     apex_available: [
@@ -418,7 +418,7 @@ android_library {
         "//apex_available:platform",
         "//apex_available:anyapex",
     ],
-    manifest: "androidx/media3/media3-extractor/1.5.0-alpha01/AndroidManifest.xml",
+    manifest: "androidx/media3/media3-extractor/1.5.0-beta01/AndroidManifest.xml",
     static_libs: [
         "Twelve_androidx.media3_media3-extractor-nodeps",
         "Twelve_androidx.media3_media3-common",
@@ -431,7 +431,7 @@ android_library {
 
 android_library_import {
     name: "Twelve_androidx.media3_media3-session-nodeps",
-    aars: ["androidx/media3/media3-session/1.5.0-alpha01/media3-session-1.5.0-alpha01.aar"],
+    aars: ["androidx/media3/media3-session/1.5.0-beta01/media3-session-1.5.0-beta01.aar"],
     sdk_version: "35",
     min_sdk_version: "14",
     apex_available: [
@@ -455,7 +455,7 @@ android_library {
         "//apex_available:platform",
         "//apex_available:anyapex",
     ],
-    manifest: "androidx/media3/media3-session/1.5.0-alpha01/AndroidManifest.xml",
+    manifest: "androidx/media3/media3-session/1.5.0-beta01/AndroidManifest.xml",
     static_libs: [
         "Twelve_androidx.media3_media3-session-nodeps",
         "Twelve_androidx.media3_media3-common",
@@ -469,7 +469,7 @@ android_library {
 
 android_library_import {
     name: "Twelve_androidx.media3_media3-ui-nodeps",
-    aars: ["androidx/media3/media3-ui/1.5.0-alpha01/media3-ui-1.5.0-alpha01.aar"],
+    aars: ["androidx/media3/media3-ui/1.5.0-beta01/media3-ui-1.5.0-beta01.aar"],
     sdk_version: "35",
     min_sdk_version: "14",
     apex_available: [
@@ -492,7 +492,7 @@ android_library {
         "//apex_available:platform",
         "//apex_available:anyapex",
     ],
-    manifest: "androidx/media3/media3-ui/1.5.0-alpha01/AndroidManifest.xml",
+    manifest: "androidx/media3/media3-ui/1.5.0-beta01/AndroidManifest.xml",
     static_libs: [
         "Twelve_androidx.media3_media3-ui-nodeps",
         "Twelve_androidx.media3_media3-common",
@@ -618,6 +618,31 @@ android_library {
         "androidx.vectordrawable_vectordrawable",
         "androidx.viewpager2_viewpager2",
         "error_prone_annotations",
+    ],
+    java_version: "1.7",
+}
+
+java_import {
+    name: "Twelve_com.google.j2objc_j2objc-annotations-nodeps",
+    jars: ["com/google/j2objc/j2objc-annotations/3.0.0/j2objc-annotations-3.0.0.jar"],
+    sdk_version: "35",
+    min_sdk_version: "14",
+    apex_available: [
+        "//apex_available:platform",
+        "//apex_available:anyapex",
+    ],
+}
+
+java_library_static {
+    name: "Twelve_com.google.j2objc_j2objc-annotations",
+    sdk_version: "35",
+    min_sdk_version: "14",
+    apex_available: [
+        "//apex_available:platform",
+        "//apex_available:anyapex",
+    ],
+    static_libs: [
+        "Twelve_com.google.j2objc_j2objc-annotations-nodeps",
     ],
     java_version: "1.7",
 }
@@ -890,7 +915,7 @@ java_library_static {
 
 java_import {
     name: "Twelve_org.checkerframework_checker-qual-nodeps",
-    jars: ["org/checkerframework/checker-qual/3.41.0/checker-qual-3.41.0.jar"],
+    jars: ["org/checkerframework/checker-qual/3.43.0/checker-qual-3.43.0.jar"],
     sdk_version: "35",
     min_sdk_version: "14",
     apex_available: [
