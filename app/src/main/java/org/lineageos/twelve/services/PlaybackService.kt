@@ -191,6 +191,7 @@ class PlaybackService : MediaLibraryService(), Player.Listener, LifecycleOwner {
             .setAudioAttributes(audioAttributes, true)
             .setHandleAudioBecomingNoisy(true)
             .setRenderersFactory(TurntableRenderersFactory(this))
+            .experimentalSetDynamicSchedulingEnabled(true)
             .build()
 
         exoPlayer.addListener(this)
