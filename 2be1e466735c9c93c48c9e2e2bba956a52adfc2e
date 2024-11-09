@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f3a111c3_7c4db256",
+        "filename": "app/src/main/java/org/lineageos/twelve/services/InfoAudioProcessor.kt",
+        "patchSetId": 2
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 25732
+      },
+      "writtenOn": "2024-11-09T17:34:03Z",
+      "side": 1,
+      "message": "100 chars\n\n```\n\u003d super.onConfigure(...).also { audioFormat \u003d inputAudioFormat }\n```",
+      "revId": "2be1e466735c9c93c48c9e2e2bba956a52adfc2e",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
