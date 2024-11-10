@@ -53,6 +53,8 @@ class QueueFragment : Fragment(R.layout.fragment_queue) {
             diffCallback,
             ::ListItem,
         ) {
+            var currentQueue = listOf<Pair<MediaItem, Boolean>>()
+
             override fun ViewHolder.onPrepareView() {
                 view.setTrailingIconImage(R.drawable.ic_drag_handle)
             }
@@ -91,16 +93,11 @@ class QueueFragment : Fragment(R.layout.fragment_queue) {
             val to = target.bindingAdapterPosition
 
             // First update our adapter list
-            val list = adapter.currentList.toMutableList()
-            Collections.swap(list, from, to)
-            adapter.setListWithoutDiffing(list)
+            Collections.swap(adapter.currentQueue, from, to)
             adapter.notifyItemMoved(from, to)
 
             // Then update the queue
-            viewModel.moveItem(
-                viewHolder.bindingAdapterPosition,
-                target.bindingAdapterPosition
-            )
+            viewModel.moveItem(from, to)
 
             return true
         }
@@ -156,8 +153,12 @@ class QueueFragment : Fragment(R.layout.fragment_queue) {
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.queue.collectLatest {
-                    adapter.submitList(it)
+                viewModel.queue.collectLatest { queue ->
+                    adapter.submitList(
+                        queue.toMutableList().also {
+                            adapter.currentQueue = it
+                        }
+                    )
                 }
             }
         }
