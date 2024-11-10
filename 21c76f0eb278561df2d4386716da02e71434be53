@@ -16,6 +16,23 @@
       "message": "Notifying the list, changing the view model list directly and then finally updating the timeline seems to work",
       "revId": "21c76f0eb278561df2d4386716da02e71434be53",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "09a325a6_2df52c65",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 25732
+      },
+      "writtenOn": "2024-11-10T15:49:40Z",
+      "side": 1,
+      "message": "Looks like it works",
+      "revId": "21c76f0eb278561df2d4386716da02e71434be53",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
