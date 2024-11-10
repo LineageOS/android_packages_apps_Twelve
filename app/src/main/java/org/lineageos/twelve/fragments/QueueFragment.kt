@@ -90,17 +90,9 @@ class QueueFragment : Fragment(R.layout.fragment_queue) {
             val from = viewHolder.bindingAdapterPosition
             val to = target.bindingAdapterPosition
 
-            // First update our adapter list
-            val list = adapter.currentList.toMutableList()
-            Collections.swap(list, from, to)
-            adapter.setListWithoutDiffing(list)
             adapter.notifyItemMoved(from, to)
-
-            // Then update the queue
-            viewModel.moveItem(
-                viewHolder.bindingAdapterPosition,
-                target.bindingAdapterPosition
-            )
+            Collections.swap(viewModel.queue.value, from, to)
+            viewModel.moveItem(from, to)
 
             return true
         }
