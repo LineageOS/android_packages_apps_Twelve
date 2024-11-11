@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "599ca381_4fdb187a",
+        "filename": "app/src/main/java/org/lineageos/twelve/viewmodels/AlbumsViewModel.kt",
+        "patchSetId": 1
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2024-11-11T16:37:07Z",
+      "side": 1,
+      "message": "Use MediaRepository.defaultAlbumsSortingRule?\n\nditto for the rest",
+      "revId": "3671bce31803673a1d21e30b1dde75a8430c0f25",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
