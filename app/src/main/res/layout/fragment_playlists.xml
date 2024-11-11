@@ -8,44 +8,71 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone"
-        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-        app:spanCount="1" />
+        android:orientation="vertical">
 
-    <LinearLayout
-        android:id="@+id/noElementsLinearLayout"
-        style="@style/Theme.Twelve.NoElements.LinearLayout"
-        android:layout_gravity="center"
-        android:visibility="gone">
-
-        <ImageView
-            style="@style/Theme.Twelve.NoElements.ImageView"
-            android:contentDescription="@string/no_playlists"
-            android:src="@drawable/ic_playlist_play" />
-
-        <Space style="@style/Theme.Twelve.NoElements.Space" />
-
-        <TextView
-            style="@style/Theme.Twelve.NoElements.TextView"
-            android:text="@string/no_playlists_comma" />
-
-        <Button
-            android:id="@+id/createNewPlaylistButton"
-            android:layout_width="wrap_content"
+        <HorizontalScrollView
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/create_playlist_suggestion" />
+            android:clipToPadding="false"
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="8dp">
+
+            <org.lineageos.twelve.ui.views.SortingChip
+                android:id="@+id/sortingChip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </HorizontalScrollView>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone"
+                app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                app:spanCount="1" />
+
+            <LinearLayout
+                android:id="@+id/noElementsLinearLayout"
+                style="@style/Theme.Twelve.NoElements.LinearLayout"
+                android:layout_gravity="center"
+                android:visibility="gone">
+
+                <ImageView
+                    style="@style/Theme.Twelve.NoElements.ImageView"
+                    android:contentDescription="@string/no_playlists"
+                    android:src="@drawable/ic_playlist_play" />
+
+                <Space style="@style/Theme.Twelve.NoElements.Space" />
+
+                <TextView
+                    style="@style/Theme.Twelve.NoElements.TextView"
+                    android:text="@string/no_playlists_comma" />
+
+                <Button
+                    android:id="@+id/createNewPlaylistButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/create_playlist_suggestion" />
+
+            </LinearLayout>
+
+            <com.google.android.material.progressindicator.LinearProgressIndicator
+                android:id="@+id/linearProgressIndicator"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:indeterminate="true" />
+
+        </FrameLayout>
 
     </LinearLayout>
-
-    <com.google.android.material.progressindicator.LinearProgressIndicator
-        android:id="@+id/linearProgressIndicator"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:indeterminate="true" />
 
     <org.lineageos.twelve.ui.views.FullscreenLoadingProgressBar
         android:id="@+id/fullscreenLoadingProgressBar"

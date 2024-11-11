@@ -18,6 +18,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.progressindicator.LinearProgressIndicator
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.lineageos.twelve.R
@@ -25,9 +26,11 @@ import org.lineageos.twelve.ext.getViewProperty
 import org.lineageos.twelve.ext.setProgressCompat
 import org.lineageos.twelve.models.Artist
 import org.lineageos.twelve.models.RequestStatus
+import org.lineageos.twelve.models.SortingStrategy
 import org.lineageos.twelve.ui.recyclerview.SimpleListAdapter
 import org.lineageos.twelve.ui.recyclerview.UniqueItemDiffCallback
 import org.lineageos.twelve.ui.views.ListItem
+import org.lineageos.twelve.ui.views.SortingChip
 import org.lineageos.twelve.utils.PermissionsChecker
 import org.lineageos.twelve.utils.PermissionsUtils
 import org.lineageos.twelve.viewmodels.ArtistsViewModel
@@ -43,6 +46,7 @@ class ArtistsFragment : Fragment(R.layout.fragment_artists) {
     private val linearProgressIndicator by getViewProperty<LinearProgressIndicator>(R.id.linearProgressIndicator)
     private val noElementsLinearLayout by getViewProperty<LinearLayout>(R.id.noElementsLinearLayout)
     private val recyclerView by getViewProperty<RecyclerView>(R.id.recyclerView)
+    private val sortingChip by getViewProperty<SortingChip>(R.id.sortingChip)
 
     // Recyclerview
     private val adapter by lazy {
@@ -76,6 +80,17 @@ class ArtistsFragment : Fragment(R.layout.fragment_artists) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        sortingChip.setSortingStrategies(
+            sortedMapOf(
+                SortingStrategy.MODIFICATION_DATE to R.string.sort_by_last_activity,
+                SortingStrategy.NAME to R.string.sort_by_name,
+                SortingStrategy.PLAY_COUNT to R.string.sort_by_play_count,
+            )
+        )
+        sortingChip.setOnSortingRuleSelectedListener {
+            viewModel.setSortingRule(it)
+        }
+
         recyclerView.adapter = adapter
 
         viewLifecycleOwner.lifecycleScope.launch {
@@ -94,29 +109,39 @@ class ArtistsFragment : Fragment(R.layout.fragment_artists) {
     }
 
     private suspend fun loadData() {
-        viewModel.artists.collectLatest {
-            linearProgressIndicator.setProgressCompat(it, true)
+        coroutineScope {
+            launch {
+                viewModel.artists.collectLatest {
+                    linearProgressIndicator.setProgressCompat(it, true)
 
-            when (it) {
-                is RequestStatus.Loading -> {
-                    // Do nothing
+                    when (it) {
+                        is RequestStatus.Loading -> {
+                            // Do nothing
+                        }
+
+                        is RequestStatus.Success -> {
+                            adapter.submitList(it.data)
+
+                            val isEmpty = it.data.isEmpty()
+                            recyclerView.isVisible = !isEmpty
+                            noElementsLinearLayout.isVisible = isEmpty
+                        }
+
+                        is RequestStatus.Error -> {
+                            Log.e(LOG_TAG, "Failed to load artists, error: ${it.error}")
+
+                            adapter.submitList(emptyList())
+
+                            recyclerView.isVisible = false
+                            noElementsLinearLayout.isVisible = true
+                        }
+                    }
                 }
+            }
 
-                is RequestStatus.Success -> {
-                    adapter.submitList(it.data)
-
-                    val isEmpty = it.data.isEmpty()
-                    recyclerView.isVisible = !isEmpty
-                    noElementsLinearLayout.isVisible = isEmpty
-                }
-
-                is RequestStatus.Error -> {
-                    Log.e(LOG_TAG, "Failed to load artists, error: ${it.error}")
-
-                    adapter.submitList(emptyList())
-
-                    recyclerView.isVisible = false
-                    noElementsLinearLayout.isVisible = true
+            launch {
+                viewModel.sortingRule.collectLatest {
+                    sortingChip.setSortingRule(it)
                 }
             }
         }
