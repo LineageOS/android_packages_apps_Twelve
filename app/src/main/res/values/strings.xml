@@ -156,4 +156,13 @@
 
     <!-- Queue fragment -->
     <string name="queue">Queue</string>
+
+    <!-- Sorting strategies -->
+    <string name="sort_by_last_modified">Last modified</string>
+    <string name="sort_by_latest_activity">Latest activity</string>
+    <string name="sort_by_name">Name</string>
+    <string name="sort_by_play_count">Play count</string>
+    <string name="sort_by_release_date">Release date</string>
+    <string name="sort_by_title">Title</string>
+    <string name="sort_by_unknown">Unknown</string>
 </resources>
