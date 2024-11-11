@@ -20,6 +20,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.progressindicator.LinearProgressIndicator
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.lineageos.twelve.R
@@ -27,11 +28,13 @@ import org.lineageos.twelve.ext.getViewProperty
 import org.lineageos.twelve.ext.setProgressCompat
 import org.lineageos.twelve.models.Playlist
 import org.lineageos.twelve.models.RequestStatus
+import org.lineageos.twelve.models.SortingStrategy
 import org.lineageos.twelve.ui.dialogs.EditTextMaterialAlertDialogBuilder
 import org.lineageos.twelve.ui.recyclerview.SimpleListAdapter
 import org.lineageos.twelve.ui.recyclerview.UniqueItemDiffCallback
 import org.lineageos.twelve.ui.views.FullscreenLoadingProgressBar
 import org.lineageos.twelve.ui.views.ListItem
+import org.lineageos.twelve.ui.views.SortingChip
 import org.lineageos.twelve.utils.PermissionsChecker
 import org.lineageos.twelve.utils.PermissionsUtils
 import org.lineageos.twelve.viewmodels.PlaylistsViewModel
@@ -49,6 +52,7 @@ class PlaylistsFragment : Fragment(R.layout.fragment_playlists) {
     private val linearProgressIndicator by getViewProperty<LinearProgressIndicator>(R.id.linearProgressIndicator)
     private val noElementsLinearLayout by getViewProperty<LinearLayout>(R.id.noElementsLinearLayout)
     private val recyclerView by getViewProperty<RecyclerView>(R.id.recyclerView)
+    private val sortingChip by getViewProperty<SortingChip>(R.id.sortingChip)
 
     // Recyclerview
     private val addNewPlaylistItem = Playlist(Uri.EMPTY, "")
@@ -93,6 +97,18 @@ class PlaylistsFragment : Fragment(R.layout.fragment_playlists) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        sortingChip.setSortingStrategies(
+            sortedMapOf(
+                SortingStrategy.CREATION_DATE to R.string.sort_by_creation_date,
+                SortingStrategy.MODIFICATION_DATE to R.string.sort_by_last_modified,
+                SortingStrategy.NAME to R.string.sort_by_name,
+                SortingStrategy.PLAY_COUNT to R.string.sort_by_play_count,
+            )
+        )
+        sortingChip.setOnSortingRuleSelectedListener {
+            viewModel.setSortingRule(it)
+        }
+
         recyclerView.adapter = adapter
 
         createNewPlaylistButton.setOnClickListener {
@@ -115,38 +131,48 @@ class PlaylistsFragment : Fragment(R.layout.fragment_playlists) {
     }
 
     private suspend fun loadData() {
-        viewModel.playlists.collectLatest {
-            linearProgressIndicator.setProgressCompat(it, true)
+        coroutineScope {
+            launch {
+                viewModel.playlists.collectLatest {
+                    linearProgressIndicator.setProgressCompat(it, true)
 
-            when (it) {
-                is RequestStatus.Loading -> {
-                    // Do nothing
-                }
-
-                is RequestStatus.Success -> {
-                    val isEmpty = it.data.isEmpty()
-
-                    adapter.submitList(
-                        when (isEmpty) {
-                            true -> emptyList()
-                            false -> listOf(
-                                addNewPlaylistItem,
-                                *it.data.toTypedArray(),
-                            )
+                    when (it) {
+                        is RequestStatus.Loading -> {
+                            // Do nothing
                         }
-                    )
 
-                    recyclerView.isVisible = !isEmpty
-                    noElementsLinearLayout.isVisible = isEmpty
+                        is RequestStatus.Success -> {
+                            val isEmpty = it.data.isEmpty()
+
+                            adapter.submitList(
+                                when (isEmpty) {
+                                    true -> emptyList()
+                                    false -> listOf(
+                                        addNewPlaylistItem,
+                                        *it.data.toTypedArray(),
+                                    )
+                                }
+                            )
+
+                            recyclerView.isVisible = !isEmpty
+                            noElementsLinearLayout.isVisible = isEmpty
+                        }
+
+                        is RequestStatus.Error -> {
+                            Log.e(LOG_TAG, "Failed to load playlists, error: ${it.error}")
+
+                            adapter.submitList(emptyList())
+
+                            recyclerView.isVisible = false
+                            noElementsLinearLayout.isVisible = true
+                        }
+                    }
                 }
+            }
 
-                is RequestStatus.Error -> {
-                    Log.e(LOG_TAG, "Failed to load playlists, error: ${it.error}")
-
-                    adapter.submitList(emptyList())
-
-                    recyclerView.isVisible = false
-                    noElementsLinearLayout.isVisible = true
+            launch {
+                viewModel.sortingRule.collectLatest {
+                    sortingChip.setSortingRule(it)
                 }
             }
         }
