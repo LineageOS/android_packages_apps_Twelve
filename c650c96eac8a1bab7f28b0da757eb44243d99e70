@@ -26,6 +26,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "776a9e39_bc50e4a6",
+        "filename": "app/src/main/java/org/lineageos/twelve/SettingsActivity.kt",
+        "patchSetId": 8
+      },
+      "lineNbr": 156,
+      "author": {
+        "id": 10067
+      },
+      "writtenOn": "2024-11-12T20:55:47Z",
+      "side": 1,
+      "message": "i kinda like having a variable...",
+      "parentUuid": "8a2c9bc8_ea462610",
+      "range": {
+        "startLine": 150,
+        "startChar": 0,
+        "endLine": 156,
+        "endChar": 17
+      },
+      "revId": "c650c96eac8a1bab7f28b0da757eb44243d99e70",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "d5e45780_83929d61",
         "filename": "app/src/main/java/org/lineageos/twelve/services/PlaybackService.kt",
         "patchSetId": 8
@@ -37,6 +61,30 @@
       "writtenOn": "2024-11-12T20:53:00Z",
       "side": 1,
       "message": "zap",
+      "range": {
+        "startLine": 54,
+        "startChar": 16,
+        "endLine": 54,
+        "endChar": 33
+      },
+      "revId": "c650c96eac8a1bab7f28b0da757eb44243d99e70",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "878e519a_8a360f7e",
+        "filename": "app/src/main/java/org/lineageos/twelve/services/PlaybackService.kt",
+        "patchSetId": 8
+      },
+      "lineNbr": 54,
+      "author": {
+        "id": 10067
+      },
+      "writtenOn": "2024-11-12T20:55:47Z",
+      "side": 1,
+      "message": "it\u0027s used in `exoPlayer.setOffloadEnabled(sharedPreferences.enableOffload)` call below?",
+      "parentUuid": "d5e45780_83929d61",
       "range": {
         "startLine": 54,
         "startChar": 16,
