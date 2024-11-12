@@ -11,6 +11,7 @@ import androidx.media3.common.MediaMetadata
 import androidx.media3.common.PlaybackParameters
 import androidx.media3.common.Player
 import androidx.media3.common.Timeline
+import androidx.media3.common.TrackSelectionParameters
 import androidx.media3.common.Tracks
 import androidx.media3.common.util.UnstableApi
 import kotlinx.coroutines.channels.awaitClose
@@ -210,3 +211,20 @@ val Player.mediaItems: List<MediaItem>
     get() = (0 until mediaItemCount).map {
         getMediaItemAt(it)
     }
+
+@OptIn(UnstableApi::class)
+fun Player.setOffloadEnabled(enabled: Boolean) {
+    trackSelectionParameters = trackSelectionParameters.buildUpon()
+        .setAudioOffloadPreferences(
+            TrackSelectionParameters.AudioOffloadPreferences
+                .Builder()
+                .setAudioOffloadMode(
+                    if (enabled) {
+                        TrackSelectionParameters.AudioOffloadPreferences.AUDIO_OFFLOAD_MODE_ENABLED
+                    } else {
+                        TrackSelectionParameters.AudioOffloadPreferences.AUDIO_OFFLOAD_MODE_DISABLED
+                    }
+                )
+                .build()
+        ).build()
+}
