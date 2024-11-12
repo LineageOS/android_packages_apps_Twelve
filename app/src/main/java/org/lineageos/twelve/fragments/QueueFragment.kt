@@ -15,11 +15,9 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.media3.common.MediaItem
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.MaterialToolbar
@@ -28,7 +26,9 @@ import kotlinx.coroutines.launch
 import org.lineageos.twelve.R
 import org.lineageos.twelve.ext.getViewProperty
 import org.lineageos.twelve.ext.updatePadding
+import org.lineageos.twelve.models.QueueItem
 import org.lineageos.twelve.ui.recyclerview.SimpleListAdapter
+import org.lineageos.twelve.ui.recyclerview.UniqueItemDiffCallback
 import org.lineageos.twelve.ui.views.ListItem
 import org.lineageos.twelve.utils.TimestampFormatter
 import org.lineageos.twelve.viewmodels.QueueViewModel
@@ -49,17 +49,17 @@ class QueueFragment : Fragment(R.layout.fragment_queue) {
 
     // RecyclerView
     private val adapter by lazy {
-        object : SimpleListAdapter<Pair<MediaItem, Boolean>, ListItem>(
-            diffCallback,
+        object : SimpleListAdapter<QueueItem, ListItem>(
+            UniqueItemDiffCallback(),
             ::ListItem,
         ) {
-            var currentQueue = listOf<Pair<MediaItem, Boolean>>()
+            var currentQueue = listOf<QueueItem>()
 
             override fun ViewHolder.onPrepareView() {
                 view.setTrailingIconImage(R.drawable.ic_drag_handle)
             }
 
-            override fun ViewHolder.onBindView(item: Pair<MediaItem, Boolean>) {
+            override fun ViewHolder.onBindView(item: QueueItem) {
                 val (mediaItem, isCurrent) = item
 
                 view.setLeadingIconImage(
@@ -168,19 +168,5 @@ class QueueFragment : Fragment(R.layout.fragment_queue) {
         recyclerView.adapter = null
 
         super.onDestroyView()
-    }
-
-    companion object {
-        private val diffCallback = object : DiffUtil.ItemCallback<Pair<MediaItem, Boolean>>() {
-            override fun areItemsTheSame(
-                oldItem: Pair<MediaItem, Boolean>,
-                newItem: Pair<MediaItem, Boolean>,
-            ) = oldItem.first.mediaId == newItem.first.mediaId
-
-            override fun areContentsTheSame(
-                oldItem: Pair<MediaItem, Boolean>,
-                newItem: Pair<MediaItem, Boolean>,
-            ) = oldItem.first == newItem.first && oldItem.second == newItem.second
-        }
     }
 }

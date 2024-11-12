@@ -15,6 +15,7 @@ import androidx.media3.common.Tracks
 import androidx.media3.common.util.UnstableApi
 import kotlinx.coroutines.channels.awaitClose
 import org.lineageos.twelve.models.PlaybackState
+import org.lineageos.twelve.models.QueueItem
 import org.lineageos.twelve.models.RepeatMode
 
 @OptIn(UnstableApi::class)
@@ -159,7 +160,7 @@ fun Player.queueFlow() = conflatedCallbackFlow {
 
         trySend(
             mediaItems.mapIndexed { index, mediaItem ->
-                mediaItem to (index == currentMediaItemIndex)
+                QueueItem(mediaItem, index == currentMediaItemIndex)
             }
         )
     }
