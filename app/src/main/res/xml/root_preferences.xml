@@ -15,6 +15,14 @@
             app:key="enable_offload"
             app:summary="@string/enable_offload_summary"
             app:title="@string/enable_offload" />
+
+        <SwitchPreference
+            app:defaultValue="true"
+            app:iconSpaceReserved="false"
+            app:key="stop_playback_on_task_removed"
+            app:summary="@string/stop_playback_on_task_removed_summary"
+            app:title="@string/stop_playback_on_task_removed" />
+
     </PreferenceCategory>
 
 </PreferenceScreen>
