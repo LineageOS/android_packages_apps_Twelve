@@ -24,6 +24,30 @@
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "eb7d8781_334dda42",
+        "filename": "app/src/main/java/org/lineageos/twelve/SettingsActivity.kt",
+        "patchSetId": 5
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 10067
+      },
+      "writtenOn": "2024-11-12T20:39:20Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "419fec20_4847723b",
+      "range": {
+        "startLine": 40,
+        "startChar": 16,
+        "endLine": 40,
+        "endChar": 33
+      },
+      "revId": "0efea77904707feab99c361c527de001b2546cfa",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "5c52792e_a1e99725",
