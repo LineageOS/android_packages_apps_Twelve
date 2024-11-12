@@ -9,6 +9,7 @@ import android.content.Context
 import androidx.annotation.OptIn
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.DefaultRenderersFactory
+import androidx.media3.exoplayer.audio.DefaultAudioOffloadSupportProvider
 import androidx.media3.exoplayer.audio.DefaultAudioSink
 
 @OptIn(UnstableApi::class)
@@ -28,5 +29,6 @@ class TurntableRenderersFactory(context: Context) : DefaultRenderersFactory(cont
         .setEnableAudioTrackPlaybackParams(enableAudioTrackPlaybackParams)
         .setAudioProcessors(arrayOf(InfoAudioProcessor()))
         .setAudioTrackBufferSizeProvider(ProxyDefaultAudioTrackBufferSizeProvider)
+        .setAudioOffloadSupportProvider(DefaultAudioOffloadSupportProvider(context))
         .build()
 }
