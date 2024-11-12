@@ -54,6 +54,7 @@ class QueueFragment : Fragment(R.layout.fragment_queue) {
             ::ListItem,
         ) {
             var currentQueue = listOf<QueueItem>()
+            var scrolled = false
 
             override fun ViewHolder.onPrepareView() {
                 view.setTrailingIconImage(R.drawable.ic_drag_handle)
@@ -156,7 +157,14 @@ class QueueFragment : Fragment(R.layout.fragment_queue) {
                 viewModel.queue.collectLatest { queue ->
                     queue.toMutableList().let {
                         adapter.currentQueue = it
-                        adapter.submitList(it)
+                        adapter.submitList(it) {
+                            if (it.isNotEmpty() && !adapter.scrolled) {
+                                recyclerView.scrollToPosition(
+                                    queue.indexOfFirst { item -> item.isCurrent }
+                                )
+                                adapter.scrolled = true
+                            }
+                        }
                     }
                 }
             }
