@@ -27,11 +27,14 @@ import androidx.media3.session.LibraryResult
 import androidx.media3.session.MediaLibraryService
 import androidx.media3.session.MediaSession
 import androidx.media3.session.SessionError
+import androidx.preference.PreferenceManager
 import kotlinx.coroutines.guava.future
 import kotlinx.coroutines.launch
 import org.lineageos.twelve.MainActivity
 import org.lineageos.twelve.R
 import org.lineageos.twelve.TwelveApplication
+import org.lineageos.twelve.ext.ENABLE_OFFLOAD_KEY
+import org.lineageos.twelve.ext.enableOffload
 import org.lineageos.twelve.ui.widgets.NowPlayingAppWidgetProvider
 
 @OptIn(UnstableApi::class)
@@ -47,6 +50,10 @@ class PlaybackService : MediaLibraryService(), Player.Listener, LifecycleOwner {
             applicationContext,
             (application as TwelveApplication).mediaRepository,
         )
+    }
+
+    private val sharedPreferences by lazy {
+        PreferenceManager.getDefaultSharedPreferences(this)
     }
 
     private val resumptionPlaylistRepository by lazy {
@@ -196,14 +203,27 @@ class PlaybackService : MediaLibraryService(), Player.Listener, LifecycleOwner {
 
         exoPlayer.addListener(this)
 
-        exoPlayer.trackSelectionParameters = exoPlayer.trackSelectionParameters
-            .buildUpon()
-            .setAudioOffloadPreferences(
-                AudioOffloadPreferences
-                    .Builder()
-                    .setAudioOffloadMode(AudioOffloadPreferences.AUDIO_OFFLOAD_MODE_ENABLED)
-                    .build()
-            ).build()
+        val setAudioOffloadPreferences = {
+            exoPlayer.trackSelectionParameters = exoPlayer.trackSelectionParameters
+                .buildUpon()
+                .setAudioOffloadPreferences(
+                    AudioOffloadPreferences
+                        .Builder()
+                        .setAudioOffloadMode(if (sharedPreferences.enableOffload) {
+                            AudioOffloadPreferences.AUDIO_OFFLOAD_MODE_ENABLED
+                        } else {
+                            AudioOffloadPreferences.AUDIO_OFFLOAD_MODE_DISABLED
+                        })
+                        .build()
+                ).build()
+        }
+        setAudioOffloadPreferences()
+
+        sharedPreferences.registerOnSharedPreferenceChangeListener { _, key ->
+            when (key) {
+                ENABLE_OFFLOAD_KEY -> setAudioOffloadPreferences()
+            }
+        }
 
         mediaLibrarySession = MediaLibrarySession.Builder(
             this, exoPlayer, mediaLibrarySessionCallback
