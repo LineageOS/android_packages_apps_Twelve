@@ -19,10 +19,16 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.preference.PreferenceFragmentCompat
+import androidx.preference.SwitchPreference
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.MaterialToolbar
+import kotlinx.coroutines.launch
+import org.lineageos.twelve.ext.ENABLE_OFFLOAD_KEY
 import org.lineageos.twelve.ext.setOffset
+import org.lineageos.twelve.viewmodels.SettingsViewModel
 import kotlin.reflect.safeCast
 
 class SettingsActivity : AppCompatActivity(R.layout.activity_settings) {
@@ -64,6 +70,9 @@ class SettingsActivity : AppCompatActivity(R.layout.activity_settings) {
     abstract class SettingsFragment(
         @XmlRes private val preferencesResId: Int,
     ) : PreferenceFragmentCompat() {
+        // View model
+        private val viewModel by viewModels<SettingsViewModel>()
+
         private val settingsActivity
             get() = SettingsActivity::class.safeCast(activity)
 
@@ -105,6 +114,15 @@ class SettingsActivity : AppCompatActivity(R.layout.activity_settings) {
         @CallSuper
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
             setPreferencesFromResource(preferencesResId, rootKey)
+
+            findPreference<SwitchPreference>(ENABLE_OFFLOAD_KEY)?.apply {
+                setOnPreferenceChangeListener { _, newValue ->
+                    lifecycleScope.launch {
+                        viewModel.toggleOffload(newValue as Boolean)
+                    }
+                    true
+                }
+            }
         }
 
         @CallSuper
