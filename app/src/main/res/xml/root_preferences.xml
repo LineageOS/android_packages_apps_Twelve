@@ -3,4 +3,18 @@
      SPDX-FileCopyrightText: 2024 The LineageOS Project
      SPDX-License-Identifier: Apache-2.0
 -->
-<PreferenceScreen />
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory
+        app:iconSpaceReserved="false"
+        app:title="@string/general_header">
+
+        <SwitchPreference
+            app:defaultValue="true"
+            app:iconSpaceReserved="false"
+            app:key="enable_offload"
+            app:summary="@string/enable_offload_summary"
+            app:title="@string/enable_offload" />
+    </PreferenceCategory>
+
+</PreferenceScreen>
