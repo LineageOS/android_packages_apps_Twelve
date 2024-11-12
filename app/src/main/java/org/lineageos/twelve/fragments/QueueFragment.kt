@@ -108,6 +108,8 @@ class QueueFragment : Fragment(R.layout.fragment_queue) {
     }
     private val itemTouchHelper = ItemTouchHelper(itemTouchHelperCallback)
 
+    private var scrolled = false
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -156,7 +158,14 @@ class QueueFragment : Fragment(R.layout.fragment_queue) {
                 viewModel.queue.collectLatest { queue ->
                     queue.toMutableList().let {
                         adapter.currentQueue = it
-                        adapter.submitList(it)
+                        adapter.submitList(it) {
+                            if (it.isNotEmpty() && !scrolled) {
+                                recyclerView.scrollToPosition(
+                                    queue.indexOfFirst { item -> item.isCurrent }
+                                )
+                                scrolled = true
+                            }
+                        }
                     }
                 }
             }
