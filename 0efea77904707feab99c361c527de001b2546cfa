@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "419fec20_4847723b",
+        "filename": "app/src/main/java/org/lineageos/twelve/SettingsActivity.kt",
+        "patchSetId": 5
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2024-11-12T20:37:14Z",
+      "side": 1,
+      "message": "remove",
+      "range": {
+        "startLine": 40,
+        "startChar": 16,
+        "endLine": 40,
+        "endChar": 33
+      },
+      "revId": "0efea77904707feab99c361c527de001b2546cfa",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5c52792e_a1e99725",
+        "filename": "app/src/main/java/org/lineageos/twelve/SettingsActivity.kt",
+        "patchSetId": 5
+      },
+      "lineNbr": 149,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2024-11-12T20:37:14Z",
+      "side": 1,
+      "message": "inline without lazy",
+      "range": {
+        "startLine": 149,
+        "startChar": 0,
+        "endLine": 149,
+        "endChar": 98
+      },
+      "revId": "0efea77904707feab99c361c527de001b2546cfa",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
