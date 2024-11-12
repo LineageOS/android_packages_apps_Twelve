@@ -34,6 +34,7 @@ import org.lineageos.twelve.R
 import org.lineageos.twelve.TwelveApplication
 import org.lineageos.twelve.ext.enableOffload
 import org.lineageos.twelve.ext.setOffloadEnabled
+import org.lineageos.twelve.ext.stopPlaybackOnTaskRemoved
 import org.lineageos.twelve.ui.widgets.NowPlayingAppWidgetProvider
 
 @OptIn(UnstableApi::class)
@@ -235,7 +236,9 @@ class PlaybackService : MediaLibraryService(), Player.Listener, LifecycleOwner {
     }
 
     override fun onTaskRemoved(rootIntent: Intent?) {
-        pauseAllPlayersAndStopSelf()
+        if (sharedPreferences.stopPlaybackOnTaskRemoved || !isPlaybackOngoing) {
+            pauseAllPlayersAndStopSelf()
+        }
     }
 
     override fun onDestroy() {
