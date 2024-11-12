@@ -142,6 +142,13 @@
     <!-- Settings title -->
     <string name="title_activity_settings">Settings</string>
 
+    <!-- Preference Titles -->
+    <string name="general_header">General</string>
+
+    <!-- General Preferences -->
+    <string name="enable_offload">Enable offload</string>
+    <string name="enable_offload_summary">Use the offload audio path for audio playback</string>
+
     <!-- Now playing widget -->
     <string name="now_playing_widget_description">Now playing</string>
     <string name="now_playing_widget_dummy_title">Title</string>

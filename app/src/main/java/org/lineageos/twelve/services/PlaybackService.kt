@@ -19,7 +19,6 @@ import androidx.media3.common.AudioAttributes
 import androidx.media3.common.C
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
-import androidx.media3.common.TrackSelectionParameters.AudioOffloadPreferences
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.session.DefaultMediaNotificationProvider
@@ -27,11 +26,14 @@ import androidx.media3.session.LibraryResult
 import androidx.media3.session.MediaLibraryService
 import androidx.media3.session.MediaSession
 import androidx.media3.session.SessionError
+import androidx.preference.PreferenceManager
 import kotlinx.coroutines.guava.future
 import kotlinx.coroutines.launch
 import org.lineageos.twelve.MainActivity
 import org.lineageos.twelve.R
 import org.lineageos.twelve.TwelveApplication
+import org.lineageos.twelve.ext.enableOffload
+import org.lineageos.twelve.ext.setOffloadEnabled
 import org.lineageos.twelve.ui.widgets.NowPlayingAppWidgetProvider
 
 @OptIn(UnstableApi::class)
@@ -47,6 +49,10 @@ class PlaybackService : MediaLibraryService(), Player.Listener, LifecycleOwner {
             applicationContext,
             (application as TwelveApplication).mediaRepository,
         )
+    }
+
+    private val sharedPreferences by lazy {
+        PreferenceManager.getDefaultSharedPreferences(this)
     }
 
     private val resumptionPlaylistRepository by lazy {
@@ -196,14 +202,7 @@ class PlaybackService : MediaLibraryService(), Player.Listener, LifecycleOwner {
 
         exoPlayer.addListener(this)
 
-        exoPlayer.trackSelectionParameters = exoPlayer.trackSelectionParameters
-            .buildUpon()
-            .setAudioOffloadPreferences(
-                AudioOffloadPreferences
-                    .Builder()
-                    .setAudioOffloadMode(AudioOffloadPreferences.AUDIO_OFFLOAD_MODE_ENABLED)
-                    .build()
-            ).build()
+        exoPlayer.setOffloadEnabled(sharedPreferences.enableOffload)
 
         mediaLibrarySession = MediaLibrarySession.Builder(
             this, exoPlayer, mediaLibrarySessionCallback
