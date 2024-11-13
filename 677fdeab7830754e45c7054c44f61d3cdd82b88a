@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d5abe22b_0f2f4e72",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 25732
+      },
+      "writtenOn": "2024-11-13T11:48:20Z",
+      "side": 1,
+      "message": "Are we sure we don\u0027t want to keep the preference fragments in navigation + MainActivity?",
+      "revId": "677fdeab7830754e45c7054c44f61d3cdd82b88a",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
