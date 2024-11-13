@@ -16,6 +16,24 @@
       "message": "Are we sure we don\u0027t want to keep the preference fragments in navigation + MainActivity?",
       "revId": "677fdeab7830754e45c7054c44f61d3cdd82b88a",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b94cf33e_6ca0a32f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2024-11-13T12:11:53Z",
+      "side": 1,
+      "message": "does it even matter?\nthis single activity makes sense imo, it\u0027s not related to anything else",
+      "parentUuid": "d5abe22b_0f2f4e72",
+      "revId": "677fdeab7830754e45c7054c44f61d3cdd82b88a",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
