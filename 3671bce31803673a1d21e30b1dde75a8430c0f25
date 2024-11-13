@@ -16,6 +16,24 @@
       "message": "Use MediaRepository.defaultAlbumsSortingRule?\n\nditto for the rest",
       "revId": "3671bce31803673a1d21e30b1dde75a8430c0f25",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "bf80d18c_95fe00ad",
+        "filename": "app/src/main/java/org/lineageos/twelve/viewmodels/AlbumsViewModel.kt",
+        "patchSetId": 1
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 25732
+      },
+      "writtenOn": "2024-11-13T23:43:20Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "599ca381_4fdb187a",
+      "revId": "3671bce31803673a1d21e30b1dde75a8430c0f25",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
