@@ -24,3 +24,8 @@ var SharedPreferences.stopPlaybackOnTaskRemoved: Boolean
     set(value) = edit {
         putBoolean(STOP_PLAYBACK_ON_TASK_REMOVED_KEY, value)
     }
+
+const val SKIP_SILENCE_KEY = "skip_silence"
+private const val SKIP_SILENCE_DEFAULT = false
+val SharedPreferences.skipSilence: Boolean
+    get() = getBoolean(SKIP_SILENCE_KEY, SKIP_SILENCE_DEFAULT)

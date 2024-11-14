@@ -38,8 +38,10 @@ import org.lineageos.twelve.R
 import org.lineageos.twelve.TwelveApplication
 import org.lineageos.twelve.ext.enableOffload
 import org.lineageos.twelve.ext.setOffloadEnabled
+import org.lineageos.twelve.ext.skipSilence
 import org.lineageos.twelve.ext.stopPlaybackOnTaskRemoved
 import org.lineageos.twelve.ui.widgets.NowPlayingAppWidgetProvider
+import kotlin.reflect.cast
 
 @OptIn(UnstableApi::class)
 class PlaybackService : MediaLibraryService(), Player.Listener, LifecycleOwner {
@@ -50,7 +52,15 @@ class PlaybackService : MediaLibraryService(), Player.Listener, LifecycleOwner {
          * Arguments:
          * - [ARG_VALUE] ([Boolean]): Whether to enable or disable offload
          */
-        TOGGLE_OFFLOAD("toggle_offload", Bundle.EMPTY);
+        TOGGLE_OFFLOAD("toggle_offload", Bundle.EMPTY),
+
+        /**
+         * Toggles skip silence.
+         *
+         * Arguments:
+         * - [ARG_VALUE] ([Boolean]): Whether to enable or disable skip silence
+         */
+        TOGGLE_SKIP_SILENCE("toggle_skip_silence", Bundle.EMPTY);
 
         val sessionCommand = SessionCommand(value, extras)
 
@@ -241,6 +251,14 @@ class PlaybackService : MediaLibraryService(), Player.Listener, LifecycleOwner {
                     SessionResult(SessionResult.RESULT_SUCCESS)
                 }
 
+                CustomCommand.TOGGLE_SKIP_SILENCE.value -> {
+                    args.getBoolean(CustomCommand.ARG_VALUE).let {
+                        ExoPlayer::class.cast(mediaLibrarySession?.player).skipSilenceEnabled = it
+                    }
+
+                    SessionResult(SessionResult.RESULT_SUCCESS)
+                }
+
                 else -> SessionResult(SessionError.ERROR_NOT_SUPPORTED)
             }
         }
@@ -259,6 +277,7 @@ class PlaybackService : MediaLibraryService(), Player.Listener, LifecycleOwner {
             .setAudioAttributes(audioAttributes, true)
             .setHandleAudioBecomingNoisy(true)
             .setRenderersFactory(TurntableRenderersFactory(this))
+            .setSkipSilenceEnabled(sharedPreferences.skipSilence)
             .experimentalSetDynamicSchedulingEnabled(true)
             .build()
 
