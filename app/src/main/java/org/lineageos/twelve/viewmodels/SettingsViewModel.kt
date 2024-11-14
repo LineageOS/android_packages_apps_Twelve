@@ -39,4 +39,19 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
         )
         mediaController.release()
     }
+
+    @OptIn(UnstableApi::class)
+    suspend fun toggleSkipSilence(skipSilence: Boolean) {
+        val mediaController = MediaController.Builder(applicationContext, sessionToken)
+            .buildAsync()
+            .await()
+
+        mediaController.sendCustomCommand(
+            PlaybackService.buildToggleSkipSilenceCommand(),
+            bundleOf(
+                PlaybackService.BOOLEAN to skipSilence
+            )
+        )
+        mediaController.release()
+    }
 }
