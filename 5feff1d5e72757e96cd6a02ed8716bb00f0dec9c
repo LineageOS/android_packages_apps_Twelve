@@ -71,6 +71,30 @@
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "1257efc8_af18751b",
+        "filename": "app/src/main/java/org/lineageos/twelve/ui/views/SortingChip.kt",
+        "patchSetId": 3
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2024-11-14T15:35:43Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d5db3d44_54754ea6",
+      "range": {
+        "startLine": 37,
+        "startChar": 0,
+        "endLine": 37,
+        "endChar": 38
+      },
+      "revId": "5feff1d5e72757e96cd6a02ed8716bb00f0dec9c",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "6b31b493_7bf2ef42",
@@ -94,6 +118,30 @@
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "7ce925f8_270cfc1d",
+        "filename": "app/src/main/java/org/lineageos/twelve/ui/views/SortingChip.kt",
+        "patchSetId": 3
+      },
+      "lineNbr": 81,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2024-11-14T15:35:43Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "6b31b493_7bf2ef42",
+      "range": {
+        "startLine": 81,
+        "startChar": 0,
+        "endLine": 81,
+        "endChar": 78
+      },
+      "revId": "5feff1d5e72757e96cd6a02ed8716bb00f0dec9c",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "581435f1_dea91481",
@@ -107,6 +155,30 @@
       "writtenOn": "2024-11-14T13:24:44Z",
       "side": 1,
       "message": "```suggestion\n                }?.reverse?.not() ?: sortingRule?.reverse ?: false\n```",
+      "range": {
+        "startLine": 141,
+        "startChar": 0,
+        "endLine": 141,
+        "endChar": 42
+      },
+      "revId": "5feff1d5e72757e96cd6a02ed8716bb00f0dec9c",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2e7e267c_802eedf8",
+        "filename": "app/src/main/java/org/lineageos/twelve/ui/views/SortingChip.kt",
+        "patchSetId": 3
+      },
+      "lineNbr": 141,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2024-11-14T15:35:43Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "581435f1_dea91481",
       "range": {
         "startLine": 141,
         "startChar": 0,
