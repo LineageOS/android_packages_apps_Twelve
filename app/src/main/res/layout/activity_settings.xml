@@ -22,10 +22,9 @@
             style="?attr/collapsingToolbarLayoutLargeStyle"
             android:layout_width="match_parent"
             android:layout_height="179dp"
-            app:collapsedTitleTextAppearance="@style/Theme.SettingsLib.ToolbarCollapsedTextAppearance"
             app:expandedTitleMarginBottom="31dp"
             app:expandedTitleMarginStart="24dp"
-            app:expandedTitleTextAppearance="@style/Theme.SettingsLib.ToolbarExpandedTextAppearance"
+            app:expandedTitleTextAppearance="?attr/textAppearanceDisplaySmall"
             app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
             app:titleCollapseMode="fade"
             app:toolbarId="@id/toolbar">
