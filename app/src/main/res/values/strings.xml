@@ -53,7 +53,7 @@
         <item quantity="one">%d minute</item>
         <item quantity="other">%d minutes</item>
     </plurals>
-    <string name="tracks_info">%1$s, %2$s</string>
+    <string name="tracks_info" translatable="false">%1$s, %2$s</string>
 
     <!-- Artist fragment -->
     <string name="artist_albums_header">Albums</string>
