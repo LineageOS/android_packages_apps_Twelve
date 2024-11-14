@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3ae581cb_83c1a8df",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2024-11-14T19:32:41Z",
+      "side": 1,
+      "message": "I don\u0027t know how I feel about that, usually when I want shuffle/repeat mode I do it only once and expect it to be killed the nest iteration (and I think yt music behaves like that)",
+      "revId": "76967dcf051b80fc0a844aa5ac1e9de30dc21269",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
