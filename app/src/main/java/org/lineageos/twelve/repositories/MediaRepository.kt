@@ -194,7 +194,7 @@ class MediaRepository(
      * @return A flow of [Bundle] containing the arguments.
      */
     fun providerArguments(providerType: ProviderType, providerTypeId: Long) = when (providerType) {
-        ProviderType.LOCAL -> flowOf(bundleOf())
+        ProviderType.LOCAL -> flowOf(Bundle.EMPTY)
 
         ProviderType.SUBSONIC -> database.getSubsonicProviderDao().getById(
             providerTypeId
