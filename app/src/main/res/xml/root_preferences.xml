@@ -23,6 +23,13 @@
             app:summary="@string/stop_playback_on_task_removed_summary"
             app:title="@string/stop_playback_on_task_removed" />
 
+        <SwitchPreference
+            app:defaultValue="false"
+            app:iconSpaceReserved="false"
+            app:key="skip_silence"
+            app:summary="@string/skip_silence_summary"
+            app:title="@string/skip_silence" />
+
     </PreferenceCategory>
 
 </PreferenceScreen>
