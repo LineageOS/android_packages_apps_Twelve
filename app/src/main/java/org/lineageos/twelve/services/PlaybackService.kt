@@ -34,6 +34,7 @@ import org.lineageos.twelve.R
 import org.lineageos.twelve.TwelveApplication
 import org.lineageos.twelve.ext.enableOffload
 import org.lineageos.twelve.ext.setOffloadEnabled
+import org.lineageos.twelve.ext.skipSilence
 import org.lineageos.twelve.ext.stopPlaybackOnTaskRemoved
 import org.lineageos.twelve.ui.widgets.NowPlayingAppWidgetProvider
 
@@ -198,6 +199,7 @@ class PlaybackService : MediaLibraryService(), Player.Listener, LifecycleOwner {
             .setAudioAttributes(audioAttributes, true)
             .setHandleAudioBecomingNoisy(true)
             .setRenderersFactory(TurntableRenderersFactory(this))
+            .setSkipSilenceEnabled(sharedPreferences.skipSilence)
             .experimentalSetDynamicSchedulingEnabled(true)
             .build()
 
