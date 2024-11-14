@@ -11,6 +11,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
+import androidx.preference.PreferenceManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.SharingStarted
@@ -20,6 +21,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.guava.await
 import org.lineageos.twelve.TwelveApplication
 import org.lineageos.twelve.ext.applicationContext
+import org.lineageos.twelve.ext.shuffleModeEnabled
 import org.lineageos.twelve.ext.typedRepeatMode
 import org.lineageos.twelve.models.Audio
 import org.lineageos.twelve.models.RepeatMode
@@ -34,6 +36,10 @@ abstract class TwelveViewModel(application: Application) : AndroidViewModel(appl
     protected val mediaRepository = getApplication<TwelveApplication>().mediaRepository
 
     final override fun <T : Application> getApplication() = super.getApplication<T>()
+
+    private val sharedPreferences by lazy {
+        PreferenceManager.getDefaultSharedPreferences(application)
+    }
 
     private val sessionToken by lazy {
         SessionToken(
@@ -62,11 +68,29 @@ abstract class TwelveViewModel(application: Application) : AndroidViewModel(appl
             initialValue = null
         )
 
+    protected var shuffleModeEnabled: Boolean
+        get() = mediaController.value?.shuffleModeEnabled ?: false
+        set(value) {
+            mediaController.value?.apply {
+                shuffleModeEnabled = value
+                sharedPreferences.shuffleModeEnabled = value
+            }
+        }
+
+    protected var typedRepeatMode: RepeatMode
+        get() = mediaController.value?.typedRepeatMode ?: RepeatMode.NONE
+        set(value) {
+            mediaController.value?.apply {
+                typedRepeatMode = value
+                sharedPreferences.typedRepeatMode = value
+            }
+        }
+
     fun playAudio(audio: List<Audio>, position: Int) {
         mediaController.value?.apply {
-            // Reset playback settings
-            shuffleModeEnabled = false
-            typedRepeatMode = RepeatMode.NONE
+            // Initialize shuffle and repeat modes
+            shuffleModeEnabled = sharedPreferences.shuffleModeEnabled
+            typedRepeatMode = sharedPreferences.typedRepeatMode
 
             setMediaItems(audio.map { it.toMedia3MediaItem() }, true)
             prepare()
