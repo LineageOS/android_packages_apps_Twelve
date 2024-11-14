@@ -51,6 +51,24 @@
       "parentUuid": "d444a642_503d0374",
       "revId": "c8a4b4c38d4be751a6eb70c7863917a663497f03",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e85898c3_5f8ad7ee",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2024-11-14T18:17:22Z",
+      "side": 1,
+      "message": "yeah I tried to quickly check how I\u0027d remove compile time only deps and failed, funnily enough gradle adds this code in the library regardless and simply strips it out with r8",
+      "parentUuid": "2157786e_9a09bc10",
+      "revId": "c8a4b4c38d4be751a6eb70c7863917a663497f03",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
