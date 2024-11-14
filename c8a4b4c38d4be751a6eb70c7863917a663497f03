@@ -16,6 +16,23 @@
       "message": "Just did this yesterday when setting up an external app using generateBp.\n\nNot sure if you really want it, but at least r8 and a few other AOSP tests apps exclude them explicitly.\n\nhttps://android.googlesource.com/platform/external/r8/+/6b06bfbaf7e8bbb3cddfe3889c04aa0f0fba4106/build.gradle#159\n\nhttps://android.googlesource.com/platform/external/exoplayer/+/cadc7b809f0bdecef43f7f3ac6ca4ff3c5707cdf/tree_15dc86382f17a24a3e881e52e31a810c1ea44b49/library/common/build.gradle#26",
       "revId": "c8a4b4c38d4be751a6eb70c7863917a663497f03",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d444a642_503d0374",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 25732
+      },
+      "writtenOn": "2024-11-14T12:42:22Z",
+      "side": 1,
+      "message": "This is fine, do we instead want to do this directly in generateBp?",
+      "revId": "c8a4b4c38d4be751a6eb70c7863917a663497f03",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
