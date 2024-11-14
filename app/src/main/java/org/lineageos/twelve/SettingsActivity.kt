@@ -27,6 +27,7 @@ import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.MaterialToolbar
 import kotlinx.coroutines.launch
 import org.lineageos.twelve.ext.ENABLE_OFFLOAD_KEY
+import org.lineageos.twelve.ext.SKIP_SILENCE_KEY
 import org.lineageos.twelve.ext.setOffset
 import org.lineageos.twelve.viewmodels.SettingsViewModel
 import kotlin.reflect.safeCast
@@ -142,6 +143,7 @@ class SettingsActivity : AppCompatActivity(R.layout.activity_settings) {
     class RootSettingsFragment : SettingsFragment(R.xml.root_preferences) {
         // Preferences
         private val enableOffload by lazy { findPreference<SwitchPreference>(ENABLE_OFFLOAD_KEY)!! }
+        private val skipSilence by lazy { findPreference<SwitchPreference>(SKIP_SILENCE_KEY)!! }
 
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
             super.onCreatePreferences(savedInstanceState, rootKey)
@@ -149,6 +151,13 @@ class SettingsActivity : AppCompatActivity(R.layout.activity_settings) {
             enableOffload.setOnPreferenceChangeListener { _, newValue ->
                 lifecycleScope.launch {
                     viewModel.toggleOffload(newValue as Boolean)
+                }
+                true
+            }
+
+            skipSilence.setOnPreferenceChangeListener { _, newValue ->
+                lifecycleScope.launch {
+                    viewModel.toggleSkipSilence(newValue as Boolean)
                 }
                 true
             }
