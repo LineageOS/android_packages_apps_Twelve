@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3ff9334f_1f1ba496",
+        "filename": "app/src/main/java/org/lineageos/twelve/ui/views/SortingChip.kt",
+        "patchSetId": 3
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2024-11-14T13:24:44Z",
+      "side": 1,
+      "message": "Probably won\u0027t work in AOSP, testing atm\nIn case you\u0027ll have to create your own attr",
+      "range": {
+        "startLine": 23,
+        "startChar": 24,
+        "endLine": 23,
+        "endChar": 53
+      },
+      "revId": "5feff1d5e72757e96cd6a02ed8716bb00f0dec9c",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d5db3d44_54754ea6",
+        "filename": "app/src/main/java/org/lineageos/twelve/ui/views/SortingChip.kt",
+        "patchSetId": 3
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2024-11-14T13:24:44Z",
+      "side": 1,
+      "message": "```suggestion\n            }?.reverse?.not() ?: sortingRule?.reverse ?: false\n```",
+      "range": {
+        "startLine": 37,
+        "startChar": 0,
+        "endLine": 37,
+        "endChar": 38
+      },
+      "revId": "5feff1d5e72757e96cd6a02ed8716bb00f0dec9c",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6b31b493_7bf2ef42",
+        "filename": "app/src/main/java/org/lineageos/twelve/ui/views/SortingChip.kt",
+        "patchSetId": 3
+      },
+      "lineNbr": 81,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2024-11-14T13:24:44Z",
+      "side": 1,
+      "message": "```suggestion\n    fun setOnSortingRuleSelectedListener(listener: ((SortingRule) -\u003e Unit)) {\n```",
+      "range": {
+        "startLine": 81,
+        "startChar": 0,
+        "endLine": 81,
+        "endChar": 78
+      },
+      "revId": "5feff1d5e72757e96cd6a02ed8716bb00f0dec9c",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "581435f1_dea91481",
+        "filename": "app/src/main/java/org/lineageos/twelve/ui/views/SortingChip.kt",
+        "patchSetId": 3
+      },
+      "lineNbr": 141,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2024-11-14T13:24:44Z",
+      "side": 1,
+      "message": "```suggestion\n                }?.reverse?.not() ?: sortingRule?.reverse ?: false\n```",
+      "range": {
+        "startLine": 141,
+        "startChar": 0,
+        "endLine": 141,
+        "endChar": 42
+      },
+      "revId": "5feff1d5e72757e96cd6a02ed8716bb00f0dec9c",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
