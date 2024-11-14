@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2ff8eab3_78aa4a00",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 10067
+      },
+      "writtenOn": "2024-11-14T20:37:50Z",
+      "side": 1,
+      "message": "I liked newline after key+default, but it\u0027s fine either way.",
+      "revId": "4e99dd175903b179af27c88f6ef82c1d73a8ae61",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
