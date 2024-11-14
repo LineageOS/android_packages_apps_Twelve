@@ -623,31 +623,6 @@ android_library {
 }
 
 java_import {
-    name: "Twelve_com.google.j2objc_j2objc-annotations-nodeps",
-    jars: ["com/google/j2objc/j2objc-annotations/3.0.0/j2objc-annotations-3.0.0.jar"],
-    sdk_version: "35",
-    min_sdk_version: "14",
-    apex_available: [
-        "//apex_available:platform",
-        "//apex_available:anyapex",
-    ],
-}
-
-java_library_static {
-    name: "Twelve_com.google.j2objc_j2objc-annotations",
-    sdk_version: "35",
-    min_sdk_version: "14",
-    apex_available: [
-        "//apex_available:platform",
-        "//apex_available:anyapex",
-    ],
-    static_libs: [
-        "Twelve_com.google.j2objc_j2objc-annotations-nodeps",
-    ],
-    java_version: "1.7",
-}
-
-java_import {
     name: "Twelve_com.squareup.okhttp3_okhttp-nodeps",
     jars: ["com/squareup/okhttp3/okhttp/4.12.0/okhttp-4.12.0.jar"],
     sdk_version: "35",
@@ -909,31 +884,6 @@ java_library_static {
         "Twelve_io.coil-kt.coil3_coil-core",
         "Twelve_io.coil-kt.coil3_coil-network-core",
         "kotlin-stdlib",
-    ],
-    java_version: "1.7",
-}
-
-java_import {
-    name: "Twelve_org.checkerframework_checker-qual-nodeps",
-    jars: ["org/checkerframework/checker-qual/3.43.0/checker-qual-3.43.0.jar"],
-    sdk_version: "35",
-    min_sdk_version: "14",
-    apex_available: [
-        "//apex_available:platform",
-        "//apex_available:anyapex",
-    ],
-}
-
-java_library_static {
-    name: "Twelve_org.checkerframework_checker-qual",
-    sdk_version: "35",
-    min_sdk_version: "14",
-    apex_available: [
-        "//apex_available:platform",
-        "//apex_available:anyapex",
-    ],
-    static_libs: [
-        "Twelve_org.checkerframework_checker-qual-nodeps",
     ],
     java_version: "1.7",
 }
