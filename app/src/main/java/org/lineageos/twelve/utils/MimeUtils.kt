@@ -11,10 +11,14 @@ import org.lineageos.twelve.models.MediaType
 
 object MimeUtils {
     @androidx.annotation.OptIn(UnstableApi::class)
-    fun mimeTypeToDisplayName(mimeType: String) = MimeTypes.normalizeMimeType(mimeType).let {
-        it.takeIf { it.contains('/') }
-            ?.substringAfterLast('/')
-            ?.uppercase()
+    fun mimeTypeToDisplayName(mimeType: String) = when (mimeType) {
+        MimeTypes.AUDIO_MPEG -> "MP3"
+
+        else -> MimeTypes.normalizeMimeType(mimeType).let {
+            it.takeIf { it.contains('/') }
+                ?.substringAfterLast('/')
+                ?.uppercase()
+        }
     }
 
     fun mimeTypeToMediaType(mimeType: String) = when {
