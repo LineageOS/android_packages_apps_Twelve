@@ -18,6 +18,7 @@ class TurntableRenderersFactory(context: Context) : DefaultRenderersFactory(cont
         setEnableAudioFloatOutput(true)
         setEnableAudioTrackPlaybackParams(true)
         setEnableDecoderFallback(true)
+        experimentalSetMediaCodecAsyncCryptoFlagEnabled(true)
     }
 
     override fun buildAudioSink(
