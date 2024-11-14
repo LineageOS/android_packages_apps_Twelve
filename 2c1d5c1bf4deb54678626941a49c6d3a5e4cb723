@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6079995f_fbf5fa59",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 10067
+      },
+      "writtenOn": "2024-11-14T16:52:41Z",
+      "side": 1,
+      "message": "Twelve: Make tracks_info string untranslatable",
+      "revId": "2c1d5c1bf4deb54678626941a49c6d3a5e4cb723",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
