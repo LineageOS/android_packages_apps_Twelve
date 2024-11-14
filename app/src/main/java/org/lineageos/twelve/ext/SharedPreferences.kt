@@ -7,6 +7,7 @@ package org.lineageos.twelve.ext
 
 import android.content.SharedPreferences
 import androidx.core.content.edit
+import org.lineageos.twelve.models.RepeatMode
 
 // Generic prefs
 const val ENABLE_OFFLOAD_KEY = "enable_offload"
@@ -25,4 +26,23 @@ var SharedPreferences.stopPlaybackOnTaskRemoved: Boolean
     get() = getBoolean(STOP_PLAYBACK_ON_TASK_REMOVED_KEY, STOP_PLAYBACK_ON_TASK_REMOVED_DEFAULT)
     set(value) = edit {
         putBoolean(STOP_PLAYBACK_ON_TASK_REMOVED_KEY, value)
+    }
+
+// Playback prefs
+private const val TYPED_REPEAT_MODE_KEY = "typed_repeat_mode"
+private val TYPED_REPEAT_MODE_DEFAULT = RepeatMode.NONE.ordinal
+
+var SharedPreferences.typedRepeatMode: RepeatMode
+    get() = RepeatMode.entries[getInt(TYPED_REPEAT_MODE_KEY, TYPED_REPEAT_MODE_DEFAULT)]
+    set(value) = edit {
+        putInt(TYPED_REPEAT_MODE_KEY, value.ordinal)
+    }
+
+private const val SHUFFLE_MODE_ENABLED_KEY = "shuffle_mode_enabled"
+private const val SHUFFLE_MODE_ENABLED_DEFAULT = false
+
+var SharedPreferences.shuffleModeEnabled: Boolean
+    get() = getBoolean(SHUFFLE_MODE_ENABLED_KEY, SHUFFLE_MODE_ENABLED_DEFAULT)
+    set(value) = edit {
+        putBoolean(SHUFFLE_MODE_ENABLED_KEY, value)
     }

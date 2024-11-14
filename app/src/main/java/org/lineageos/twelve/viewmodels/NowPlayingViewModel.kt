@@ -313,15 +313,11 @@ open class NowPlayingViewModel(application: Application) : TwelveViewModel(appli
     }
 
     fun toggleShuffleMode() {
-        mediaController.value?.apply {
-            shuffleModeEnabled = shuffleModeEnabled.not()
-        }
+        shuffleModeEnabled = shuffleModeEnabled.not()
     }
 
     fun toggleRepeatMode() {
-        mediaController.value?.apply {
-            typedRepeatMode = typedRepeatMode.next()
-        }
+        typedRepeatMode = typedRepeatMode.next()
     }
 
     fun shufflePlaybackSpeed() {
