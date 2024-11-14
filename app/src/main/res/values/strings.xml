@@ -70,7 +70,6 @@
     <string name="open_genre">Open genre</string>
 
     <!-- Playlist fragment -->
-    <string name="playlist_tracks_info">%1$d tracks, %2$d minutes</string>
     <string name="rename_playlist">Rename playlist</string>
     <string name="rename_playlist_positive">Rename</string>
     <string name="delete_playlist">Delete playlist</string>
