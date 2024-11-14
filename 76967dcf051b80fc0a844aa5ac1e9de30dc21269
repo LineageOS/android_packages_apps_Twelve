@@ -16,6 +16,24 @@
       "message": "I don\u0027t know how I feel about that, usually when I want shuffle/repeat mode I do it only once and expect it to be killed the nest iteration (and I think yt music behaves like that)",
       "revId": "76967dcf051b80fc0a844aa5ac1e9de30dc21269",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b60c8cdb_888b5f30",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 10067
+      },
+      "writtenOn": "2024-11-14T19:34:06Z",
+      "side": 1,
+      "message": "I on the other hand only change it willingly, and this is how other players behave too.",
+      "parentUuid": "3ae581cb_83c1a8df",
+      "revId": "76967dcf051b80fc0a844aa5ac1e9de30dc21269",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
