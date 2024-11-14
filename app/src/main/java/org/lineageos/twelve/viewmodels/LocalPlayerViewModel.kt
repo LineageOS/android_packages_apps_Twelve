@@ -15,6 +15,7 @@ import androidx.media3.common.C
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
 import androidx.media3.exoplayer.ExoPlayer
+import androidx.preference.PreferenceManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.SharingStarted
@@ -30,6 +31,7 @@ import org.lineageos.twelve.ext.next
 import org.lineageos.twelve.ext.playbackParametersFlow
 import org.lineageos.twelve.ext.playbackStateFlow
 import org.lineageos.twelve.ext.repeatModeFlow
+import org.lineageos.twelve.ext.shuffleModeEnabled
 import org.lineageos.twelve.ext.shuffleModeFlow
 import org.lineageos.twelve.ext.typedRepeatMode
 import org.lineageos.twelve.models.PlaybackState
@@ -52,6 +54,10 @@ class LocalPlayerViewModel(application: Application) : AndroidViewModel(applicat
                 it.value == value
             }
         }
+    }
+
+    private val sharedPreferences by lazy {
+        PreferenceManager.getDefaultSharedPreferences(application)
     }
 
     // ExoPlayer
@@ -175,6 +181,10 @@ class LocalPlayerViewModel(application: Application) : AndroidViewModel(applicat
 
     fun setMediaUris(uris: Iterable<Uri>) {
         exoPlayer.apply {
+            // Initialize shuffle and repeat modes
+            typedRepeatMode = sharedPreferences.typedRepeatMode
+            shuffleModeEnabled = sharedPreferences.shuffleModeEnabled
+
             setMediaItems(
                 uris.map {
                     MediaItem.fromUri(it)
@@ -208,15 +218,13 @@ class LocalPlayerViewModel(application: Application) : AndroidViewModel(applicat
     }
 
     fun toggleShuffleMode() {
-        exoPlayer.apply {
-            shuffleModeEnabled = shuffleModeEnabled.not()
-        }
+        exoPlayer.shuffleModeEnabled = exoPlayer.shuffleModeEnabled.not()
+        sharedPreferences.shuffleModeEnabled = exoPlayer.shuffleModeEnabled
     }
 
     fun toggleRepeatMode() {
-        exoPlayer.apply {
-            typedRepeatMode = typedRepeatMode.next()
-        }
+        exoPlayer.typedRepeatMode = exoPlayer.typedRepeatMode.next()
+        sharedPreferences.typedRepeatMode = exoPlayer.typedRepeatMode
     }
 
     fun seekToPrevious() {
