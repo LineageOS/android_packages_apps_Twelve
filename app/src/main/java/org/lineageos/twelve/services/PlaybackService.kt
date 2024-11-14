@@ -38,8 +38,10 @@ import org.lineageos.twelve.R
 import org.lineageos.twelve.TwelveApplication
 import org.lineageos.twelve.ext.enableOffload
 import org.lineageos.twelve.ext.setOffloadEnabled
+import org.lineageos.twelve.ext.skipSilence
 import org.lineageos.twelve.ext.stopPlaybackOnTaskRemoved
 import org.lineageos.twelve.ui.widgets.NowPlayingAppWidgetProvider
+import kotlin.reflect.cast
 
 @OptIn(UnstableApi::class)
 class PlaybackService : MediaLibraryService(), Player.Listener, LifecycleOwner {
@@ -71,6 +73,7 @@ class PlaybackService : MediaLibraryService(), Player.Listener, LifecycleOwner {
         ): MediaSession.ConnectionResult {
             val sessionCommands = MediaSession.ConnectionResult.DEFAULT_SESSION_COMMANDS.buildUpon()
                 .add(SessionCommand(COMMANDS.TOGGLE_OFFLOAD.value, bundleOf()))
+                .add(SessionCommand(COMMANDS.TOGGLE_SKIP_SILENCE.value, bundleOf()))
                 .build()
             return MediaSession.ConnectionResult.AcceptedResultBuilder(session)
                 .setAvailableSessionCommands(sessionCommands)
@@ -206,10 +209,19 @@ class PlaybackService : MediaLibraryService(), Player.Listener, LifecycleOwner {
             customCommand: SessionCommand,
             args: Bundle
         ) = lifecycle.coroutineScope.future {
+            println("Got custom command ${customCommand.customAction}")
             when (customCommand.customAction) {
                 COMMANDS.TOGGLE_OFFLOAD.value -> {
                     args.getBoolean(BOOLEAN).let {
                         mediaLibrarySession?.player?.setOffloadEnabled(it)
+                    }
+                    SessionResult(SessionResult.RESULT_SUCCESS)
+                }
+
+                COMMANDS.TOGGLE_SKIP_SILENCE.value -> {
+                    args.getBoolean(BOOLEAN).let {
+                        ExoPlayer::class.cast(mediaLibrarySession?.player).skipSilenceEnabled =
+                            args.getBoolean(BOOLEAN)
                     }
                     SessionResult(SessionResult.RESULT_SUCCESS)
                 }
@@ -232,6 +244,7 @@ class PlaybackService : MediaLibraryService(), Player.Listener, LifecycleOwner {
             .setAudioAttributes(audioAttributes, true)
             .setHandleAudioBecomingNoisy(true)
             .setRenderersFactory(TurntableRenderersFactory(this))
+            .setSkipSilenceEnabled(sharedPreferences.skipSilence)
             .experimentalSetDynamicSchedulingEnabled(true)
             .build()
 
@@ -352,10 +365,16 @@ class PlaybackService : MediaLibraryService(), Player.Listener, LifecycleOwner {
 
         private enum class COMMANDS(val value: String) {
             TOGGLE_OFFLOAD("toggle_offload"),
+            TOGGLE_SKIP_SILENCE("toggle_skip_silence"),
         }
 
         fun buildToggleOffloadCommand() = SessionCommand(
             COMMANDS.TOGGLE_OFFLOAD.value,
+            bundleOf()
+        )
+
+        fun buildToggleSkipSilenceCommand() = SessionCommand(
+            COMMANDS.TOGGLE_SKIP_SILENCE.value,
             bundleOf()
         )
     }
