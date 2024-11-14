@@ -307,10 +307,8 @@ class AlbumFragment : Fragment(R.layout.fragment_album) {
                                 totalDurationMinutes,
                                 totalDurationMinutes
                             )
-                            tracksInfoTextView.text = getString(
-                                R.string.tracks_info,
-                                tracksCount, tracksDuration
-                            )
+                            tracksInfoTextView.text =
+                                listOf(tracksCount, tracksDuration).joinToString(", ")
                         }
 
                         is RequestStatus.Error -> {

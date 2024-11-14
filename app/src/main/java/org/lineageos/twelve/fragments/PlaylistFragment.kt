@@ -256,10 +256,8 @@ class PlaylistFragment : Fragment(R.layout.fragment_playlist) {
                         totalDurationMinutes,
                         totalDurationMinutes
                     )
-                    tracksInfoTextView.text = getString(
-                        R.string.tracks_info,
-                        tracksCount, tracksDuration
-                    )
+                    tracksInfoTextView.text =
+                        listOf(tracksCount, tracksDuration).joinToString(", ")
 
                     adapter.submitList(audios)
 
