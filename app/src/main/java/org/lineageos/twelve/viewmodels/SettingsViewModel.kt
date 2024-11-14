@@ -8,13 +8,13 @@ package org.lineageos.twelve.viewmodels
 import android.app.Application
 import android.content.ComponentName
 import androidx.annotation.OptIn
+import androidx.core.os.bundleOf
 import androidx.lifecycle.AndroidViewModel
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
 import kotlinx.coroutines.guava.await
 import org.lineageos.twelve.ext.applicationContext
-import org.lineageos.twelve.ext.setOffloadEnabled
 import org.lineageos.twelve.services.PlaybackService
 
 class SettingsViewModel(application: Application) : AndroidViewModel(application) {
@@ -31,7 +31,12 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
             .buildAsync()
             .await()
 
-        mediaController.setOffloadEnabled(offload)
+        mediaController.sendCustomCommand(
+            PlaybackService.buildToggleOffloadCommand(),
+            bundleOf(
+                PlaybackService.BOOLEAN to offload
+            )
+        )
         mediaController.release()
     }
 }

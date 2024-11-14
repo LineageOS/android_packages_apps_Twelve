@@ -8,8 +8,10 @@ package org.lineageos.twelve.services
 import android.app.PendingIntent
 import android.content.Intent
 import android.media.audiofx.AudioEffect
+import android.os.Bundle
 import android.os.IBinder
 import androidx.annotation.OptIn
+import androidx.core.os.bundleOf
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ServiceLifecycleDispatcher
@@ -25,7 +27,9 @@ import androidx.media3.session.DefaultMediaNotificationProvider
 import androidx.media3.session.LibraryResult
 import androidx.media3.session.MediaLibraryService
 import androidx.media3.session.MediaSession
+import androidx.media3.session.SessionCommand
 import androidx.media3.session.SessionError
+import androidx.media3.session.SessionResult
 import androidx.preference.PreferenceManager
 import kotlinx.coroutines.guava.future
 import kotlinx.coroutines.launch
@@ -61,6 +65,18 @@ class PlaybackService : MediaLibraryService(), Player.Listener, LifecycleOwner {
     }
 
     private val mediaLibrarySessionCallback = object : MediaLibrarySession.Callback {
+        override fun onConnect(
+            session: MediaSession,
+            controller: MediaSession.ControllerInfo
+        ): MediaSession.ConnectionResult {
+            val sessionCommands = MediaSession.ConnectionResult.DEFAULT_SESSION_COMMANDS.buildUpon()
+                .add(SessionCommand(COMMANDS.TOGGLE_OFFLOAD.value, bundleOf()))
+                .build()
+            return MediaSession.ConnectionResult.AcceptedResultBuilder(session)
+                .setAvailableSessionCommands(sessionCommands)
+                .build()
+        }
+
         override fun onPlaybackResumption(
             mediaSession: MediaSession,
             controller: MediaSession.ControllerInfo
@@ -182,6 +198,24 @@ class PlaybackService : MediaLibraryService(), Player.Listener, LifecycleOwner {
             params: LibraryParams?,
         ) = lifecycle.coroutineScope.future {
             LibraryResult.ofItemList(mediaRepositoryTree.search(query), params)
+        }
+
+        override fun onCustomCommand(
+            session: MediaSession,
+            controller: MediaSession.ControllerInfo,
+            customCommand: SessionCommand,
+            args: Bundle
+        ) = lifecycle.coroutineScope.future {
+            when (customCommand.customAction) {
+                COMMANDS.TOGGLE_OFFLOAD.value -> {
+                    args.getBoolean(BOOLEAN).let {
+                        mediaLibrarySession?.player?.setOffloadEnabled(it)
+                    }
+                    SessionResult(SessionResult.RESULT_SUCCESS)
+                }
+
+                else -> SessionResult(SessionError.ERROR_NOT_SUPPORTED)
+            }
         }
     }
 
@@ -312,4 +346,17 @@ class PlaybackService : MediaLibraryService(), Player.Listener, LifecycleOwner {
         },
         PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
     )
+
+    companion object {
+        const val BOOLEAN = "boolean"
+
+        private enum class COMMANDS(val value: String) {
+            TOGGLE_OFFLOAD("toggle_offload"),
+        }
+
+        fun buildToggleOffloadCommand() = SessionCommand(
+            COMMANDS.TOGGLE_OFFLOAD.value,
+            bundleOf()
+        )
+    }
 }
