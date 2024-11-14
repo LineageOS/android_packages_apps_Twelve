@@ -16,6 +16,24 @@
       "message": "idk, just make it non-translatable? All languages in the world uses commas to separate stuff?",
       "revId": "2b98f915bd9320862b28783725cfb2c64e532081",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5d89de47_437cda4b",
+        "filename": "app/src/main/res/values/strings.xml",
+        "patchSetId": 2
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2024-11-14T16:49:12Z",
+      "side": 0,
+      "message": "we just don\u0027t provide enough context on how to translate it, maybe some xmlif tag may help, but I wouldn\u0027t bother",
+      "parentUuid": "3342e8da_1103a8ab",
+      "revId": "2b98f915bd9320862b28783725cfb2c64e532081",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
