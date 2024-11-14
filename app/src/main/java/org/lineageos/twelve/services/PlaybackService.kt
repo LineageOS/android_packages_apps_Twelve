@@ -11,7 +11,6 @@ import android.media.audiofx.AudioEffect
 import android.os.Bundle
 import android.os.IBinder
 import androidx.annotation.OptIn
-import androidx.core.os.bundleOf
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ServiceLifecycleDispatcher
@@ -72,8 +71,8 @@ class PlaybackService : MediaLibraryService(), Player.Listener, LifecycleOwner {
             controller: MediaSession.ControllerInfo
         ): MediaSession.ConnectionResult {
             val sessionCommands = MediaSession.ConnectionResult.DEFAULT_SESSION_COMMANDS.buildUpon()
-                .add(SessionCommand(COMMANDS.TOGGLE_OFFLOAD.value, bundleOf()))
-                .add(SessionCommand(COMMANDS.TOGGLE_SKIP_SILENCE.value, bundleOf()))
+                .add(SessionCommand(COMMANDS.TOGGLE_OFFLOAD.value, Bundle.EMPTY))
+                .add(SessionCommand(COMMANDS.TOGGLE_SKIP_SILENCE.value, Bundle.EMPTY))
                 .build()
             return MediaSession.ConnectionResult.AcceptedResultBuilder(session)
                 .setAvailableSessionCommands(sessionCommands)
@@ -368,12 +367,12 @@ class PlaybackService : MediaLibraryService(), Player.Listener, LifecycleOwner {
 
         fun buildToggleOffloadCommand() = SessionCommand(
             COMMANDS.TOGGLE_OFFLOAD.value,
-            bundleOf()
+            Bundle.EMPTY
         )
 
         fun buildToggleSkipSilenceCommand() = SessionCommand(
             COMMANDS.TOGGLE_SKIP_SILENCE.value,
-            bundleOf()
+            Bundle.EMPTY
         )
     }
 }
