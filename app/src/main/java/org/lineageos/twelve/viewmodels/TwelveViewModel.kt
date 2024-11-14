@@ -64,10 +64,6 @@ abstract class TwelveViewModel(application: Application) : AndroidViewModel(appl
 
     fun playAudio(audio: List<Audio>, position: Int) {
         mediaController.value?.apply {
-            // Reset playback settings
-            shuffleModeEnabled = false
-            typedRepeatMode = RepeatMode.NONE
-
             setMediaItems(audio.map { it.toMedia3MediaItem() }, true)
             prepare()
             seekToDefaultPosition(position)
