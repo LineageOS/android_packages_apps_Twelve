@@ -70,6 +70,24 @@
       "parentUuid": "3af4b253_9c174975",
       "revId": "5663ba7c00e4c4ed8db6407f1c297b31e103ae46",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "747d3d88_db8cd7c0",
+        "filename": "app/src/main/res/values/strings.xml",
+        "patchSetId": 7
+      },
+      "lineNbr": 153,
+      "author": {
+        "id": 10067
+      },
+      "writtenOn": "2024-11-15T13:04:04Z",
+      "side": 1,
+      "message": "ok then!",
+      "parentUuid": "8eb051aa_76ad083b",
+      "revId": "5663ba7c00e4c4ed8db6407f1c297b31e103ae46",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
