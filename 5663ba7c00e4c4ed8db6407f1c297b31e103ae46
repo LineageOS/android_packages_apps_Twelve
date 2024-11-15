@@ -52,6 +52,24 @@
       "parentUuid": "1c7064db_158900c0",
       "revId": "5663ba7c00e4c4ed8db6407f1c297b31e103ae46",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8eb051aa_76ad083b",
+        "filename": "app/src/main/res/values/strings.xml",
+        "patchSetId": 7
+      },
+      "lineNbr": 153,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2024-11-15T12:54:13Z",
+      "side": 1,
+      "message": "it does behave like that afaik",
+      "parentUuid": "3af4b253_9c174975",
+      "revId": "5663ba7c00e4c4ed8db6407f1c297b31e103ae46",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
