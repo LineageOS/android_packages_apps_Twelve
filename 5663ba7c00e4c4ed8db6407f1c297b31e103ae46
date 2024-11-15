@@ -16,6 +16,24 @@
       "message": "\"Skip silence at the end of track\" maybe?",
       "revId": "5663ba7c00e4c4ed8db6407f1c297b31e103ae46",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1c7064db_158900c0",
+        "filename": "app/src/main/res/values/strings.xml",
+        "patchSetId": 7
+      },
+      "lineNbr": 153,
+      "author": {
+        "id": 25732
+      },
+      "writtenOn": "2024-11-15T11:59:16Z",
+      "side": 1,
+      "message": "Doesn\u0027t this work also with silence in the middle of the track as well?",
+      "parentUuid": "0c6f71b5_6eaa38ca",
+      "revId": "5663ba7c00e4c4ed8db6407f1c297b31e103ae46",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
