@@ -1,6 +1,23 @@
 {
   "comments": [
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "0590c676_d04d19b0",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 10067
+      },
+      "writtenOn": "2024-11-16T09:39:11Z",
+      "side": 1,
+      "message": "translations are proposed on crowdin, you\u0027re free to post your changes over there.",
+      "revId": "3846e8263cb2bd3e7b4d48aecfa992748bca7d39",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "9b664d92_e4e7e72c",
