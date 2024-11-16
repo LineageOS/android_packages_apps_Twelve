@@ -179,7 +179,8 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
 
                     val isEmpty = it.data.isEmpty()
                     recyclerView.isVisible = !isEmpty
-                    noElementsLinearLayout.isVisible = isEmpty
+                    noElementsLinearLayout.isVisible =
+                        isEmpty && searchView.editText.text.isNotEmpty()
                 }
 
                 is RequestStatus.Error -> {
