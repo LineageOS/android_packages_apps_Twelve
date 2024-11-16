@@ -26,6 +26,9 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
 import androidx.recyclerview.widget.RecyclerView
 import coil3.load
+import coil3.request.crossfade
+import coil3.request.placeholder
+import coil3.size.Size
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.progressindicator.LinearProgressIndicator
 import kotlinx.coroutines.flow.collectLatest
@@ -87,7 +90,7 @@ class ArtistFragment : Fragment(R.layout.fragment_artist) {
 
             override fun ViewHolder.onBindView(item: Album) {
                 item.thumbnail?.uri?.also { uri ->
-                    view.loadThumbnailImage(uri)
+                    view.loadThumbnailImage(uri, R.drawable.ic_album)
                 } ?: item.thumbnail?.bitmap?.also { bitmap ->
                     view.loadThumbnailImage(bitmap)
                 } ?: view.setThumbnailImage(R.drawable.ic_album)
@@ -219,7 +222,11 @@ class ArtistFragment : Fragment(R.layout.fragment_artist) {
                     artistNameTextView.text = artist.name
 
                     artist.thumbnail?.uri?.also { uri ->
-                        thumbnailImageView.load(uri)
+                        thumbnailImageView.load(uri) {
+                            placeholder(R.drawable.ic_person)
+                            crossfade(true)
+                            size(Size(512, 512))
+                        }
                     } ?: artist.thumbnail?.bitmap?.also { bitmap ->
                         thumbnailImageView.load(bitmap)
                     } ?: thumbnailImageView.setImageResource(R.drawable.ic_person)
