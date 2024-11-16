@@ -305,23 +305,19 @@ class SubsonicDataSource(arguments: Bundle) : MediaDataSource {
         artistUri = artistId?.let { getArtistUri(it) } ?: Uri.EMPTY,
         artistName = artist ?: "",
         year = year,
-        thumbnail = runCatching {
-            Thumbnail(
-                uri = Uri.parse(subsonicClient.getCoverArt(id)),
-                type = Thumbnail.Type.FRONT_COVER,
-            )
-        }.getOrNull(),
+        thumbnail = Thumbnail(
+            uri = Uri.parse(subsonicClient.getCoverArt(id)),
+            type = Thumbnail.Type.FRONT_COVER,
+        )
     )
 
     private fun ArtistID3.toMediaItem() = Artist(
         uri = getArtistUri(id),
         name = name,
-        thumbnail = runCatching {
-            Thumbnail(
-                uri = Uri.parse(subsonicClient.getCoverArt(id)),
-                type = Thumbnail.Type.BAND_ARTIST_LOGO,
-            )
-        }.getOrNull(),
+        thumbnail = Thumbnail(
+            uri = Uri.parse(subsonicClient.getCoverArt(id)),
+            type = Thumbnail.Type.BAND_ARTIST_LOGO,
+        )
     )
 
     private fun Child.toMediaItem() = Audio(
