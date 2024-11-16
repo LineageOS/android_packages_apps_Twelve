@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "dc41b3cf_dc3a430a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 10067
+      },
+      "writtenOn": "2024-11-16T10:40:33Z",
+      "side": 1,
+      "message": "this works, but I\u0027m not sure how we could deduplicate the logic between these two models.",
+      "revId": "210368cb87e6d24de089f86d280e7c7d80e2606e",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
