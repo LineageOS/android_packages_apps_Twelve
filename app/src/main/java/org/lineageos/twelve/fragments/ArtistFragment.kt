@@ -25,9 +25,6 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
 import androidx.recyclerview.widget.RecyclerView
-import coil3.load
-import coil3.request.crossfade
-import coil3.request.placeholder
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.progressindicator.LinearProgressIndicator
 import kotlinx.coroutines.flow.collectLatest

@@ -18,7 +18,6 @@ import androidx.annotation.StringRes
 import androidx.core.view.isVisible
 import coil3.load
 import coil3.request.ImageRequest
-import coil3.request.crossfade
 import coil3.request.error
 import coil3.request.placeholder
 import org.lineageos.twelve.R
@@ -84,7 +83,6 @@ class HorizontalListItem @JvmOverloads constructor(
         data: Any?,
         @DrawableRes placeholder: Int? = null,
         builder: ImageRequest.Builder.() -> Unit = {
-            crossfade(true)
             placeholder?.let {
                 placeholder(it)
                 error(it)

@@ -11,7 +11,6 @@ import coil3.ImageLoader
 import coil3.imageLoader
 import coil3.request.Disposable
 import coil3.request.ImageRequest
-import coil3.request.crossfade
 import coil3.request.error
 import coil3.request.placeholder
 import coil3.request.target
@@ -21,7 +20,6 @@ inline fun ImageView.loadThumbnail(
     imageLoader: ImageLoader = context.imageLoader,
     @DrawableRes placeholder: Int? = null,
     builder: ImageRequest.Builder.() -> Unit = {
-        crossfade(true)
         placeholder?.let {
             placeholder(it)
             error(it)
