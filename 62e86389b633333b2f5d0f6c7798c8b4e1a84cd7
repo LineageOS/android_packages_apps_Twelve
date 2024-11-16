@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b7d35bb4_53ca2116",
+        "filename": "app/src/main/java/org/lineageos/twelve/fragments/AlbumFragment.kt",
+        "patchSetId": 2
+      },
+      "lineNbr": 281,
+      "author": {
+        "id": 10067
+      },
+      "writtenOn": "2024-11-16T13:50:44Z",
+      "side": 1,
+      "message": "can we just let it load full image and scale it automatically?",
+      "revId": "62e86389b633333b2f5d0f6c7798c8b4e1a84cd7",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "92b5d6e1_8e0dd4db",
+        "filename": "app/src/main/java/org/lineageos/twelve/fragments/ArtistFragment.kt",
+        "patchSetId": 2
+      },
+      "lineNbr": 228,
+      "author": {
+        "id": 10067
+      },
+      "writtenOn": "2024-11-16T13:50:44Z",
+      "side": 1,
+      "message": "same here.",
+      "revId": "62e86389b633333b2f5d0f6c7798c8b4e1a84cd7",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "655849fe_591219d9",
+        "filename": "app/src/main/java/org/lineageos/twelve/ui/views/HorizontalListItem.kt",
+        "patchSetId": 2
+      },
+      "lineNbr": 89,
+      "author": {
+        "id": 10067
+      },
+      "writtenOn": "2024-11-16T13:50:44Z",
+      "side": 1,
+      "message": "and here",
+      "revId": "62e86389b633333b2f5d0f6c7798c8b4e1a84cd7",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
