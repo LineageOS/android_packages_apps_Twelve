@@ -21,6 +21,9 @@
     <string name="main_fragment_section_search">Search</string>
     <string name="main_fragment_section_library">Library</string>
 
+    <!-- Search fragment -->
+    <string name="search_hint">Search…</string>
+
     <!-- Library fragment menus -->
     <string name="library_fragment_menu_albums">Albums</string>
     <string name="library_fragment_menu_artists">Artists</string>
