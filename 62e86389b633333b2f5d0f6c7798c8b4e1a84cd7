@@ -1,6 +1,23 @@
 {
   "comments": [
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "da7d2b6e_e8679bc2",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 10067
+      },
+      "writtenOn": "2024-11-16T13:59:07Z",
+      "side": 1,
+      "message": "also \u003e100ch fix.",
+      "revId": "62e86389b633333b2f5d0f6c7798c8b4e1a84cd7",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "b7d35bb4_53ca2116",
@@ -31,6 +48,29 @@
       "writtenOn": "2024-11-16T13:50:44Z",
       "side": 1,
       "message": "same here.",
+      "revId": "62e86389b633333b2f5d0f6c7798c8b4e1a84cd7",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bb9246b4_ab7eac19",
+        "filename": "app/src/main/java/org/lineageos/twelve/ui/views/HorizontalListItem.kt",
+        "patchSetId": 2
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 10067
+      },
+      "writtenOn": "2024-11-16T13:59:07Z",
+      "side": 1,
+      "message": "```suggestion\n    fun loadThumbnailImage(\n        data: Any?,\n        @DrawableRes placeholderId: Int? \u003d null,\n        builder: ImageRequest.Builder.() -\u003e Unit \u003d {\n```",
+      "range": {
+        "startLine": 83,
+        "startChar": 0,
+        "endLine": 84,
+        "endChar": 105
+      },
       "revId": "62e86389b633333b2f5d0f6c7798c8b4e1a84cd7",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     },
