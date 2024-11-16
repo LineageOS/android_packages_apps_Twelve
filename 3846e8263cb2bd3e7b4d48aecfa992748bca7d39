@@ -1,0 +1,123 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9b664d92_e4e7e72c",
+        "filename": "app/src/main/res/values-ru/strings.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 9760
+      },
+      "writtenOn": "2024-11-16T08:28:12Z",
+      "side": 1,
+      "message": "There is no word \"плейлист\" in Russian.\nPlaylist translates as \"список воспроизведения\" or \"список\"\nThis translation is incorrect.\nI reported this to crowding, but the person who approves the transfers doesn\u0027t care. He does not know Russian and does not know how words are translated.",
+      "revId": "3846e8263cb2bd3e7b4d48aecfa992748bca7d39",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "33745875_8e8c6a66",
+        "filename": "app/src/main/res/values-ru/strings.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 9760
+      },
+      "writtenOn": "2024-11-16T08:28:12Z",
+      "side": 1,
+      "message": "There is no word \"трек\" in Russian.\nTrack translates as \"дорожка\"\nThis translation is incorrect.\nI reported this to crowding, but the person who approves the transfers doesn\u0027t care. He does not know Russian and does not know how words are translated.",
+      "revId": "3846e8263cb2bd3e7b4d48aecfa992748bca7d39",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "cc323cfd_d1a550a6",
+        "filename": "app/src/main/res/values-ru/strings.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 9760
+      },
+      "writtenOn": "2024-11-16T08:28:12Z",
+      "side": 1,
+      "message": "The correct translation - \"Встречается в альбоме\"",
+      "revId": "3846e8263cb2bd3e7b4d48aecfa992748bca7d39",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8a5e61a2_92162af0",
+        "filename": "app/src/main/res/values-ru/strings.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 9760
+      },
+      "writtenOn": "2024-11-16T08:28:12Z",
+      "side": 1,
+      "message": "The correct translation - \"Встречается в списке\"",
+      "revId": "3846e8263cb2bd3e7b4d48aecfa992748bca7d39",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f99a0451_836019b2",
+        "filename": "app/src/main/res/values-ru/strings.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 79,
+      "author": {
+        "id": 9760
+      },
+      "writtenOn": "2024-11-16T08:28:12Z",
+      "side": 1,
+      "message": "The correct translation - \"Скорость потока\" or \"Скорость передачи\"",
+      "revId": "3846e8263cb2bd3e7b4d48aecfa992748bca7d39",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e483cc30_0f0f5a72",
+        "filename": "app/src/main/res/values-ru/strings.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 81,
+      "author": {
+        "id": 9760
+      },
+      "writtenOn": "2024-11-16T08:28:12Z",
+      "side": 1,
+      "message": "The correct translation - \"кбит/с\"",
+      "revId": "3846e8263cb2bd3e7b4d48aecfa992748bca7d39",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bb461fdf_affd5a5f",
+        "filename": "app/src/main/res/values-ru/strings.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 88,
+      "author": {
+        "id": 9760
+      },
+      "writtenOn": "2024-11-16T08:28:12Z",
+      "side": 1,
+      "message": "The correct translation - \"Поставщики\"",
+      "revId": "3846e8263cb2bd3e7b4d48aecfa992748bca7d39",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
