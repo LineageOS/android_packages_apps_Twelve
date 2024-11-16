@@ -37,7 +37,6 @@ data class Artist(
         isBrowsable = true,
         mediaType = MediaMetadata.MEDIA_TYPE_ARTIST,
         sourceUri = uri,
-        artworkData = thumbnail?.bitmap?.toByteArray(),
         artworkType = thumbnail?.type?.media3Value,
         artworkUri = thumbnail?.uri,
     )

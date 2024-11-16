@@ -29,6 +29,7 @@ import com.google.android.material.button.MaterialButton
 import com.google.android.material.slider.Slider
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import org.lineageos.twelve.ext.loadThumbnail
 import org.lineageos.twelve.models.MediaType
 import org.lineageos.twelve.models.RepeatMode
 import org.lineageos.twelve.models.RequestStatus
@@ -176,12 +177,8 @@ class ViewActivity : AppCompatActivity(R.layout.activity_view) {
                             }
 
                             is RequestStatus.Success -> {
-                                it.data?.bitmap?.let { bitmap ->
-                                    thumbnailImageView.load(bitmap)
-                                    thumbnailImageView.isVisible = true
-                                    dummyThumbnailImageView.isVisible = false
-                                } ?: it.data?.uri?.let { uri ->
-                                    thumbnailImageView.load(uri)
+                                it.data?.uri?.let { uri ->
+                                    thumbnailImageView.loadThumbnail(uri)
                                     thumbnailImageView.isVisible = true
                                     dummyThumbnailImageView.isVisible = false
                                 } ?: run {
