@@ -20,6 +20,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "a1d8a568_3c9e9bb7",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 9760
+      },
+      "writtenOn": "2024-11-16T10:00:09Z",
+      "side": 1,
+      "message": "No one accept my changes, due to the fact that the only translator considers himself a professional and wanted to spit on others. There are no other translators, as well as those who vote for translations. All for the same reason that I described above.",
+      "parentUuid": "0590c676_d04d19b0",
+      "revId": "3846e8263cb2bd3e7b4d48aecfa992748bca7d39",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "9b664d92_e4e7e72c",
         "filename": "app/src/main/res/values-ru/strings.xml",
         "patchSetId": 1
