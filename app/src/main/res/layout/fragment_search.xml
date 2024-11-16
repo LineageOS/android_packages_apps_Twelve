@@ -16,7 +16,8 @@
         <com.google.android.material.search.SearchBar
             android:id="@+id/searchBar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:hint="@string/search_hint" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -24,6 +25,8 @@
         android:id="@+id/searchView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:hint="@string/search_hint"
+        android:iconifiedByDefault="false"
         app:layout_anchor="@+id/searchBar">
 
         <androidx.recyclerview.widget.RecyclerView
