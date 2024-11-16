@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "44e94388_9eb8fcfa",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2024-11-16T15:16:37Z",
+      "side": 1,
+      "message": "I don\u0027t know if there are cases where artworkData is better then Uri, for media provider it should be the same\nFur subsonic I don\u0027t know, we always pass the Uri, but media3 may extract more info from the downloaded media?",
+      "revId": "b91f016be1d9bd2f949b0d1a4c0ffe7c4b5fee00",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
