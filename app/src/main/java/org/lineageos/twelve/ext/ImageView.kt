@@ -5,10 +5,12 @@
 
 package org.lineageos.twelve.ext
 
+import android.net.Uri
 import android.widget.ImageView
 import androidx.annotation.DrawableRes
 import coil3.ImageLoader
 import coil3.imageLoader
+import coil3.memory.MemoryCache
 import coil3.request.Disposable
 import coil3.request.ImageRequest
 import coil3.request.crossfade
@@ -17,11 +19,16 @@ import coil3.request.placeholder
 import coil3.request.target
 
 inline fun ImageView.loadThumbnail(
-    data: Any?,
+    uri: Uri,
     imageLoader: ImageLoader = context.imageLoader,
     @DrawableRes placeholder: Int? = null,
     builder: ImageRequest.Builder.() -> Unit = {
-        crossfade(true)
+        // Skip crossfade if image is already in memory cache
+        if (imageLoader.memoryCache?.get(MemoryCache.Key(uri.toString())) != null) {
+            crossfade(false)
+        } else {
+            crossfade(true)
+        }
         placeholder?.let {
             placeholder(it)
             error(it)
@@ -29,7 +36,7 @@ inline fun ImageView.loadThumbnail(
     },
 ): Disposable {
     val request = ImageRequest.Builder(context)
-        .data(data)
+        .data(uri)
         .target(this)
         .apply(builder)
         .build()
