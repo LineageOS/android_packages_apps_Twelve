@@ -146,6 +146,7 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
         searchView.editText.setOnEditorActionListener { _, _, _ ->
             inputMethodManager.scheduleHideSoftInput(searchView.editText, 0)
             searchView.editText.clearFocus()
+            viewModel.setSearchQuery(searchView.editText.text.toString(), true)
             true
         }
 

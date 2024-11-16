@@ -20,13 +20,16 @@ import kotlinx.coroutines.flow.stateIn
 import org.lineageos.twelve.models.RequestStatus
 
 class SearchViewModel(application: Application) : TwelveViewModel(application) {
-    private val searchQuery = MutableStateFlow("")
+    private val searchQuery = MutableStateFlow("" to false)
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val searchResults = searchQuery
         .mapLatest {
-            delay(500)
-            it
+            val (query, immediate) = it
+            if (!immediate) {
+                delay(500)
+            }
+            query
         }
         .flatMapLatest { query ->
             query.trim().takeIf { it.isNotEmpty() }?.let {
@@ -40,7 +43,7 @@ class SearchViewModel(application: Application) : TwelveViewModel(application) {
             RequestStatus.Loading()
         )
 
-    fun setSearchQuery(query: String) {
-        searchQuery.value = query
+    fun setSearchQuery(query: String, immediate: Boolean = false) {
+        searchQuery.value = query to immediate
     }
 }
