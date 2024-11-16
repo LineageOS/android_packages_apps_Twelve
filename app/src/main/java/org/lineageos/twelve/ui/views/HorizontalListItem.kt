@@ -18,6 +18,8 @@ import androidx.annotation.StringRes
 import androidx.core.view.isVisible
 import coil3.load
 import coil3.request.ImageRequest
+import coil3.request.crossfade
+import coil3.request.placeholder
 import org.lineageos.twelve.R
 
 /**
@@ -78,7 +80,14 @@ class HorizontalListItem @JvmOverloads constructor(
     }
 
     fun loadThumbnailImage(
-        data: Any?, builder: ImageRequest.Builder.() -> Unit = {}
+        data: Any?,
+        @DrawableRes placeholderId: Int? = null,
+        builder: ImageRequest.Builder.() -> Unit = {
+            crossfade(true)
+            placeholderId?.let {
+                placeholder(it)
+            }
+        }
     ) = thumbnailImageView.load(data, builder = builder)
 
     fun setThumbnailImage(bm: Bitmap) = thumbnailImageView.setImageBitmap(bm)

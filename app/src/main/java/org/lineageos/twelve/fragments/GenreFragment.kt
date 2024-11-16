@@ -89,7 +89,7 @@ class GenreFragment : Fragment(R.layout.fragment_genre) {
 
             override fun ViewHolder.onBindView(item: Album) {
                 item.thumbnail?.uri?.also { uri ->
-                    view.loadThumbnailImage(uri)
+                    view.loadThumbnailImage(uri, R.drawable.ic_album)
                 } ?: item.thumbnail?.bitmap?.also { bitmap ->
                     view.loadThumbnailImage(bitmap)
                 } ?: view.setThumbnailImage(R.drawable.ic_album)
