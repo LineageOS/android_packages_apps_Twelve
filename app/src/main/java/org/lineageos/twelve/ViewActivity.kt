@@ -176,11 +176,7 @@ class ViewActivity : AppCompatActivity(R.layout.activity_view) {
                             }
 
                             is RequestStatus.Success -> {
-                                it.data?.bitmap?.let { bitmap ->
-                                    thumbnailImageView.load(bitmap)
-                                    thumbnailImageView.isVisible = true
-                                    dummyThumbnailImageView.isVisible = false
-                                } ?: it.data?.uri?.let { uri ->
+                                it.data?.uri?.let { uri ->
                                     thumbnailImageView.load(uri)
                                     thumbnailImageView.isVisible = true
                                     dummyThumbnailImageView.isVisible = false

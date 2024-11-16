@@ -46,7 +46,6 @@ data class Album(
         isBrowsable = true,
         mediaType = MediaMetadata.MEDIA_TYPE_ALBUM,
         sourceUri = uri,
-        artworkData = thumbnail?.bitmap?.toByteArray(),
         artworkType = thumbnail?.type?.media3Value,
         artworkUri = thumbnail?.uri,
     )

@@ -14,12 +14,10 @@ import androidx.media3.common.MediaMetadata
  * URI should take precedence. At least one of the two should be non-null.
  *
  * @param uri The URI of the thumbnail.
- * @param bitmap The bitmap of the thumbnail.
  * @param type the type of the thumbnail.
  */
 data class Thumbnail(
-    val uri: Uri? = null,
-    val bitmap: Bitmap? = null,
+    val uri: Uri,
     val type: Type = Type.OTHER,
 ) : Comparable<Thumbnail> {
     /**
@@ -139,28 +137,9 @@ data class Thumbnail(
         }
     }
 
-    init {
-        require(uri != null || bitmap != null) {
-            "At least one of the fields should be non-null"
-        }
-    }
-
     override fun compareTo(other: Thumbnail) = compareValuesBy(
         this, other,
         Thumbnail::uri,
         Thumbnail::type,
-    ).let {
-        if (it == 0) {
-            return@let when (this.bitmap?.sameAs(other.bitmap)) {
-                true -> 0
-                false -> 1
-                null -> when (other.bitmap == null) {
-                    true -> 0
-                    false -> -1
-                }
-            }
-        } else {
-            it
-        }
-    }
+    )
 }
