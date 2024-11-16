@@ -116,10 +116,6 @@ class LocalPlayerViewModel(application: Application) : AndroidViewModel(applicat
             else -> RequestStatus.Success<_, Nothing>(
                 mediaMetadata.artworkUri?.let {
                     Thumbnail(uri = it)
-                } ?: mediaMetadata.artworkData?.let {
-                    BitmapFactory.decodeByteArray(it, 0, it.size)?.let { bitmap ->
-                        Thumbnail(bitmap = bitmap)
-                    }
                 }
             )
         }

@@ -91,8 +91,6 @@ class ArtistFragment : Fragment(R.layout.fragment_artist) {
             override fun ViewHolder.onBindView(item: Album) {
                 item.thumbnail?.uri?.also { uri ->
                     view.loadThumbnailImage(uri, R.drawable.ic_album)
-                } ?: item.thumbnail?.bitmap?.also { bitmap ->
-                    view.loadThumbnailImage(bitmap)
                 } ?: view.setThumbnailImage(R.drawable.ic_album)
 
                 view.headlineText = item.title
@@ -226,8 +224,6 @@ class ArtistFragment : Fragment(R.layout.fragment_artist) {
                             uri,
                             placeholder = R.drawable.ic_person
                         )
-                    } ?: artist.thumbnail?.bitmap?.also { bitmap ->
-                        thumbnailImageView.load(bitmap)
                     } ?: thumbnailImageView.setImageResource(R.drawable.ic_person)
 
                     albumsAdapter.submitList(artistWorks.albums)

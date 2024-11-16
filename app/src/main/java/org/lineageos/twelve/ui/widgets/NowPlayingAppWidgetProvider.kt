@@ -74,9 +74,7 @@ class NowPlayingAppWidgetProvider : BaseAppWidgetProvider<NowPlayingAppWidgetPro
                         // Do nothing
                     }
 
-                    else -> mediaMetadata.artworkData?.let {
-                        fetchImage(context, it, R.id.thumbnailImageView)
-                    } ?: mediaMetadata.artworkUri?.let {
+                    else -> mediaMetadata.artworkUri?.let {
                         fetchImage(context, it, R.id.thumbnailImageView)
                     } ?: run {
                         setImageViewResource(R.id.thumbnailImageView, R.drawable.ic_music_note)

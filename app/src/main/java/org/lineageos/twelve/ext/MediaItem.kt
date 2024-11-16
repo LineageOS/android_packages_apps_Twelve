@@ -22,7 +22,6 @@ fun buildMediaItem(
     genre: String? = null,
     sourceUri: Uri? = null,
     mimeType: String? = null,
-    artworkData: ByteArray? = null,
     artworkType: @MediaMetadata.PictureType Int? = null,
     artworkUri: Uri? = null,
     discNumber: Int? = null,
@@ -37,7 +36,6 @@ fun buildMediaItem(
             .setGenre(genre)
             .setIsBrowsable(isBrowsable)
             .setIsPlayable(isPlayable)
-            .setArtworkData(artworkData, artworkType)
             .setArtworkUri(artworkUri)
             .setMediaType(mediaType)
             .setDiscNumber(discNumber)

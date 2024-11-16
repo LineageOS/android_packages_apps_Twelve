@@ -46,6 +46,7 @@ import me.bogerchan.niervisualizer.NierVisualizerManager
 import org.lineageos.twelve.R
 import org.lineageos.twelve.TwelveApplication
 import org.lineageos.twelve.ext.getViewProperty
+import org.lineageos.twelve.ext.loadThumbnail
 import org.lineageos.twelve.ext.updatePadding
 import org.lineageos.twelve.models.PlaybackState
 import org.lineageos.twelve.models.RepeatMode
@@ -360,17 +361,8 @@ class NowPlayingFragment : Fragment(R.layout.fragment_now_playing) {
                             }
 
                             is RequestStatus.Success -> {
-                                it.data?.bitmap?.also { bitmap ->
-                                    albumArtImageView.setImageBitmap(bitmap)
-                                } ?: it.data?.uri?.also { artworkUri ->
-                                    ImageDecoder.createSource(
-                                        requireContext().contentResolver,
-                                        artworkUri
-                                    ).let { source ->
-                                        ImageDecoder.decodeBitmap(source)
-                                    }.also { bitmap ->
-                                        albumArtImageView.setImageBitmap(bitmap)
-                                    }
+                                it.data?.uri?.also { uri ->
+                                    albumArtImageView.loadThumbnail(uri)
                                 } ?: albumArtImageView.setImageResource(R.drawable.ic_music_note)
                             }
 
