@@ -35,6 +35,24 @@
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "cd13db69_50f214a3",
+        "filename": "app/src/main/java/org/lineageos/twelve/fragments/AlbumFragment.kt",
+        "patchSetId": 2
+      },
+      "lineNbr": 281,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2024-11-16T14:00:26Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b7d35bb4_53ca2116",
+      "revId": "62e86389b633333b2f5d0f6c7798c8b4e1a84cd7",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "92b5d6e1_8e0dd4db",
@@ -48,6 +66,24 @@
       "writtenOn": "2024-11-16T13:50:44Z",
       "side": 1,
       "message": "same here.",
+      "revId": "62e86389b633333b2f5d0f6c7798c8b4e1a84cd7",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "01989283_cd24ec68",
+        "filename": "app/src/main/java/org/lineageos/twelve/fragments/ArtistFragment.kt",
+        "patchSetId": 2
+      },
+      "lineNbr": 228,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2024-11-16T14:00:26Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "92b5d6e1_8e0dd4db",
       "revId": "62e86389b633333b2f5d0f6c7798c8b4e1a84cd7",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     },
@@ -75,6 +111,30 @@
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "384cb2aa_8eb11a85",
+        "filename": "app/src/main/java/org/lineageos/twelve/ui/views/HorizontalListItem.kt",
+        "patchSetId": 2
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2024-11-16T14:00:26Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "bb9246b4_ab7eac19",
+      "range": {
+        "startLine": 83,
+        "startChar": 0,
+        "endLine": 84,
+        "endChar": 105
+      },
+      "revId": "62e86389b633333b2f5d0f6c7798c8b4e1a84cd7",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "655849fe_591219d9",
@@ -88,6 +148,24 @@
       "writtenOn": "2024-11-16T13:50:44Z",
       "side": 1,
       "message": "and here",
+      "revId": "62e86389b633333b2f5d0f6c7798c8b4e1a84cd7",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "10cfd045_ce76f059",
+        "filename": "app/src/main/java/org/lineageos/twelve/ui/views/HorizontalListItem.kt",
+        "patchSetId": 2
+      },
+      "lineNbr": 89,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2024-11-16T14:00:26Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "655849fe_591219d9",
       "revId": "62e86389b633333b2f5d0f6c7798c8b4e1a84cd7",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
