@@ -19,6 +19,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.launch
 import org.lineageos.twelve.R
 import org.lineageos.twelve.ext.getViewProperty
+import org.lineageos.twelve.ext.navigateSafe
 import org.lineageos.twelve.models.Provider
 import org.lineageos.twelve.models.ProviderType
 import org.lineageos.twelve.models.RequestStatus
@@ -53,7 +54,7 @@ class ProviderSelectorDialogFragment : DialogFragment(R.layout.fragment_provider
 
             view.setOnLongClickListener {
                 item?.takeIf { it.type != ProviderType.LOCAL }?.let {
-                    findNavController().navigate(
+                    findNavController().navigateSafe(
                         R.id.action_providerSelectorDialogFragment_to_fragment_manage_provider,
                         ManageProviderFragment.createBundle(it.type, it.typeId)
                     )
@@ -80,7 +81,7 @@ class ProviderSelectorDialogFragment : DialogFragment(R.layout.fragment_provider
         recyclerView.adapter = adapter
 
         addProviderMaterialButton.setOnClickListener {
-            findNavController().navigate(
+            findNavController().navigateSafe(
                 R.id.action_providerSelectorDialogFragment_to_fragment_manage_provider,
                 ManageProviderFragment.createBundle()
             )

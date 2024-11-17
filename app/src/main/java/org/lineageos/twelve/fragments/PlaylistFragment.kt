@@ -34,6 +34,7 @@ import org.lineageos.twelve.R
 import org.lineageos.twelve.datasources.MediaError
 import org.lineageos.twelve.ext.getParcelable
 import org.lineageos.twelve.ext.getViewProperty
+import org.lineageos.twelve.ext.navigateSafe
 import org.lineageos.twelve.ext.setProgressCompat
 import org.lineageos.twelve.ext.updateMargin
 import org.lineageos.twelve.ext.updatePadding
@@ -80,14 +81,14 @@ class PlaylistFragment : Fragment(R.layout.fragment_playlist) {
                     item?.let {
                         viewModel.playPlaylist(bindingAdapterPosition)
 
-                        findNavController().navigate(
+                        findNavController().navigateSafe(
                             R.id.action_playlistFragment_to_fragment_now_playing
                         )
                     }
                 }
                 view.setOnLongClickListener {
                     item?.let {
-                        findNavController().navigate(
+                        findNavController().navigateSafe(
                             R.id.action_playlistFragment_to_fragment_audio_bottom_sheet_dialog,
                             AudioBottomSheetDialogFragment.createBundle(
                                 it.uri,
@@ -204,7 +205,7 @@ class PlaylistFragment : Fragment(R.layout.fragment_playlist) {
         playAllFloatingActionButton.setOnClickListener {
             viewModel.playPlaylist()
 
-            findNavController().navigate(R.id.action_playlistFragment_to_fragment_now_playing)
+            findNavController().navigateSafe(R.id.action_playlistFragment_to_fragment_now_playing)
         }
 
         viewModel.loadPlaylist(playlistUri)

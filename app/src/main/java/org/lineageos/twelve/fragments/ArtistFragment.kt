@@ -34,6 +34,7 @@ import org.lineageos.twelve.datasources.MediaError
 import org.lineageos.twelve.ext.getParcelable
 import org.lineageos.twelve.ext.getViewProperty
 import org.lineageos.twelve.ext.loadThumbnail
+import org.lineageos.twelve.ext.navigateSafe
 import org.lineageos.twelve.ext.setProgressCompat
 import org.lineageos.twelve.ext.updatePadding
 import org.lineageos.twelve.models.Album
@@ -77,7 +78,7 @@ class ArtistFragment : Fragment(R.layout.fragment_artist) {
             override fun ViewHolder.onPrepareView() {
                 view.setOnClickListener {
                     item?.let {
-                        findNavController().navigate(
+                        findNavController().navigateSafe(
                             R.id.action_artistFragment_to_fragment_album,
                             AlbumFragment.createBundle(it.uri)
                         )
