@@ -23,6 +23,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.lineageos.twelve.R
 import org.lineageos.twelve.ext.getViewProperty
+import org.lineageos.twelve.ext.navigateSafe
 import org.lineageos.twelve.ext.setProgressCompat
 import org.lineageos.twelve.models.Artist
 import org.lineageos.twelve.models.RequestStatus
@@ -58,7 +59,7 @@ class ArtistsFragment : Fragment(R.layout.fragment_artists) {
                 view.setLeadingIconImage(R.drawable.ic_person)
                 view.setOnClickListener {
                     item?.let {
-                        findNavController().navigate(
+                        findNavController().navigateSafe(
                             R.id.action_mainFragment_to_fragment_artist,
                             ArtistFragment.createBundle(it.uri)
                         )

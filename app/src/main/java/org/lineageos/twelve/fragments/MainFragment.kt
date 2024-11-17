@@ -28,6 +28,7 @@ import org.lineageos.twelve.R
 import org.lineageos.twelve.SettingsActivity
 import org.lineageos.twelve.ext.getViewProperty
 import org.lineageos.twelve.ext.isLandscape
+import org.lineageos.twelve.ext.navigateSafe
 import org.lineageos.twelve.ext.updatePadding
 import org.lineageos.twelve.models.RequestStatus
 import org.lineageos.twelve.ui.views.NowPlayingBar
@@ -110,7 +111,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         toolbar.setupWithNavController(findNavController())
 
         providerMaterialButton.setOnClickListener {
-            findNavController().navigate(
+            findNavController().navigateSafe(
                 R.id.action_mainFragment_to_fragment_provider_selector_dialog
             )
         }
@@ -154,7 +155,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         }
 
         nowPlayingBar.setOnNowPlayingClickListener {
-            findNavController().navigate(R.id.action_mainFragment_to_fragment_now_playing)
+            findNavController().navigateSafe(R.id.action_mainFragment_to_fragment_now_playing)
         }
 
         viewLifecycleOwner.lifecycleScope.launch {

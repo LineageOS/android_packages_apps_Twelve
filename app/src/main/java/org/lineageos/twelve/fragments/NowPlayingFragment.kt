@@ -46,6 +46,7 @@ import me.bogerchan.niervisualizer.NierVisualizerManager
 import org.lineageos.twelve.R
 import org.lineageos.twelve.TwelveApplication
 import org.lineageos.twelve.ext.getViewProperty
+import org.lineageos.twelve.ext.navigateSafe
 import org.lineageos.twelve.ext.updatePadding
 import org.lineageos.twelve.models.PlaybackState
 import org.lineageos.twelve.models.RepeatMode
@@ -202,7 +203,7 @@ class NowPlayingFragment : Fragment(R.layout.fragment_now_playing) {
         }
 
         fileTypeMaterialCardView.setOnClickListener {
-            findNavController().navigate(
+            findNavController().navigateSafe(
                 R.id.action_nowPlayingFragment_to_fragment_now_playing_stats_dialog
             )
         }
@@ -282,7 +283,7 @@ class NowPlayingFragment : Fragment(R.layout.fragment_now_playing) {
         }
 
         queueMaterialButton.setOnClickListener {
-            findNavController().navigate(R.id.action_nowPlayingFragment_to_fragment_queue)
+            findNavController().navigateSafe(R.id.action_nowPlayingFragment_to_fragment_queue)
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
@@ -310,7 +311,7 @@ class NowPlayingFragment : Fragment(R.layout.fragment_now_playing) {
                     viewModel.mediaItem.collectLatest { mediaItem ->
                         addOrRemoveFromPlaylistsMaterialButton.setOnClickListener {
                             mediaItem?.localConfiguration?.uri?.let { uri ->
-                                findNavController().navigate(
+                                findNavController().navigateSafe(
                                     R.id.action_nowPlayingFragment_to_fragment_add_or_remove_from_playlists,
                                     AddOrRemoveFromPlaylistsFragment.createBundle(uri)
                                 )

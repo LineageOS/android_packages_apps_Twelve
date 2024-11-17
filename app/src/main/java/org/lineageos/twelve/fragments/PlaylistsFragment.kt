@@ -25,6 +25,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.lineageos.twelve.R
 import org.lineageos.twelve.ext.getViewProperty
+import org.lineageos.twelve.ext.navigateSafe
 import org.lineageos.twelve.ext.setProgressCompat
 import org.lineageos.twelve.models.Playlist
 import org.lineageos.twelve.models.RequestStatus
@@ -65,7 +66,7 @@ class PlaylistsFragment : Fragment(R.layout.fragment_playlists) {
                 item?.let {
                     when (it === addNewPlaylistItem) {
                         true -> openCreateNewPlaylistDialog()
-                        false -> findNavController().navigate(
+                        false -> findNavController().navigateSafe(
                             R.id.action_mainFragment_to_fragment_playlist,
                             PlaylistFragment.createBundle(it.uri)
                         )
