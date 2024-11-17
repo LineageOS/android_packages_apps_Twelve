@@ -23,6 +23,7 @@ import org.lineageos.twelve.R
 import org.lineageos.twelve.datasources.MediaError
 import org.lineageos.twelve.ext.getParcelable
 import org.lineageos.twelve.ext.getViewProperty
+import org.lineageos.twelve.ext.navigateSafe
 import org.lineageos.twelve.models.RequestStatus
 import org.lineageos.twelve.ui.views.FullscreenLoadingProgressBar
 import org.lineageos.twelve.ui.views.ListItem
@@ -86,7 +87,7 @@ class AudioBottomSheetDialogFragment : BottomSheetDialogFragment(
         }
 
         addOrRemoveFromPlaylistsListItem.setOnClickListener {
-            findNavController().navigate(
+            findNavController().navigateSafe(
                 R.id.action_audioBottomSheetDialogFragment_to_fragment_add_or_remove_from_playlists,
                 AddOrRemoveFromPlaylistsFragment.createBundle(audioUri)
             )
@@ -134,14 +135,14 @@ class AudioBottomSheetDialogFragment : BottomSheetDialogFragment(
                     }
 
                     openAlbumListItem.setOnClickListener {
-                        findNavController().navigate(
+                        findNavController().navigateSafe(
                             R.id.action_audioBottomSheetDialogFragment_to_fragment_album,
                             AlbumFragment.createBundle(audio.albumUri)
                         )
                     }
 
                     openArtistListItem.setOnClickListener {
-                        findNavController().navigate(
+                        findNavController().navigateSafe(
                             R.id.action_audioBottomSheetDialogFragment_to_fragment_artist,
                             ArtistFragment.createBundle(audio.artistUri)
                         )
@@ -150,7 +151,7 @@ class AudioBottomSheetDialogFragment : BottomSheetDialogFragment(
                     openGenreListItem.isVisible = !fromGenre && audio.genreUri != null
                     openGenreListItem.setOnClickListener {
                         audio.genreUri?.let { genreUri ->
-                            findNavController().navigate(
+                            findNavController().navigateSafe(
                                 R.id.action_audioBottomSheetDialogFragment_to_fragment_genre,
                                 GenreFragment.createBundle(genreUri)
                             )
