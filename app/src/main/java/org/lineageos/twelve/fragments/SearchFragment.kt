@@ -160,6 +160,21 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+
+        if (searchView.editText.text.isEmpty()) {
+            searchView.show()
+            searchView.requestFocusAndShowKeyboard()
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+
+        searchView.clearFocusAndHideKeyboard()
+    }
+
     override fun onDestroyView() {
         recyclerView.adapter = null
 
