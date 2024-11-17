@@ -26,6 +26,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.lineageos.twelve.R
 import org.lineageos.twelve.ext.getViewProperty
+import org.lineageos.twelve.ext.navigateSafe
 import org.lineageos.twelve.ext.scheduleHideSoftInput
 import org.lineageos.twelve.ext.setProgressCompat
 import org.lineageos.twelve.models.Album
@@ -67,12 +68,12 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
                 view.setOnClickListener {
                     item?.let {
                         when (it) {
-                            is Album -> findNavController().navigate(
+                            is Album -> findNavController().navigateSafe(
                                 R.id.action_mainFragment_to_fragment_album,
                                 AlbumFragment.createBundle(it.uri)
                             )
 
-                            is Artist -> findNavController().navigate(
+                            is Artist -> findNavController().navigateSafe(
                                 R.id.action_mainFragment_to_fragment_artist,
                                 ArtistFragment.createBundle(it.uri)
                             )
@@ -82,7 +83,7 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
                                     this, indexOf(it)
                                 )
 
-                                findNavController().navigate(
+                                findNavController().navigateSafe(
                                     R.id.action_mainFragment_to_fragment_now_playing
                                 )
                             }

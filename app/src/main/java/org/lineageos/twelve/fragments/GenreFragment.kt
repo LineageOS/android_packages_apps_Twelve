@@ -33,6 +33,7 @@ import org.lineageos.twelve.R
 import org.lineageos.twelve.datasources.MediaError
 import org.lineageos.twelve.ext.getParcelable
 import org.lineageos.twelve.ext.getViewProperty
+import org.lineageos.twelve.ext.navigateSafe
 import org.lineageos.twelve.ext.setProgressCompat
 import org.lineageos.twelve.ext.updatePadding
 import org.lineageos.twelve.models.Album
@@ -79,7 +80,7 @@ class GenreFragment : Fragment(R.layout.fragment_genre) {
 
                 view.setOnClickListener {
                     item?.let {
-                        findNavController().navigate(
+                        findNavController().navigateSafe(
                             R.id.action_genreFragment_to_fragment_album,
                             AlbumFragment.createBundle(it.uri)
                         )
@@ -109,7 +110,7 @@ class GenreFragment : Fragment(R.layout.fragment_genre) {
                 view.setThumbnailImage(R.drawable.ic_playlist_play)
                 view.setOnClickListener {
                     item?.let {
-                        findNavController().navigate(
+                        findNavController().navigateSafe(
                             R.id.action_genreFragment_to_fragment_playlist,
                             PlaylistFragment.createBundle(it.uri)
                         )
@@ -134,7 +135,7 @@ class GenreFragment : Fragment(R.layout.fragment_genre) {
                 view.setOnClickListener {
                     item?.let {
                         viewModel.playAudio(currentList, bindingAdapterPosition)
-                        findNavController().navigate(
+                        findNavController().navigateSafe(
                             R.id.action_genreFragment_to_fragment_now_playing
                         )
                     }
@@ -142,7 +143,7 @@ class GenreFragment : Fragment(R.layout.fragment_genre) {
 
                 view.setOnLongClickListener {
                     item?.let {
-                        findNavController().navigate(
+                        findNavController().navigateSafe(
                             R.id.action_genreFragment_to_fragment_audio_bottom_sheet_dialog,
                             AudioBottomSheetDialogFragment.createBundle(
                                 it.uri,

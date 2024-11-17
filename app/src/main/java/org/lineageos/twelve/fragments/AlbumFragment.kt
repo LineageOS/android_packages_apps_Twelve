@@ -36,6 +36,7 @@ import org.lineageos.twelve.datasources.MediaError
 import org.lineageos.twelve.ext.getParcelable
 import org.lineageos.twelve.ext.getViewProperty
 import org.lineageos.twelve.ext.loadThumbnail
+import org.lineageos.twelve.ext.navigateSafe
 import org.lineageos.twelve.ext.setProgressCompat
 import org.lineageos.twelve.ext.updateMargin
 import org.lineageos.twelve.ext.updatePadding
@@ -87,7 +88,7 @@ class AlbumFragment : Fragment(R.layout.fragment_album) {
                         is AlbumViewModel.AlbumContent.AudioItem -> {
                             viewModel.playAlbum(item.audio)
 
-                            findNavController().navigate(
+                            findNavController().navigateSafe(
                                 R.id.action_albumFragment_to_fragment_now_playing
                             )
                         }
@@ -99,7 +100,7 @@ class AlbumFragment : Fragment(R.layout.fragment_album) {
                 view.setOnLongClickListener {
                     when (val item = item) {
                         is AlbumViewModel.AlbumContent.AudioItem -> {
-                            findNavController().navigate(
+                            findNavController().navigateSafe(
                                 R.id.action_albumFragment_to_fragment_audio_bottom_sheet_dialog,
                                 AudioBottomSheetDialogFragment.createBundle(
                                     item.audio.uri,
@@ -234,7 +235,7 @@ class AlbumFragment : Fragment(R.layout.fragment_album) {
         playAllFloatingActionButton.setOnClickListener {
             viewModel.playAlbum()
 
-            findNavController().navigate(R.id.action_albumFragment_to_fragment_now_playing)
+            findNavController().navigateSafe(R.id.action_albumFragment_to_fragment_now_playing)
         }
 
         viewModel.loadAlbum(albumUri)
@@ -285,7 +286,7 @@ class AlbumFragment : Fragment(R.layout.fragment_album) {
 
                             artistNameTextView.text = album.artistName
                             artistNameTextView.setOnClickListener {
-                                findNavController().navigate(
+                                findNavController().navigateSafe(
                                     R.id.action_albumFragment_to_fragment_artist,
                                     ArtistFragment.createBundle(album.artistUri)
                                 )

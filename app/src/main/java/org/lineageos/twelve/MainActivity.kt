@@ -18,6 +18,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.NavHostFragment
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import org.lineageos.twelve.ext.navigateSafe
 import org.lineageos.twelve.fragments.AlbumFragment
 import org.lineageos.twelve.fragments.ArtistFragment
 import org.lineageos.twelve.fragments.PlaylistFragment
@@ -59,7 +60,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
                             }
 
                             IntentsViewModel.ParsedIntent.Action.OPEN_NOW_PLAYING -> {
-                                navController.navigate(R.id.fragment_now_playing)
+                                navController.navigateSafe(R.id.fragment_now_playing)
                             }
 
                             IntentsViewModel.ParsedIntent.Action.VIEW -> {
@@ -77,12 +78,12 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
                                 val content = it.contents.first()
 
                                 when (content.type) {
-                                    MediaType.ALBUM -> navController.navigate(
+                                    MediaType.ALBUM -> navController.navigateSafe(
                                         R.id.fragment_album,
                                         AlbumFragment.createBundle(content.uri)
                                     )
 
-                                    MediaType.ARTIST -> navController.navigate(
+                                    MediaType.ARTIST -> navController.navigateSafe(
                                         R.id.fragment_artist,
                                         ArtistFragment.createBundle(content.uri)
                                     )
@@ -91,7 +92,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
                                     MediaType.GENRE -> Log.i(LOG_TAG, "Genre not supported")
 
-                                    MediaType.PLAYLIST -> navController.navigate(
+                                    MediaType.PLAYLIST -> navController.navigateSafe(
                                         R.id.fragment_playlist,
                                         PlaylistFragment.createBundle(content.uri)
                                     )
