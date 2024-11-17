@@ -165,6 +165,21 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
         super.onDestroyView()
     }
 
+    override fun onResume() {
+        super.onResume()
+
+        if (searchView.editText.text.isEmpty()) {
+            searchView.show()
+            searchView.requestFocusAndShowKeyboard()
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+
+        searchView.clearFocusAndHideKeyboard()
+    }
+
     private suspend fun loadData() {
         viewModel.searchResults.collectLatest {
             linearProgressIndicator.setProgressCompat(it, true)
