@@ -24,6 +24,7 @@ import org.lineageos.twelve.database.TwelveDatabase
 import org.lineageos.twelve.database.entities.Item
 import org.lineageos.twelve.ext.mapEachRow
 import org.lineageos.twelve.ext.queryFlow
+import org.lineageos.twelve.models.ActivityTab
 import org.lineageos.twelve.models.Album
 import org.lineageos.twelve.models.Artist
 import org.lineageos.twelve.models.ArtistWorks
@@ -198,6 +199,10 @@ class LocalDataSource(context: Context, private val database: TwelveDatabase) : 
             RequestStatus.Success<_, MediaError>(it)
         } ?: RequestStatus.Error(MediaError.NOT_FOUND)
     }
+
+    override fun activity() = flowOf(
+        RequestStatus.Success<_, MediaError>(listOf<ActivityTab>())
+    )
 
     override fun albums(sortingRule: SortingRule) = contentResolver.queryFlow(
         albumsUri,

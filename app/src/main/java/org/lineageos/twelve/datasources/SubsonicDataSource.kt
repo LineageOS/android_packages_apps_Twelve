@@ -10,6 +10,7 @@ import android.os.Bundle
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.mapLatest
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import org.lineageos.twelve.R
@@ -18,6 +19,7 @@ import org.lineageos.twelve.datasources.subsonic.models.AlbumID3
 import org.lineageos.twelve.datasources.subsonic.models.ArtistID3
 import org.lineageos.twelve.datasources.subsonic.models.Child
 import org.lineageos.twelve.datasources.subsonic.models.Error
+import org.lineageos.twelve.models.ActivityTab
 import org.lineageos.twelve.models.Album
 import org.lineageos.twelve.models.Artist
 import org.lineageos.twelve.models.ArtistWorks
@@ -86,6 +88,10 @@ class SubsonicDataSource(arguments: Bundle) : MediaDataSource {
             RequestStatus.Success<_, MediaError>(it)
         } ?: RequestStatus.Error(MediaError.NOT_FOUND)
     }
+
+    override fun activity() = flowOf(
+        RequestStatus.Success<_, MediaError>(listOf<ActivityTab>())
+    )
 
     override fun albums(sortingRule: SortingRule) = suspend {
         subsonicClient.getAlbumList2(
