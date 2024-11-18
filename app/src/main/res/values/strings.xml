@@ -37,12 +37,14 @@
     <string name="create_playlist_confirm">Create</string>
 
     <!-- No elements -->
+    <string name="no_activity">No activity</string>
     <string name="no_albums">No albums</string>
     <string name="no_artists">No artists</string>
     <string name="no_genres">No genres</string>
     <string name="no_playlists">No playlists</string>
     <string name="no_audios">No audios</string>
     <string name="no_results">No results</string>
+    <string name="shrug" translatable="false">¯\\_(ツ)_/¯</string>
 
     <!-- Genres -->
     <string name="genre_unknown">Unknown</string>
