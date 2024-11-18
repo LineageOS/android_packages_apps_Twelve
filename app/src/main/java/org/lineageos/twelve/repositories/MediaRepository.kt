@@ -310,6 +310,11 @@ class MediaRepository(
     }
 
     /**
+     * @see MediaDataSource.activity
+     */
+    fun activity() = navigationDataSource.flatMapLatest { it.activity() }
+
+    /**
      * @see MediaDataSource.albums
      */
     fun albums(
