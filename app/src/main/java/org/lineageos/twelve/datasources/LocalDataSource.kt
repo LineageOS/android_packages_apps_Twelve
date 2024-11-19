@@ -31,6 +31,7 @@ import org.lineageos.twelve.models.ArtistWorks
 import org.lineageos.twelve.models.Audio
 import org.lineageos.twelve.models.Genre
 import org.lineageos.twelve.models.GenreContent
+import org.lineageos.twelve.models.LocalizedString
 import org.lineageos.twelve.models.MediaType
 import org.lineageos.twelve.models.Playlist
 import org.lineageos.twelve.models.RequestStatus
@@ -201,7 +202,70 @@ class LocalDataSource(context: Context, private val database: TwelveDatabase) : 
     }
 
     override fun activity() = flowOf(
-        RequestStatus.Success<_, MediaError>(listOf<ActivityTab>())
+        RequestStatus.Success<_, MediaError>(
+            listOf<ActivityTab>(
+                ActivityTab(
+                    "test",
+                    LocalizedString(
+                        "Cool suggestion"
+                    ),
+                    listOf(
+                        Playlist(
+                            Uri.EMPTY,
+                            "Cool playlist",
+                        ),
+                        Genre(
+                            Uri.EMPTY,
+                            "Cool genre",
+                        ),
+                        Genre(
+                            Uri.EMPTY,
+                            "Another cool genre",
+                        ),
+                    ),
+                ),
+                ActivityTab(
+                    "test",
+                    LocalizedString(
+                        "Another cool suggestion"
+                    ),
+                    listOf(
+                        Playlist(
+                            Uri.EMPTY,
+                            "Cool playlist",
+                        ),
+                        Genre(
+                            Uri.EMPTY,
+                            "Cool genre",
+                        ),
+                        Genre(
+                            Uri.EMPTY,
+                            "Another cool genre",
+                        ),
+                    ),
+                ),
+                ActivityTab(
+                    "test",
+                    LocalizedString(
+                        "Guess what"
+                    ),
+                    listOf(
+                        Playlist(
+                            Uri.EMPTY,
+                            "Cool playlist",
+                        ),
+                        Genre(
+                            Uri.EMPTY,
+                            "Cool genre",
+                        ),
+                        Genre(
+                            Uri.EMPTY,
+                            "Another cool genre",
+                        ),
+                    ),
+                )
+            )
+        )
     )
 
     override fun albums(sortingRule: SortingRule) = contentResolver.queryFlow(
