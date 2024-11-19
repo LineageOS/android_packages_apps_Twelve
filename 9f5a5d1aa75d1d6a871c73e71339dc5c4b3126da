@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "71b6b396_3a19e479",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 25732
+      },
+      "writtenOn": "2024-11-19T00:58:55Z",
+      "side": 1,
+      "message": "If by any chance you wanna have fun with db before I do",
+      "revId": "9f5a5d1aa75d1d6a871c73e71339dc5c4b3126da",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
