@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3c3bb60a_4517ee8f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 10067
+      },
+      "writtenOn": "2024-11-21T23:02:03Z",
+      "side": 1,
+      "message": "would it make sense to merge navigateSafe() hax first and make use of it here?",
+      "revId": "3080f0d4997f8db27891d8316826fac7b89f9d23",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
