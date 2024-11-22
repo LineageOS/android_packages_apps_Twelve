@@ -26,7 +26,7 @@ import androidx.navigation.ui.setupWithNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.card.MaterialCardView
-import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.google.android.material.progressindicator.LinearProgressIndicator
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.collectLatest
@@ -64,7 +64,9 @@ class AlbumFragment : Fragment(R.layout.fragment_album) {
     private val infoNestedScrollView by getViewProperty<NestedScrollView?>(R.id.infoNestedScrollView)
     private val linearProgressIndicator by getViewProperty<LinearProgressIndicator>(R.id.linearProgressIndicator)
     private val noElementsNestedScrollView by getViewProperty<NestedScrollView>(R.id.noElementsNestedScrollView)
-    private val playAllFloatingActionButton by getViewProperty<FloatingActionButton>(R.id.playAllFloatingActionButton)
+    private val playAllExtendedFloatingActionButton by getViewProperty<ExtendedFloatingActionButton>(
+        R.id.playAllExtendedFloatingActionButton
+    )
     private val recyclerView by getViewProperty<RecyclerView>(R.id.recyclerView)
     private val thumbnailImageView by getViewProperty<ImageView>(R.id.thumbnailImageView)
     private val toolbar by getViewProperty<MaterialToolbar>(R.id.toolbar)
@@ -217,7 +219,7 @@ class AlbumFragment : Fragment(R.layout.fragment_album) {
             windowInsets
         }
 
-        ViewCompat.setOnApplyWindowInsetsListener(playAllFloatingActionButton) { v, windowInsets ->
+        ViewCompat.setOnApplyWindowInsetsListener(playAllExtendedFloatingActionButton) { v, windowInsets ->
             val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
 
             v.updateMargin(
@@ -232,7 +234,7 @@ class AlbumFragment : Fragment(R.layout.fragment_album) {
 
         recyclerView.adapter = adapter
 
-        playAllFloatingActionButton.setOnClickListener {
+        playAllExtendedFloatingActionButton.setOnClickListener {
             viewModel.playAlbum()
 
             findNavController().navigateSafe(R.id.action_albumFragment_to_fragment_now_playing)
@@ -294,7 +296,7 @@ class AlbumFragment : Fragment(R.layout.fragment_album) {
 
                             album.year?.also { year ->
                                 yearTextView.isVisible = true
-                                yearTextView.text = year.toString()
+                                yearTextView.text = getString(R.string.year_format, year)
                             } ?: run {
                                 yearTextView.isVisible = false
                             }
@@ -343,8 +345,8 @@ class AlbumFragment : Fragment(R.layout.fragment_album) {
                     recyclerView.isVisible = !isEmpty
                     noElementsNestedScrollView.isVisible = isEmpty
                     when (isEmpty) {
-                        true -> playAllFloatingActionButton.hide()
-                        false -> playAllFloatingActionButton.show()
+                        true -> playAllExtendedFloatingActionButton.hide()
+                        false -> playAllExtendedFloatingActionButton.show()
                     }
                 }
             }

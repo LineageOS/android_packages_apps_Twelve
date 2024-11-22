@@ -26,7 +26,7 @@ import androidx.navigation.ui.setupWithNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.google.android.material.progressindicator.LinearProgressIndicator
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -62,7 +62,9 @@ class PlaylistFragment : Fragment(R.layout.fragment_playlist) {
     private val infoNestedScrollView by getViewProperty<NestedScrollView?>(R.id.infoNestedScrollView)
     private val linearProgressIndicator by getViewProperty<LinearProgressIndicator>(R.id.linearProgressIndicator)
     private val noElementsNestedScrollView by getViewProperty<NestedScrollView>(R.id.noElementsNestedScrollView)
-    private val playAllFloatingActionButton by getViewProperty<FloatingActionButton>(R.id.playAllFloatingActionButton)
+    private val playAllExtendedFloatingActionButton by getViewProperty<ExtendedFloatingActionButton>(
+        R.id.playAllExtendedFloatingActionButton
+    )
     private val playlistNameTextView by getViewProperty<TextView>(R.id.playlistNameTextView)
     private val recyclerView by getViewProperty<RecyclerView>(R.id.recyclerView)
     private val thumbnailImageView by getViewProperty<ImageView>(R.id.thumbnailImageView)
@@ -171,15 +173,17 @@ class PlaylistFragment : Fragment(R.layout.fragment_playlist) {
             windowInsets
         }
 
-        ViewCompat.setOnApplyWindowInsetsListener(playAllFloatingActionButton) { v, windowInsets ->
-            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+        playAllExtendedFloatingActionButton.let {
+            ViewCompat.setOnApplyWindowInsetsListener(it) { v, windowInsets ->
+                val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
 
-            v.updateMargin(
-                insets,
-                bottom = true,
-            )
+                v.updateMargin(
+                    insets,
+                    bottom = true,
+                )
 
-            windowInsets
+                windowInsets
+            }
         }
 
         toolbar.setupWithNavController(findNavController())
@@ -202,7 +206,7 @@ class PlaylistFragment : Fragment(R.layout.fragment_playlist) {
 
         recyclerView.adapter = adapter
 
-        playAllFloatingActionButton.setOnClickListener {
+        playAllExtendedFloatingActionButton.setOnClickListener {
             viewModel.playPlaylist()
 
             findNavController().navigateSafe(R.id.action_playlistFragment_to_fragment_now_playing)
@@ -268,8 +272,8 @@ class PlaylistFragment : Fragment(R.layout.fragment_playlist) {
                     recyclerView.isVisible = !isEmpty
                     noElementsNestedScrollView.isVisible = isEmpty
                     when (isEmpty) {
-                        true -> playAllFloatingActionButton.hide()
-                        false -> playAllFloatingActionButton.show()
+                        true -> playAllExtendedFloatingActionButton.hide()
+                        false -> playAllExtendedFloatingActionButton.show()
                     }
                 }
 
@@ -283,7 +287,7 @@ class PlaylistFragment : Fragment(R.layout.fragment_playlist) {
 
                     recyclerView.isVisible = false
                     noElementsNestedScrollView.isVisible = true
-                    playAllFloatingActionButton.isVisible = false
+                    playAllExtendedFloatingActionButton.isVisible = false
 
                     if (it.error == MediaError.NOT_FOUND) {
                         // Get out of here

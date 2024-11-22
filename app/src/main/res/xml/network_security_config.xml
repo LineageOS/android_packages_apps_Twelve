@@ -3,6 +3,8 @@
      SPDX-FileCopyrightText: 2024 The LineageOS Project
      SPDX-License-Identifier: Apache-2.0
 -->
-<network-security-config>
-    <base-config cleartextTrafficPermitted="true" />
+<network-security-config xmlns:tools="http://schemas.android.com/tools">
+    <base-config
+        cleartextTrafficPermitted="true"
+        tools:ignore="InsecureBaseConfiguration" />
 </network-security-config>

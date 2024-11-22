@@ -35,6 +35,7 @@ import org.lineageos.twelve.services.PlaybackService
 abstract class TwelveViewModel(application: Application) : AndroidViewModel(application) {
     protected val mediaRepository = getApplication<TwelveApplication>().mediaRepository
 
+    @Suppress("EmptyMethod")
     final override fun <T : Application> getApplication() = super.getApplication<T>()
 
     private val sharedPreferences by lazy {

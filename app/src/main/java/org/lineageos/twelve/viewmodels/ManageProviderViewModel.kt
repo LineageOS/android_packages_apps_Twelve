@@ -56,9 +56,9 @@ class ManageProviderViewModel(application: Application) : ProvidersViewModel(app
         it?.let { providerIds ->
             mediaRepository.provider(
                 providerIds.first, providerIds.second
-            ).mapLatest { provider ->
-                provider?.let {
-                    RequestStatus.Success<_, MediaError>(it)
+            ).mapLatest { maybeProvider ->
+                maybeProvider?.let { provider ->
+                    RequestStatus.Success<_, MediaError>(provider)
                 } ?: RequestStatus.Error(MediaError.NOT_FOUND)
             }
         } ?: flowOf(RequestStatus.Success(null))
