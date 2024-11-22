@@ -85,7 +85,8 @@
                 <ImageView
                     android:id="@+id/albumArtImageView"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
+                    android:layout_height="match_parent"
+                    android:contentDescription="@string/content_description_thumbnail" />
 
                 <SurfaceView
                     android:id="@+id/visualizerSurfaceView"
