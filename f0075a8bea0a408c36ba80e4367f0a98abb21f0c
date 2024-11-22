@@ -34,6 +34,24 @@
       "parentUuid": "bc6abc7d_b371f020",
       "revId": "f0075a8bea0a408c36ba80e4367f0a98abb21f0c",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8cfa4526_aabec16f",
+        "filename": "app/src/main/java/org/lineageos/twelve/fragments/NowPlayingFragment.kt",
+        "patchSetId": 1
+      },
+      "lineNbr": 283,
+      "author": {
+        "id": 25732
+      },
+      "writtenOn": "2024-11-22T23:22:38Z",
+      "side": 1,
+      "message": "I\u0027ve decided to just kill long press for now, I\u0027ll do a picker with a dialog",
+      "parentUuid": "82cd26d7_29211e4c",
+      "revId": "f0075a8bea0a408c36ba80e4367f0a98abb21f0c",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
