@@ -215,7 +215,7 @@ class LocalDataSource(context: Context, private val database: TwelveDatabase) : 
                 },
             ).toTypedArray(),
         )
-    ).mapEachRow(albumsProjection, mapAlbum).map {
+    ).mapEachRow(mapAlbum).map {
         RequestStatus.Success<_, MediaError>(it)
     }
 
@@ -238,7 +238,7 @@ class LocalDataSource(context: Context, private val database: TwelveDatabase) : 
                 },
             ).toTypedArray(),
         )
-    ).mapEachRow(artistsProjection, mapArtist).map {
+    ).mapEachRow(mapArtist).map {
         RequestStatus.Success<_, MediaError>(it)
     }
 
@@ -261,7 +261,7 @@ class LocalDataSource(context: Context, private val database: TwelveDatabase) : 
                 },
             ).toTypedArray(),
         )
-    ).mapEachRow(genresProjection, mapGenre).map {
+    ).mapEachRow(mapGenre).map {
         RequestStatus.Success<_, MediaError>(it)
     }
 
@@ -280,7 +280,7 @@ class LocalDataSource(context: Context, private val database: TwelveDatabase) : 
                 },
                 ContentResolver.QUERY_ARG_SQL_SELECTION_ARGS to arrayOf(query),
             )
-        ).mapEachRow(albumsProjection, mapAlbum),
+        ).mapEachRow(mapAlbum),
         contentResolver.queryFlow(
             artistsUri,
             artistsProjection,
@@ -290,7 +290,7 @@ class LocalDataSource(context: Context, private val database: TwelveDatabase) : 
                 },
                 ContentResolver.QUERY_ARG_SQL_SELECTION_ARGS to arrayOf(query),
             )
-        ).mapEachRow(artistsProjection, mapArtist),
+        ).mapEachRow(mapArtist),
         contentResolver.queryFlow(
             audiosUri,
             audiosProjection,
@@ -300,7 +300,7 @@ class LocalDataSource(context: Context, private val database: TwelveDatabase) : 
                 },
                 ContentResolver.QUERY_ARG_SQL_SELECTION_ARGS to arrayOf(query),
             )
-        ).mapEachRow(audiosProjection, mapAudio),
+        ).mapEachRow(mapAudio),
         contentResolver.queryFlow(
             genresUri,
             genresProjection,
@@ -310,7 +310,7 @@ class LocalDataSource(context: Context, private val database: TwelveDatabase) : 
                 },
                 ContentResolver.QUERY_ARG_SQL_SELECTION_ARGS to arrayOf(query),
             )
-        ).mapEachRow(genresProjection, mapGenre),
+        ).mapEachRow(mapGenre),
     ) { albums, artists, audios, genres ->
         albums + artists + audios + genres
     }.map { RequestStatus.Success<_, MediaError>(it) }
@@ -326,7 +326,7 @@ class LocalDataSource(context: Context, private val database: TwelveDatabase) : 
                 ContentUris.parseId(audioUri).toString(),
             ),
         )
-    ).mapEachRow(audiosProjection, mapAudio).mapLatest { audios ->
+    ).mapEachRow(mapAudio).mapLatest { audios ->
         audios.firstOrNull()?.let {
             RequestStatus.Success<_, MediaError>(it)
         } ?: RequestStatus.Error(MediaError.NOT_FOUND)
@@ -344,7 +344,7 @@ class LocalDataSource(context: Context, private val database: TwelveDatabase) : 
                     ContentUris.parseId(albumUri).toString(),
                 ),
             )
-        ).mapEachRow(albumsProjection, mapAlbum),
+        ).mapEachRow(mapAlbum),
         contentResolver.queryFlow(
             audiosUri,
             audiosProjection,
@@ -359,7 +359,7 @@ class LocalDataSource(context: Context, private val database: TwelveDatabase) : 
                     MediaStore.Audio.AudioColumns.TRACK,
                 )
             )
-        ).mapEachRow(audiosProjection, mapAudio)
+        ).mapEachRow(mapAudio)
     ) { albums, audios ->
         albums.firstOrNull()?.let { album ->
             RequestStatus.Success<_, MediaError>(album to audios)
@@ -378,7 +378,7 @@ class LocalDataSource(context: Context, private val database: TwelveDatabase) : 
                     ContentUris.parseId(artistUri).toString(),
                 ),
             )
-        ).mapEachRow(artistsProjection, mapArtist),
+        ).mapEachRow(mapArtist),
         contentResolver.queryFlow(
             albumsUri,
             albumsProjection,
@@ -390,7 +390,7 @@ class LocalDataSource(context: Context, private val database: TwelveDatabase) : 
                     ContentUris.parseId(artistUri).toString(),
                 ),
             )
-        ).mapEachRow(albumsProjection, mapAlbum),
+        ).mapEachRow(mapAlbum),
         contentResolver.queryFlow(
             audiosUri,
             audioAlbumIdsProjection,
@@ -403,7 +403,7 @@ class LocalDataSource(context: Context, private val database: TwelveDatabase) : 
                 ),
                 ContentResolver.QUERY_ARG_SQL_GROUP_BY to MediaStore.Audio.AudioColumns.ALBUM_ID,
             )
-        ).mapEachRow(audioAlbumIdsProjection) {
+        ).mapEachRow {
             it.getLong(MediaStore.Audio.AudioColumns.ALBUM_ID)
         }.flatMapLatest { albumIds ->
             contentResolver.queryFlow(
@@ -423,7 +423,7 @@ class LocalDataSource(context: Context, private val database: TwelveDatabase) : 
                             .toTypedArray(),
                     ),
                 )
-            ).mapEachRow(albumsProjection, mapAlbum)
+            ).mapEachRow(mapAlbum)
         }
     ) { artists, albums, appearsInAlbum ->
         artists.firstOrNull()?.let { artist ->
@@ -463,7 +463,7 @@ class LocalDataSource(context: Context, private val database: TwelveDatabase) : 
                         }
                     ),
                 )
-            ).mapEachRow(genresProjection, mapGenre),
+            ).mapEachRow(mapGenre),
             contentResolver.queryFlow(
                 audiosUri,
                 audioAlbumIdsProjection,
@@ -477,7 +477,7 @@ class LocalDataSource(context: Context, private val database: TwelveDatabase) : 
                     ContentResolver.QUERY_ARG_SQL_GROUP_BY to
                             MediaStore.Audio.AudioColumns.ALBUM_ID,
                 )
-            ).mapEachRow(audioAlbumIdsProjection) {
+            ).mapEachRow {
                 it.getLong(MediaStore.Audio.AudioColumns.ALBUM_ID)
             }.flatMapLatest { albumIds ->
                 contentResolver.queryFlow(
@@ -495,7 +495,7 @@ class LocalDataSource(context: Context, private val database: TwelveDatabase) : 
                                 .toTypedArray(),
                         ),
                     )
-                ).mapEachRow(albumsProjection, mapAlbum)
+                ).mapEachRow(mapAlbum)
             },
             contentResolver.queryFlow(
                 audiosUri,
@@ -508,7 +508,7 @@ class LocalDataSource(context: Context, private val database: TwelveDatabase) : 
                         *genreSelectionArgs,
                     ),
                 )
-            ).mapEachRow(audiosProjection, mapAudio)
+            ).mapEachRow(mapAudio)
         ) { genres, appearsInAlbums, audios ->
             val genre = genres.firstOrNull() ?: when (genreId) {
                 0L -> Genre(genreUri, null)
@@ -612,7 +612,7 @@ class LocalDataSource(context: Context, private val database: TwelveDatabase) : 
             }.toTypedArray(),
         )
     )
-        .mapEachRow(audiosProjection, mapAudio)
+        .mapEachRow(mapAudio)
         .mapLatest { audios ->
             audioUris.map { audioUri ->
                 audios.firstOrNull { it.uri == audioUri }
