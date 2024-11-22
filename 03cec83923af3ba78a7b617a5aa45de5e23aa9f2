@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "85ee9d1d_676d6ae7",
+        "filename": "app/src/main/java/org/lineageos/twelve/ext/Call.kt",
+        "patchSetId": 1
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2024-11-22T17:25:53Z",
+      "side": 0,
+      "message": "NAK, required in AOSP/22.0\nWill resolve if not needed",
+      "revId": "03cec83923af3ba78a7b617a5aa45de5e23aa9f2",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
