@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "dc05815a_f16dbaed",
+        "filename": "app/src/main/java/org/lineageos/twelve/fragments/PlaylistFragment.kt",
+        "patchSetId": 3
+      },
+      "lineNbr": 174,
+      "author": {
+        "id": 10067
+      },
+      "writtenOn": "2024-11-22T18:37:51Z",
+      "side": 1,
+      "message": "over 100ch",
+      "range": {
+        "startLine": 174,
+        "startChar": 0,
+        "endLine": 174,
+        "endChar": 107
+      },
+      "revId": "185fc63922dbd29cf77c20c95f018122f90309b6",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
