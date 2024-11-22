@@ -214,7 +214,7 @@ class NowPlayingFragment : Fragment(R.layout.fragment_now_playing) {
 
         viewLifecycleOwner.lifecycle.addObserver(visualizerViewLifecycleObserver)
 
-        // Audio informations
+        // Audio information
         audioTitleTextView.isSelected = true
         artistNameTextView.isSelected = true
         albumTitleTextView.isSelected = true

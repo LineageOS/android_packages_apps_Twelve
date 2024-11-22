@@ -30,7 +30,8 @@
             <ImageView
                 android:id="@+id/thumbnailImageView"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+                android:contentDescription="@string/content_description_thumbnail" />
 
         </com.google.android.material.card.MaterialCardView>
 
@@ -89,6 +90,7 @@
                 android:layout_height="48dp"
                 android:layout_gravity="center"
                 android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/content_description_play_pause"
                 android:src="@drawable/ic_play_arrow"
                 app:tint="?attr/colorOnSurface" />
 
