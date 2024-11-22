@@ -8,11 +8,9 @@ package org.lineageos.twelve.datasources
 import android.content.ContentResolver
 import android.content.ContentUris
 import android.content.Context
-import android.database.Cursor
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
-import androidx.core.database.getStringOrNull
 import androidx.core.os.bundleOf
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.combine
@@ -22,6 +20,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapLatest
 import org.lineageos.twelve.database.TwelveDatabase
 import org.lineageos.twelve.database.entities.Item
+import org.lineageos.twelve.models.ColumnIndexCache
 import org.lineageos.twelve.ext.mapEachRow
 import org.lineageos.twelve.ext.queryFlow
 import org.lineageos.twelve.models.ActivityTab
@@ -58,14 +57,12 @@ class LocalDataSource(context: Context, private val database: TwelveDatabase) : 
     private val genresUri = MediaStore.Audio.Genres.EXTERNAL_CONTENT_URI
     private val audiosUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
 
-    private val mapAlbum = { it: Cursor, indexCache: Array<Int> ->
-        var i = 0
-
-        val albumId = it.getLong(indexCache[i++])
-        val album = it.getString(indexCache[i++])
-        val artistId = it.getLong(indexCache[i++])
-        val artist = it.getString(indexCache[i++])
-        val lastYear = it.getInt(indexCache[i++])
+    private val mapAlbum = { columnIndexCache: ColumnIndexCache ->
+        val albumId = columnIndexCache.getLong(MediaStore.Audio.AudioColumns._ID)
+        val album = columnIndexCache.getString(MediaStore.Audio.AlbumColumns.ALBUM)
+        val artistId = columnIndexCache.getLong(MediaStore.Audio.AlbumColumns.ARTIST_ID)
+        val artist = columnIndexCache.getString(MediaStore.Audio.AlbumColumns.ARTIST)
+        val lastYear = columnIndexCache.getInt(MediaStore.Audio.AlbumColumns.LAST_YEAR)
 
         val uri = ContentUris.withAppendedId(albumsUri, albumId)
         val artistUri = ContentUris.withAppendedId(artistsUri, artistId)
@@ -82,11 +79,9 @@ class LocalDataSource(context: Context, private val database: TwelveDatabase) : 
         )
     }
 
-    private val mapArtist = { it: Cursor, indexCache: Array<Int> ->
-        var i = 0
-
-        val artistId = it.getLong(indexCache[i++])
-        val artist = it.getString(indexCache[i++])
+    private val mapArtist = { columnIndexCache: ColumnIndexCache ->
+        val artistId = columnIndexCache.getLong(MediaStore.Audio.AudioColumns._ID)
+        val artist = columnIndexCache.getString(MediaStore.Audio.ArtistColumns.ARTIST)
 
         val uri = ContentUris.withAppendedId(artistsUri, artistId)
 
@@ -99,11 +94,9 @@ class LocalDataSource(context: Context, private val database: TwelveDatabase) : 
         )
     }
 
-    private val mapGenre = { it: Cursor, indexCache: Array<Int> ->
-        var i = 0
-
-        val genreId = it.getLong(indexCache[i++])
-        val name = it.getStringOrNull(indexCache[i++])
+    private val mapGenre = { columnIndexCache: ColumnIndexCache ->
+        val genreId = columnIndexCache.getLong(MediaStore.Audio.AudioColumns._ID)
+        val name = columnIndexCache.getStringOrNull(MediaStore.Audio.GenresColumns.NAME)
 
         val uri = ContentUris.withAppendedId(genresUri, genreId)
 
@@ -113,27 +106,25 @@ class LocalDataSource(context: Context, private val database: TwelveDatabase) : 
         )
     }
 
-    private val mapAudio = { it: Cursor, indexCache: Array<Int> ->
-        var i = 0
-
-        val audioId = it.getLong(indexCache[i++])
-        val mimeType = it.getString(indexCache[i++])
-        val title = it.getString(indexCache[i++])
-        val isMusic = it.getInt(indexCache[i++]) != 0
-        val isPodcast = it.getInt(indexCache[i++]) != 0
-        val isAudiobook = it.getInt(indexCache[i++]) != 0
-        val duration = it.getInt(indexCache[i++])
-        val artistId = it.getLong(indexCache[i++])
-        val artist = it.getString(indexCache[i++])
-        val albumId = it.getLong(indexCache[i++])
-        val album = it.getString(indexCache[i++])
-        val track = it.getInt(indexCache[i++])
-        val genreId = it.getLong(indexCache[i++])
-        val genre = it.getStringOrNull(indexCache[i++])
-        val year = it.getInt(indexCache[i++])
+    private val mapAudio = { columnIndexCache: ColumnIndexCache ->
+        val audioId = columnIndexCache.getLong(MediaStore.Audio.AudioColumns._ID)
+        val mimeType = columnIndexCache.getString(MediaStore.Audio.AudioColumns.MIME_TYPE)
+        val title = columnIndexCache.getString(MediaStore.Audio.AudioColumns.TITLE)
+        val isMusic = columnIndexCache.getBoolean(MediaStore.Audio.AudioColumns.IS_MUSIC)
+        val isPodcast = columnIndexCache.getBoolean(MediaStore.Audio.AudioColumns.IS_PODCAST)
+        val isAudiobook = columnIndexCache.getBoolean(MediaStore.Audio.AudioColumns.IS_AUDIOBOOK)
+        val duration = columnIndexCache.getInt(MediaStore.Audio.AudioColumns.DURATION)
+        val artistId = columnIndexCache.getLong(MediaStore.Audio.AudioColumns.ARTIST_ID)
+        val artist = columnIndexCache.getString(MediaStore.Audio.AudioColumns.ARTIST)
+        val albumId = columnIndexCache.getLong(MediaStore.Audio.AudioColumns.ALBUM_ID)
+        val album = columnIndexCache.getString(MediaStore.Audio.AudioColumns.ALBUM)
+        val track = columnIndexCache.getInt(MediaStore.Audio.AudioColumns.TRACK)
+        val genreId = columnIndexCache.getLong(MediaStore.Audio.AudioColumns.GENRE_ID)
+        val genre = columnIndexCache.getStringOrNull(MediaStore.Audio.AudioColumns.GENRE)
+        val year = columnIndexCache.getInt(MediaStore.Audio.AudioColumns.YEAR)
 
         val isRecording = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            it.getInt(indexCache[i++]) != 0
+            columnIndexCache.getBoolean(MediaStore.Audio.AudioColumns.IS_RECORDING)
         } else {
             false
         }
@@ -412,9 +403,8 @@ class LocalDataSource(context: Context, private val database: TwelveDatabase) : 
                 ),
                 ContentResolver.QUERY_ARG_SQL_GROUP_BY to MediaStore.Audio.AudioColumns.ALBUM_ID,
             )
-        ).mapEachRow(audioAlbumIdsProjection) { it, indexCache ->
-            // albumId
-            it.getLong(indexCache[0])
+        ).mapEachRow(audioAlbumIdsProjection) {
+            it.getLong(MediaStore.Audio.AudioColumns.ALBUM_ID)
         }.flatMapLatest { albumIds ->
             contentResolver.queryFlow(
                 albumsUri,
@@ -487,9 +477,8 @@ class LocalDataSource(context: Context, private val database: TwelveDatabase) : 
                     ContentResolver.QUERY_ARG_SQL_GROUP_BY to
                             MediaStore.Audio.AudioColumns.ALBUM_ID,
                 )
-            ).mapEachRow(audioAlbumIdsProjection) { it, indexCache ->
-                // albumId
-                it.getLong(indexCache[0])
+            ).mapEachRow(audioAlbumIdsProjection) {
+                it.getLong(MediaStore.Audio.AudioColumns.ALBUM_ID)
             }.flatMapLatest { albumIds ->
                 contentResolver.queryFlow(
                     albumsUri,

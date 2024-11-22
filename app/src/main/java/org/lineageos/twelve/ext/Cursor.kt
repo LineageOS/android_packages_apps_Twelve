@@ -6,22 +6,22 @@
 package org.lineageos.twelve.ext
 
 import android.database.Cursor
+import org.lineageos.twelve.models.ColumnIndexCache
 
 fun <T> Cursor?.mapEachRow(
     projection: Array<String>? = null,
-    mapping: (Cursor, Array<Int>) -> T,
+    mapping: (ColumnIndexCache) -> T,
 ) = this?.use { cursor ->
     if (!cursor.moveToFirst()) {
         return@use emptyList<T>()
     }
 
-    val indexCache = projection?.map { column ->
-        cursor.getColumnIndexOrThrow(column)
-    }?.toTypedArray() ?: arrayOf()
+    val columnIndexCache =
+        ColumnIndexCache(cursor, projection?.toList() ?: cursor.columnNames.toList())
 
     val data = mutableListOf<T>()
     do {
-        data.add(mapping(cursor, indexCache))
+        data.add(mapping(columnIndexCache))
     } while (cursor.moveToNext())
 
     data.toList()
