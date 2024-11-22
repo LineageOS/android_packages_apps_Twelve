@@ -4,6 +4,7 @@
      SPDX-License-Identifier: Apache-2.0
 -->
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -14,6 +15,7 @@
         android:layout_marginHorizontal="16dp"
         android:importantForAutofill="no"
         android:inputType="textCapSentences"
-        android:maxLines="1" />
+        android:maxLines="1"
+        tools:ignore="LabelFor" />
 
 </FrameLayout>

@@ -50,6 +50,7 @@
     <string name="genre_unknown">Unknown</string>
 
     <!-- Tracks information -->
+    <string name="year_format" translatable="false">%1$d</string>
     <plurals name="tracks_count">
         <item quantity="one">%d track</item>
         <item quantity="other">%d tracks</item>
@@ -189,4 +190,11 @@
     <string name="activity_most_played_albums">Most played albums</string>
     <string name="activity_random_albums">Random albums</string>
     <string name="activity_random_songs">Random songs</string>
+
+    <!-- Content descriptions -->
+    <string name="content_description_play_pause">Play/pause</string>
+    <string name="content_description_thumbnail">Thumbnail</string>
+
+    <!-- Play all -->
+    <string name="play_all">Play all</string>
 </resources>
