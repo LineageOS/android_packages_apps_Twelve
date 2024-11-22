@@ -308,11 +308,9 @@ class PlaybackService : MediaLibraryService(), Player.Listener, LifecycleOwner {
         return super.onBind(intent)
     }
 
-    @Suppress("Deprecation")
-    @Deprecated("Deprecated in Java")
-    override fun onStart(intent: Intent?, startId: Int) {
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         dispatcher.onServicePreSuperOnStart()
-        super.onStart(intent, startId)
+        return super.onStartCommand(intent, flags, startId)
     }
 
     override fun onTaskRemoved(rootIntent: Intent?) {

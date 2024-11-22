@@ -6,7 +6,6 @@
 
 package org.lineageos.twelve.ext
 
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.suspendCancellableCoroutine
 import okhttp3.Call
 import okhttp3.Callback
@@ -15,7 +14,6 @@ import okhttp3.internal.closeQuietly
 import okio.IOException
 import kotlin.coroutines.resumeWithException
 
-@OptIn(ExperimentalCoroutinesApi::class) // resume with a resource cleanup.
 suspend fun Call.executeAsync(): Response = suspendCancellableCoroutine { continuation ->
     continuation.invokeOnCancellation {
         this.cancel()
