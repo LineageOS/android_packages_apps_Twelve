@@ -210,9 +210,9 @@ class SubsonicDataSource(arguments: Bundle) : MediaDataSource {
 
     override fun search(query: String) = suspend {
         subsonicClient.search3(query).toRequestStatus {
-            song.map { it.toMediaItem() } +
-                    artist.map { it.toMediaItem() } +
-                    album.map { it.toMediaItem() }
+            song.orEmpty().map { it.toMediaItem() } +
+                    artist.orEmpty().map { it.toMediaItem() } +
+                    album.orEmpty().map { it.toMediaItem() }
         }
     }.asFlow()
 
