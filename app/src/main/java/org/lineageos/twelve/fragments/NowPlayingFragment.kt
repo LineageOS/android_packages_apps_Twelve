@@ -278,8 +278,9 @@ class NowPlayingFragment : Fragment(R.layout.fragment_now_playing) {
             viewModel.nextVisualizerType()
         }
         visualizerMaterialButton.setOnLongClickListener {
+            val enabled = viewModel.visualizerEnabled()
             viewModel.disableVisualizer()
-            true
+            enabled
         }
 
         queueMaterialButton.setOnClickListener {

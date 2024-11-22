@@ -19,26 +19,31 @@
         <com.google.android.material.button.MaterialButton
             android:id="@+id/playbackSpeedMaterialButton"
             style="@style/Theme.Twelve.NowPlayingFragment.BottomBarButton"
+            android:tooltipText="@string/playback_speed_tooltip"
             tools:text="1×" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/addOrRemoveFromPlaylistsMaterialButton"
             style="@style/Theme.Twelve.NowPlayingFragment.BottomBarButton"
+            android:tooltipText="@string/audio_add_or_remove_from_playlists"
             app:icon="@drawable/ic_playlist_add" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/equalizerMaterialButton"
             style="@style/Theme.Twelve.NowPlayingFragment.BottomBarButton"
+            android:tooltipText="@string/audio_effects_tooltip"
             app:icon="@drawable/ic_audiofx" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/visualizerMaterialButton"
             style="@style/Theme.Twelve.NowPlayingFragment.BottomBarButton"
+            android:tooltipText="@string/visualizer_tooltip"
             app:icon="@drawable/ic_graphic_eq" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/queueMaterialButton"
             style="@style/Theme.Twelve.NowPlayingFragment.BottomBarButton"
+            android:tooltipText="@string/queue"
             app:icon="@drawable/ic_queue_play_next" />
 
     </LinearLayout>

@@ -82,7 +82,10 @@
     <string name="delete_playlist_positive">Delete</string>
 
     <!-- Now playing fragment -->
+    <string name="audio_effects_tooltip">Audio effects</string>
     <string name="playback_speed_format">%1$s×</string>
+    <string name="playback_speed_tooltip">Playback speed</string>
+    <string name="visualizer_tooltip">Visualizer</string>
 
     <!-- Now playing stats dialog fragment -->
     <string name="audio_source">Source</string>
