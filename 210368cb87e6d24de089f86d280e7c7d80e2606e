@@ -33,6 +33,23 @@
       "message": "looks fine, up to seba",
       "revId": "210368cb87e6d24de089f86d280e7c7d80e2606e",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "81603bc0_1e925be2",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 10067
+      },
+      "writtenOn": "2024-11-22T17:04:25Z",
+      "side": 1,
+      "message": "bump",
+      "revId": "210368cb87e6d24de089f86d280e7c7d80e2606e",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
