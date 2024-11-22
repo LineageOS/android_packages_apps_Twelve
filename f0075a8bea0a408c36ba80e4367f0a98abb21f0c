@@ -16,6 +16,24 @@
       "message": "returning `true` here kills the tooltip, not sure if we want the tooltip when we are disabling visualizer.",
       "revId": "f0075a8bea0a408c36ba80e4367f0a98abb21f0c",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "82cd26d7_29211e4c",
+        "filename": "app/src/main/java/org/lineageos/twelve/fragments/NowPlayingFragment.kt",
+        "patchSetId": 1
+      },
+      "lineNbr": 283,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2024-11-22T17:08:41Z",
+      "side": 1,
+      "message": "seems fine as is, indeed with the long press it has a weird behavior, but the long press was more of a \"I need to kill it quickly while testing\" thing\nnot sure how we\u0027d make it more discoverable",
+      "parentUuid": "bc6abc7d_b371f020",
+      "revId": "f0075a8bea0a408c36ba80e4367f0a98abb21f0c",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
