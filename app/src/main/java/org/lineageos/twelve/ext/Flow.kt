@@ -8,8 +8,9 @@ package org.lineageos.twelve.ext
 import android.database.Cursor
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import org.lineageos.twelve.models.ColumnIndexCache
 
 fun <T> Flow<Cursor?>.mapEachRow(
     projection: Array<String>,
-    mapping: (Cursor, Array<Int>) -> T,
+    mapping: (ColumnIndexCache) -> T,
 ) = map { it.mapEachRow(projection, mapping) }
