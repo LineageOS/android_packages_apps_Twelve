@@ -22,6 +22,30 @@
       },
       "revId": "185fc63922dbd29cf77c20c95f018122f90309b6",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c98ba2c0_d87bc330",
+        "filename": "app/src/main/java/org/lineageos/twelve/fragments/PlaylistFragment.kt",
+        "patchSetId": 3
+      },
+      "lineNbr": 174,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2024-11-22T20:22:59Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "dc05815a_f16dbaed",
+      "range": {
+        "startLine": 174,
+        "startChar": 0,
+        "endLine": 174,
+        "endChar": 107
+      },
+      "revId": "185fc63922dbd29cf77c20c95f018122f90309b6",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
