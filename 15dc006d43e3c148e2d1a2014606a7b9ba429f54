@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "20a3a2e9_fd3ba06d",
+        "filename": "app/src/main/res/values/strings.xml",
+        "patchSetId": 3
+      },
+      "lineNbr": 89,
+      "author": {
+        "id": 10067
+      },
+      "writtenOn": "2024-11-23T17:54:01Z",
+      "side": 1,
+      "message": "```suggestion\n    \u003cstring name\u003d\"playback_pitch\"\u003ePlayback pitch\u003c/string\u003e\n    \u003cstring name\u003d\"playback_speed\"\u003ePlayback speed\u003c/string\u003e\n```",
+      "range": {
+        "startLine": 88,
+        "startChar": 0,
+        "endLine": 89,
+        "endChar": 57
+      },
+      "revId": "15dc006d43e3c148e2d1a2014606a7b9ba429f54",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
