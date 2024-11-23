@@ -229,3 +229,8 @@ fun Player.setOffloadEnabled(enabled: Boolean) {
                 .build()
         ).build()
 }
+
+@OptIn(UnstableApi::class)
+fun Player.setPlaybackPitch(pitch: Float) {
+    playbackParameters = PlaybackParameters(playbackParameters.speed, pitch)
+}

@@ -56,6 +56,7 @@ class ViewActivity : AppCompatActivity(R.layout.activity_view) {
     private val nextTrackMaterialButton by lazy { findViewById<MaterialButton>(R.id.nextTrackMaterialButton) }
     private val playPauseMaterialButton by lazy { findViewById<MaterialButton>(R.id.playPauseMaterialButton) }
     private val playbackSpeedMaterialButton by lazy { findViewById<MaterialButton>(R.id.playbackSpeedMaterialButton) }
+    private val playbackPitchMaterialButton by lazy { findViewById<MaterialButton>(R.id.playbackPitchMaterialButton) }
     private val previousTrackMaterialButton by lazy { findViewById<MaterialButton>(R.id.previousTrackMaterialButton) }
     private val progressSlider by lazy { findViewById<Slider>(R.id.progressSlider) }
     private val repeatMarkerImageView by lazy { findViewById<ImageView>(R.id.repeatMarkerImageView) }
@@ -103,6 +104,10 @@ class ViewActivity : AppCompatActivity(R.layout.activity_view) {
 
         playbackSpeedMaterialButton.setOnClickListener {
             localPlayerViewModel.shufflePlaybackSpeed()
+        }
+
+        playbackPitchMaterialButton.setOnClickListener {
+            localPlayerViewModel.shufflePlaybackPitch()
         }
 
         repeatMaterialButton.setOnClickListener {
@@ -361,6 +366,10 @@ class ViewActivity : AppCompatActivity(R.layout.activity_view) {
                             )
 
                             playbackSpeedMaterialButton.isEnabled = it.contains(
+                                Player.COMMAND_SET_SPEED_AND_PITCH
+                            )
+
+                            playbackPitchMaterialButton.isEnabled = it.contains(
                                 Player.COMMAND_SET_SPEED_AND_PITCH
                             )
 

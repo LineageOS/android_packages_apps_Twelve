@@ -39,6 +39,7 @@ import org.lineageos.twelve.ext.next
 import org.lineageos.twelve.ext.playbackParametersFlow
 import org.lineageos.twelve.ext.playbackStateFlow
 import org.lineageos.twelve.ext.repeatModeFlow
+import org.lineageos.twelve.ext.setPlaybackPitch
 import org.lineageos.twelve.ext.shuffleModeFlow
 import org.lineageos.twelve.ext.tracksFlow
 import org.lineageos.twelve.models.PlaybackState
@@ -49,6 +50,19 @@ import org.lineageos.twelve.utils.MimeUtils
 
 open class NowPlayingViewModel(application: Application) : TwelveViewModel(application) {
     enum class PlaybackSpeed(val value: Float) {
+        ONE(1f),
+        ONE_POINT_FIVE(1.5f),
+        TWO(2f),
+        ZERO_POINT_FIVE(0.5f);
+
+        companion object {
+            fun fromValue(value: Float) = entries.firstOrNull {
+                it.value == value
+            }
+        }
+    }
+
+    enum class PlaybackPitch(val value: Float) {
         ONE(1f),
         ONE_POINT_FIVE(1.5f),
         TWO(2f),
@@ -326,6 +340,16 @@ open class NowPlayingViewModel(application: Application) : TwelveViewModel(appli
             ) ?: PlaybackSpeed.ONE
 
             it.setPlaybackSpeed(playbackSpeed.next().value)
+        }
+    }
+
+    fun shufflePlaybackPitch() {
+        mediaController.value?.let {
+            val playbackPitch = PlaybackPitch.fromValue(
+                it.playbackParameters.pitch
+            ) ?: PlaybackPitch.ONE
+
+            it.setPlaybackPitch(playbackPitch.next().value)
         }
     }
 

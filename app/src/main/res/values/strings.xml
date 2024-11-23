@@ -86,6 +86,7 @@
     <string name="audio_effects">Audio effects</string>
     <string name="playback_speed_format">%1$s×</string>
     <string name="playback_speed">Playback speed</string>
+    <string name="playback_pitch">Playback pitch</string>
     <string name="visualizer">Visualizer</string>
 
     <!-- Now playing stats dialog fragment -->
