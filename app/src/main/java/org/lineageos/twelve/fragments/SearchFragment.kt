@@ -69,12 +69,12 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
                     item?.let {
                         when (it) {
                             is Album -> findNavController().navigateSafe(
-                                R.id.action_mainFragment_to_fragment_album,
+                                R.id.action_searchFragment_to_fragment_album,
                                 AlbumFragment.createBundle(it.uri)
                             )
 
                             is Artist -> findNavController().navigateSafe(
-                                R.id.action_mainFragment_to_fragment_artist,
+                                R.id.action_searchFragment_to_fragment_artist,
                                 ArtistFragment.createBundle(it.uri)
                             )
 
@@ -84,7 +84,7 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
                                 )
 
                                 findNavController().navigateSafe(
-                                    R.id.action_mainFragment_to_fragment_now_playing
+                                    R.id.action_searchFragment_to_fragment_now_playing
                                 )
                             }
 
@@ -137,10 +137,6 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
 
         recyclerView.adapter = adapter
 
-        // This library sucks.
-        @Suppress("RestrictedApi")
-        searchView.setStatusBarSpacerEnabled(false)
-
         searchView.editText.addTextChangedListener { text ->
             viewModel.setSearchQuery(text.toString())
         }
@@ -158,21 +154,6 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
                 }
             }
         }
-    }
-
-    override fun onResume() {
-        super.onResume()
-
-        if (searchView.editText.text.isEmpty()) {
-            searchView.show()
-            searchView.requestFocusAndShowKeyboard()
-        }
-    }
-
-    override fun onPause() {
-        searchView.clearFocusAndHideKeyboard()
-
-        super.onPause()
     }
 
     override fun onDestroyView() {

@@ -137,12 +137,12 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                 }
 
                 R.id.searchFragment -> {
-                    viewPager2.currentItem = 1
+                    findNavController().navigateSafe(R.id.action_mainFragment_to_fragment_search)
                     true
                 }
 
                 R.id.libraryFragment -> {
-                    viewPager2.currentItem = 2
+                    viewPager2.currentItem = 1
                     true
                 }
 
@@ -224,7 +224,6 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         // Keep in sync with the BottomNavigationView menu
         private val fragments = arrayOf(
             { ActivityFragment() },
-            { SearchFragment() },
             { LibraryFragment() },
         )
     }
