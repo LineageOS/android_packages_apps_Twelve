@@ -10,6 +10,8 @@ import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.LinearLayout
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
@@ -21,6 +23,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.progressindicator.LinearProgressIndicator
+import com.google.android.material.search.SearchBar
 import com.google.android.material.search.SearchView
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -29,6 +32,7 @@ import org.lineageos.twelve.ext.getViewProperty
 import org.lineageos.twelve.ext.navigateSafe
 import org.lineageos.twelve.ext.scheduleHideSoftInput
 import org.lineageos.twelve.ext.setProgressCompat
+import org.lineageos.twelve.ext.updatePadding
 import org.lineageos.twelve.models.Album
 import org.lineageos.twelve.models.Artist
 import org.lineageos.twelve.models.Audio
@@ -55,7 +59,9 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
     private val linearProgressIndicator by getViewProperty<LinearProgressIndicator>(R.id.linearProgressIndicator)
     private val noElementsLinearLayout by getViewProperty<LinearLayout>(R.id.noElementsLinearLayout)
     private val recyclerView by getViewProperty<RecyclerView>(R.id.recyclerView)
+    private val searchBar by getViewProperty<SearchBar>(R.id.searchBar)
     private val searchView by getViewProperty<SearchView>(R.id.searchView)
+    private val searchViewRecyclerView by getViewProperty<RecyclerView>(R.id.searchViewRecyclerView)
 
     // System services
     private val inputMethodManager: InputMethodManager
@@ -69,12 +75,12 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
                     item?.let {
                         when (it) {
                             is Album -> findNavController().navigateSafe(
-                                R.id.action_mainFragment_to_fragment_album,
+                                R.id.action_searchFragment_to_fragment_album,
                                 AlbumFragment.createBundle(it.uri)
                             )
 
                             is Artist -> findNavController().navigateSafe(
-                                R.id.action_mainFragment_to_fragment_artist,
+                                R.id.action_searchFragment_to_fragment_artist,
                                 ArtistFragment.createBundle(it.uri)
                             )
 
@@ -84,12 +90,26 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
                                 )
 
                                 findNavController().navigateSafe(
-                                    R.id.action_mainFragment_to_fragment_now_playing
+                                    R.id.action_searchFragment_to_fragment_now_playing
                                 )
                             }
 
                             else -> {}
                         }
+                    }
+                }
+
+                view.setOnLongClickListener {
+                    when (val item = item) {
+                        is Audio -> {
+                            findNavController().navigateSafe(
+                                R.id.action_searchFragment_to_fragment_audio_bottom_sheet_dialog,
+                                AudioBottomSheetDialogFragment.createBundle(item.uri)
+                            )
+                            true
+                        }
+
+                        else -> false
                     }
                 }
             }
@@ -135,11 +155,59 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        recyclerView.adapter = adapter
+        // Insets
+        ViewCompat.setOnApplyWindowInsetsListener(searchBar) { v, windowInsets ->
+            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.displayCutout())
 
-        // This library sucks.
-        @Suppress("RestrictedApi")
-        searchView.setStatusBarSpacerEnabled(false)
+            v.updatePadding(
+                insets,
+                start = true,
+                end = true,
+            )
+
+            windowInsets
+        }
+
+        ViewCompat.setOnApplyWindowInsetsListener(searchViewRecyclerView) { v, windowInsets ->
+            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+
+            v.updatePadding(
+                insets,
+                start = true,
+                end = true,
+                bottom = true,
+            )
+
+            windowInsets
+        }
+
+        ViewCompat.setOnApplyWindowInsetsListener(recyclerView) { v, windowInsets ->
+            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+
+            v.updatePadding(
+                insets,
+                start = true,
+                end = true,
+                bottom = true,
+            )
+
+            windowInsets
+        }
+
+        ViewCompat.setOnApplyWindowInsetsListener(noElementsLinearLayout) { v, windowInsets ->
+            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+
+            v.updatePadding(
+                insets,
+                start = true,
+                end = true,
+                bottom = true,
+            )
+
+            windowInsets
+        }
+
+        recyclerView.adapter = adapter
 
         searchView.editText.addTextChangedListener { text ->
             viewModel.setSearchQuery(text.toString())
@@ -148,6 +216,7 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
             inputMethodManager.scheduleHideSoftInput(searchView.editText, 0)
             searchView.editText.clearFocus()
             viewModel.setSearchQuery(searchView.editText.text.toString(), true)
+            searchView.hide()
             true
         }
 
@@ -158,21 +227,6 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
                 }
             }
         }
-    }
-
-    override fun onResume() {
-        super.onResume()
-
-        if (searchView.editText.text.isEmpty()) {
-            searchView.show()
-            searchView.requestFocusAndShowKeyboard()
-        }
-    }
-
-    override fun onPause() {
-        searchView.clearFocusAndHideKeyboard()
-
-        super.onPause()
     }
 
     override fun onDestroyView() {
