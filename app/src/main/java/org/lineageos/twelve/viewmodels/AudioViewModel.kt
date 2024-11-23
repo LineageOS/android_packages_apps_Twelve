@@ -41,15 +41,27 @@ open class AudioViewModel(application: Application) : TwelveViewModel(applicatio
     }
 
     fun addToQueue(audio: Audio) {
-        mediaController.value?.addMediaItem(audio.toMedia3MediaItem())
+        mediaController.value?.apply {
+            addMediaItem(audio.toMedia3MediaItem())
+
+            // If the added item is the only one, play it
+            if (mediaItemCount == 1) {
+                play()
+            }
+        }
     }
 
     fun playNext(audio: Audio) {
-        mediaController.value?.let { controller ->
-            controller.addMediaItem(
-                controller.currentMediaItemIndex + 1,
+        mediaController.value?.apply {
+            addMediaItem(
+                currentMediaItemIndex + 1,
                 audio.toMedia3MediaItem()
             )
+
+            // If the added item is the only one, play it
+            if (mediaItemCount == 1) {
+                play()
+            }
         }
     }
 
