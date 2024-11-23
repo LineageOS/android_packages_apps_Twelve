@@ -1,4 +1,22 @@
 {
-  "comments": [],
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "bf9e8a3d_84a9e176",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2024-11-23T16:09:19Z",
+      "side": 1,
+      "message": "This doesn\u0027t work if you searched for something \u003e back \u003e change fragment and go back\nkeyboard won\u0027t show up, we probably want to clear search result adapter if we loose focus?",
+      "revId": "34d4c3eff93ac5f9d71a6f9394cc6c5925effe0e",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ],
   "submitRequirementResults": []
 }
