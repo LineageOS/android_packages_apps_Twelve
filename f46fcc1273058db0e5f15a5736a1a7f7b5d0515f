@@ -16,6 +16,24 @@
       "message": "proposal: go by `.1` up to `2.0` and vice versa, or implement a slider",
       "revId": "f46fcc1273058db0e5f15a5736a1a7f7b5d0515f",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7a589f65_6356d868",
+        "filename": "app/src/main/java/org/lineageos/twelve/viewmodels/LocalPlayerViewModel.kt",
+        "patchSetId": 5
+      },
+      "lineNbr": 63,
+      "author": {
+        "id": 16185
+      },
+      "writtenOn": "2024-11-23T18:11:09Z",
+      "side": 1,
+      "message": "*1.0",
+      "parentUuid": "957392be_1b778785",
+      "revId": "f46fcc1273058db0e5f15a5736a1a7f7b5d0515f",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
