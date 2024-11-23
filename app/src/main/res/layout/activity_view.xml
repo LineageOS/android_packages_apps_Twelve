@@ -144,6 +144,14 @@
                 android:padding="0dp"
                 tools:text="1×" />
 
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/playbackPitchMaterialButton"
+                style="@style/Widget.Material3.Button.IconButton"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:padding="0dp"
+                tools:text="1" />
+
             <Space
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
