@@ -31,6 +31,7 @@ import org.lineageos.twelve.ext.next
 import org.lineageos.twelve.ext.playbackParametersFlow
 import org.lineageos.twelve.ext.playbackStateFlow
 import org.lineageos.twelve.ext.repeatModeFlow
+import org.lineageos.twelve.ext.setPlaybackPitch
 import org.lineageos.twelve.ext.shuffleModeEnabled
 import org.lineageos.twelve.ext.shuffleModeFlow
 import org.lineageos.twelve.ext.typedRepeatMode
@@ -44,6 +45,19 @@ import org.lineageos.twelve.models.Thumbnail
  */
 class LocalPlayerViewModel(application: Application) : AndroidViewModel(application) {
     enum class PlaybackSpeed(val value: Float) {
+        ONE(1f),
+        ONE_POINT_FIVE(1.5f),
+        TWO(2f),
+        ZERO_POINT_FIVE(0.5f);
+
+        companion object {
+            fun fromValue(value: Float) = entries.firstOrNull {
+                it.value == value
+            }
+        }
+    }
+
+    enum class PlaybackPitch(val value: Float) {
         ONE(1f),
         ONE_POINT_FIVE(1.5f),
         TWO(2f),
@@ -211,6 +225,14 @@ class LocalPlayerViewModel(application: Application) : AndroidViewModel(applicat
         ) ?: PlaybackSpeed.ONE
 
         exoPlayer.setPlaybackSpeed(playbackSpeed.next().value)
+    }
+
+    fun shufflePlaybackPitch() {
+        val playbackPitch = PlaybackPitch.fromValue(
+            exoPlayer.playbackParameters.pitch
+        ) ?: PlaybackPitch.ONE
+
+        exoPlayer.setPlaybackPitch(playbackPitch.next().value)
     }
 
     fun seekToPosition(positionMs: Long) {
