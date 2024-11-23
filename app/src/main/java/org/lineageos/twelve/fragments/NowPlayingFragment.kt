@@ -80,6 +80,7 @@ class NowPlayingFragment : Fragment(R.layout.fragment_now_playing) {
     private val nextTrackMaterialButton by getViewProperty<MaterialButton>(R.id.nextTrackMaterialButton)
     private val playPauseMaterialButton by getViewProperty<MaterialButton>(R.id.playPauseMaterialButton)
     private val playbackSpeedMaterialButton by getViewProperty<MaterialButton>(R.id.playbackSpeedMaterialButton)
+    private val playbackPitchMaterialButton by getViewProperty<MaterialButton>(R.id.playbackPitchMaterialButton)
     private val previousTrackMaterialButton by getViewProperty<MaterialButton>(R.id.previousTrackMaterialButton)
     private val progressSlider by getViewProperty<Slider>(R.id.progressSlider)
     private val queueMaterialButton by getViewProperty<MaterialButton>(R.id.queueMaterialButton)
@@ -260,6 +261,10 @@ class NowPlayingFragment : Fragment(R.layout.fragment_now_playing) {
         // Bottom bar buttons
         playbackSpeedMaterialButton.setOnClickListener {
             viewModel.shufflePlaybackSpeed()
+        }
+
+        playbackPitchMaterialButton.setOnClickListener {
+            viewModel.shufflePlaybackPitch()
         }
 
         equalizerMaterialButton.setOnClickListener {
@@ -525,6 +530,10 @@ class NowPlayingFragment : Fragment(R.layout.fragment_now_playing) {
                             )
 
                             playbackSpeedMaterialButton.isEnabled = it.contains(
+                                Player.COMMAND_SET_SPEED_AND_PITCH
+                            )
+
+                            playbackPitchMaterialButton.isEnabled = it.contains(
                                 Player.COMMAND_SET_SPEED_AND_PITCH
                             )
                         }
