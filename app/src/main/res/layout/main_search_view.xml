@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     SPDX-FileCopyrightText: 2024 The LineageOS Project
+     SPDX-License-Identifier: Apache-2.0
+-->
+<com.google.android.material.search.SearchView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/searchView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:hint="@string/search_hint">
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/searchRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+        app:spanCount="1" />
+
+    <LinearLayout
+        android:id="@+id/searchNoElementsLinearLayout"
+        style="@style/Theme.Twelve.NoElements.LinearLayout"
+        android:layout_gravity="center"
+        android:visibility="gone">
+
+        <ImageView
+            style="@style/Theme.Twelve.NoElements.ImageView"
+            android:contentDescription="@string/no_results"
+            android:src="@drawable/ic_search_off" />
+
+        <Space style="@style/Theme.Twelve.NoElements.Space" />
+
+        <TextView
+            style="@style/Theme.Twelve.NoElements.TextView"
+            android:text="@string/no_results" />
+
+    </LinearLayout>
+
+    <com.google.android.material.progressindicator.LinearProgressIndicator
+        android:id="@+id/searchLinearProgressIndicator"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:indeterminate="true" />
+
+</com.google.android.material.search.SearchView>

@@ -26,7 +26,7 @@ class SearchViewModel(application: Application) : TwelveViewModel(application) {
     val searchResults = searchQuery
         .mapLatest {
             val (query, immediate) = it
-            if (!immediate) {
+            if (!immediate && query.isNotEmpty()) {
                 delay(500)
             }
             query

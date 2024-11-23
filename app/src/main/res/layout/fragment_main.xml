@@ -74,4 +74,13 @@
         app:layout_constraintStart_toStartOf="parent"
         app:menu="@menu/navigation_bar_view_fragment_main" />
 
+    <include
+        layout="@layout/main_search_view"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
