@@ -23,6 +23,12 @@
             tools:text="1×" />
 
         <com.google.android.material.button.MaterialButton
+            android:id="@+id/playbackPitchMaterialButton"
+            style="@style/Theme.Twelve.NowPlayingFragment.BottomBarButton"
+            android:tooltipText="@string/playback_pitch"
+            tools:text="1" />
+
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/addOrRemoveFromPlaylistsMaterialButton"
             style="@style/Theme.Twelve.NowPlayingFragment.BottomBarButton"
             android:tooltipText="@string/audio_add_or_remove_from_playlists"
