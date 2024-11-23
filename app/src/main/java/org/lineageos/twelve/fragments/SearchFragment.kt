@@ -21,6 +21,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.progressindicator.LinearProgressIndicator
+import com.google.android.material.search.SearchBar
 import com.google.android.material.search.SearchView
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -55,6 +56,7 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
     private val linearProgressIndicator by getViewProperty<LinearProgressIndicator>(R.id.linearProgressIndicator)
     private val noElementsLinearLayout by getViewProperty<LinearLayout>(R.id.noElementsLinearLayout)
     private val recyclerView by getViewProperty<RecyclerView>(R.id.recyclerView)
+    private val searchBar by getViewProperty<SearchBar>(R.id.searchBar)
     private val searchView by getViewProperty<SearchView>(R.id.searchView)
 
     // System services
@@ -140,6 +142,8 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
         // This library sucks.
         @Suppress("RestrictedApi")
         searchView.setStatusBarSpacerEnabled(false)
+
+        searchView.setupWithSearchBar(searchBar)
 
         searchView.editText.addTextChangedListener { text ->
             viewModel.setSearchQuery(text.toString())
