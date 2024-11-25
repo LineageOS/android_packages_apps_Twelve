@@ -38,4 +38,9 @@ enum class MediaError {
      * Value returned on write requests: The value already exists.
      */
     ALREADY_EXISTS,
+
+    /**
+     * Response deserialization error.
+     */
+    DESERIALIZATION,
 }
