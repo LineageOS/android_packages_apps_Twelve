@@ -47,3 +47,13 @@ var SharedPreferences.shuffleModeEnabled: Boolean
     set(value) = edit {
         putBoolean(SHUFFLE_MODE_ENABLED_KEY, value)
     }
+
+// Provider prefs
+
+// Jellyfin
+private const val JELLYFIN_TOKEN_KEY = "jellyfin_token"
+var SharedPreferences.jellyfinToken: String?
+    get() = getString(JELLYFIN_TOKEN_KEY, null)
+    set(value) = edit {
+        putString(JELLYFIN_TOKEN_KEY, value)
+    }
