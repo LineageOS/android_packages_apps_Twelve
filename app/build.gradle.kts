@@ -102,6 +102,7 @@ dependencies {
     implementation(libs.androidx.viewpager2)
     implementation(libs.coil)
     implementation(libs.coil.network.okhttp)
+    implementation(libs.jellyfin.model)
     implementation(libs.kotlinx.coroutines.guava) {
         // Exclude compile time dependencies
         exclude("com.google.j2objc", "j2objc-annotations")
