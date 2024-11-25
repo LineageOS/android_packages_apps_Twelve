@@ -887,3 +887,43 @@ java_library_static {
     ],
     java_version: "1.7",
 }
+
+java_library_static {
+    name: "Twelve_org.jellyfin.sdk_jellyfin-model",
+    sdk_version: "35",
+    min_sdk_version: "14",
+    apex_available: [
+        "//apex_available:platform",
+        "//apex_available:anyapex",
+    ],
+    static_libs: [
+        "Twelve_org.jellyfin.sdk_jellyfin-model-jvm",
+    ],
+    java_version: "1.7",
+}
+
+java_import {
+    name: "Twelve_org.jellyfin.sdk_jellyfin-model-jvm-nodeps",
+    jars: ["org/jellyfin/sdk/jellyfin-model-jvm/1.6.3/jellyfin-model-jvm-1.6.3.jar"],
+    sdk_version: "35",
+    min_sdk_version: "14",
+    apex_available: [
+        "//apex_available:platform",
+        "//apex_available:anyapex",
+    ],
+}
+
+java_library_static {
+    name: "Twelve_org.jellyfin.sdk_jellyfin-model-jvm",
+    sdk_version: "35",
+    min_sdk_version: "14",
+    apex_available: [
+        "//apex_available:platform",
+        "//apex_available:anyapex",
+    ],
+    static_libs: [
+        "Twelve_org.jellyfin.sdk_jellyfin-model-jvm-nodeps",
+        "kotlin-stdlib",
+    ],
+    java_version: "1.7",
+}

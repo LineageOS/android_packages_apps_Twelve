@@ -1164,17 +1164,20 @@ class SubsonicClient(
             .build()
     ).executeAsync().let { response ->
         when (response.isSuccessful) {
-            true -> response.body?.string()?.let {
-                val subsonicResponse = Json.decodeFromString<ResponseRoot>(it).subsonicResponse
+            true -> response.body?.use { body ->
+                body.string().let {
+                    val subsonicResponse =
+                        Json.decodeFromString<ResponseRoot>(it).subsonicResponse
 
-                when (subsonicResponse.status) {
-                    ResponseStatus.OK -> MethodResult.Success(
-                        subsonicResponse.methodValue() ?: throw Exception(
-                            "Successful request with empty result"
+                    when (subsonicResponse.status) {
+                        ResponseStatus.OK -> MethodResult.Success(
+                            subsonicResponse.methodValue() ?: throw Exception(
+                                "Successful request with empty result"
+                            )
                         )
-                    )
 
-                    ResponseStatus.FAILED -> MethodResult.SubsonicError(subsonicResponse.error)
+                        ResponseStatus.FAILED -> MethodResult.SubsonicError(subsonicResponse.error)
+                    }
                 }
             } ?: throw Exception("Successful response with empty body")
 
