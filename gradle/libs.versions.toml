@@ -5,6 +5,7 @@
 
 [versions]
 agp = "8.7.2"
+jellyfin = "1.6.3"
 kotlin = "1.9.23"
 activity = "1.9.2"
 appcompat = "1.7.0"
@@ -50,6 +51,7 @@ androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = 
 androidx-viewpager2 = { group = "androidx.viewpager2", name = "viewpager2", version.ref = "viewpager2" }
 coil = { group = "io.coil-kt.coil3", name = "coil", version.ref = "coil" }
 coil-network-okhttp = { group = "io.coil-kt.coil3", name = "coil-network-okhttp", version.ref = "coil" }
+jellyfin-model = { group = "org.jellyfin.sdk", name = "jellyfin-model", version.ref = "jellyfin" }
 kotlinx-coroutines-guava = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-guava", version.ref = "kotlinx-coroutines" }
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
