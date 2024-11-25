@@ -113,6 +113,7 @@ dependencies {
         exclude(group = "com.android.support")
     }
     implementation(libs.okhttp)
+    implementation(libs.jellyfin.model)
 }
 
 configure<GenerateBpPluginExtension> {

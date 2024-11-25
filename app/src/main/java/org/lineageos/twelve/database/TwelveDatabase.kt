@@ -13,12 +13,14 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import org.lineageos.twelve.database.converters.UriConverter
 import org.lineageos.twelve.database.dao.ItemDao
+import org.lineageos.twelve.database.dao.JellyfinProviderDao
 import org.lineageos.twelve.database.dao.PlaylistDao
 import org.lineageos.twelve.database.dao.PlaylistItemCrossRefDao
 import org.lineageos.twelve.database.dao.PlaylistWithItemsDao
 import org.lineageos.twelve.database.dao.ResumptionPlaylistDao
 import org.lineageos.twelve.database.dao.SubsonicProviderDao
 import org.lineageos.twelve.database.entities.Item
+import org.lineageos.twelve.database.entities.JellyfinProvider
 import org.lineageos.twelve.database.entities.Playlist
 import org.lineageos.twelve.database.entities.PlaylistItemCrossRef
 import org.lineageos.twelve.database.entities.ResumptionItem
@@ -38,11 +40,13 @@ import org.lineageos.twelve.database.entities.SubsonicProvider
 
         /* Providers */
         SubsonicProvider::class,
+        JellyfinProvider::class,
     ],
-    version = 3,
+    version = 4,
     autoMigrations = [
         AutoMigration(from = 1, to = 2),
         AutoMigration(from = 2, to = 3),
+        AutoMigration(from = 3, to = 4),
     ],
 )
 @TypeConverters(UriConverter::class)
@@ -53,6 +57,7 @@ abstract class TwelveDatabase : RoomDatabase() {
     abstract fun getPlaylistWithItemsDao(): PlaylistWithItemsDao
     abstract fun getResumptionPlaylistDao(): ResumptionPlaylistDao
     abstract fun getSubsonicProviderDao(): SubsonicProviderDao
+    abstract fun getJellyfinProviderDao(): JellyfinProviderDao
 
     companion object {
         @Volatile
