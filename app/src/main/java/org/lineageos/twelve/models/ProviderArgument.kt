@@ -45,7 +45,7 @@ data class ProviderArgument<T : Any>(
     )
 
     companion object {
-        private val requiredValidationError = ValidationError(
+        val requiredValidationError = ValidationError(
             "A value is required",
             R.string.provider_argument_validation_error_required,
         )
