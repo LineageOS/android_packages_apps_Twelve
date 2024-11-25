@@ -30,5 +30,5 @@ sealed class RequestStatus<T, E> {
      *
      * @param error The error
      */
-    class Error<T, E>(val error: E) : RequestStatus<T, E>()
+    class Error<T, E>(val error: E, val message: String? = null) : RequestStatus<T, E>()
 }
