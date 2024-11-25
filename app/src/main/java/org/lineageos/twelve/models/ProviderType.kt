@@ -8,6 +8,7 @@ package org.lineageos.twelve.models
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import org.lineageos.twelve.R
+import org.lineageos.twelve.datasources.JellyfinDataSource
 import org.lineageos.twelve.datasources.MediaDataSource
 import org.lineageos.twelve.datasources.SubsonicDataSource
 
@@ -49,4 +50,19 @@ enum class ProviderType(
             SubsonicDataSource.ARG_USE_LEGACY_AUTHENTICATION,
         ),
     ),
+
+    /**
+     * Jellyfin provider.
+     *
+     * [Home page](https://jellyfin.org)
+     */
+    JELLYFIN(
+        R.string.provider_type_jellyfin,
+        R.drawable.ic_jellyfin,
+        listOf(
+            JellyfinDataSource.ARG_SERVER,
+            JellyfinDataSource.ARG_USERNAME,
+            JellyfinDataSource.ARG_PASSWORD,
+        ),
+    )
 }
