@@ -100,13 +100,14 @@ class PlaybackService : MediaLibraryService(), Player.Listener, LifecycleOwner {
             session: MediaSession,
             controller: MediaSession.ControllerInfo
         ): MediaSession.ConnectionResult {
-            val sessionCommands = MediaSession.ConnectionResult.DEFAULT_SESSION_COMMANDS.buildUpon()
-                .apply {
-                    for (command in CustomCommand.entries) {
-                        add(command.sessionCommand)
+            val sessionCommands =
+                MediaSession.ConnectionResult.DEFAULT_SESSION_AND_LIBRARY_COMMANDS.buildUpon()
+                    .apply {
+                        for (command in CustomCommand.entries) {
+                            add(command.sessionCommand)
+                        }
                     }
-                }
-                .build()
+                    .build()
 
             return MediaSession.ConnectionResult.AcceptedResultBuilder(session)
                 .setAvailableSessionCommands(sessionCommands)
