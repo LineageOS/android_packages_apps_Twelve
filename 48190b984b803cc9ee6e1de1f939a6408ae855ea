@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6b2154c1_e0f62c3f",
+        "filename": "app/src/main/java/org/lineageos/twelve/datasources/jellyfin/JellyfinClient.kt",
+        "patchSetId": 17
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2024-11-26T10:03:38Z",
+      "side": 1,
+      "message": "nak, we\u0027ll find another way, can use context.packagename as constructor argument",
+      "revId": "48190b984b803cc9ee6e1de1f939a6408ae855ea",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
