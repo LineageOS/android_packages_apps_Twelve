@@ -68,11 +68,9 @@ class GenresFragment : Fragment(R.layout.fragment_genres) {
             }
 
             override fun ViewHolder.onBindView(item: Genre) {
-                item.name?.let {
+                item.name?.also {
                     view.headlineText = it
-                } ?: run {
-                    view.headlineText = getString(R.string.genre_unknown)
-                }
+                } ?: view.setHeadlineText(R.string.unknown)
             }
         }
     }

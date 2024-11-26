@@ -89,7 +89,9 @@ class ArtistFragment : Fragment(R.layout.fragment_artist) {
             override fun ViewHolder.onBindView(item: Album) {
                 view.loadThumbnailImage(item.thumbnail, R.drawable.ic_album)
 
-                view.headlineText = item.title
+                item.title?.also {
+                    view.headlineText = it
+                } ?: view.setHeadlineText(R.string.album_unknown)
                 view.headlineMaxLines = 2
                 view.supportingText = item.year?.toString()
             }
@@ -212,8 +214,13 @@ class ArtistFragment : Fragment(R.layout.fragment_artist) {
                 is RequestStatus.Success -> {
                     val (artist, artistWorks) = it.data
 
-                    toolbar.title = artist.name
-                    artistNameTextView.text = artist.name
+                    artist.name?.also { artistName ->
+                        toolbar.title = artistName
+                        artistNameTextView.text = artistName
+                    } ?: run {
+                        toolbar.setTitle(R.string.artist_unknown)
+                        artistNameTextView.setText(R.string.artist_unknown)
+                    }
 
                     thumbnailImageView.loadThumbnail(
                         artist.thumbnail,

@@ -32,7 +32,7 @@ data class Genre(
     ) == 0
 
     override fun toMedia3MediaItem() = buildMediaItem(
-        title = name ?: "Unknown",
+        title = name,
         mediaId = "$GENRE_MEDIA_ITEM_ID_PREFIX${uri}",
         isPlayable = false,
         isBrowsable = true,

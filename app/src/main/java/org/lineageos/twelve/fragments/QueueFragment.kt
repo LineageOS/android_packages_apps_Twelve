@@ -69,8 +69,12 @@ class QueueFragment : Fragment(R.layout.fragment_queue) {
                         false -> R.drawable.ic_music_note
                     }
                 )
-                view.headlineText = mediaItem.mediaMetadata.title
-                view.supportingText = mediaItem.mediaMetadata.artist
+                mediaItem.mediaMetadata.title?.also {
+                    view.headlineText = it
+                } ?: view.setHeadlineText(R.string.unknown)
+                mediaItem.mediaMetadata.artist?.also {
+                    view.supportingText = it
+                } ?: view.setSupportingText(R.string.artist_unknown)
                 view.trailingSupportingText = mediaItem.mediaMetadata.durationMs?.let {
                     TimestampFormatter.formatTimestampMillis(it)
                 }

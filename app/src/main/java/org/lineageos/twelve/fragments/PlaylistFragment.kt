@@ -106,7 +106,9 @@ class PlaylistFragment : Fragment(R.layout.fragment_playlist) {
 
             override fun ViewHolder.onBindView(item: Audio) {
                 view.headlineText = item.title
-                view.supportingText = item.artistName
+                item.artistName?.also {
+                    view.supportingText = it
+                } ?: view.setSupportingText(R.string.artist_unknown)
                 view.trailingSupportingText = TimestampFormatter.formatTimestampMillis(
                     item.durationMs
                 )

@@ -92,8 +92,12 @@ class GenreFragment : Fragment(R.layout.fragment_genre) {
             override fun ViewHolder.onBindView(item: Album) {
                 view.loadThumbnailImage(item.thumbnail, R.drawable.ic_album)
 
-                view.headlineText = item.title
-                view.supportingText = item.artistName
+                item.title?.also {
+                    view.headlineText = it
+                } ?: view.setHeadlineText(R.string.album_unknown)
+                item.artistName?.also {
+                    view.supportingText = it
+                } ?: view.setSupportingText(R.string.artist_unknown)
                 view.tertiaryText = item.year?.toString()
             }
         }
@@ -155,8 +159,12 @@ class GenreFragment : Fragment(R.layout.fragment_genre) {
 
             override fun ViewHolder.onBindView(item: Audio) {
                 view.headlineText = item.title
-                view.supportingText = item.artistName
-                view.tertiaryText = item.albumTitle
+                item.artistName?.also {
+                    view.supportingText = it
+                } ?: view.setSupportingText(R.string.artist_unknown)
+                item.albumTitle?.also {
+                    view.tertiaryText = it
+                } ?: view.setTertiaryText(R.string.album_unknown)
             }
         }
     }
@@ -258,9 +266,12 @@ class GenreFragment : Fragment(R.layout.fragment_genre) {
                 is RequestStatus.Success -> {
                     val (genre, genreContent) = it.data
 
-                    (genre.name ?: getString(R.string.genre_unknown)).let { genreName ->
+                    genre.name?.also { genreName ->
                         toolbar.title = genreName
                         genreNameTextView.text = genreName
+                    } ?: run {
+                        toolbar.setTitle(R.string.genre_unknown)
+                        genreNameTextView.setText(R.string.genre_unknown)
                     }
 
                     thumbnailImageView.loadThumbnail(

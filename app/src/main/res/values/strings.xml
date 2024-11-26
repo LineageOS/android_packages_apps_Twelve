@@ -46,8 +46,11 @@
     <string name="no_results">No results</string>
     <string name="shrug" translatable="false">¯\\_(ツ)_/¯</string>
 
-    <!-- Genres -->
-    <string name="genre_unknown">Unknown</string>
+    <!-- Unknown items -->
+    <string name="unknown">Unknown</string>
+    <string name="album_unknown">Unknown album</string>
+    <string name="artist_unknown">Unknown artist</string>
+    <string name="genre_unknown">Unknown genre</string>
 
     <!-- Tracks information -->
     <string name="year_format" translatable="false">%1$d</string>

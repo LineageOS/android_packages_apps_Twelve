@@ -147,7 +147,9 @@ class AlbumFragment : Fragment(R.layout.fragment_album) {
                         }
 
                         view.headlineText = item.audio.title
-                        view.supportingText = item.audio.artistName
+                        item.audio.artistName?.also {
+                            view.supportingText = it
+                        } ?: view.setSupportingText(R.string.artist_unknown)
                         view.trailingSupportingText = TimestampFormatter.formatTimestampMillis(
                             item.audio.durationMs
                         )
@@ -273,15 +275,22 @@ class AlbumFragment : Fragment(R.layout.fragment_album) {
                         is RequestStatus.Success -> {
                             val (album, audios) = it.data
 
-                            toolbar.title = album.title
-                            albumTitleTextView.text = album.title
+                            album.title?.also { albumTitle ->
+                                toolbar.title = albumTitle
+                                albumTitleTextView.text = albumTitle
+                            } ?: run {
+                                toolbar.setTitle(R.string.album_unknown)
+                                albumTitleTextView.setText(R.string.album_unknown)
+                            }
 
                             thumbnailImageView.loadThumbnail(
                                 album.thumbnail,
                                 placeholder = R.drawable.ic_album
                             )
 
-                            artistNameTextView.text = album.artistName
+                            album.artistName?.also { artistName ->
+                                artistNameTextView.text = artistName
+                            } ?: artistNameTextView.setText(R.string.artist_unknown)
                             artistNameTextView.setOnClickListener {
                                 findNavController().navigateSafe(
                                     R.id.action_albumFragment_to_fragment_artist,

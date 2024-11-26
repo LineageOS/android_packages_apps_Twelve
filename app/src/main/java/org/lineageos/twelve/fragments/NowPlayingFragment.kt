@@ -320,31 +320,21 @@ class NowPlayingFragment : Fragment(R.layout.fragment_now_playing) {
                     viewModel.mediaMetadata.collectLatest { mediaMetadata ->
                         val audioTitle = mediaMetadata.displayTitle
                             ?: mediaMetadata.title
-                        audioTitle?.let { title ->
-                            if (audioTitleTextView.text != title) {
-                                audioTitleTextView.text = title
-                            }
-                            audioTitleTextView.isVisible = true
-                        } ?: run {
-                            audioTitleTextView.isVisible = false
+                            ?: getString(R.string.unknown)
+                        if (audioTitleTextView.text != audioTitle) {
+                            audioTitleTextView.text = audioTitle
                         }
 
-                        mediaMetadata.artist?.let { artist ->
-                            if (artistNameTextView.text != artist) {
-                                artistNameTextView.text = artist
-                            }
-                            artistNameTextView.isVisible = true
-                        } ?: run {
-                            artistNameTextView.isVisible = false
+                        val artistName = mediaMetadata.artist
+                            ?: getString(R.string.artist_unknown)
+                        if (artistNameTextView.text != artistName) {
+                            artistNameTextView.text = artistName
                         }
 
-                        mediaMetadata.albumTitle?.let { albumTitle ->
-                            if (albumTitleTextView.text != albumTitle) {
-                                albumTitleTextView.text = albumTitle
-                            }
-                            albumTitleTextView.isVisible = true
-                        } ?: run {
-                            albumTitleTextView.isVisible = false
+                        val albumTitle = mediaMetadata.albumTitle
+                            ?: getString(R.string.album_unknown)
+                        if (albumTitleTextView.text != albumTitle) {
+                            albumTitleTextView.text = albumTitle
                         }
                     }
                 }
