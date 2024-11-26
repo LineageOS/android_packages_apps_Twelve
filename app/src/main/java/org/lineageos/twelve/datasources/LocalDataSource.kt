@@ -71,9 +71,9 @@ class LocalDataSource(context: Context, private val database: TwelveDatabase) : 
 
         Album(
             uri,
-            album,
+            album.takeIf { it != MediaStore.UNKNOWN_STRING },
             artistUri,
-            artist,
+            artist.takeIf { it != MediaStore.UNKNOWN_STRING },
             lastYear.takeIf { it != 0 },
             thumbnail,
         )
@@ -89,7 +89,7 @@ class LocalDataSource(context: Context, private val database: TwelveDatabase) : 
 
         Artist(
             uri,
-            artist,
+            artist.takeIf { it != MediaStore.UNKNOWN_STRING },
             thumbnail,
         )
     }
@@ -157,9 +157,9 @@ class LocalDataSource(context: Context, private val database: TwelveDatabase) : 
             audioType,
             duration,
             artistUri,
-            artist,
+            artist.takeIf { it != MediaStore.UNKNOWN_STRING },
             albumUri,
-            album,
+            album.takeIf { it != MediaStore.UNKNOWN_STRING },
             discNumber,
             discTrack,
             genreUri,

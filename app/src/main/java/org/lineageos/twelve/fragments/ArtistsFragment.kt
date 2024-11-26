@@ -68,7 +68,9 @@ class ArtistsFragment : Fragment(R.layout.fragment_artists) {
             }
 
             override fun ViewHolder.onBindView(item: Artist) {
-                view.headlineText = item.name
+                item.name?.also {
+                    view.headlineText = it
+                } ?: view.setHeadlineText(R.string.unknown)
             }
         }
     }

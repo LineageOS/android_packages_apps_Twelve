@@ -68,8 +68,13 @@ class AlbumsFragment : Fragment(R.layout.fragment_albums) {
             }
 
             override fun ViewHolder.onBindView(item: Album) {
-                view.headlineText = item.title
-                view.supportingText = item.artistName
+                item.title?.also {
+                    view.headlineText = it
+                } ?: view.setHeadlineText(R.string.unknown)
+
+                item.artistName?.also {
+                    view.supportingText = it
+                } ?: view.setSupportingText(R.string.artist_unknown)
             }
         }
     }

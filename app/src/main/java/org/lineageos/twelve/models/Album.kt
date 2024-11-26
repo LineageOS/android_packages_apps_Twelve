@@ -22,9 +22,9 @@ import org.lineageos.twelve.ext.toByteArray
  */
 data class Album(
     override val uri: Uri,
-    val title: String,
+    val title: String?,
     val artistUri: Uri,
-    val artistName: String,
+    val artistName: String?,
     val year: Int?,
     val thumbnail: Thumbnail?,
 ) : MediaItem<Album> {

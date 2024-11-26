@@ -12,7 +12,7 @@ import androidx.media3.common.util.UnstableApi
 
 @androidx.annotation.OptIn(UnstableApi::class)
 fun buildMediaItem(
-    title: String,
+    title: String?,
     mediaId: String,
     isPlayable: Boolean,
     isBrowsable: Boolean,
