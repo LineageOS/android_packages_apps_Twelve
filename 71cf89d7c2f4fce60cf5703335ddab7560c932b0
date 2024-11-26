@@ -16,6 +16,24 @@
       "message": "it works with token bearer\nit didn\u0027t work because API key is user less thus no user play count info was available...",
       "revId": "71cf89d7c2f4fce60cf5703335ddab7560c932b0",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d66dbd9b_d17eca73",
+        "filename": "app/src/main/java/org/lineageos/twelve/datasources/jellyfin/JellyfinClient.kt",
+        "patchSetId": 16
+      },
+      "lineNbr": 182,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2024-11-26T10:37:25Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "769eb867_c462d090",
+      "revId": "71cf89d7c2f4fce60cf5703335ddab7560c932b0",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }

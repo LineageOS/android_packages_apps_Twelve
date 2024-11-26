@@ -18,6 +18,24 @@
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "9de7cb81_89d4d9ea",
+        "filename": "app/src/main/java/org/lineageos/twelve/datasources/jellyfin/JellyfinClient.kt",
+        "patchSetId": 17
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2024-11-26T10:37:25Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "6b2154c1_e0f62c3f",
+      "revId": "48190b984b803cc9ee6e1de1f939a6408ae855ea",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "ea2f173e_ca1e038b",
@@ -31,6 +49,24 @@
       "writtenOn": "2024-11-26T10:08:13Z",
       "side": 1,
       "message": "please use an Header builder, raw strings  in http are scary",
+      "revId": "48190b984b803cc9ee6e1de1f939a6408ae855ea",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a0127bc2_516f0a19",
+        "filename": "app/src/main/java/org/lineageos/twelve/datasources/jellyfin/JellyfinClient.kt",
+        "patchSetId": 17
+      },
+      "lineNbr": 202,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2024-11-26T10:37:25Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ea2f173e_ca1e038b",
       "revId": "48190b984b803cc9ee6e1de1f939a6408ae855ea",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
