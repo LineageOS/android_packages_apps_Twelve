@@ -22,6 +22,7 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
+import okhttp3.Cache
 import org.lineageos.twelve.database.TwelveDatabase
 import org.lineageos.twelve.datasources.LocalDataSource
 import org.lineageos.twelve.datasources.MediaDataSource
@@ -62,6 +63,12 @@ class MediaRepository(
     )
 
     /**
+     * HTTP cache
+     * 50 MB should be enough for most cases.
+     */
+    private val cache = Cache(context.cacheDir, 50 * 1024 * 1024)
+
+    /**
      * All the providers. This is our single point of truth for the providers.
      */
     private val allProvidersToDataSource = combine(
@@ -80,7 +87,7 @@ class MediaRepository(
                     ProviderType.SUBSONIC,
                     it.id,
                     it.name,
-                ) to SubsonicDataSource(arguments)
+                ) to SubsonicDataSource(arguments, cache)
             }
         }
     ) { providers -> providers.toList().flatten() }

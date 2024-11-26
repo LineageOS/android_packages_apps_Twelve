@@ -11,6 +11,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.mapLatest
+import okhttp3.Cache
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import org.lineageos.twelve.R
 import org.lineageos.twelve.datasources.subsonic.SubsonicClient
@@ -39,14 +40,14 @@ import org.lineageos.twelve.models.Thumbnail
  * Subsonic based data source.
  */
 @OptIn(ExperimentalCoroutinesApi::class)
-class SubsonicDataSource(arguments: Bundle) : MediaDataSource {
+class SubsonicDataSource(arguments: Bundle, cache: Cache? = null) : MediaDataSource {
     private val server = arguments.requireArgument(ARG_SERVER)
     private val username = arguments.requireArgument(ARG_USERNAME)
     private val password = arguments.requireArgument(ARG_PASSWORD)
     private val useLegacyAuthentication = arguments.requireArgument(ARG_USE_LEGACY_AUTHENTICATION)
 
     private val subsonicClient = SubsonicClient(
-        server, username, password, "Twelve", useLegacyAuthentication
+        server, username, password, "Twelve", useLegacyAuthentication, cache
     )
 
     private val dataSourceBaseUri = Uri.parse(server)

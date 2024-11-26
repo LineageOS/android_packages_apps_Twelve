@@ -7,6 +7,7 @@ package org.lineageos.twelve.datasources.subsonic
 
 import android.net.Uri
 import kotlinx.serialization.json.Json
+import okhttp3.Cache
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.lineageos.twelve.datasources.subsonic.SubsonicClient.Companion.SUBSONIC_API_VERSION
@@ -26,6 +27,7 @@ import java.security.MessageDigest
  * @param password The password to use
  * @param clientName The name of the client to use for requests
  * @param useLegacyAuthentication Whether to use legacy authentication or not (token authentication)
+ * @param cache OkHttp's [Cache]
  */
 class SubsonicClient(
     private val server: String,
@@ -33,8 +35,11 @@ class SubsonicClient(
     private val password: String,
     private val clientName: String,
     private val useLegacyAuthentication: Boolean,
+    private val cache: Cache? = null,
 ) {
-    private val okHttpClient = OkHttpClient()
+    private val okHttpClient = OkHttpClient.Builder()
+        .cache(cache)
+        .build()
 
     private val serverUri = Uri.parse(server)
 
