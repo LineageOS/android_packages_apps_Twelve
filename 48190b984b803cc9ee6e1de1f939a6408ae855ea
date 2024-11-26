@@ -16,6 +16,23 @@
       "message": "nak, we\u0027ll find another way, can use context.packagename as constructor argument",
       "revId": "48190b984b803cc9ee6e1de1f939a6408ae855ea",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ea2f173e_ca1e038b",
+        "filename": "app/src/main/java/org/lineageos/twelve/datasources/jellyfin/JellyfinClient.kt",
+        "patchSetId": 17
+      },
+      "lineNbr": 202,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2024-11-26T10:08:13Z",
+      "side": 1,
+      "message": "please use an Header builder, raw strings  in http are scary",
+      "revId": "48190b984b803cc9ee6e1de1f939a6408ae855ea",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
