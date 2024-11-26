@@ -7,6 +7,7 @@ package org.lineageos.twelve.datasources.subsonic
 
 import android.net.Uri
 import kotlinx.serialization.json.Json
+import okhttp3.Cache
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.lineageos.twelve.datasources.subsonic.SubsonicClient.Companion.SUBSONIC_API_VERSION
@@ -22,6 +23,7 @@ import java.security.MessageDigest
  * Subsonic client. Compliant with version [SUBSONIC_API_VERSION].
  *
  * @param server The base URL of the server
+ * @param cache The http cache
  * @param username The username to use
  * @param password The password to use
  * @param clientName The name of the client to use for requests
@@ -29,12 +31,15 @@ import java.security.MessageDigest
  */
 class SubsonicClient(
     private val server: String,
+    private val cache: Cache,
     private val username: String,
     private val password: String,
     private val clientName: String,
     private val useLegacyAuthentication: Boolean,
 ) {
-    private val okHttpClient = OkHttpClient()
+    private val okHttpClient = OkHttpClient.Builder()
+        .cache(cache)
+        .build()
 
     private val serverUri = Uri.parse(server)
 
