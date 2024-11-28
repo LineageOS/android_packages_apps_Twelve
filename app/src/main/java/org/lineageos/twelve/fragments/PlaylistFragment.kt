@@ -253,7 +253,7 @@ class PlaylistFragment : Fragment(R.layout.fragment_playlist) {
                     )
 
                     val totalDurationMs = audios.sumOf { audio ->
-                        audio?.durationMs ?: 0
+                        audio.durationMs
                     }
                     val totalDurationMinutes = (totalDurationMs / 1000 / 60).toInt()
 
