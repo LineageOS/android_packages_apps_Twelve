@@ -6,8 +6,34 @@
 package org.lineageos.twelve.ext
 
 import android.content.SharedPreferences
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener
 import androidx.core.content.edit
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.callbackFlow
 import org.lineageos.twelve.models.RepeatMode
+
+fun <T> SharedPreferences.preferenceFlow(
+    key: String,
+    getter: SharedPreferences.() -> T,
+) = callbackFlow {
+    val update = {
+        trySend(getter())
+    }
+
+    val listener = OnSharedPreferenceChangeListener { _, changedKey ->
+        if (changedKey == key) {
+            update()
+        }
+    }
+
+    registerOnSharedPreferenceChangeListener(listener)
+
+    update()
+
+    awaitClose {
+        unregisterOnSharedPreferenceChangeListener(listener)
+    }
+}
 
 // Generic prefs
 const val ENABLE_OFFLOAD_KEY = "enable_offload"
@@ -30,6 +56,11 @@ const val SKIP_SILENCE_KEY = "skip_silence"
 private const val SKIP_SILENCE_DEFAULT = false
 val SharedPreferences.skipSilence: Boolean
     get() = getBoolean(SKIP_SILENCE_KEY, SKIP_SILENCE_DEFAULT)
+
+const val JOIN_LOCAL_DEVICES_KEY = "join_local_devices"
+private const val JOIN_LOCAL_DEVICES_DEFAULT = true
+val SharedPreferences.joinLocalDevices: Boolean
+    get() = getBoolean(JOIN_LOCAL_DEVICES_KEY, JOIN_LOCAL_DEVICES_DEFAULT)
 
 // Playback prefs
 private const val TYPED_REPEAT_MODE_KEY = "typed_repeat_mode"
