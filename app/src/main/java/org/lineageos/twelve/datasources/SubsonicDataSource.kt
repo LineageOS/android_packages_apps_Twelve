@@ -288,7 +288,7 @@ class SubsonicDataSource(arguments: Bundle, cache: Cache? = null) : MediaDataSou
         subsonicClient.getPlaylist(playlistUri.lastPathSegment!!.toInt()).toRequestStatus {
             toPlaylist().toMediaItem() to entry.orEmpty().map {
                 it.toMediaItem()
-            } as List<Audio?>
+            }
         }
     }
 
