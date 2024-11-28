@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "18f50ee2_5623e89c",
+        "filename": "app/src/main/java/org/lineageos/twelve/repositories/MediaRepository.kt",
+        "patchSetId": 3
+      },
+      "lineNbr": 114,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2024-11-28T17:58:21Z",
+      "side": 1,
+      "message": "```suggestion\n                    storageVolumes.filter {\n                        it.mediaStoreVolumeName !\u003d null\n                    }.sortedBy {\n                        it.isPrimary.not()\n                    }.map { storageVolume -\u003e\n                        storageVolume.mediaStoreVolumeName!!.let { mediaStoreVolumeName -\u003e\n                            Provider(\n                                ProviderType.LOCAL,\n                                storageVolume.directory.hashCode().toLong(),\n                                storageVolume.getDescription(context),\n                            ) to LocalDataSource(\n                                contentResolver,\n                                mediaStoreVolumeName,\n                                database,\n                            )\n                        }\n                    }\n```",
+      "range": {
+        "startLine": 100,
+        "startChar": 0,
+        "endLine": 114,
+        "endChar": 21
+      },
+      "revId": "db73637f7abebabf41b13e13c788ff99d2daf804",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
