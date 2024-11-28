@@ -535,7 +535,7 @@ class LocalDataSource(context: Context, private val database: TwelveDatabase) : 
 
             audios(playlistWithItems.items.map(Item::audioUri))
                 .mapLatest { items ->
-                    RequestStatus.Success<_, MediaError>(playlist to items)
+                    RequestStatus.Success<_, MediaError>(playlist to items.filterNotNull())
                 }
         } ?: flowOf(
             RequestStatus.Error(

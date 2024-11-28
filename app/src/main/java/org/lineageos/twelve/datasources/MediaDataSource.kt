@@ -95,9 +95,8 @@ interface MediaDataSource {
 
     /**
      * Get the playlist information and all the tracks of the given playlist.
-     * If the playlist contains an audio that is unavailable, it will be mapped to null.
      */
-    fun playlist(playlistUri: Uri): Flow<MediaRequestStatus<Pair<Playlist, List<Audio?>>>>
+    fun playlist(playlistUri: Uri): Flow<MediaRequestStatus<Pair<Playlist, List<Audio>>>>
 
     /**
      * Get an audio status within all playlists.
