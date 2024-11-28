@@ -117,6 +117,7 @@ sealed interface MethodResult<T> {
     data class GenericError<T>(val error: Throwable? = null) : MethodResult<T>
     data class DeserializationError<T>(val error: Throwable? = null) : MethodResult<T>
     data class CancellationError<T>(val error: Throwable? = null) : MethodResult<T>
+    data class InvalidResponse<T>(val error: Throwable? = null) : MethodResult<T>
 }
 
 suspend fun <T, O> MethodResult<T>.toRequestStatus(
@@ -136,6 +137,7 @@ suspend fun <T, O> MethodResult<T>.toRequestStatus(
 
     is MethodResult.DeserializationError -> RequestStatus.Error(MediaError.DESERIALIZATION, error)
     is MethodResult.CancellationError -> RequestStatus.Error(MediaError.CANCELLED, error)
+    is MethodResult.InvalidResponse -> RequestStatus.Error(MediaError.INVALID_RESPONSE, error)
     is MethodResult.GenericError -> RequestStatus.Error(MediaError.IO, error)
 }
 
