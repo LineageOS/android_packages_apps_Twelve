@@ -33,6 +33,7 @@ class JellyfinAuthenticator(
     private val packageName: String,
 ) : Authenticator {
     private val okHttpClient = OkHttpClient()
+
     private lateinit var accessToken: String
 
     private val authenticationUrl = serverUri.buildUpon()
