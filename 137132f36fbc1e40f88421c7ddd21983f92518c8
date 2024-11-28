@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "46dfaabb_283100d7",
+        "filename": "app/src/main/java/org/lineageos/twelve/datasources/LocalDataSource.kt",
+        "patchSetId": 5
+      },
+      "lineNbr": 546,
+      "author": {
+        "id": 25732
+      },
+      "writtenOn": "2024-11-28T12:45:47Z",
+      "side": 0,
+      "message": "Unwanted?",
+      "revId": "137132f36fbc1e40f88421c7ddd21983f92518c8",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}

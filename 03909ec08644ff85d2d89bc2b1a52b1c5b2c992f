@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e41fdd7e_67378686",
+        "filename": "app/src/main/java/org/lineageos/twelve/datasources/MediaDataSource.kt",
+        "patchSetId": 5
+      },
+      "lineNbr": 98,
+      "author": {
+        "id": 25732
+      },
+      "writtenOn": "2024-11-28T12:45:47Z",
+      "side": 1,
+      "message": "Can be deleted",
+      "revId": "03909ec08644ff85d2d89bc2b1a52b1c5b2c992f",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
