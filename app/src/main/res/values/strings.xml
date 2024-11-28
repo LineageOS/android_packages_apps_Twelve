@@ -133,6 +133,7 @@
     <string name="provider_argument_validation_error_malformed_http_uri">Must be a valid HTTP or HTTPS URL (e.g. https://google.com)</string>
 
     <!-- Provider selector dialog fragment -->
+    <string name="no_provider">No provider</string>
     <string name="providers">Providers</string>
     <string name="add_provider_action">Add</string>
 
@@ -163,6 +164,8 @@
     <string name="stop_playback_on_task_removed_summary">Stop playback when the app is cleared from recents</string>
     <string name="skip_silence">Skip silence</string>
     <string name="skip_silence_summary">Skip silence when playing audio</string>
+    <string name="join_local_devices">Join local devices</string>
+    <string name="join_local_devices_summary">If enabled, both internal storage and external USB devices will appear under a single provider</string>
 
     <!-- Now playing widget -->
     <string name="now_playing_widget_description">Now playing</string>
