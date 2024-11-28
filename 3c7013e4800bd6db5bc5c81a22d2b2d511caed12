@@ -33,6 +33,24 @@
       "message": "This should still return null, that can happen when the user deletes the playlist from the playlist fragment itself",
       "revId": "3c7013e4800bd6db5bc5c81a22d2b2d511caed12",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "fe4b5100_444599d3",
+        "filename": "app/src/main/java/org/lineageos/twelve/database/dao/PlaylistDao.kt",
+        "patchSetId": 2
+      },
+      "lineNbr": 54,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2024-11-28T12:21:28Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ffdd2786_f7eae0c6",
+      "revId": "3c7013e4800bd6db5bc5c81a22d2b2d511caed12",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
