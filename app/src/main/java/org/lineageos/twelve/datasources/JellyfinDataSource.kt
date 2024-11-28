@@ -35,6 +35,8 @@ import org.lineageos.twelve.models.RequestStatus
 import org.lineageos.twelve.models.SortingRule
 import org.lineageos.twelve.models.SortingStrategy
 import org.lineageos.twelve.models.Thumbnail
+import org.lineageos.twelve.utils.toRequestStatus
+import org.lineageos.twelve.utils.toResult
 
 /**
  * Jellyfin backed data source.
@@ -301,27 +303,6 @@ class JellyfinDataSource(
             uri = Uri.parse(client.getPlaylistThumbnail(id)),
         ),
     )
-
-    private suspend fun <T, O> JellyfinClient.MethodResult<T>.toRequestStatus(
-        resultGetter: suspend T.() -> O
-    ): RequestStatus<O, MediaError> = when (this) {
-        is JellyfinClient.MethodResult.Success -> RequestStatus.Success(result.resultGetter())
-        is JellyfinClient.MethodResult.HttpError -> RequestStatus.Error(
-            when (code) {
-                401 -> MediaError.AUTHENTICATION_REQUIRED
-                403 -> MediaError.INVALID_CREDENTIALS
-                404 -> MediaError.NOT_FOUND
-                else -> MediaError.IO
-            }
-        )
-    }
-
-    private suspend fun <T, O> JellyfinClient.MethodResult<T>.toResult(
-        resultGetter: suspend T.() -> O
-    ): O? = when (this) {
-        is JellyfinClient.MethodResult.Success -> result.resultGetter()
-        is JellyfinClient.MethodResult.HttpError -> null
-    }
 
     private fun getAlbumUri(albumId: String) = albumsUri.buildUpon()
         .appendPath(albumId)
