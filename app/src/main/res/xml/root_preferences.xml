@@ -30,6 +30,13 @@
             app:summary="@string/skip_silence_summary"
             app:title="@string/skip_silence" />
 
+        <SwitchPreference
+            app:defaultValue="true"
+            app:iconSpaceReserved="false"
+            app:key="join_local_devices"
+            app:summary="@string/join_local_devices_summary"
+            app:title="@string/join_local_devices" />
+
     </PreferenceCategory>
 
 </PreferenceScreen>
