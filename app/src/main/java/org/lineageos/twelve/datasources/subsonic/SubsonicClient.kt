@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2024 The LineageOS Project
+ * SPDX-FileCopyrightText: 2024-2025 The LineageOS Project
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -18,7 +18,6 @@ import org.lineageos.twelve.datasources.subsonic.models.SubsonicResponse
 import org.lineageos.twelve.datasources.subsonic.models.Version
 import org.lineageos.twelve.ext.executeAsync
 import java.net.SocketTimeoutException
-import java.security.MessageDigest
 
 /**
  * Subsonic client. Compliant with version [SUBSONIC_API_VERSION].
@@ -38,11 +37,22 @@ class SubsonicClient(
     private val useLegacyAuthentication: Boolean,
     private val cache: Cache? = null,
 ) {
+    private val interceptor = SubsonicAuthInterceptor(
+        SUBSONIC_API_VERSION,
+        username,
+        password,
+        clientName,
+        useLegacyAuthentication
+    )
+
     private val okHttpClient = OkHttpClient.Builder()
         .cache(cache)
+        .addInterceptor(interceptor)
         .build()
 
-    private val serverUri = Uri.parse(server)
+    private val serverUri = Uri.parse(server).buildUpon().apply {
+        appendPath("rest")
+    }.build()
 
     /**
      * Used to test connectivity with the server. Takes no extra parameters.
@@ -1203,30 +1213,14 @@ class SubsonicClient(
         method: String,
         vararg queryParameters: Pair<String, Any?>,
     ) = serverUri.buildUpon().apply {
-        appendPath("rest")
         appendPath(method)
-        getBaseParameters().forEach { (key, value) -> appendQueryParameter(key, value) }
         queryParameters.forEach { (key, value) ->
             value?.let { appendQueryParameter(key, it.toString()) }
         }
-    }.build().toString()
-
-    /**
-     * Get the base parameters for all methods.
-     */
-    private fun getBaseParameters() = mutableMapOf<String, String>().apply {
-        this["u"] = username
-        this["v"] = SUBSONIC_API_VERSION.value
-        this["c"] = clientName
-        this["f"] = PROTOCOL_JSON
-        if (!useLegacyAuthentication) {
-            val salt = generateSalt()
-            this["t"] = getSaltedPassword(password, salt)
-            this["s"] = salt
-        } else {
-            this["p"] = password
+        interceptor.getAuthParameters().forEach { (key, value) ->
+            appendQueryParameter(key, value)
         }
-    }.toMap()
+    }.build().toString()
 
     sealed interface MethodResult<T> {
         class Success<T>(val result: T) : MethodResult<T>
@@ -1236,19 +1230,5 @@ class SubsonicClient(
 
     companion object {
         private val SUBSONIC_API_VERSION = Version(1, 16, 1)
-
-        private const val PROTOCOL_JSON = "json"
-
-        private val md5MessageDigest = MessageDigest.getInstance("MD5")
-
-        private val allowedSaltChars = ('A'..'Z') + ('a'..'z') + ('0'..'9')
-
-        private fun generateSalt() = (1..20)
-            .map { allowedSaltChars.random() }
-            .joinToString("")
-
-        private fun getSaltedPassword(password: String, salt: String) = md5MessageDigest.digest(
-            password.toByteArray() + salt.toByteArray()
-        ).toString()
     }
 }
