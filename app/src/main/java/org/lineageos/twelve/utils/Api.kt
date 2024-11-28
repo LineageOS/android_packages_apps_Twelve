@@ -104,7 +104,7 @@ class Api(val okHttpClient: OkHttpClient, private val serverUri: Uri) {
 sealed interface MethodResult<T> {
     data class Success<T>(val result: T) : MethodResult<T>
     data class HttpError<T>(val code: Int, val message: String? = null) : MethodResult<T>
-    class DeserializationError<T>(val error: Throwable? = null) : MethodResult<T>
+    class DeserializationError<T>(val error: Throwable) : MethodResult<T>
 }
 
 suspend fun <T, O> MethodResult<T>.toRequestStatus(
@@ -121,7 +121,10 @@ suspend fun <T, O> MethodResult<T>.toRequestStatus(
         }
     )
 
-    is MethodResult.DeserializationError -> RequestStatus.Error(MediaError.DESERIALIZATION)
+    is MethodResult.DeserializationError -> RequestStatus.Error(
+        MediaError.DESERIALIZATION,
+        error,
+    )
 }
 
 suspend fun <T, O> MethodResult<T>.toResult(
