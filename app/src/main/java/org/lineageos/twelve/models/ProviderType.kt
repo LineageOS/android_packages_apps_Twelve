@@ -8,7 +8,6 @@ package org.lineageos.twelve.models
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import org.lineageos.twelve.R
-import org.lineageos.twelve.datasources.LocalDataSource
 import org.lineageos.twelve.datasources.MediaDataSource
 import org.lineageos.twelve.datasources.SubsonicDataSource
 
@@ -27,7 +26,7 @@ enum class ProviderType(
     val arguments: List<ProviderArgument<*>>,
 ) {
     /**
-     * Local provider, only one instance of [LocalDataSource] exists.
+     * Local provider.
      */
     LOCAL(
         R.string.provider_type_local,

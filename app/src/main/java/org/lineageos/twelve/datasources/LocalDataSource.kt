@@ -7,7 +7,6 @@ package org.lineageos.twelve.datasources
 
 import android.content.ContentResolver
 import android.content.ContentUris
-import android.content.Context
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
@@ -47,15 +46,21 @@ import org.lineageos.twelve.query.query
 
 /**
  * [MediaStore.Audio] backed data source.
+ *
+ * @param contentResolver The [ContentResolver]
+ * @param volumeName The volume name
+ * @param database The app's database
  */
 @OptIn(ExperimentalCoroutinesApi::class)
-class LocalDataSource(context: Context, private val database: TwelveDatabase) : MediaDataSource {
-    private val contentResolver = context.contentResolver
-
-    private val albumsUri = MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI
-    private val artistsUri = MediaStore.Audio.Artists.EXTERNAL_CONTENT_URI
-    private val genresUri = MediaStore.Audio.Genres.EXTERNAL_CONTENT_URI
-    private val audiosUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
+class LocalDataSource(
+    private val contentResolver: ContentResolver,
+    private val volumeName: String,
+    private val database: TwelveDatabase
+) : MediaDataSource {
+    private val albumsUri = MediaStore.Audio.Albums.getContentUri(volumeName)
+    private val artistsUri = MediaStore.Audio.Artists.getContentUri(volumeName)
+    private val genresUri = MediaStore.Audio.Genres.getContentUri(volumeName)
+    private val audiosUri = MediaStore.Audio.Media.getContentUri(volumeName)
 
     private val mapAlbum = { columnIndexCache: ColumnIndexCache ->
         val albumId = columnIndexCache.getLong(MediaStore.Audio.AudioColumns._ID)

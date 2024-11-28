@@ -9,6 +9,7 @@ import android.content.Context
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.provider.MediaStore
 import androidx.core.os.bundleOf
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -49,9 +50,18 @@ class MediaRepository(
     private val database: TwelveDatabase,
 ) {
     /**
+     * Content resolver.
+     */
+    private val contentResolver = context.contentResolver
+
+    /**
      * Local data source singleton.
      */
-    private val localDataSource = LocalDataSource(context, database)
+    private val localDataSource = LocalDataSource(
+        contentResolver,
+        MediaStore.VOLUME_EXTERNAL,
+        database
+    )
 
     /**
      * Local provider singleton.
