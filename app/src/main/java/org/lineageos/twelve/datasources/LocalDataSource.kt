@@ -530,18 +530,12 @@ class LocalDataSource(context: Context, private val database: TwelveDatabase) : 
     override fun playlist(playlistUri: Uri) = database.getPlaylistDao().getPlaylistWithItems(
         ContentUris.parseId(playlistUri)
     ).flatMapLatest { data ->
-        data?.let { playlistWithItems ->
-            val playlist = playlistWithItems.playlist.toModel()
+        val playlist = data.playlist.toModel()
 
-            audios(playlistWithItems.items.map(Item::audioUri))
-                .mapLatest { items ->
-                    RequestStatus.Success<_, MediaError>(playlist to items)
-                }
-        } ?: flowOf(
-            RequestStatus.Error(
-                MediaError.NOT_FOUND
-            )
-        )
+        audios(data.items.map(Item::audioUri))
+            .mapLatest { items ->
+                RequestStatus.Success<_, MediaError>(playlist to items.filterNotNull())
+            }
     }
 
     override fun audioPlaylistsStatus(audioUri: Uri) =

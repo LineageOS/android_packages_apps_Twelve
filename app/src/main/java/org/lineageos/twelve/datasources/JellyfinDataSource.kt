@@ -195,7 +195,7 @@ class JellyfinDataSource(
         client.getPlaylist(id).toRequestStatus {
             toMediaItemPlaylist() to client.getPlaylistTracks(id).toResult {
                 items.map { it.toMediaItemAudio() }
-            }.orEmpty() as List<Audio?>
+            }.orEmpty()
         }
     }
 
