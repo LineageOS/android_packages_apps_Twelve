@@ -43,4 +43,9 @@ enum class MediaError {
      * Response deserialization error.
      */
     DESERIALIZATION,
+
+    /**
+     * The server returned an invalid response.
+     */
+    INVALID_RESPONSE,
 }
