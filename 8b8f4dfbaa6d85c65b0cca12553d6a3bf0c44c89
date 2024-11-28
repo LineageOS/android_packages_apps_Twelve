@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "04ade163_69c164c2",
+        "filename": "app/src/main/java/org/lineageos/twelve/datasources/LocalDataSource.kt",
+        "patchSetId": 2
+      },
+      "lineNbr": 542,
+      "author": {
+        "id": 25732
+      },
+      "writtenOn": "2024-11-28T12:10:26Z",
+      "side": 0,
+      "message": "The requested playlist may not exist, the app shouldn\u0027t explode when that happens",
+      "revId": "8b8f4dfbaa6d85c65b0cca12553d6a3bf0c44c89",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
