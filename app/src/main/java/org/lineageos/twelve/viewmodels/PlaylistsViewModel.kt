@@ -39,8 +39,10 @@ class PlaylistsViewModel(application: Application) : TwelveViewModel(application
     }
 
     suspend fun createPlaylist(name: String) {
-        withContext(Dispatchers.IO) {
-            mediaRepository.createPlaylist(mediaRepository.navigationProvider.value, name)
+        mediaRepository.navigationProvider.value?.let {
+            withContext(Dispatchers.IO) {
+                mediaRepository.createPlaylist(it, name)
+            }
         }
     }
 }
