@@ -5,16 +5,24 @@
 
 package org.lineageos.twelve.datasources.subsonic
 
-import android.net.Uri
+import io.ktor.client.HttpClient
+import io.ktor.client.engine.okhttp.OkHttp
+import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.client.plugins.defaultRequest
+import io.ktor.client.request.headers
+import io.ktor.http.takeFrom
+import io.ktor.serialization.kotlinx.json.json
+import kotlinx.serialization.json.Json
 import okhttp3.Cache
-import okhttp3.OkHttpClient
 import org.lineageos.twelve.datasources.subsonic.SubsonicClient.Companion.SUBSONIC_API_VERSION
 import org.lineageos.twelve.datasources.subsonic.models.ResponseRoot
 import org.lineageos.twelve.datasources.subsonic.models.ResponseStatus
 import org.lineageos.twelve.datasources.subsonic.models.SubsonicResponse
 import org.lineageos.twelve.datasources.subsonic.models.Version
-import org.lineageos.twelve.utils.Api
-import org.lineageos.twelve.utils.MethodResult
+import org.lineageos.twelve.ext.buildUrl
+import org.lineageos.twelve.ext.get
+import org.lineageos.twelve.models.MethodResult
+import java.security.MessageDigest
 
 /**
  * Subsonic client. Compliant with version [SUBSONIC_API_VERSION].
@@ -34,30 +42,41 @@ class SubsonicClient(
     private val useLegacyAuthentication: Boolean,
     private val cache: Cache? = null,
 ) {
-    private val interceptor = SubsonicAuthInterceptor(
-        SUBSONIC_API_VERSION,
-        username,
-        password,
-        clientName,
-        useLegacyAuthentication
-    )
-
-    private val okHttpClient = OkHttpClient.Builder()
-        .cache(cache)
-        .addInterceptor(interceptor)
-        .build()
-
-    private val serverUri = Uri.parse(server).buildUpon().apply {
-        appendPath("rest")
-    }.build()
-    private val api = Api(okHttpClient, serverUri)
+    private val client = HttpClient(OkHttp) {
+        defaultRequest {
+            url {
+                takeFrom(server)
+            }
+            headers {
+                append("u", username)
+                append("v", SUBSONIC_API_VERSION.value)
+                append("c", clientName)
+                append("f", PROTOCOL_JSON)
+                if (!useLegacyAuthentication) {
+                    val salt = generateSalt()
+                    append("t", getSaltedPassword(password, salt))
+                    append("s", salt)
+                } else {
+                    append("p", password)
+                }
+            }
+        }
+        engine {
+            config {
+                cache(cache)
+            }
+        }
+        install(ContentNegotiation) {
+            json(Json { ignoreUnknownKeys = true })
+        }
+    }
 
     /**
      * Used to test connectivity with the server. Takes no extra parameters.
      *
      * @since 1.0.0
      */
-    suspend fun ping() = api.get<ResponseRoot>(
+    suspend fun ping() = client.get<ResponseRoot>(
         listOf("ping")
     ).mapResponse { }
 
@@ -68,7 +87,7 @@ class SubsonicClient(
      *
      * @since 1.0.0
      */
-    suspend fun getLicense() = api.get<ResponseRoot>(
+    suspend fun getLicense() = client.get<ResponseRoot>(
         listOf("getLicense")
     ).mapResponse(SubsonicResponse::license)
 
@@ -77,7 +96,7 @@ class SubsonicClient(
      *
      * @since 1.0.0
      */
-    suspend fun getMusicFolders() = api.get<ResponseRoot>(
+    suspend fun getMusicFolders() = client.get<ResponseRoot>(
         listOf("getMusicFolders")
     ).mapResponse(SubsonicResponse::musicFolders)
 
@@ -93,7 +112,7 @@ class SubsonicClient(
     suspend fun getIndexes(
         musicFolderId: Int? = null,
         ifModifiedSince: Long? = null,
-    ) = api.get<ResponseRoot>(
+    ) = client.get<ResponseRoot>(
         listOf("getIndexes"),
         queryParameters = listOf(
             "musicFolderId" to musicFolderId,
@@ -111,7 +130,7 @@ class SubsonicClient(
      */
     suspend fun getMusicDirectory(
         id: String,
-    ) = api.get<ResponseRoot>(
+    ) = client.get<ResponseRoot>(
         listOf("getMusicDirectory"),
         queryParameters = listOf(
             "id" to id,
@@ -123,7 +142,7 @@ class SubsonicClient(
      *
      * @since 1.9.0
      */
-    suspend fun getGenres() = api.get<ResponseRoot>(
+    suspend fun getGenres() = client.get<ResponseRoot>(
         listOf("getGenres")
     ).mapResponse(SubsonicResponse::genres)
 
@@ -136,7 +155,7 @@ class SubsonicClient(
      */
     suspend fun getArtists(
         musicFolderId: Int? = null,
-    ) = api.get<ResponseRoot>(
+    ) = client.get<ResponseRoot>(
         listOf("getArtists"),
         queryParameters = listOf(
             "musicFolderId" to musicFolderId,
@@ -152,7 +171,7 @@ class SubsonicClient(
      */
     suspend fun getArtist(
         id: String,
-    ) = api.get<ResponseRoot>(
+    ) = client.get<ResponseRoot>(
         listOf("getArtist"),
         queryParameters = listOf(
             "id" to id,
@@ -168,7 +187,7 @@ class SubsonicClient(
      */
     suspend fun getAlbum(
         id: String,
-    ) = api.get<ResponseRoot>(
+    ) = client.get<ResponseRoot>(
         listOf("getAlbum"),
         queryParameters = listOf(
             "id" to id,
@@ -183,7 +202,7 @@ class SubsonicClient(
      */
     suspend fun getSong(
         id: String,
-    ) = api.get<ResponseRoot>(
+    ) = client.get<ResponseRoot>(
         listOf("getSong"),
         queryParameters = listOf(
             "id" to id,
@@ -195,7 +214,7 @@ class SubsonicClient(
      *
      * @since 1.8.0
      */
-    suspend fun getVideos() = api.get<ResponseRoot>(
+    suspend fun getVideos() = client.get<ResponseRoot>(
         listOf("getVideos")
     ).mapResponse(SubsonicResponse::videos)
 
@@ -208,7 +227,7 @@ class SubsonicClient(
      */
     suspend fun getVideoInfo(
         id: String,
-    ) = api.get<ResponseRoot>(
+    ) = client.get<ResponseRoot>(
         listOf("getVideoInfo"),
         queryParameters = listOf(
             "id" to id,
@@ -227,7 +246,7 @@ class SubsonicClient(
         id: String,
         count: Int? = null,
         includeNotPresent: Boolean? = null,
-    ) = api.get<ResponseRoot>(
+    ) = client.get<ResponseRoot>(
         listOf("getArtistInfo"),
         queryParameters = listOf(
             "id" to id,
@@ -248,7 +267,7 @@ class SubsonicClient(
         id: String,
         count: Int? = null,
         includeNotPresent: Boolean? = null,
-    ) = api.get<ResponseRoot>(
+    ) = client.get<ResponseRoot>(
         listOf("getArtistInfo2"),
         queryParameters = listOf(
             "id" to id,
@@ -265,7 +284,7 @@ class SubsonicClient(
      */
     suspend fun getAlbumInfo(
         id: String,
-    ) = api.get<ResponseRoot>(
+    ) = client.get<ResponseRoot>(
         listOf("getAlbumInfo"),
         queryParameters = listOf(
             "id" to id,
@@ -280,7 +299,7 @@ class SubsonicClient(
      */
     suspend fun getAlbumInfo2(
         id: String,
-    ) = api.get<ResponseRoot>(
+    ) = client.get<ResponseRoot>(
         listOf("getAlbumInfo2"),
         queryParameters = listOf(
             "id" to id,
@@ -298,7 +317,7 @@ class SubsonicClient(
     suspend fun getSimilarSongs(
         id: String,
         count: Int? = null,
-    ) = api.get<ResponseRoot>(
+    ) = client.get<ResponseRoot>(
         listOf("getSimilarSongs"),
         queryParameters = listOf(
             "id" to id,
@@ -316,7 +335,7 @@ class SubsonicClient(
     suspend fun getSimilarSongs2(
         id: String,
         count: Int? = null,
-    ) = api.get<ResponseRoot>(
+    ) = client.get<ResponseRoot>(
         listOf("getSimilarSongs2"),
         queryParameters = listOf(
             "id" to id,
@@ -334,7 +353,7 @@ class SubsonicClient(
     suspend fun getTopSongs(
         artist: String,
         count: Int? = null,
-    ) = api.get<ResponseRoot>(
+    ) = client.get<ResponseRoot>(
         listOf("getTopSongs"),
         queryParameters = listOf(
             "artist" to artist,
@@ -368,7 +387,7 @@ class SubsonicClient(
         toYear: Int? = null,
         genre: String? = null,
         musicFolderId: Int? = null,
-    ) = api.get<ResponseRoot>(
+    ) = client.get<ResponseRoot>(
         listOf("getAlbumList"),
         queryParameters = listOf(
             "type" to type,
@@ -406,7 +425,7 @@ class SubsonicClient(
         toYear: Int? = null,
         genre: String? = null,
         musicFolderId: Int? = null,
-    ) = api.get<ResponseRoot>(
+    ) = client.get<ResponseRoot>(
         listOf("getAlbumList2"),
         queryParameters = listOf(
             "type" to type,
@@ -436,7 +455,7 @@ class SubsonicClient(
         fromYear: Int? = null,
         toYear: Int? = null,
         musicFolderId: Int? = null,
-    ) = api.get<ResponseRoot>(
+    ) = client.get<ResponseRoot>(
         listOf("getRandomSongs"),
         queryParameters = listOf(
             "size" to size,
@@ -462,7 +481,7 @@ class SubsonicClient(
         count: Int? = null,
         offset: Int? = null,
         musicFolderId: Int? = null,
-    ) = api.get<ResponseRoot>(
+    ) = client.get<ResponseRoot>(
         listOf("getSongsByGenre"),
         queryParameters = listOf(
             "genre" to genre,
@@ -477,7 +496,7 @@ class SubsonicClient(
      *
      * @since 1.0.0
      */
-    suspend fun getNowPlaying() = api.get<ResponseRoot>(
+    suspend fun getNowPlaying() = client.get<ResponseRoot>(
         listOf("getNowPlaying")
     ).mapResponse(SubsonicResponse::nowPlaying)
 
@@ -490,7 +509,7 @@ class SubsonicClient(
      */
     suspend fun getStarred(
         musicFolderId: Int? = null,
-    ) = api.get<ResponseRoot>(
+    ) = client.get<ResponseRoot>(
         listOf("getStarred"),
         queryParameters = listOf(
             "musicFolderId" to musicFolderId,
@@ -506,7 +525,7 @@ class SubsonicClient(
      */
     suspend fun getStarred2(
         musicFolderId: Int? = null,
-    ) = api.get<ResponseRoot>(
+    ) = client.get<ResponseRoot>(
         listOf("getStarred2"),
         queryParameters = listOf(
             "musicFolderId" to musicFolderId,
@@ -536,7 +555,7 @@ class SubsonicClient(
         count: Int? = null,
         offset: Int? = null,
         newerThan: Long? = null,
-    ) = api.get<ResponseRoot>(
+    ) = client.get<ResponseRoot>(
         listOf("search"),
         queryParameters = listOf(
             "artist" to artist,
@@ -572,7 +591,7 @@ class SubsonicClient(
         songCount: Int? = null,
         songOffset: Int? = null,
         musicFolderId: Int? = null,
-    ) = api.get<ResponseRoot>(
+    ) = client.get<ResponseRoot>(
         listOf("search2"),
         queryParameters = listOf(
             "query" to query,
@@ -609,7 +628,7 @@ class SubsonicClient(
         songCount: Int? = null,
         songOffset: Int? = null,
         musicFolderId: Int? = null,
-    ) = api.get<ResponseRoot>(
+    ) = client.get<ResponseRoot>(
         listOf("search3"),
         queryParameters = listOf(
             "query" to query,
@@ -633,7 +652,7 @@ class SubsonicClient(
      */
     suspend fun getPlaylists(
         username: String? = null,
-    ) = api.get<ResponseRoot>(
+    ) = client.get<ResponseRoot>(
         listOf("getPlaylists"),
         queryParameters = listOf(
             "username" to username,
@@ -648,7 +667,7 @@ class SubsonicClient(
      */
     suspend fun getPlaylist(
         id: Int,
-    ) = api.get<ResponseRoot>(
+    ) = client.get<ResponseRoot>(
         listOf("getPlaylist"),
         queryParameters = listOf(
             "id" to id,
@@ -668,7 +687,7 @@ class SubsonicClient(
         playlistId: String? = null,
         name: String? = null,
         songIds: List<Int>,
-    ) = api.get<ResponseRoot>(
+    ) = client.get<ResponseRoot>(
         listOf("createPlaylist"),
         queryParameters = listOf(
             "playlistId" to playlistId,
@@ -696,7 +715,7 @@ class SubsonicClient(
         public: Boolean? = null,
         songIdsToAdd: List<String>? = null,
         songIndexesToRemove: List<Int>? = null,
-    ) = api.get<ResponseRoot>(
+    ) = client.get<ResponseRoot>(
         listOf("updatePlaylist"),
         queryParameters = listOf(
             "playlistId" to playlistId,
@@ -716,7 +735,7 @@ class SubsonicClient(
      */
     suspend fun deletePlaylist(
         id: Int,
-    ) = api.get<ResponseRoot>(
+    ) = client.get<ResponseRoot>(
         listOf("deletePlaylist"),
         queryParameters = listOf(
             "id" to id,
@@ -753,7 +772,7 @@ class SubsonicClient(
         size: String? = null,
         estimateContentLength: Boolean? = null,
         converted: Boolean? = null,
-    ) = api.buildUrl(
+    ) = client.buildUrl(
         listOf("stream"),
         queryParameters = listOf(
             "id" to id,
@@ -776,7 +795,7 @@ class SubsonicClient(
      */
     fun download(
         id: String,
-    ) = api.buildUrl(
+    ) = client.buildUrl(
         listOf("download"),
         queryParameters = listOf(
             "id" to id,
@@ -804,7 +823,7 @@ class SubsonicClient(
         id: String,
         bitRate: String? = null,
         audioTrack: Int? = null,
-    ) = api.buildUrl(
+    ) = client.buildUrl(
         listOf("hls"),
         queryParameters = listOf(
             "id" to id,
@@ -824,7 +843,7 @@ class SubsonicClient(
     fun getCaptions(
         id: String,
         format: String? = null,
-    ) = api.buildUrl(
+    ) = client.buildUrl(
         listOf("getCaptions"),
         queryParameters = listOf(
             "id" to id,
@@ -842,7 +861,7 @@ class SubsonicClient(
     fun getCoverArt(
         id: String,
         size: Int? = null,
-    ) = api.buildUrl(
+    ) = client.buildUrl(
         listOf("getCoverArt"),
         queryParameters = listOf(
             "id" to id,
@@ -860,7 +879,7 @@ class SubsonicClient(
     fun getLyrics(
         artist: String? = null,
         title: String? = null,
-    ) = api.buildUrl(
+    ) = client.buildUrl(
         listOf("getLyrics"),
         queryParameters = listOf(
             "artist" to artist,
@@ -876,7 +895,7 @@ class SubsonicClient(
      */
     fun getAvatar(
         username: String,
-    ) = api.buildUrl(
+    ) = client.buildUrl(
         listOf("getAvatar"),
         queryParameters = listOf(
             "username" to username,
@@ -900,7 +919,7 @@ class SubsonicClient(
         ids: List<String>? = null,
         albumIds: List<String>? = null,
         artistIds: List<String>? = null,
-    ) = api.get<ResponseRoot>(
+    ) = client.get<ResponseRoot>(
         listOf("star"),
         queryParameters = listOf(
             *ids?.map { "id" to it }?.toTypedArray().orEmpty(),
@@ -926,7 +945,7 @@ class SubsonicClient(
         ids: List<String>? = null,
         albumIds: List<String>? = null,
         artistIds: List<String>? = null,
-    ) = api.get<ResponseRoot>(
+    ) = client.get<ResponseRoot>(
         listOf("unstar"),
         queryParameters = listOf(
             *ids?.map { "id" to it }?.toTypedArray().orEmpty(),
@@ -946,7 +965,7 @@ class SubsonicClient(
     suspend fun setRating(
         id: String,
         rating: Int,
-    ) = api.get<ResponseRoot>(
+    ) = client.get<ResponseRoot>(
         listOf("setRating"),
         queryParameters = listOf(
             "id" to id,
@@ -976,7 +995,7 @@ class SubsonicClient(
         ids: List<String>,
         time: Long? = null,
         submission: Boolean? = null,
-    ) = api.get<ResponseRoot>(
+    ) = client.get<ResponseRoot>(
         listOf("scrobble"),
         queryParameters = listOf(
             *ids.map { "id" to it }.toTypedArray(),
@@ -991,7 +1010,7 @@ class SubsonicClient(
      *
      * @since 1.6.0
      */
-    suspend fun getShares() = api.get<ResponseRoot>(
+    suspend fun getShares() = client.get<ResponseRoot>(
         listOf("getShares"),
     ).mapResponse(SubsonicResponse::shares)
 
@@ -1012,7 +1031,7 @@ class SubsonicClient(
         id: String,
         description: String? = null,
         expires: Long? = null,
-    ) = api.get<ResponseRoot>(
+    ) = client.get<ResponseRoot>(
         listOf("createShare"),
         queryParameters = listOf(
             "id" to id,
@@ -1035,7 +1054,7 @@ class SubsonicClient(
         id: String,
         description: String? = null,
         expires: Long? = null,
-    ) = api.get<ResponseRoot>(
+    ) = client.get<ResponseRoot>(
         listOf("updateShare"),
         queryParameters = listOf(
             "id" to id,
@@ -1052,7 +1071,7 @@ class SubsonicClient(
      */
     suspend fun deleteShare(
         id: String,
-    ) = api.get<ResponseRoot>(
+    ) = client.get<ResponseRoot>(
         listOf("deleteShare"),
         queryParameters = listOf(
             "id" to id,
@@ -1073,7 +1092,7 @@ class SubsonicClient(
     suspend fun getPodcasts(
         includeEpisodes: Boolean? = null,
         id: String? = null,
-    ) = api.get<ResponseRoot>(
+    ) = client.get<ResponseRoot>(
         listOf("getPodcasts"),
         queryParameters = listOf(
             "includeEpisodes" to includeEpisodes,
@@ -1089,7 +1108,7 @@ class SubsonicClient(
      */
     suspend fun getNewestPodcasts(
         count: Int? = null,
-    ) = api.get<ResponseRoot>(
+    ) = client.get<ResponseRoot>(
         listOf("getNewestPodcasts"),
         queryParameters = listOf(
             "count" to count,
@@ -1102,7 +1121,7 @@ class SubsonicClient(
      *
      * @since 1.9.0
      */
-    suspend fun refreshPodcasts() = api.get<ResponseRoot>(
+    suspend fun refreshPodcasts() = client.get<ResponseRoot>(
         listOf("refreshPodcasts"),
     ).mapResponse { }
 
@@ -1115,7 +1134,7 @@ class SubsonicClient(
      */
     suspend fun createPodcastChannel(
         url: String,
-    ) = api.get<ResponseRoot>(
+    ) = client.get<ResponseRoot>(
         listOf("createPodcastChannel"),
         queryParameters = listOf(
             "url" to url,
@@ -1131,7 +1150,7 @@ class SubsonicClient(
      */
     suspend fun deletePodcastChannel(
         id: String,
-    ) = api.get<ResponseRoot>(
+    ) = client.get<ResponseRoot>(
         listOf("deletePodcastChannel"),
         queryParameters = listOf(
             "id" to id,
@@ -1147,7 +1166,7 @@ class SubsonicClient(
      */
     suspend fun deletePodcastEpisode(
         id: String,
-    ) = api.get<ResponseRoot>(
+    ) = client.get<ResponseRoot>(
         listOf("deletePodcastEpisode"),
         queryParameters = listOf(
             "id" to id,
@@ -1164,7 +1183,7 @@ class SubsonicClient(
      */
     suspend fun downloadPodcastEpisode(
         id: String,
-    ) = api.get<ResponseRoot>(
+    ) = client.get<ResponseRoot>(
         listOf("downloadPodcastEpisode"),
         queryParameters = listOf(
             "id" to id,
@@ -1193,7 +1212,7 @@ class SubsonicClient(
         offset: Int? = null,
         ids: List<String>? = null,
         gain: Float? = null,
-    ) = api.get<ResponseRoot>(
+    ) = client.get<ResponseRoot>(
         listOf("jukeboxControl"),
         queryParameters = listOf(
             "action" to action,
@@ -1209,7 +1228,7 @@ class SubsonicClient(
      *
      * @since 1.9.0
      */
-    suspend fun getInternetRadioStations() = api.get<ResponseRoot>(
+    suspend fun getInternetRadioStations() = client.get<ResponseRoot>(
         listOf("getInternetRadioStations"),
     ).mapResponse(SubsonicResponse::internetRadioStations)
 
@@ -1238,5 +1257,20 @@ class SubsonicClient(
 
     companion object {
         private val SUBSONIC_API_VERSION = Version(1, 16, 1)
+
+        private const val PROTOCOL_JSON = "json"
+
+        private val md5MessageDigest = MessageDigest.getInstance("MD5")
+
+        private val allowedSaltChars = ('A'..'Z') + ('a'..'z') + ('0'..'9')
+
+        private fun generateSalt() = (1..20)
+            .map { allowedSaltChars.random() }
+            .joinToString("")
+
+        private fun getSaltedPassword(password: String, salt: String) = md5MessageDigest.digest(
+            password.toByteArray() + salt.toByteArray()
+        ).toString()
     }
+
 }

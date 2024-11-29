@@ -19,6 +19,7 @@ import org.lineageos.twelve.datasources.subsonic.models.AlbumID3
 import org.lineageos.twelve.datasources.subsonic.models.ArtistID3
 import org.lineageos.twelve.datasources.subsonic.models.Child
 import org.lineageos.twelve.datasources.subsonic.models.Error
+import org.lineageos.twelve.ext.toRequestStatus
 import org.lineageos.twelve.models.ActivityTab
 import org.lineageos.twelve.models.Album
 import org.lineageos.twelve.models.Artist
@@ -35,7 +36,6 @@ import org.lineageos.twelve.models.RequestStatus
 import org.lineageos.twelve.models.SortingRule
 import org.lineageos.twelve.models.SortingStrategy
 import org.lineageos.twelve.models.Thumbnail
-import org.lineageos.twelve.utils.toRequestStatus
 
 /**
  * Subsonic based data source.
