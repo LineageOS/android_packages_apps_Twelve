@@ -649,6 +649,33 @@ java_library_static {
     java_version: "1.7",
 }
 
+java_import {
+    name: "Twelve_com.squareup.okhttp3_okhttp-sse-nodeps",
+    jars: ["com/squareup/okhttp3/okhttp-sse/4.12.0/okhttp-sse-4.12.0.jar"],
+    sdk_version: "35",
+    min_sdk_version: "14",
+    apex_available: [
+        "//apex_available:platform",
+        "//apex_available:anyapex",
+    ],
+}
+
+java_library_static {
+    name: "Twelve_com.squareup.okhttp3_okhttp-sse",
+    sdk_version: "35",
+    min_sdk_version: "14",
+    apex_available: [
+        "//apex_available:platform",
+        "//apex_available:anyapex",
+    ],
+    static_libs: [
+        "Twelve_com.squareup.okhttp3_okhttp-sse-nodeps",
+        "Twelve_com.squareup.okhttp3_okhttp",
+        "kotlin-stdlib-jdk8",
+    ],
+    java_version: "1.7",
+}
+
 java_library_static {
     name: "Twelve_com.squareup.okio_okio",
     sdk_version: "35",
@@ -884,6 +911,608 @@ java_library_static {
         "Twelve_io.coil-kt.coil3_coil-core",
         "Twelve_io.coil-kt.coil3_coil-network-core",
         "kotlin-stdlib",
+    ],
+    java_version: "1.7",
+}
+
+java_library_static {
+    name: "Twelve_io.ktor_ktor-client-content-negotiation",
+    sdk_version: "35",
+    min_sdk_version: "14",
+    apex_available: [
+        "//apex_available:platform",
+        "//apex_available:anyapex",
+    ],
+    static_libs: [
+        "Twelve_io.ktor_ktor-client-content-negotiation-jvm",
+    ],
+    java_version: "1.7",
+}
+
+java_import {
+    name: "Twelve_io.ktor_ktor-client-content-negotiation-jvm-nodeps",
+    jars: ["io/ktor/ktor-client-content-negotiation-jvm/3.0.1/ktor-client-content-negotiation-jvm-3.0.1.jar"],
+    sdk_version: "35",
+    min_sdk_version: "14",
+    apex_available: [
+        "//apex_available:platform",
+        "//apex_available:anyapex",
+    ],
+}
+
+java_library_static {
+    name: "Twelve_io.ktor_ktor-client-content-negotiation-jvm",
+    sdk_version: "35",
+    min_sdk_version: "14",
+    apex_available: [
+        "//apex_available:platform",
+        "//apex_available:anyapex",
+    ],
+    static_libs: [
+        "Twelve_io.ktor_ktor-client-content-negotiation-jvm-nodeps",
+        "Twelve_io.ktor_ktor-client-core",
+        "Twelve_io.ktor_ktor-serialization",
+        "Twelve_org.slf4j_slf4j-api",
+        "kotlin-stdlib",
+        "kotlinx-coroutines-core",
+    ],
+    java_version: "1.7",
+}
+
+java_library_static {
+    name: "Twelve_io.ktor_ktor-client-core",
+    sdk_version: "35",
+    min_sdk_version: "14",
+    apex_available: [
+        "//apex_available:platform",
+        "//apex_available:anyapex",
+    ],
+    static_libs: [
+        "Twelve_io.ktor_ktor-client-core-jvm",
+    ],
+    java_version: "1.7",
+}
+
+java_import {
+    name: "Twelve_io.ktor_ktor-client-core-jvm-nodeps",
+    jars: ["io/ktor/ktor-client-core-jvm/3.0.1/ktor-client-core-jvm-3.0.1.jar"],
+    sdk_version: "35",
+    min_sdk_version: "14",
+    apex_available: [
+        "//apex_available:platform",
+        "//apex_available:anyapex",
+    ],
+}
+
+java_library_static {
+    name: "Twelve_io.ktor_ktor-client-core-jvm",
+    sdk_version: "35",
+    min_sdk_version: "14",
+    apex_available: [
+        "//apex_available:platform",
+        "//apex_available:anyapex",
+    ],
+    static_libs: [
+        "Twelve_io.ktor_ktor-client-core-jvm-nodeps",
+        "Twelve_io.ktor_ktor-events",
+        "Twelve_io.ktor_ktor-http",
+        "Twelve_io.ktor_ktor-sse",
+        "Twelve_io.ktor_ktor-websocket-serialization",
+        "Twelve_org.slf4j_slf4j-api",
+        "kotlin-stdlib",
+        "kotlinx-coroutines-core",
+        "org.jetbrains.kotlinx_kotlinx-coroutines-slf4j",
+    ],
+    java_version: "1.7",
+}
+
+java_library_static {
+    name: "Twelve_io.ktor_ktor-client-okhttp",
+    sdk_version: "35",
+    min_sdk_version: "14",
+    apex_available: [
+        "//apex_available:platform",
+        "//apex_available:anyapex",
+    ],
+    static_libs: [
+        "Twelve_io.ktor_ktor-client-okhttp-jvm",
+    ],
+    java_version: "1.7",
+}
+
+java_import {
+    name: "Twelve_io.ktor_ktor-client-okhttp-jvm-nodeps",
+    jars: ["io/ktor/ktor-client-okhttp-jvm/3.0.1/ktor-client-okhttp-jvm-3.0.1.jar"],
+    sdk_version: "35",
+    min_sdk_version: "14",
+    apex_available: [
+        "//apex_available:platform",
+        "//apex_available:anyapex",
+    ],
+}
+
+java_library_static {
+    name: "Twelve_io.ktor_ktor-client-okhttp-jvm",
+    sdk_version: "35",
+    min_sdk_version: "14",
+    apex_available: [
+        "//apex_available:platform",
+        "//apex_available:anyapex",
+    ],
+    static_libs: [
+        "Twelve_io.ktor_ktor-client-okhttp-jvm-nodeps",
+        "Twelve_com.squareup.okhttp3_okhttp",
+        "Twelve_com.squareup.okhttp3_okhttp-sse",
+        "Twelve_com.squareup.okio_okio",
+        "Twelve_io.ktor_ktor-client-core",
+        "Twelve_org.slf4j_slf4j-api",
+        "kotlin-stdlib",
+        "kotlinx-coroutines-core",
+    ],
+    java_version: "1.7",
+}
+
+java_library_static {
+    name: "Twelve_io.ktor_ktor-events",
+    sdk_version: "35",
+    min_sdk_version: "14",
+    apex_available: [
+        "//apex_available:platform",
+        "//apex_available:anyapex",
+    ],
+    static_libs: [
+        "Twelve_io.ktor_ktor-events-jvm",
+    ],
+    java_version: "1.7",
+}
+
+java_import {
+    name: "Twelve_io.ktor_ktor-events-jvm-nodeps",
+    jars: ["io/ktor/ktor-events-jvm/3.0.1/ktor-events-jvm-3.0.1.jar"],
+    sdk_version: "35",
+    min_sdk_version: "14",
+    apex_available: [
+        "//apex_available:platform",
+        "//apex_available:anyapex",
+    ],
+}
+
+java_library_static {
+    name: "Twelve_io.ktor_ktor-events-jvm",
+    sdk_version: "35",
+    min_sdk_version: "14",
+    apex_available: [
+        "//apex_available:platform",
+        "//apex_available:anyapex",
+    ],
+    static_libs: [
+        "Twelve_io.ktor_ktor-events-jvm-nodeps",
+        "Twelve_io.ktor_ktor-http",
+        "Twelve_io.ktor_ktor-utils",
+        "Twelve_org.slf4j_slf4j-api",
+        "kotlin-stdlib",
+        "kotlinx-coroutines-core",
+    ],
+    java_version: "1.7",
+}
+
+java_library_static {
+    name: "Twelve_io.ktor_ktor-http",
+    sdk_version: "35",
+    min_sdk_version: "14",
+    apex_available: [
+        "//apex_available:platform",
+        "//apex_available:anyapex",
+    ],
+    static_libs: [
+        "Twelve_io.ktor_ktor-http-jvm",
+    ],
+    java_version: "1.7",
+}
+
+java_import {
+    name: "Twelve_io.ktor_ktor-http-jvm-nodeps",
+    jars: ["io/ktor/ktor-http-jvm/3.0.1/ktor-http-jvm-3.0.1.jar"],
+    sdk_version: "35",
+    min_sdk_version: "14",
+    apex_available: [
+        "//apex_available:platform",
+        "//apex_available:anyapex",
+    ],
+}
+
+java_library_static {
+    name: "Twelve_io.ktor_ktor-http-jvm",
+    sdk_version: "35",
+    min_sdk_version: "14",
+    apex_available: [
+        "//apex_available:platform",
+        "//apex_available:anyapex",
+    ],
+    static_libs: [
+        "Twelve_io.ktor_ktor-http-jvm-nodeps",
+        "Twelve_io.ktor_ktor-utils",
+        "Twelve_org.slf4j_slf4j-api",
+        "kotlin-stdlib",
+        "kotlinx-coroutines-core",
+        "kotlinx_serialization_core",
+    ],
+    java_version: "1.7",
+}
+
+java_library_static {
+    name: "Twelve_io.ktor_ktor-io",
+    sdk_version: "35",
+    min_sdk_version: "14",
+    apex_available: [
+        "//apex_available:platform",
+        "//apex_available:anyapex",
+    ],
+    static_libs: [
+        "Twelve_io.ktor_ktor-io-jvm",
+    ],
+    java_version: "1.7",
+}
+
+java_import {
+    name: "Twelve_io.ktor_ktor-io-jvm-nodeps",
+    jars: ["io/ktor/ktor-io-jvm/3.0.1/ktor-io-jvm-3.0.1.jar"],
+    sdk_version: "35",
+    min_sdk_version: "14",
+    apex_available: [
+        "//apex_available:platform",
+        "//apex_available:anyapex",
+    ],
+}
+
+java_library_static {
+    name: "Twelve_io.ktor_ktor-io-jvm",
+    sdk_version: "35",
+    min_sdk_version: "14",
+    apex_available: [
+        "//apex_available:platform",
+        "//apex_available:anyapex",
+    ],
+    static_libs: [
+        "Twelve_io.ktor_ktor-io-jvm-nodeps",
+        "Twelve_org.slf4j_slf4j-api",
+        "kotlin-stdlib",
+        "kotlinx-coroutines-core",
+        "org.jetbrains.kotlinx_kotlinx-io-core",
+    ],
+    java_version: "1.7",
+}
+
+java_library_static {
+    name: "Twelve_io.ktor_ktor-serialization",
+    sdk_version: "35",
+    min_sdk_version: "14",
+    apex_available: [
+        "//apex_available:platform",
+        "//apex_available:anyapex",
+    ],
+    static_libs: [
+        "Twelve_io.ktor_ktor-serialization-jvm",
+    ],
+    java_version: "1.7",
+}
+
+java_import {
+    name: "Twelve_io.ktor_ktor-serialization-jvm-nodeps",
+    jars: ["io/ktor/ktor-serialization-jvm/3.0.1/ktor-serialization-jvm-3.0.1.jar"],
+    sdk_version: "35",
+    min_sdk_version: "14",
+    apex_available: [
+        "//apex_available:platform",
+        "//apex_available:anyapex",
+    ],
+}
+
+java_library_static {
+    name: "Twelve_io.ktor_ktor-serialization-jvm",
+    sdk_version: "35",
+    min_sdk_version: "14",
+    apex_available: [
+        "//apex_available:platform",
+        "//apex_available:anyapex",
+    ],
+    static_libs: [
+        "Twelve_io.ktor_ktor-serialization-jvm-nodeps",
+        "Twelve_io.ktor_ktor-http",
+        "Twelve_io.ktor_ktor-websockets",
+        "Twelve_org.slf4j_slf4j-api",
+        "kotlin-stdlib",
+        "kotlinx-coroutines-core",
+    ],
+    java_version: "1.7",
+}
+
+java_library_static {
+    name: "Twelve_io.ktor_ktor-serialization-kotlinx",
+    sdk_version: "35",
+    min_sdk_version: "14",
+    apex_available: [
+        "//apex_available:platform",
+        "//apex_available:anyapex",
+    ],
+    static_libs: [
+        "Twelve_io.ktor_ktor-serialization-kotlinx-jvm",
+    ],
+    java_version: "1.7",
+}
+
+java_library_static {
+    name: "Twelve_io.ktor_ktor-serialization-kotlinx-json",
+    sdk_version: "35",
+    min_sdk_version: "14",
+    apex_available: [
+        "//apex_available:platform",
+        "//apex_available:anyapex",
+    ],
+    static_libs: [
+        "Twelve_io.ktor_ktor-serialization-kotlinx-json-jvm",
+    ],
+    java_version: "1.7",
+}
+
+java_import {
+    name: "Twelve_io.ktor_ktor-serialization-kotlinx-json-jvm-nodeps",
+    jars: ["io/ktor/ktor-serialization-kotlinx-json-jvm/3.0.1/ktor-serialization-kotlinx-json-jvm-3.0.1.jar"],
+    sdk_version: "35",
+    min_sdk_version: "14",
+    apex_available: [
+        "//apex_available:platform",
+        "//apex_available:anyapex",
+    ],
+}
+
+java_library_static {
+    name: "Twelve_io.ktor_ktor-serialization-kotlinx-json-jvm",
+    sdk_version: "35",
+    min_sdk_version: "14",
+    apex_available: [
+        "//apex_available:platform",
+        "//apex_available:anyapex",
+    ],
+    static_libs: [
+        "Twelve_io.ktor_ktor-serialization-kotlinx-json-jvm-nodeps",
+        "Twelve_io.ktor_ktor-http",
+        "Twelve_io.ktor_ktor-serialization-kotlinx",
+        "Twelve_org.slf4j_slf4j-api",
+        "kotlin-stdlib",
+        "kotlinx-coroutines-core",
+        "kotlinx_serialization_json",
+        "org.jetbrains.kotlinx_kotlinx-serialization-json-io",
+    ],
+    java_version: "1.7",
+}
+
+java_import {
+    name: "Twelve_io.ktor_ktor-serialization-kotlinx-jvm-nodeps",
+    jars: ["io/ktor/ktor-serialization-kotlinx-jvm/3.0.1/ktor-serialization-kotlinx-jvm-3.0.1.jar"],
+    sdk_version: "35",
+    min_sdk_version: "14",
+    apex_available: [
+        "//apex_available:platform",
+        "//apex_available:anyapex",
+    ],
+}
+
+java_library_static {
+    name: "Twelve_io.ktor_ktor-serialization-kotlinx-jvm",
+    sdk_version: "35",
+    min_sdk_version: "14",
+    apex_available: [
+        "//apex_available:platform",
+        "//apex_available:anyapex",
+    ],
+    static_libs: [
+        "Twelve_io.ktor_ktor-serialization-kotlinx-jvm-nodeps",
+        "Twelve_io.ktor_ktor-http",
+        "Twelve_io.ktor_ktor-serialization",
+        "Twelve_org.slf4j_slf4j-api",
+        "kotlin-stdlib",
+        "kotlinx-coroutines-core",
+        "kotlinx_serialization_core",
+    ],
+    java_version: "1.7",
+}
+
+java_library_static {
+    name: "Twelve_io.ktor_ktor-sse",
+    sdk_version: "35",
+    min_sdk_version: "14",
+    apex_available: [
+        "//apex_available:platform",
+        "//apex_available:anyapex",
+    ],
+    static_libs: [
+        "Twelve_io.ktor_ktor-sse-jvm",
+    ],
+    java_version: "1.7",
+}
+
+java_import {
+    name: "Twelve_io.ktor_ktor-sse-jvm-nodeps",
+    jars: ["io/ktor/ktor-sse-jvm/3.0.1/ktor-sse-jvm-3.0.1.jar"],
+    sdk_version: "35",
+    min_sdk_version: "14",
+    apex_available: [
+        "//apex_available:platform",
+        "//apex_available:anyapex",
+    ],
+}
+
+java_library_static {
+    name: "Twelve_io.ktor_ktor-sse-jvm",
+    sdk_version: "35",
+    min_sdk_version: "14",
+    apex_available: [
+        "//apex_available:platform",
+        "//apex_available:anyapex",
+    ],
+    static_libs: [
+        "Twelve_io.ktor_ktor-sse-jvm-nodeps",
+        "Twelve_io.ktor_ktor-http",
+        "Twelve_org.slf4j_slf4j-api",
+        "kotlin-stdlib",
+        "kotlinx-coroutines-core",
+    ],
+    java_version: "1.7",
+}
+
+java_library_static {
+    name: "Twelve_io.ktor_ktor-utils",
+    sdk_version: "35",
+    min_sdk_version: "14",
+    apex_available: [
+        "//apex_available:platform",
+        "//apex_available:anyapex",
+    ],
+    static_libs: [
+        "Twelve_io.ktor_ktor-utils-jvm",
+    ],
+    java_version: "1.7",
+}
+
+java_import {
+    name: "Twelve_io.ktor_ktor-utils-jvm-nodeps",
+    jars: ["io/ktor/ktor-utils-jvm/3.0.1/ktor-utils-jvm-3.0.1.jar"],
+    sdk_version: "35",
+    min_sdk_version: "14",
+    apex_available: [
+        "//apex_available:platform",
+        "//apex_available:anyapex",
+    ],
+}
+
+java_library_static {
+    name: "Twelve_io.ktor_ktor-utils-jvm",
+    sdk_version: "35",
+    min_sdk_version: "14",
+    apex_available: [
+        "//apex_available:platform",
+        "//apex_available:anyapex",
+    ],
+    static_libs: [
+        "Twelve_io.ktor_ktor-utils-jvm-nodeps",
+        "Twelve_io.ktor_ktor-io",
+        "Twelve_org.slf4j_slf4j-api",
+        "kotlin-stdlib",
+        "kotlinx-coroutines-core",
+        "kotlinx_serialization_core",
+    ],
+    java_version: "1.7",
+}
+
+java_library_static {
+    name: "Twelve_io.ktor_ktor-websocket-serialization",
+    sdk_version: "35",
+    min_sdk_version: "14",
+    apex_available: [
+        "//apex_available:platform",
+        "//apex_available:anyapex",
+    ],
+    static_libs: [
+        "Twelve_io.ktor_ktor-websocket-serialization-jvm",
+    ],
+    java_version: "1.7",
+}
+
+java_import {
+    name: "Twelve_io.ktor_ktor-websocket-serialization-jvm-nodeps",
+    jars: ["io/ktor/ktor-websocket-serialization-jvm/3.0.1/ktor-websocket-serialization-jvm-3.0.1.jar"],
+    sdk_version: "35",
+    min_sdk_version: "14",
+    apex_available: [
+        "//apex_available:platform",
+        "//apex_available:anyapex",
+    ],
+}
+
+java_library_static {
+    name: "Twelve_io.ktor_ktor-websocket-serialization-jvm",
+    sdk_version: "35",
+    min_sdk_version: "14",
+    apex_available: [
+        "//apex_available:platform",
+        "//apex_available:anyapex",
+    ],
+    static_libs: [
+        "Twelve_io.ktor_ktor-websocket-serialization-jvm-nodeps",
+        "Twelve_io.ktor_ktor-http",
+        "Twelve_io.ktor_ktor-serialization",
+        "Twelve_org.slf4j_slf4j-api",
+        "kotlin-stdlib",
+        "kotlinx-coroutines-core",
+    ],
+    java_version: "1.7",
+}
+
+java_library_static {
+    name: "Twelve_io.ktor_ktor-websockets",
+    sdk_version: "35",
+    min_sdk_version: "14",
+    apex_available: [
+        "//apex_available:platform",
+        "//apex_available:anyapex",
+    ],
+    static_libs: [
+        "Twelve_io.ktor_ktor-websockets-jvm",
+    ],
+    java_version: "1.7",
+}
+
+java_import {
+    name: "Twelve_io.ktor_ktor-websockets-jvm-nodeps",
+    jars: ["io/ktor/ktor-websockets-jvm/3.0.1/ktor-websockets-jvm-3.0.1.jar"],
+    sdk_version: "35",
+    min_sdk_version: "14",
+    apex_available: [
+        "//apex_available:platform",
+        "//apex_available:anyapex",
+    ],
+}
+
+java_library_static {
+    name: "Twelve_io.ktor_ktor-websockets-jvm",
+    sdk_version: "35",
+    min_sdk_version: "14",
+    apex_available: [
+        "//apex_available:platform",
+        "//apex_available:anyapex",
+    ],
+    static_libs: [
+        "Twelve_io.ktor_ktor-websockets-jvm-nodeps",
+        "Twelve_io.ktor_ktor-http",
+        "Twelve_org.slf4j_slf4j-api",
+        "kotlin-stdlib",
+        "kotlinx-coroutines-core",
+    ],
+    java_version: "1.7",
+}
+
+java_import {
+    name: "Twelve_org.slf4j_slf4j-api-nodeps",
+    jars: ["org/slf4j/slf4j-api/2.0.16/slf4j-api-2.0.16.jar"],
+    sdk_version: "35",
+    min_sdk_version: "14",
+    apex_available: [
+        "//apex_available:platform",
+        "//apex_available:anyapex",
+    ],
+}
+
+java_library_static {
+    name: "Twelve_org.slf4j_slf4j-api",
+    sdk_version: "35",
+    min_sdk_version: "14",
+    apex_available: [
+        "//apex_available:platform",
+        "//apex_available:anyapex",
+    ],
+    static_libs: [
+        "Twelve_org.slf4j_slf4j-api-nodeps",
     ],
     java_version: "1.7",
 }
