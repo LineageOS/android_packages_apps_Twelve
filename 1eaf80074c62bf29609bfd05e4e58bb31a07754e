@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "50002bee_4207f094",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2024-12-10T20:01:10Z",
+      "side": 1,
+      "message": "Jellyfin icon uses this, jsyn still doesn\u0027t have a new release with fixed license",
+      "revId": "1eaf80074c62bf29609bfd05e4e58bb31a07754e",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
