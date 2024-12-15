@@ -28,6 +28,9 @@ data class AlbumWithSongsID3(
     // OpenSubsonic
     val sortName: String? = null,
 
+    // Navidrome
+    val parent: String? = null,
+
     // AlbumID3 end
 
     val song: List<Child>,
@@ -46,5 +49,6 @@ data class AlbumWithSongsID3(
         year = year,
         genre = genre,
         sortName = sortName,
+        parent = parent,
     )
 }

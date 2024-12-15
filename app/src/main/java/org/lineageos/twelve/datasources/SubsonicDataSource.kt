@@ -285,7 +285,7 @@ class SubsonicDataSource(arguments: Bundle, cache: Cache? = null) : MediaDataSou
     }.asFlow()
 
     override fun playlist(playlistUri: Uri) = _playlistsChanged.mapLatest {
-        subsonicClient.getPlaylist(playlistUri.lastPathSegment!!.toInt()).toRequestStatus {
+        subsonicClient.getPlaylist(playlistUri.lastPathSegment!!).toRequestStatus {
             toPlaylist().toMediaItem() to entry.orEmpty().map {
                 it.toMediaItem()
             }
@@ -337,7 +337,7 @@ class SubsonicDataSource(arguments: Bundle, cache: Cache? = null) : MediaDataSou
         playlistUri: Uri,
         audioUri: Uri
     ) = subsonicClient.getPlaylist(
-        playlistUri.lastPathSegment!!.toInt()
+        playlistUri.lastPathSegment!!
     ).toRequestStatus {
         val audioId = audioUri.lastPathSegment!!
 

@@ -24,5 +24,14 @@ data class AlbumID3(
     val genre: String? = null,
 
     // OpenSubsonic
+    val played: InstantAsString? = null,
     val sortName: String? = null,
+    val userRating: UserRating? = null,
+
+    // Navidrome
+    val album: String? = null,
+    val isDir: Boolean? = null,
+    val isVideo: Boolean? = null,
+    val parent: String? = null,
+    val title: String? = null,
 )
