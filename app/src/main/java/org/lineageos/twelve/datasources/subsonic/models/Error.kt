@@ -13,11 +13,22 @@ import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 
+/**
+ * Error.
+ *
+ * @param code The error code
+ * @param message The optional error message
+ * @param helpUrl A URL (documentation, configuration, etc) which may provide additional context for
+ *   the error)
+ */
 @Suppress("PROVIDED_RUNTIME_TOO_LOW")
 @Serializable
 data class Error(
     val code: Code,
     val message: String? = null,
+
+    // OpenSubsonic
+    val helpUrl: String? = null,
 ) {
     /**
      * Subsonic error code.
@@ -56,6 +67,27 @@ data class Error(
          * legacy authentication.
          */
         TOKEN_AUTHENTICATION_NOT_SUPPORTED(41),
+
+        /**
+         * Provided authentication mechanism not supported.
+         *
+         * Note: OpenSubsonic only.
+         */
+        AUTHENTICATION_MECHANISM_NOT_SUPPORTED(42),
+
+        /**
+         * Multiple conflicting authentication mechanisms provided.
+         *
+         * Note: OpenSubsonic only.
+         */
+        MULTIPLE_CONFLICTING_AUTHENTICATION_MECHANISMS(43),
+
+        /**
+         * Invalid API key.
+         *
+         * Note: OpenSubsonic only.
+         */
+        INVALID_API_KEY(44),
 
         /**
          * User is not authorized for the given operation.

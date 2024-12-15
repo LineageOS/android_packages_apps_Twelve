@@ -14,9 +14,14 @@ data class ArtistID3(
     val name: String,
     val coverArt: String? = null,
     val artistImageUrl: UriAsString? = null,
-    val albumCount: Int,
+    val albumCount: Int? = null,
     val starred: InstantAsString? = null,
 
     // OpenSubsonic
+    val musicBrainzId: String? = null,
     val sortName: String? = null,
+    val roles: List<String>? = null,
+
+    // Navidrome
+    val userRating: Int? = null,
 )

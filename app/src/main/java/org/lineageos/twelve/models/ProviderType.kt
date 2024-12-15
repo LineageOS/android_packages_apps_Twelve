@@ -36,9 +36,11 @@ enum class ProviderType(
     ),
 
     /**
-     * Subsonic provider.
+     * Subsonic / OpenSubsonic / Navidrome provider.
      *
-     * [Home page](https://www.subsonic.org/pages/index.jsp)
+     * @see <a href="https://www.subsonic.org/pages/index.jsp">Subsonic home page</a>
+     * @see <a href="https://opensubsonic.netlify.app">OpenSubsonic home page</a>
+     * @see <a href="https://navidrome.org">Navidrome home page</a>
      */
     SUBSONIC(
         R.string.provider_type_subsonic,

@@ -620,7 +620,7 @@ class SubsonicClient(
      * @param id ID of the playlist to return, as obtained by [getPlaylists].
      */
     suspend fun getPlaylist(
-        id: Int,
+        id: String,
     ) = method(
         "getPlaylist",
         SubsonicResponse::playlist,

@@ -285,7 +285,7 @@ class SubsonicDataSource(arguments: Bundle, cache: Cache? = null) : MediaDataSou
     }.asFlow()
 
     override fun playlist(playlistUri: Uri) = _playlistsChanged.mapLatest {
-        subsonicClient.getPlaylist(playlistUri.lastPathSegment!!.toInt()).toRequestStatus {
+        subsonicClient.getPlaylist(playlistUri.lastPathSegment!!).toRequestStatus {
             toPlaylist().toMediaItem() to entry.orEmpty().map {
                 it.toMediaItem()
             }
@@ -337,7 +337,7 @@ class SubsonicDataSource(arguments: Bundle, cache: Cache? = null) : MediaDataSou
         playlistUri: Uri,
         audioUri: Uri
     ) = subsonicClient.getPlaylist(
-        playlistUri.lastPathSegment!!.toInt()
+        playlistUri.lastPathSegment!!
     ).toRequestStatus {
         val audioId = audioUri.lastPathSegment!!
 
@@ -434,6 +434,9 @@ class SubsonicDataSource(arguments: Bundle, cache: Cache? = null) : MediaDataSou
         Error.Code.OUTDATED_SERVER -> MediaError.IO
         Error.Code.WRONG_CREDENTIALS -> MediaError.INVALID_CREDENTIALS
         Error.Code.TOKEN_AUTHENTICATION_NOT_SUPPORTED -> MediaError.INVALID_CREDENTIALS
+        Error.Code.AUTHENTICATION_MECHANISM_NOT_SUPPORTED -> MediaError.INVALID_CREDENTIALS
+        Error.Code.MULTIPLE_CONFLICTING_AUTHENTICATION_MECHANISMS -> MediaError.INVALID_CREDENTIALS
+        Error.Code.INVALID_API_KEY -> MediaError.INVALID_CREDENTIALS
         Error.Code.USER_NOT_AUTHORIZED -> MediaError.INVALID_CREDENTIALS
         Error.Code.SUBSONIC_PREMIUM_TRIAL_ENDED -> MediaError.INVALID_CREDENTIALS
         Error.Code.NOT_FOUND -> MediaError.NOT_FOUND

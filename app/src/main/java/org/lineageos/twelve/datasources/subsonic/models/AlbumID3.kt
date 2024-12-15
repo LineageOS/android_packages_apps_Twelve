@@ -24,5 +24,31 @@ data class AlbumID3(
     val genre: String? = null,
 
     // OpenSubsonic
+    val played: InstantAsString? = null,
+    val userRating: UserRating? = null,
+    val recordLabels: List<RecordLabel>? = null,
+    val musicBrainzId: String? = null,
+    val genres: List<ItemGenre>? = null,
+    val artists: List<ArtistID3>? = null,
+    val displayArtist: String? = null,
+    val releaseTypes: List<String>? = null,
+    val moods: List<String>? = null,
     val sortName: String? = null,
+    val originalReleaseDate: ItemDate? = null,
+    val releaseDate: ItemDate? = null,
+    val isCompilation: Boolean? = null,
+    val discTitles: List<DiscTitle>? = null,
+
+    // Navidrome
+    val album: String? = null,
+    val bpm: Int? = null,
+    val channelCount: Int? = null,
+    val comment: String? = null,
+    val isDir: Boolean? = null,
+    val isVideo: Boolean? = null,
+    val mediaType: String? = null,
+    val parent: String? = null,
+    val replayGain: ReplayGain? = null,
+    val samplingRate: Int? = null,
+    val title: String? = null,
 )

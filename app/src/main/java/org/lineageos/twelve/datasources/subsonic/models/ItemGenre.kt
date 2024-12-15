@@ -7,12 +7,14 @@ package org.lineageos.twelve.datasources.subsonic.models
 
 import kotlinx.serialization.Serializable
 
-@Suppress("PROVIDED_RUNTIME_TOO_LOW")
+/**
+ * A genre returned in list of genres for an item.
+ *
+ * Note: OpenSubsonic only.
+ *
+ * @param name Genre name
+ */
 @Serializable
-data class ArtistsID3(
-    val index: List<IndexID3>,
-    val ignoredArticles: String,
-
-    // Navidrome
-    val lastModified: Long? = null, // TODO
+data class ItemGenre(
+    val name: String,
 )

@@ -43,6 +43,22 @@ data class Child(
     val originalHeight: Int? = null,
 
     // OpenSubsonic
+    val bitDepth: Int? = null,
+    val samplingRate: Int? = null,
+    val channelCount: Int? = null,
+    val mediaType: String? = null,
     val played: String? = null,
+    val bpm: Int? = null,
+    val comment: String? = null,
     val sortName: String? = null,
+    val musicBrainzId: String? = null,
+    val genres: List<ItemGenre>? = null,
+    val artists: List<ArtistID3>? = null,
+    val displayArtist: String? = null,
+    val albumArtists: List<ArtistID3>? = null,
+    val displayAlbumArtist: String? = null,
+    val contributors: List<Contributor>? = null,
+    val displayComposer: String? = null,
+    val moods: List<String>? = null,
+    val replayGain: ReplayGain? = null,
 )

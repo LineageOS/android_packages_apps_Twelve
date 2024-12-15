@@ -60,7 +60,7 @@ data class SubsonicResponse(
     val version: Version,
 
     // OpenSubsonic
-    val openSubsonic: Boolean? = null,
     val type: String? = null,
     val serverVersion: String? = null,
+    val openSubsonic: Boolean? = null,
 )

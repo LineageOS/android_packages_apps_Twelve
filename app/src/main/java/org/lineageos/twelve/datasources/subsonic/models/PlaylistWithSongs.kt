@@ -12,7 +12,7 @@ import kotlinx.serialization.Serializable
 data class PlaylistWithSongs(
     // Playlist start
     val allowedUser: List<String>? = null,
-    val id: Int,
+    val id: String,
     val name: String,
     val comment: String? = null,
     val owner: String? = null,
