@@ -6,23 +6,34 @@
 package org.lineageos.twelve.viewmodels
 
 import android.app.Application
+import android.content.SharedPreferences
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.withContext
+import org.lineageos.twelve.ext.PLAYLISTS_SORTING_REVERSE_KEY
+import org.lineageos.twelve.ext.PLAYLISTS_SORTING_STRATEGY_KEY
+import org.lineageos.twelve.ext.playlistsSortingRule
+import org.lineageos.twelve.ext.preferenceFlow
 import org.lineageos.twelve.models.RequestStatus
 import org.lineageos.twelve.models.SortingRule
-import org.lineageos.twelve.repositories.MediaRepository
 
 class PlaylistsViewModel(application: Application) : TwelveViewModel(application) {
-    private val _sortingRule = MutableStateFlow(MediaRepository.defaultPlaylistsSortingRule)
-    val sortingRule = _sortingRule.asStateFlow()
+    val sortingRule = sharedPreferences.preferenceFlow(
+        PLAYLISTS_SORTING_STRATEGY_KEY,
+        PLAYLISTS_SORTING_REVERSE_KEY,
+        getter = SharedPreferences::playlistsSortingRule,
+    )
+        .flowOn(Dispatchers.IO)
+        .stateIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(),
+            sharedPreferences.playlistsSortingRule
+        )
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val playlists = sortingRule
@@ -35,7 +46,7 @@ class PlaylistsViewModel(application: Application) : TwelveViewModel(application
         )
 
     fun setSortingRule(sortingRule: SortingRule) {
-        _sortingRule.value = sortingRule
+        sharedPreferences.playlistsSortingRule = sortingRule
     }
 
     suspend fun createPlaylist(name: String) {

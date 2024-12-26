@@ -38,7 +38,7 @@ abstract class TwelveViewModel(application: Application) : AndroidViewModel(appl
     @Suppress("EmptyMethod")
     final override fun <T : Application> getApplication() = super.getApplication<T>()
 
-    private val sharedPreferences by lazy {
+    protected val sharedPreferences by lazy {
         PreferenceManager.getDefaultSharedPreferences(application)
     }
 

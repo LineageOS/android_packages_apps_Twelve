@@ -6,22 +6,33 @@
 package org.lineageos.twelve.viewmodels
 
 import android.app.Application
+import android.content.SharedPreferences
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.stateIn
+import org.lineageos.twelve.ext.GENRES_SORTING_REVERSE_KEY
+import org.lineageos.twelve.ext.GENRES_SORTING_STRATEGY_KEY
+import org.lineageos.twelve.ext.genresSortingRule
+import org.lineageos.twelve.ext.preferenceFlow
 import org.lineageos.twelve.models.RequestStatus
 import org.lineageos.twelve.models.SortingRule
-import org.lineageos.twelve.repositories.MediaRepository
 
 class GenresViewModel(application: Application) : TwelveViewModel(application) {
-    private val _sortingRule = MutableStateFlow(MediaRepository.defaultGenresSortingRule)
-    val sortingRule = _sortingRule.asStateFlow()
+    val sortingRule = sharedPreferences.preferenceFlow(
+        GENRES_SORTING_STRATEGY_KEY,
+        GENRES_SORTING_REVERSE_KEY,
+        getter = SharedPreferences::genresSortingRule,
+    )
+        .flowOn(Dispatchers.IO)
+        .stateIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(),
+            sharedPreferences.genresSortingRule
+        )
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val genres = sortingRule
@@ -34,6 +45,6 @@ class GenresViewModel(application: Application) : TwelveViewModel(application) {
         )
 
     fun setSortingRule(sortingRule: SortingRule) {
-        _sortingRule.value = sortingRule
+        sharedPreferences.genresSortingRule = sortingRule
     }
 }
