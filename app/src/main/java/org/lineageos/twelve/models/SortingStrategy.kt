@@ -11,6 +11,11 @@ package org.lineageos.twelve.models
  */
 enum class SortingStrategy {
     /**
+     * Sort alphabetically by artist name.
+     */
+    ARTIST,
+
+    /**
      * Sort by creation or release date, oldest to newest.
      */
     CREATION_DATE,

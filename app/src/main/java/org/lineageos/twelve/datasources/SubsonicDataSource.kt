@@ -151,6 +151,24 @@ class SubsonicDataSource(arguments: Bundle, cache: Cache? = null) : MediaDataSou
             album.maybeSortedBy(
                 sortingRule.reverse,
                 when (sortingRule.strategy) {
+                    SortingStrategy.ARTIST -> { album ->
+                        object : Comparable<AlbumID3> {
+                            override fun compareTo(other: AlbumID3): Int {
+                                val artistCmp = if (album.artist == null) {
+                                    if (other.artist == null) 0
+                                    else -1
+                                } else {
+                                    if (other.artist == null) 1
+                                    else album.artist.compareTo(other.artist)
+                                }
+                                val nameCmp = album.name.compareTo(other.name)
+                                return when {
+                                    artistCmp == 0 -> nameCmp
+                                    else -> artistCmp
+                                }
+                            }
+                        }
+                    }
                     SortingStrategy.CREATION_DATE -> { album -> album.year }
                     SortingStrategy.NAME -> { album -> album.name }
                     SortingStrategy.PLAY_COUNT -> { album -> album.playCount }

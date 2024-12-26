@@ -89,6 +89,7 @@ class AlbumsFragment : Fragment(R.layout.fragment_albums) {
 
         sortingChip.setSortingStrategies(
             sortedMapOf(
+                SortingStrategy.ARTIST to R.string.sort_by_artist,
                 SortingStrategy.CREATION_DATE to R.string.sort_by_release_date,
                 SortingStrategy.NAME to R.string.sort_by_title,
                 SortingStrategy.PLAY_COUNT to R.string.sort_by_play_count,
