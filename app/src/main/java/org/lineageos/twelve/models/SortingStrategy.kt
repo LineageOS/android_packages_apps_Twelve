@@ -34,4 +34,18 @@ enum class SortingStrategy {
      * Sort by user's play count, least to most.
      */
     PLAY_COUNT,
+
+    ;
+
+    companion object {
+
+        fun fromName(str: String, fallback: SortingStrategy): SortingStrategy = when (str) {
+            CREATION_DATE.name -> CREATION_DATE
+            MODIFICATION_DATE.name -> MODIFICATION_DATE
+            NAME.name -> NAME
+            ARTIST.name -> ARTIST
+            PLAY_COUNT.name -> PLAY_COUNT
+            else -> fallback
+        }
+    }
 }

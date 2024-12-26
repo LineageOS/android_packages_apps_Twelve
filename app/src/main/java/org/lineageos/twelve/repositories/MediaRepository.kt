@@ -11,6 +11,7 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import androidx.core.os.bundleOf
+import androidx.preference.PreferenceManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -30,12 +31,15 @@ import org.lineageos.twelve.datasources.LocalDataSource
 import org.lineageos.twelve.datasources.MediaDataSource
 import org.lineageos.twelve.datasources.MediaError
 import org.lineageos.twelve.datasources.SubsonicDataSource
+import org.lineageos.twelve.ext.albumsSortingRule
+import org.lineageos.twelve.ext.artistsSortingRule
+import org.lineageos.twelve.ext.genresSortingRule
+import org.lineageos.twelve.ext.playlistsSortingRule
 import org.lineageos.twelve.models.Provider
 import org.lineageos.twelve.models.ProviderArgument.Companion.requireArgument
 import org.lineageos.twelve.models.ProviderType
 import org.lineageos.twelve.models.RequestStatus
 import org.lineageos.twelve.models.SortingRule
-import org.lineageos.twelve.models.SortingStrategy
 
 /**
  * Media repository. This class coordinates all the providers and their data source.
@@ -72,6 +76,10 @@ class MediaRepository(
         LOCAL_PROVIDER_ID,
         Build.MODEL,
     )
+
+    private val sharedPreferences by lazy {
+        PreferenceManager.getDefaultSharedPreferences(context)
+    }
 
     /**
      * HTTP cache
@@ -395,7 +403,7 @@ class MediaRepository(
      * @see MediaDataSource.albums
      */
     fun albums(
-        sortingRule: SortingRule = defaultAlbumsSortingRule,
+        sortingRule: SortingRule = getAlbumsSortingRule(),
     ) = navigationDataSource.flatMapLatest {
         it.albums(sortingRule)
     }
@@ -404,21 +412,21 @@ class MediaRepository(
      * @see MediaDataSource.artists
      */
     fun artists(
-        sortingRule: SortingRule = defaultArtistsSortingRule,
+        sortingRule: SortingRule = getArtistsSortingRule(),
     ) = navigationDataSource.flatMapLatest { it.artists(sortingRule) }
 
     /**
      * @see MediaDataSource.genres
      */
     fun genres(
-        sortingRule: SortingRule = defaultGenresSortingRule,
+        sortingRule: SortingRule = getGenresSortingRule(),
     ) = navigationDataSource.flatMapLatest { it.genres(sortingRule) }
 
     /**
      * @see MediaDataSource.playlists
      */
     fun playlists(
-        sortingRule: SortingRule = defaultPlaylistsSortingRule,
+        sortingRule: SortingRule = getPlaylistsSortingRule(),
     ) = navigationDataSource.flatMapLatest { it.playlists(sortingRule) }
 
     /**
@@ -576,23 +584,15 @@ class MediaRepository(
         uris.all { uri -> dataSource.isMediaItemCompatible(uri) }
     }?.second?.predicate() ?: RequestStatus.Error(MediaError.NOT_FOUND)
 
+    private fun getAlbumsSortingRule() = sharedPreferences.albumsSortingRule
+
+    private fun getArtistsSortingRule() = sharedPreferences.artistsSortingRule
+
+    private fun getGenresSortingRule() = sharedPreferences.genresSortingRule
+
+    private fun getPlaylistsSortingRule() = sharedPreferences.playlistsSortingRule
+
     companion object {
         private const val LOCAL_PROVIDER_ID = 0L
-
-        val defaultAlbumsSortingRule = SortingRule(
-            SortingStrategy.CREATION_DATE, true
-        )
-
-        val defaultArtistsSortingRule = SortingRule(
-            SortingStrategy.MODIFICATION_DATE, true
-        )
-
-        val defaultGenresSortingRule = SortingRule(
-            SortingStrategy.NAME
-        )
-
-        val defaultPlaylistsSortingRule = SortingRule(
-            SortingStrategy.MODIFICATION_DATE, true
-        )
     }
 }

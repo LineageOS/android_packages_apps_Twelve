@@ -15,12 +15,13 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.stateIn
+import org.lineageos.twelve.ext.genresSortingRule
 import org.lineageos.twelve.models.RequestStatus
 import org.lineageos.twelve.models.SortingRule
 import org.lineageos.twelve.repositories.MediaRepository
 
 class GenresViewModel(application: Application) : TwelveViewModel(application) {
-    private val _sortingRule = MutableStateFlow(MediaRepository.defaultGenresSortingRule)
+    private val _sortingRule = MutableStateFlow(sharedPreferences.genresSortingRule)
     val sortingRule = _sortingRule.asStateFlow()
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -34,6 +35,7 @@ class GenresViewModel(application: Application) : TwelveViewModel(application) {
         )
 
     fun setSortingRule(sortingRule: SortingRule) {
+        sharedPreferences.genresSortingRule = sortingRule
         _sortingRule.value = sortingRule
     }
 }

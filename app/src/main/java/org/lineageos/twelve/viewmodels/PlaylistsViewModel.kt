@@ -16,12 +16,13 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.withContext
+import org.lineageos.twelve.ext.playlistsSortingRule
 import org.lineageos.twelve.models.RequestStatus
 import org.lineageos.twelve.models.SortingRule
 import org.lineageos.twelve.repositories.MediaRepository
 
 class PlaylistsViewModel(application: Application) : TwelveViewModel(application) {
-    private val _sortingRule = MutableStateFlow(MediaRepository.defaultPlaylistsSortingRule)
+    private val _sortingRule = MutableStateFlow(sharedPreferences.playlistsSortingRule)
     val sortingRule = _sortingRule.asStateFlow()
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -35,6 +36,7 @@ class PlaylistsViewModel(application: Application) : TwelveViewModel(application
         )
 
     fun setSortingRule(sortingRule: SortingRule) {
+        sharedPreferences.playlistsSortingRule = sortingRule
         _sortingRule.value = sortingRule
     }
 

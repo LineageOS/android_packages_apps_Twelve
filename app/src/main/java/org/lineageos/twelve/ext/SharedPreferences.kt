@@ -8,6 +8,8 @@ package org.lineageos.twelve.ext
 import android.content.SharedPreferences
 import androidx.core.content.edit
 import org.lineageos.twelve.models.RepeatMode
+import org.lineageos.twelve.models.SortingRule
+import org.lineageos.twelve.models.SortingStrategy
 
 // Generic prefs
 const val ENABLE_OFFLOAD_KEY = "enable_offload"
@@ -46,4 +48,73 @@ var SharedPreferences.shuffleModeEnabled: Boolean
     get() = getBoolean(SHUFFLE_MODE_ENABLED_KEY, SHUFFLE_MODE_ENABLED_DEFAULT)
     set(value) = edit {
         putBoolean(SHUFFLE_MODE_ENABLED_KEY, value)
+    }
+
+// Sorting prefs
+private const val ALBUM_SORTING_STRATEGY_KEY = "sorting_strategy_albums"
+private const val ALBUM_SORTING_REVERSE_KEY = "sorting_reverse_albums"
+private val ALBUM_SORTING_RULE_DEFAULT = SortingStrategy.CREATION_DATE
+private const val ALBUM_SORTING_REVERSE_DEFAULT = true
+var SharedPreferences.albumsSortingRule: SortingRule
+    get() = SortingRule(
+        SortingStrategy.fromName(
+            getString(ALBUM_SORTING_STRATEGY_KEY, null) ?: "",
+            ALBUM_SORTING_RULE_DEFAULT
+        ),
+        getBoolean(ALBUM_SORTING_REVERSE_KEY, ALBUM_SORTING_REVERSE_DEFAULT),
+    )
+    set(value) = edit {
+        putString(ALBUM_SORTING_STRATEGY_KEY, value.strategy.name)
+        putBoolean(ALBUM_SORTING_REVERSE_KEY, value.reverse)
+    }
+
+private const val ARTISTS_SORTING_STRATEGY_KEY = "sorting_strategy_artists"
+private const val ARTISTS_SORTING_REVERSE_KEY = "sorting_reverse_artists"
+private val ARTISTS_SORTING_RULE_DEFAULT = SortingStrategy.MODIFICATION_DATE
+private const val ARTISTS_SORTING_REVERSE_DEFAULT = true
+var SharedPreferences.artistsSortingRule: SortingRule
+    get() = SortingRule(
+        SortingStrategy.fromName(
+            getString(ARTISTS_SORTING_STRATEGY_KEY, null) ?: "",
+            ARTISTS_SORTING_RULE_DEFAULT
+        ),
+        getBoolean(ARTISTS_SORTING_REVERSE_KEY, ARTISTS_SORTING_REVERSE_DEFAULT),
+    )
+    set(value) = edit {
+        putString(ARTISTS_SORTING_STRATEGY_KEY, value.strategy.name)
+        putBoolean(ARTISTS_SORTING_REVERSE_KEY, value.reverse)
+    }
+
+private const val GENRES_SORTING_STRATEGY_KEY = "sorting_strategy_genres"
+private const val GENRES_SORTING_REVERSE_KEY = "sorting_reverse_genres"
+private val GENRES_SORTING_RULE_DEFAULT = SortingStrategy.NAME
+private const val GENRES_SORTING_REVERSE_DEFAULT = false
+var SharedPreferences.genresSortingRule: SortingRule
+    get() = SortingRule(
+        SortingStrategy.fromName(
+            getString(GENRES_SORTING_STRATEGY_KEY, null) ?: "",
+            GENRES_SORTING_RULE_DEFAULT
+        ),
+        getBoolean(GENRES_SORTING_REVERSE_KEY, GENRES_SORTING_REVERSE_DEFAULT),
+    )
+    set(value) = edit {
+        putString(GENRES_SORTING_STRATEGY_KEY, value.strategy.name)
+        putBoolean(GENRES_SORTING_REVERSE_KEY, value.reverse)
+    }
+
+private const val PLAYLISTS_SORTING_STRATEGY_KEY = "sorting_strategy_playlists"
+private const val PLAYLISTS_SORTING_REVERSE_KEY = "sorting_reverse_playlists"
+private val PLAYLISTS_SORTING_RULE_DEFAULT = SortingStrategy.MODIFICATION_DATE
+private const val PLAYLISTS_SORTING_REVERSE_DEFAULT = true
+var SharedPreferences.playlistsSortingRule: SortingRule
+    get() = SortingRule(
+        SortingStrategy.fromName(
+            getString(PLAYLISTS_SORTING_STRATEGY_KEY, null) ?: "",
+            PLAYLISTS_SORTING_RULE_DEFAULT
+        ),
+        getBoolean(PLAYLISTS_SORTING_REVERSE_KEY, PLAYLISTS_SORTING_REVERSE_DEFAULT),
+    )
+    set(value) = edit {
+        putString(PLAYLISTS_SORTING_STRATEGY_KEY, value.strategy.name)
+        putBoolean(PLAYLISTS_SORTING_REVERSE_KEY, value.reverse)
     }

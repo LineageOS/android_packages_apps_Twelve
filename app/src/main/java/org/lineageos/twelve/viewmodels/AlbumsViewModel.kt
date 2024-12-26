@@ -7,6 +7,7 @@ package org.lineageos.twelve.viewmodels
 
 import android.app.Application
 import androidx.lifecycle.viewModelScope
+import androidx.preference.PreferenceManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,12 +16,13 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.stateIn
+import org.lineageos.twelve.ext.albumsSortingRule
 import org.lineageos.twelve.models.RequestStatus
 import org.lineageos.twelve.models.SortingRule
 import org.lineageos.twelve.repositories.MediaRepository
 
 class AlbumsViewModel(application: Application) : TwelveViewModel(application) {
-    private val _sortingRule = MutableStateFlow(MediaRepository.defaultAlbumsSortingRule)
+    private val _sortingRule = MutableStateFlow(sharedPreferences.albumsSortingRule)
     val sortingRule = _sortingRule.asStateFlow()
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -34,6 +36,7 @@ class AlbumsViewModel(application: Application) : TwelveViewModel(application) {
         )
 
     fun setSortingRule(sortingRule: SortingRule) {
+        sharedPreferences.albumsSortingRule = sortingRule
         _sortingRule.value = sortingRule
     }
 }
