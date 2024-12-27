@@ -12,11 +12,14 @@ import android.os.Build
 import android.provider.MediaStore
 import androidx.core.os.bundleOf
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapLatest
+import org.lineageos.twelve.R
 import org.lineageos.twelve.database.TwelveDatabase
 import org.lineageos.twelve.database.entities.Item
 import org.lineageos.twelve.ext.mapEachRow
@@ -29,6 +32,7 @@ import org.lineageos.twelve.models.Audio
 import org.lineageos.twelve.models.ColumnIndexCache
 import org.lineageos.twelve.models.Genre
 import org.lineageos.twelve.models.GenreContent
+import org.lineageos.twelve.models.LocalizedString
 import org.lineageos.twelve.models.MediaType
 import org.lineageos.twelve.models.Playlist
 import org.lineageos.twelve.models.RequestStatus
@@ -43,6 +47,8 @@ import org.lineageos.twelve.query.`is`
 import org.lineageos.twelve.query.like
 import org.lineageos.twelve.query.neq
 import org.lineageos.twelve.query.query
+import java.time.LocalDateTime
+import kotlin.random.Random
 
 /**
  * [MediaStore.Audio] backed data source.
@@ -196,9 +202,57 @@ class LocalDataSource(
         } ?: RequestStatus.Error(MediaError.NOT_FOUND)
     }
 
-    override fun activity() = flowOf(
-        RequestStatus.Success<_, MediaError>(listOf<ActivityTab>())
-    )
+    override fun activity() = suspend {
+        val albums = albums(SortingRule(SortingStrategy.PLAY_COUNT))
+            .first()
+            .data
+        val albumsOfTheDay = itemOfTheDay(albums, 3)?.let {
+            ActivityTab(
+                "albums_of_the_day",
+                LocalizedString(
+                    "Random albums",
+                    R.string.activity_albums_of_the_day
+                ),
+                it,
+            )
+        }
+
+        val artists = artists(SortingRule(SortingStrategy.NAME))
+            .first()
+            .data
+        val artistsOfTheDay = itemOfTheDay(artists, 3)?.let {
+            ActivityTab(
+                "artists_of_the_day",
+                LocalizedString(
+                    "Artists of the day",
+                    R.string.activity_artists_of_the_day
+                ),
+                it,
+            )
+        }
+
+        val genres = genres(SortingRule(SortingStrategy.NAME))
+            .first()
+            .data
+        val genresOfTheDay = itemOfTheDay(genres, 3)?.let {
+            ActivityTab(
+                "genres_of_the_day",
+                LocalizedString(
+                    "Genres of the day",
+                    R.string.activity_genres_of_the_day
+                ),
+                it
+            )
+        }
+
+        RequestStatus.Success<_, MediaError>(
+            listOfNotNull(
+                albumsOfTheDay,
+                artistsOfTheDay,
+                genresOfTheDay,
+            )
+        )
+    }.asFlow()
 
     override fun albums(sortingRule: SortingRule) = contentResolver.queryFlow(
         albumsUri,
@@ -624,6 +678,18 @@ class LocalDataSource(
                 audios.firstOrNull { it.uri == audioUri }
             }
         }
+
+    private fun <T> itemOfTheDay(list: List<T>, take: Int = 1): List<T>? {
+        val n = list.size
+        return when {
+            n == 0 -> null
+            n < take -> list
+            else -> {
+                val now = LocalDateTime.now()
+                return list.shuffled(Random(now.dayOfYear)).take(take)
+            }
+        }
+    }
 
     companion object {
         private val albumsProjection = arrayOf(

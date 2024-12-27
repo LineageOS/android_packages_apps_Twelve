@@ -200,6 +200,9 @@
     <string name="activity_most_played_albums">Most played albums</string>
     <string name="activity_random_albums">Random albums</string>
     <string name="activity_random_songs">Random songs</string>
+    <string name="activity_albums_of_the_day">Albums of the day</string>
+    <string name="activity_artists_of_the_day">Artists of the day</string>
+    <string name="activity_genres_of_the_day">Genres of the day</string>
 
     <!-- Content descriptions -->
     <string name="content_description_play_pause">Play/pause</string>
