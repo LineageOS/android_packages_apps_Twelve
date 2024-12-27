@@ -17,6 +17,7 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapLatest
+import org.lineageos.twelve.R
 import org.lineageos.twelve.database.TwelveDatabase
 import org.lineageos.twelve.database.entities.Item
 import org.lineageos.twelve.ext.mapEachRow
@@ -29,9 +30,11 @@ import org.lineageos.twelve.models.Audio
 import org.lineageos.twelve.models.ColumnIndexCache
 import org.lineageos.twelve.models.Genre
 import org.lineageos.twelve.models.GenreContent
+import org.lineageos.twelve.models.LocalizedString
 import org.lineageos.twelve.models.MediaType
 import org.lineageos.twelve.models.Playlist
 import org.lineageos.twelve.models.RequestStatus
+import org.lineageos.twelve.models.RequestStatus.Companion.map
 import org.lineageos.twelve.models.SortingRule
 import org.lineageos.twelve.models.SortingStrategy
 import org.lineageos.twelve.models.Thumbnail
@@ -43,6 +46,8 @@ import org.lineageos.twelve.query.`is`
 import org.lineageos.twelve.query.like
 import org.lineageos.twelve.query.neq
 import org.lineageos.twelve.query.query
+import java.time.LocalDateTime
+import kotlin.random.Random
 
 /**
  * [MediaStore.Audio] backed data source.
@@ -196,9 +201,52 @@ class LocalDataSource(
         } ?: RequestStatus.Error(MediaError.NOT_FOUND)
     }
 
-    override fun activity() = flowOf(
-        RequestStatus.Success<_, MediaError>(listOf<ActivityTab>())
-    )
+    override fun activity() = combine(
+        albums(SortingRule(SortingStrategy.NAME)),
+        artists(SortingRule(SortingStrategy.NAME)),
+        genres(SortingRule(SortingStrategy.NAME)),
+    ) { albums, artists, genres ->
+        val now = LocalDateTime.now()
+
+        RequestStatus.Success<_, MediaError>(
+            listOf(
+                albums.map {
+                    ActivityTab(
+                        "random_albums",
+                        LocalizedString(
+                            "Random albums",
+                            R.string.activity_random_albums
+                        ),
+                        it.shuffled(Random(now.dayOfYear)),
+                    )
+                },
+                artists.map {
+                    ActivityTab(
+                        "random_artists",
+                        LocalizedString(
+                            "Random artists",
+                            R.string.activity_random_artists
+                        ),
+                        it.shuffled(Random(now.dayOfYear)),
+                    )
+                },
+                genres.map {
+                    ActivityTab(
+                        "random_genres",
+                        LocalizedString(
+                            "Random genres",
+                            R.string.activity_random_genres
+                        ),
+                        it.shuffled(Random(now.dayOfYear)),
+                    )
+                },
+            ).mapNotNull {
+                (it as? RequestStatus.Success)?.data?.takeIf { activityTab ->
+                    activityTab.items.isNotEmpty()
+                }
+            }
+        )
+    }
 
     override fun albums(sortingRule: SortingRule) = contentResolver.queryFlow(
         albumsUri,

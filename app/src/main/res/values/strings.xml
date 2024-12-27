@@ -197,6 +197,8 @@
     <!-- Activities -->
     <string name="activity_most_played_albums">Most played albums</string>
     <string name="activity_random_albums">Random albums</string>
+    <string name="activity_random_artists">Random artists</string>
+    <string name="activity_random_genres">Random genres</string>
     <string name="activity_random_songs">Random songs</string>
 
     <!-- Content descriptions -->
