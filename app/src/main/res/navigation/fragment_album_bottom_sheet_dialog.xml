@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     SPDX-FileCopyrightText: 2024 The LineageOS Project
+     SPDX-License-Identifier: Apache-2.0
+-->
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fragment_album_bottom_sheet_dialog"
+    app:startDestination="@id/albumBottomSheetDialogFragment">
+
+    <dialog
+        android:id="@+id/albumBottomSheetDialogFragment"
+        android:name="org.lineageos.twelve.fragments.AlbumBottomSheetDialogFragment"
+        tools:layout="@layout/fragment_album_bottom_sheet_dialog">
+
+        <action
+            android:id="@+id/action_albumBottomSheetDialogFragment_to_fragment_artist"
+            app:destination="@+id/fragment_artist"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+    </dialog>
+</navigation>

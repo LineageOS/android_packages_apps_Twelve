@@ -28,6 +28,7 @@ import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.google.android.material.progressindicator.LinearProgressIndicator
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -235,6 +236,24 @@ class AlbumFragment : Fragment(R.layout.fragment_album) {
         }
 
         toolbar.setupWithNavController(findNavController())
+        toolbar.inflateMenu(R.menu.album)
+        toolbar.setOnMenuItemClickListener {
+            when (it.itemId) {
+                R.id.albumPlayNext -> {
+                    viewModel.playNext()
+                    Snackbar.make(view, R.string.audio_playing_next, Snackbar.LENGTH_SHORT)
+                        .show()
+                    true
+                }
+                R.id.albumAddToQueue -> {
+                    viewModel.addToQueue()
+                    Snackbar.make(view, R.string.audio_added_to_queue, Snackbar.LENGTH_SHORT)
+                        .show()
+                    true
+                }
+                else -> false
+            }
+        }
 
         recyclerView.adapter = adapter
 

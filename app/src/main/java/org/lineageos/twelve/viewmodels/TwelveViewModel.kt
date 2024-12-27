@@ -99,4 +99,16 @@ abstract class TwelveViewModel(application: Application) : AndroidViewModel(appl
             play()
         }
     }
+
+    fun addToQueue(audio: List<Audio>) {
+        mediaController.value?.apply {
+            addMediaItems(audio.map { it.toMedia3MediaItem() })
+        }
+    }
+
+    fun playNext(audio: List<Audio>) {
+        mediaController.value?.apply {
+            addMediaItems(1, audio.map { it.toMedia3MediaItem() })
+        }
+    }
 }

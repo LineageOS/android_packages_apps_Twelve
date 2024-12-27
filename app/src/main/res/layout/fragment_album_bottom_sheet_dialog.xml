@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     SPDX-FileCopyrightText: 2024 The LineageOS Project
+     SPDX-License-Identifier: Apache-2.0
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingBottom="8dp">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginVertical="16dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/titleTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:textAppearance="?attr/textAppearanceTitleLarge"
+            android:textColor="?attr/colorOnSurface"
+            tools:text="Album title" />
+
+        <TextView
+            android:id="@+id/artistNameTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?attr/textAppearanceBodyMedium"
+            android:textColor="?attr/colorOnSurface"
+            tools:text="Artist name" />
+    </LinearLayout>
+
+    <com.google.android.material.divider.MaterialDivider
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <org.lineageos.twelve.ui.views.ListItem
+        android:id="@+id/addToQueueListItem"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:headlineText="@string/audio_add_to_queue"
+        app:leadingIconImage="@drawable/ic_add_to_queue" />
+
+    <org.lineageos.twelve.ui.views.ListItem
+        android:id="@+id/playNextListItem"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:headlineText="@string/audio_play_next"
+        app:leadingIconImage="@drawable/ic_queue_play_next" />
+
+    <org.lineageos.twelve.ui.views.ListItem
+        android:id="@+id/openArtistListItem"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:headlineText="@string/open_artist"
+        app:leadingIconImage="@drawable/ic_person" />
+</LinearLayout>

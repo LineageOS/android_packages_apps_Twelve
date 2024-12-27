@@ -17,6 +17,7 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
+import org.lineageos.twelve.models.Album
 import org.lineageos.twelve.models.Audio
 import org.lineageos.twelve.models.RequestStatus
 import org.lineageos.twelve.models.UniqueItem
@@ -146,5 +147,17 @@ class AlbumViewModel(application: Application) : TwelveViewModel(application) {
         }.takeUnless { it.isEmpty() }?.let { audios ->
             playAudio(audios, startFrom?.let { audios.indexOf(it) } ?: 0)
         }
+    }
+
+    fun playNext() {
+        playNext(albumContent.value.mapNotNull {
+            (it as? AlbumContent.AudioItem)?.audio
+        })
+    }
+
+    fun addToQueue() {
+        addToQueue(albumContent.value.mapNotNull {
+            (it as? AlbumContent.AudioItem)?.audio
+        })
     }
 }

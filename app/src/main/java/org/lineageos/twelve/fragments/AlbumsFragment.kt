@@ -65,6 +65,22 @@ class AlbumsFragment : Fragment(R.layout.fragment_albums) {
                         )
                     }
                 }
+                view.setOnLongClickListener {
+                    when (val item = item) {
+                        is Album -> {
+                            findNavController().navigateSafe(
+                                R.id.action_mainFragment_to_fragment_album_bottom_sheet_dialog,
+                                AlbumBottomSheetDialogFragment.createBundle(
+                                    item.uri,
+                                    fromArtist = false,
+                                )
+                            )
+                            true
+                        }
+
+                        else -> false
+                    }
+                }
             }
 
             override fun ViewHolder.onBindView(item: Album) {

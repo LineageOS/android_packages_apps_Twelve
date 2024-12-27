@@ -11,6 +11,7 @@
 
     <include app:graph="@navigation/fragment_add_or_remove_from_playlists" />
     <include app:graph="@navigation/fragment_album" />
+    <include app:graph="@navigation/fragment_album_bottom_sheet_dialog" />
     <include app:graph="@navigation/fragment_artist" />
     <include app:graph="@navigation/fragment_audio_bottom_sheet_dialog" />
     <include app:graph="@navigation/fragment_genre" />
@@ -38,6 +39,14 @@
         <action
             android:id="@+id/action_mainFragment_to_fragment_artist"
             app:destination="@+id/fragment_artist"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+
+        <action
+            android:id="@+id/action_mainFragment_to_fragment_album_bottom_sheet_dialog"
+            app:destination="@+id/fragment_album_bottom_sheet_dialog"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
