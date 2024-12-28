@@ -6,7 +6,9 @@
 package org.lineageos.twelve
 
 import android.animation.ValueAnimator
+import android.content.Context
 import android.content.Intent
+import android.graphics.drawable.AnimatedVectorDrawable
 import android.icu.text.DecimalFormat
 import android.icu.text.DecimalFormatSymbols
 import android.os.Bundle
@@ -18,6 +20,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.animation.doOnEnd
 import androidx.core.animation.doOnStart
+import androidx.core.content.ContextCompat
 import androidx.core.util.Consumer
 import androidx.core.view.isVisible
 import androidx.lifecycle.Lifecycle
@@ -159,12 +162,17 @@ class ViewActivity : AppCompatActivity(R.layout.activity_view) {
 
                 launch {
                     localPlayerViewModel.isPlaying.collectLatest { isPlaying ->
-                        playPauseMaterialButton.setIconResource(
+                        val drawable = ContextCompat.getDrawable(
+                            this@ViewActivity,
                             when (isPlaying) {
-                                true -> R.drawable.ic_pause
-                                false -> R.drawable.ic_play_arrow
-                            }
+                                false -> R.drawable.avd_pause_to_play
+                                true -> R.drawable.avd_play_to_pause
+                            },
                         )
+                        playPauseMaterialButton.icon = drawable
+                        if (drawable is AnimatedVectorDrawable) {
+                            drawable.start()
+                        }
                     }
                 }
 

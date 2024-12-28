@@ -6,11 +6,13 @@
 package org.lineageos.twelve.ui.views
 
 import android.content.Context
+import android.graphics.drawable.AnimatedVectorDrawable
 import android.util.AttributeSet
 import android.widget.FrameLayout
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updateLayoutParams
@@ -85,12 +87,14 @@ class NowPlayingBar @JvmOverloads constructor(
     }
 
     fun updateIsPlaying(isPlaying: Boolean) {
-        playPauseImageButton.setImageResource(
-            when (isPlaying) {
-                true -> R.drawable.ic_pause
-                false -> R.drawable.ic_play_arrow
-            }
-        )
+        val drawable = ContextCompat.getDrawable(context, when (isPlaying) {
+            false -> R.drawable.avd_pause_to_play
+            true -> R.drawable.avd_play_to_pause
+        })
+        playPauseImageButton.setImageDrawable(drawable)
+        if (drawable is AnimatedVectorDrawable) {
+            drawable.start()
+        }
     }
 
     fun updateMediaItem(mediaItem: MediaItem?) {

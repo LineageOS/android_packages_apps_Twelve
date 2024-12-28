@@ -8,6 +8,7 @@ package org.lineageos.twelve.fragments
 import android.animation.ValueAnimator
 import android.content.Intent
 import android.graphics.PixelFormat
+import android.graphics.drawable.AnimatedVectorDrawable
 import android.icu.text.DecimalFormat
 import android.icu.text.DecimalFormatSymbols
 import android.media.audiofx.AudioEffect
@@ -21,6 +22,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.animation.doOnEnd
 import androidx.core.animation.doOnStart
+import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
@@ -286,12 +288,19 @@ class NowPlayingFragment : Fragment(R.layout.fragment_now_playing) {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 launch {
                     viewModel.isPlaying.collectLatest { isPlaying ->
-                        playPauseMaterialButton.setIconResource(
-                            when (isPlaying) {
-                                true -> R.drawable.ic_pause
-                                false -> R.drawable.ic_play_arrow
-                            }
-                        )
+                        val drawable = context?.let {
+                            ContextCompat.getDrawable(
+                                it,
+                                when (isPlaying) {
+                                    false -> R.drawable.avd_pause_to_play
+                                    true -> R.drawable.avd_play_to_pause
+                                },
+                            )
+                        }
+                        playPauseMaterialButton.icon = drawable
+                        if (drawable is AnimatedVectorDrawable) {
+                            drawable.start()
+                        }
                     }
                 }
 

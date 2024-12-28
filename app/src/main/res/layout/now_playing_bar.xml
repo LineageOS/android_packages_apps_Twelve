@@ -91,7 +91,7 @@
                 android:layout_gravity="center"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:contentDescription="@string/content_description_play_pause"
-                android:src="@drawable/ic_play_arrow"
+                android:src="@drawable/avd_play_to_pause"
                 app:tint="?attr/colorOnSurface" />
 
         </FrameLayout>
