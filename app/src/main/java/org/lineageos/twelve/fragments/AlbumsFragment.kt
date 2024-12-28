@@ -30,6 +30,8 @@ import org.lineageos.twelve.models.RequestStatus
 import org.lineageos.twelve.models.SortingStrategy
 import org.lineageos.twelve.ui.recyclerview.SimpleListAdapter
 import org.lineageos.twelve.ui.recyclerview.UniqueItemDiffCallback
+import org.lineageos.twelve.ui.views.ActivityTabItem
+import org.lineageos.twelve.ui.views.AlbumsItem
 import org.lineageos.twelve.ui.views.ListItem
 import org.lineageos.twelve.ui.views.SortingChip
 import org.lineageos.twelve.utils.PermissionsChecker
@@ -51,12 +53,11 @@ class AlbumsFragment : Fragment(R.layout.fragment_albums) {
 
     // Recyclerview
     private val adapter by lazy {
-        object : SimpleListAdapter<Album, ListItem>(
+        object : SimpleListAdapter<Album, AlbumsItem>(
             UniqueItemDiffCallback(),
-            ::ListItem,
+            ::AlbumsItem,
         ) {
             override fun ViewHolder.onPrepareView() {
-                view.setLeadingIconImage(R.drawable.ic_album)
                 view.setOnClickListener {
                     item?.let {
                         findNavController().navigateSafe(
@@ -84,13 +85,7 @@ class AlbumsFragment : Fragment(R.layout.fragment_albums) {
             }
 
             override fun ViewHolder.onBindView(item: Album) {
-                item.title?.also {
-                    view.headlineText = it
-                } ?: view.setHeadlineText(R.string.unknown)
-
-                item.artistName?.also {
-                    view.supportingText = it
-                } ?: view.setSupportingText(R.string.artist_unknown)
+                view.setItem(item)
             }
         }
     }
