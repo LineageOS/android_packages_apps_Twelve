@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "65bbe274_6a64e389",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2024-12-28T22:48:06Z",
+      "side": 1,
+      "message": "this is fine but we probably want to make the sorting strategy be serviced solely from a single flow received via content observer callbacks for the pref?",
+      "revId": "c402f1a4c8accf2eda7fc21668ff666650326366",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
