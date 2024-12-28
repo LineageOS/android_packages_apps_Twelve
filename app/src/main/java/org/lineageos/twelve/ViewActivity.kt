@@ -7,6 +7,7 @@ package org.lineageos.twelve
 
 import android.animation.ValueAnimator
 import android.content.Intent
+import android.graphics.drawable.AnimatedVectorDrawable
 import android.icu.text.DecimalFormat
 import android.icu.text.DecimalFormatSymbols
 import android.os.Bundle
@@ -37,6 +38,7 @@ import org.lineageos.twelve.viewmodels.IntentsViewModel
 import org.lineageos.twelve.viewmodels.LocalPlayerViewModel
 import java.util.Locale
 import kotlin.math.roundToLong
+import kotlin.reflect.safeCast
 
 /**
  * An activity used to handle view intents.
@@ -161,10 +163,13 @@ class ViewActivity : AppCompatActivity(R.layout.activity_view) {
                     localPlayerViewModel.isPlaying.collectLatest { isPlaying ->
                         playPauseMaterialButton.setIconResource(
                             when (isPlaying) {
-                                true -> R.drawable.ic_pause
-                                false -> R.drawable.ic_play_arrow
+                                true -> R.drawable.avd_play_to_pause
+                                false -> R.drawable.avd_pause_to_play
                             }
                         )
+                        AnimatedVectorDrawable::class.safeCast(
+                            playPauseMaterialButton.icon
+                        )?.start()
                     }
                 }
 

@@ -84,15 +84,18 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center" />
 
-            <ImageButton
-                android:id="@+id/playPauseImageButton"
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/playPauseMaterialButton"
+                style="@style/Widget.Material3.Button.IconButton.Filled"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:layout_gravity="center"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:contentDescription="@string/content_description_play_pause"
-                android:src="@drawable/ic_play_arrow"
-                app:tint="?attr/colorOnSurface" />
+                android:padding="0dp"
+                android:src="@drawable/avd_play_to_pause"
+                app:iconGravity="textStart"
+                app:iconTint="?attr/colorOnSurface" />
 
         </FrameLayout>
 

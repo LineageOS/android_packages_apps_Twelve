@@ -6,9 +6,9 @@
 package org.lineageos.twelve.ui.views
 
 import android.content.Context
+import android.graphics.drawable.AnimatedVectorDrawable
 import android.util.AttributeSet
 import android.widget.FrameLayout
-import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.view.ViewCompat
@@ -16,6 +16,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updateLayoutParams
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
+import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.progressindicator.CircularProgressIndicator
 import org.lineageos.twelve.R
@@ -23,6 +24,7 @@ import org.lineageos.twelve.ext.loadThumbnail
 import org.lineageos.twelve.ext.slideDown
 import org.lineageos.twelve.ext.slideUp
 import org.lineageos.twelve.models.Thumbnail
+import kotlin.reflect.safeCast
 
 class NowPlayingBar @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null
@@ -31,7 +33,7 @@ class NowPlayingBar @JvmOverloads constructor(
     private val albumTitleTextView by lazy { findViewById<TextView>(R.id.albumTitleTextView) }
     private val circularProgressIndicator by lazy { findViewById<CircularProgressIndicator>(R.id.circularProgressIndicator) }
     private val materialCardView by lazy { findViewById<MaterialCardView>(R.id.materialCardView) }
-    private val playPauseImageButton by lazy { findViewById<ImageButton>(R.id.playPauseImageButton) }
+    private val playPauseMaterialButton by lazy { findViewById<MaterialButton>(R.id.playPauseMaterialButton) }
     private val thumbnailImageView by lazy { findViewById<ImageView>(R.id.thumbnailImageView) }
     private val titleTextView by lazy { findViewById<TextView>(R.id.titleTextView) }
 
@@ -78,19 +80,20 @@ class NowPlayingBar @JvmOverloads constructor(
     }
 
     fun setOnPlayPauseClickListener(l: OnClickListener?) =
-        playPauseImageButton.setOnClickListener(l)
+        playPauseMaterialButton.setOnClickListener(l)
 
     fun setOnNowPlayingClickListener(l: OnClickListener?) {
         materialCardView.setOnClickListener(l)
     }
 
     fun updateIsPlaying(isPlaying: Boolean) {
-        playPauseImageButton.setImageResource(
+        playPauseMaterialButton.setIconResource(
             when (isPlaying) {
-                true -> R.drawable.ic_pause
-                false -> R.drawable.ic_play_arrow
+                true -> R.drawable.avd_play_to_pause
+                false -> R.drawable.avd_pause_to_play
             }
         )
+        AnimatedVectorDrawable::class.safeCast(playPauseMaterialButton.icon)?.start()
     }
 
     fun updateMediaItem(mediaItem: MediaItem?) {
