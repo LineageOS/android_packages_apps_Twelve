@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0ea57d47_60e3df2e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 25732
+      },
+      "writtenOn": "2024-12-30T03:49:02Z",
+      "side": 1,
+      "message": "We need to add fancy layout manager from Glimpse for landscape",
+      "revId": "0acd582418203123b0595abfd7cf2021dc24ffc8",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
