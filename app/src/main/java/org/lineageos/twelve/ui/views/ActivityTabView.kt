@@ -37,6 +37,9 @@ class ActivityTabView(context: Context) : FrameLayout(context) {
             view.setOnClickListener {
                 onItemClickListener(currentList, bindingAdapterPosition)
             }
+            view.setOnLongClickListener {
+                onItemLongClickListener(currentList, bindingAdapterPosition)
+            }
         }
 
         override fun ViewHolder.onBindView(item: MediaItem<*>) {
@@ -47,6 +50,8 @@ class ActivityTabView(context: Context) : FrameLayout(context) {
     // Callbacks
     private var onItemClickListener: (items: List<MediaItem<*>>, position: Int) -> Unit =
         { _, _ -> }
+    private var onItemLongClickListener: (items: List<MediaItem<*>>, position: Int) -> Boolean =
+        { _, _ -> false }
 
     init {
         inflate(context, R.layout.view_activity_tab, this)
@@ -56,6 +61,12 @@ class ActivityTabView(context: Context) : FrameLayout(context) {
 
     fun setOnItemClickListener(listener: ((items: List<MediaItem<*>>, position: Int) -> Unit)?) {
         onItemClickListener = listener ?: { _, _ -> }
+    }
+
+    fun setOnItemLongClickListener(
+        listener: ((items: List<MediaItem<*>>, position: Int) -> Boolean)?
+    ) {
+        onItemLongClickListener = listener ?: { _, _ -> false }
     }
 
     fun setActivityTab(activityTab: ActivityTab) {

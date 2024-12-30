@@ -123,8 +123,10 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                             )
 
                             is Audio -> findNavController().navigateSafe(
-                                R.id.action_mainFragment_to_fragment_audio_bottom_sheet_dialog,
-                                AudioBottomSheetDialogFragment.createBundle(it.uri)
+                                R.id.action_mainFragment_to_fragment_media_item_bottom_sheet_dialog,
+                                MediaItemBottomSheetDialogFragment.createBundle(
+                                    it.uri, it.mediaType
+                                )
                             )
 
                             is Genre -> findNavController().navigateSafe(
@@ -138,6 +140,19 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                             )
                         }
                     }
+                }
+
+                view.setOnLongClickListener {
+                    item?.let {
+                        findNavController().navigateSafe(
+                            R.id.action_mainFragment_to_fragment_media_item_bottom_sheet_dialog,
+                            MediaItemBottomSheetDialogFragment.createBundle(
+                                it.uri, it.mediaType
+                            )
+                        )
+                        true
+                    }
+                    false
                 }
             }
 

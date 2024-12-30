@@ -84,6 +84,20 @@ class ArtistFragment : Fragment(R.layout.fragment_artist) {
                         )
                     }
                 }
+                view.setOnLongClickListener {
+                    item?.let {
+                        findNavController().navigateSafe(
+                            R.id.action_artistFragment_to_fragment_media_item_bottom_sheet_dialog,
+                            MediaItemBottomSheetDialogFragment.createBundle(
+                                it.uri,
+                                it.mediaType,
+                                fromArtist = true,
+                            )
+                        )
+                        true
+                    }
+                    false
+                }
             }
 
             override fun ViewHolder.onBindView(item: Album) {
@@ -108,6 +122,20 @@ class ArtistFragment : Fragment(R.layout.fragment_artist) {
                 view.setThumbnailImage(R.drawable.ic_playlist_play)
                 view.setOnClickListener {
                     // TODO
+                }
+                view.setOnLongClickListener {
+                    item?.let {
+                        findNavController().navigateSafe(
+                            R.id.action_albumFragment_to_fragment_media_item_bottom_sheet_dialog,
+                            MediaItemBottomSheetDialogFragment.createBundle(
+                                it.uri,
+                                it.mediaType,
+                                fromArtist = true,
+                            )
+                        )
+                        true
+                    }
+                    false
                 }
             }
 

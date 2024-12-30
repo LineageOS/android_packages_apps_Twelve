@@ -87,6 +87,21 @@ class GenreFragment : Fragment(R.layout.fragment_genre) {
                         )
                     }
                 }
+
+                view.setOnLongClickListener {
+                    item?.let {
+                        findNavController().navigateSafe(
+                            R.id.action_genreFragment_to_fragment_media_item_bottom_sheet_dialog,
+                            MediaItemBottomSheetDialogFragment.createBundle(
+                                it.uri,
+                                it.mediaType,
+                                fromGenre = true,
+                            )
+                        )
+                        true
+                    }
+                    false
+                }
             }
 
             override fun ViewHolder.onBindView(item: Album) {
@@ -117,6 +132,20 @@ class GenreFragment : Fragment(R.layout.fragment_genre) {
                         )
                     }
                 }
+                view.setOnLongClickListener {
+                    item?.let {
+                        findNavController().navigateSafe(
+                            R.id.action_genreFragment_to_fragment_media_item_bottom_sheet_dialog,
+                            MediaItemBottomSheetDialogFragment.createBundle(
+                                it.uri,
+                                it.mediaType,
+                                fromGenre = true,
+                            )
+                        )
+                        true
+                    }
+                    false
+                }
             }
 
             override fun ViewHolder.onBindView(item: Playlist) {
@@ -145,13 +174,13 @@ class GenreFragment : Fragment(R.layout.fragment_genre) {
                 view.setOnLongClickListener {
                     item?.let {
                         findNavController().navigateSafe(
-                            R.id.action_genreFragment_to_fragment_audio_bottom_sheet_dialog,
-                            AudioBottomSheetDialogFragment.createBundle(
+                            R.id.action_genreFragment_to_fragment_media_item_bottom_sheet_dialog,
+                            MediaItemBottomSheetDialogFragment.createBundle(
                                 it.uri,
+                                it.mediaType,
                                 fromGenre = true,
                             )
                         )
-
                         true
                     } ?: false
                 }

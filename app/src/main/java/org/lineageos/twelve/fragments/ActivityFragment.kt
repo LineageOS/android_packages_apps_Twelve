@@ -70,8 +70,10 @@ class ActivityFragment : Fragment(R.layout.fragment_activity) {
                         )
 
                         is Audio -> findNavController().navigateSafe(
-                            R.id.action_mainFragment_to_fragment_audio_bottom_sheet_dialog,
-                            AudioBottomSheetDialogFragment.createBundle(item.uri)
+                            R.id.action_mainFragment_to_fragment_media_item_bottom_sheet_dialog,
+                            MediaItemBottomSheetDialogFragment.createBundle(
+                                item.uri, item.mediaType
+                            )
                         )
 
                         is Genre -> findNavController().navigateSafe(
@@ -84,6 +86,18 @@ class ActivityFragment : Fragment(R.layout.fragment_activity) {
                             PlaylistFragment.createBundle(item.uri)
                         )
                     }
+                }
+
+                view.setOnItemLongClickListener { items, position ->
+                    items[position].let {
+                        findNavController().navigateSafe(
+                            R.id.action_mainFragment_to_fragment_media_item_bottom_sheet_dialog,
+                            MediaItemBottomSheetDialogFragment.createBundle(
+                                it.uri, it.mediaType
+                            )
+                        )
+                    }
+                    true
                 }
             }
 

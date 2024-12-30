@@ -15,8 +15,8 @@
         tools:layout="@layout/fragment_playlist">
 
         <action
-            android:id="@+id/action_playlistFragment_to_fragment_audio_bottom_sheet_dialog"
-            app:destination="@+id/fragment_audio_bottom_sheet_dialog"
+            android:id="@+id/action_playlistFragment_to_fragment_media_item_bottom_sheet_dialog"
+            app:destination="@+id/fragment_media_item_bottom_sheet_dialog"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"

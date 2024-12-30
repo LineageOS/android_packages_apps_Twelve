@@ -6,9 +6,11 @@
 package org.lineageos.twelve.viewmodels
 
 import android.app.Application
+import android.net.Uri
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
@@ -17,7 +19,22 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.withContext
 import org.lineageos.twelve.models.RequestStatus
 
-class AddOrRemoveFromPlaylistsViewModel(application: Application) : AudioViewModel(application) {
+class AddOrRemoveFromPlaylistsViewModel(application: Application) : TwelveViewModel(application) {
+    private val audioUri = MutableStateFlow<Uri?>(null)
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val audio = audioUri
+        .filterNotNull()
+        .flatMapLatest {
+            mediaRepository.audio(it)
+        }
+        .flowOn(Dispatchers.IO)
+        .stateIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(),
+            RequestStatus.Loading()
+        )
+
     @OptIn(ExperimentalCoroutinesApi::class)
     val playlistToHasAudio = audioUri
         .filterNotNull()
@@ -30,6 +47,26 @@ class AddOrRemoveFromPlaylistsViewModel(application: Application) : AudioViewMod
             SharingStarted.WhileSubscribed(),
             RequestStatus.Loading()
         )
+
+    fun loadAudio(audioUri: Uri) {
+        this.audioUri.value = audioUri
+    }
+
+    suspend fun addToPlaylist(playlistUri: Uri) {
+        audioUri.value?.let {
+            withContext(Dispatchers.IO) {
+                mediaRepository.addAudioToPlaylist(playlistUri, it)
+            }
+        }
+    }
+
+    suspend fun removeFromPlaylist(playlistUri: Uri) {
+        audioUri.value?.let {
+            withContext(Dispatchers.IO) {
+                mediaRepository.removeAudioFromPlaylist(playlistUri, it)
+            }
+        }
+    }
 
     /**
      * Create a new playlist in the same provider as the audio.

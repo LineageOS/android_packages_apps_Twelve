@@ -103,9 +103,10 @@ class AlbumFragment : Fragment(R.layout.fragment_album) {
                     when (val item = item) {
                         is AlbumViewModel.AlbumContent.AudioItem -> {
                             findNavController().navigateSafe(
-                                R.id.action_albumFragment_to_fragment_audio_bottom_sheet_dialog,
-                                AudioBottomSheetDialogFragment.createBundle(
+                                R.id.action_albumFragment_to_fragment_media_item_bottom_sheet_dialog,
+                                MediaItemBottomSheetDialogFragment.createBundle(
                                     item.audio.uri,
+                                    item.audio.mediaType,
                                     fromAlbum = true,
                                 )
                             )
