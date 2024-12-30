@@ -17,6 +17,7 @@ import org.lineageos.twelve.datasources.subsonic.models.ResponseStatus
 import org.lineageos.twelve.datasources.subsonic.models.SubsonicResponse
 import org.lineageos.twelve.datasources.subsonic.models.Version
 import org.lineageos.twelve.ext.executeAsync
+import java.net.SocketTimeoutException
 import java.security.MessageDigest
 
 /**
@@ -1163,30 +1164,40 @@ class SubsonicClient(
         method: String,
         methodValue: SubsonicResponse.() -> T,
         vararg queryParameters: Pair<String, Any?>,
-    ) = okHttpClient.newCall(
-        Request.Builder()
-            .url(getMethodUrl(method, *queryParameters))
-            .build()
-    ).executeAsync().let { response ->
-        when (response.isSuccessful) {
-            true -> response.body?.use { body ->
-                val subsonicResponse =
-                    Json.decodeFromString<ResponseRoot>(body.string()).subsonicResponse
+    ) = runCatching {
+        okHttpClient.newCall(
+            Request.Builder()
+                .url(getMethodUrl(method, *queryParameters))
+                .build()
+        ).executeAsync().let { response ->
+            when (response.isSuccessful) {
+                true -> response.body?.use { body ->
+                    val subsonicResponse =
+                        Json.decodeFromString<ResponseRoot>(body.string()).subsonicResponse
 
-                when (subsonicResponse.status) {
-                    ResponseStatus.OK -> MethodResult.Success(
-                        subsonicResponse.methodValue() ?: throw Exception(
-                            "Successful request with empty result"
+                    when (subsonicResponse.status) {
+                        ResponseStatus.OK -> MethodResult.Success(
+                            subsonicResponse.methodValue() ?: throw Exception(
+                                "Successful request with empty result"
+                            )
                         )
-                    )
 
-                    ResponseStatus.FAILED -> MethodResult.SubsonicError(subsonicResponse.error)
-                }
-            } ?: throw Exception("Successful response with empty body")
+                        ResponseStatus.FAILED -> MethodResult.SubsonicError(subsonicResponse.error)
+                    }
+                } ?: throw Exception("Successful response with empty body")
 
-            false -> MethodResult.HttpError(response.code)
+                false -> MethodResult.HttpError(response.code)
+            }
         }
-    }
+    }.fold(
+        onSuccess = { it },
+        onFailure = { e ->
+            when (e) {
+                is SocketTimeoutException -> MethodResult.HttpError(408)
+                else -> MethodResult.SubsonicError(Error(Error.Code.GENERIC_ERROR, e.message))
+            }
+        },
+    )
 
     private fun getMethodUrl(
         method: String,
