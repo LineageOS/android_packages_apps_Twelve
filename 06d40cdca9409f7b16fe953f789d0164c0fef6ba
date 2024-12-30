@@ -16,6 +16,23 @@
       "message": "Does the same thing as previous patch, but now for all media items",
       "revId": "06d40cdca9409f7b16fe953f789d0164c0fef6ba",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "cf92b611_77c85306",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2024-12-30T07:49:31Z",
+      "side": 1,
+      "message": "indeed cleaner and probably smarter thing to do",
+      "revId": "06d40cdca9409f7b16fe953f789d0164c0fef6ba",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
