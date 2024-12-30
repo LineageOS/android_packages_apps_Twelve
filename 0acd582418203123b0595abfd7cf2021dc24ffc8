@@ -16,6 +16,24 @@
       "message": "We need to add fancy layout manager from Glimpse for landscape",
       "revId": "0acd582418203123b0595abfd7cf2021dc24ffc8",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e8306c3e_3937dfa5",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2024-12-30T07:52:48Z",
+      "side": 1,
+      "message": "I\u0027d love to see something similar under Artists/Genres somehow, but that\u0027s for another time",
+      "parentUuid": "0ea57d47_60e3df2e",
+      "revId": "0acd582418203123b0595abfd7cf2021dc24ffc8",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
