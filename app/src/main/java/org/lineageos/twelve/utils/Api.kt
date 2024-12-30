@@ -16,6 +16,7 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import org.lineageos.twelve.datasources.MediaError
 import org.lineageos.twelve.ext.executeAsync
 import org.lineageos.twelve.models.RequestStatus
+import java.net.SocketTimeoutException
 
 class Api(val okHttpClient: OkHttpClient, private val serverUri: Uri) {
     val json = Json {
@@ -80,30 +81,41 @@ class Api(val okHttpClient: OkHttpClient, private val serverUri: Uri) {
         emptyResponse: () -> T = {
             throw IllegalStateException("No empty response provided")
         }
-    ) = okHttpClient.newCall(request).executeAsync().let { response ->
-        if (response.isSuccessful) {
-            response.body?.use { body ->
-                val string = body.string()
-                if (string.isEmpty()) {
-                    MethodResult.Success(emptyResponse())
-                } else {
-                    runCatching {
-                        json.decodeFromString<T>(string)
-                    }.fold(
-                        onSuccess = { MethodResult.Success(it) },
-                        onFailure = { MethodResult.DeserializationError(it) }
-                    )
-                }
-            } ?: MethodResult.Success(emptyResponse())
-        } else {
-            MethodResult.HttpError(response.code, response.message)
+    ) = kotlin.runCatching {
+        okHttpClient.newCall(request).executeAsync().let { response ->
+            if (response.isSuccessful) {
+                response.body?.use { body ->
+                    val string = body.string()
+                    if (string.isEmpty()) {
+                        MethodResult.Success(emptyResponse())
+                    } else {
+                        runCatching {
+                            json.decodeFromString<T>(string)
+                        }.fold(
+                            onSuccess = { MethodResult.Success(it) },
+                            onFailure = { MethodResult.DeserializationError(it) }
+                        )
+                    }
+                } ?: MethodResult.Success(emptyResponse())
+            } else {
+                MethodResult.HttpError(response.code, response.message)
+            }
         }
-    }
+    }.fold(
+        onSuccess = { it },
+        onFailure = { e ->
+            when (e) {
+                is SocketTimeoutException -> MethodResult.HttpError(408)
+                else -> MethodResult.GenericError(e.message)
+            }
+        },
+    )
 }
 
 sealed interface MethodResult<T> {
     data class Success<T>(val result: T) : MethodResult<T>
     data class HttpError<T>(val code: Int, val message: String? = null) : MethodResult<T>
+    data class GenericError<T>(val message: String?) : MethodResult<T>
     class DeserializationError<T>(val error: Throwable? = null) : MethodResult<T>
 }
 
@@ -122,6 +134,8 @@ suspend fun <T, O> MethodResult<T>.toRequestStatus(
     )
 
     is MethodResult.DeserializationError -> RequestStatus.Error(MediaError.DESERIALIZATION)
+
+    is MethodResult.GenericError -> RequestStatus.Error(MediaError.IO)
 }
 
 suspend fun <T, O> MethodResult<T>.toResult(
@@ -130,4 +144,5 @@ suspend fun <T, O> MethodResult<T>.toResult(
     is MethodResult.Success -> result.resultGetter()
     is MethodResult.HttpError -> null
     is MethodResult.DeserializationError -> null
+    is MethodResult.GenericError -> null
 }
