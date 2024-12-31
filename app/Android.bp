@@ -24,6 +24,7 @@ android_app {
     ],
 
     required: [
+        "default-permissions-org.lineageos.twelve",
         "initial-package-stopped-states-org.lineageos.twelve",
         "preinstalled-packages-org.lineageos.twelve",
     ],
@@ -82,6 +83,14 @@ android_app {
         proguard_flags_files: ["proguard-rules.pro"],
         shrink_resources: true,
     },
+}
+
+prebuilt_etc {
+    name: "default-permissions-org.lineageos.twelve",
+    product_specific: true,
+    sub_dir: "default-permissions",
+    src: "default-permissions-org.lineageos.twelve.xml",
+    filename_from_src: true,
 }
 
 prebuilt_etc {
