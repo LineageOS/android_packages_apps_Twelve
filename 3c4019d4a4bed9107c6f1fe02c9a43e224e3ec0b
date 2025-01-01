@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4a670e93_2d55a0be",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 10067
+      },
+      "writtenOn": "2025-01-01T01:06:29Z",
+      "side": 1,
+      "message": "ofc we hit a spdx license header issue this year too.",
+      "revId": "3c4019d4a4bed9107c6f1fe02c9a43e224e3ec0b",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
