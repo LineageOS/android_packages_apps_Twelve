@@ -16,6 +16,24 @@
       "message": "`getOrNull()`?",
       "revId": "399d252201c7e114caf5762ebe253a0c40c96318",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "06da56fd_f005b57c",
+        "filename": "app/src/main/java/org/lineageos/twelve/viewmodels/IntentsViewModel.kt",
+        "patchSetId": 2
+      },
+      "lineNbr": 201,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2025-01-01T20:27:22Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f6907dd5_663aa35a",
+      "revId": "399d252201c7e114caf5762ebe253a0c40c96318",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
