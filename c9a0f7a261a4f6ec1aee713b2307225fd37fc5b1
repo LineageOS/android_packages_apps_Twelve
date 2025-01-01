@@ -16,6 +16,24 @@
       "message": "`getOrNull() ?: return null`?",
       "revId": "c9a0f7a261a4f6ec1aee713b2307225fd37fc5b1",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ecc5d384_8b63bf63",
+        "filename": "app/src/main/java/org/lineageos/twelve/datasources/jellyfin/JellyfinAuthenticator.kt",
+        "patchSetId": 3
+      },
+      "lineNbr": 90,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2025-01-01T20:38:19Z",
+      "side": 1,
+      "message": "no need, there\u0027s an implicit return using `when` that\u0027ll end up in the run {} block that also logs for us",
+      "parentUuid": "59a2584c_4287dc8b",
+      "revId": "c9a0f7a261a4f6ec1aee713b2307225fd37fc5b1",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
