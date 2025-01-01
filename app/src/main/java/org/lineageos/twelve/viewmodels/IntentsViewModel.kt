@@ -187,16 +187,18 @@ class IntentsViewModel(application: Application) : AndroidViewModel(application)
                     MimeUtils.mimeTypeToMediaType(type)
                 }
 
-                "http", "https" -> okHttpClient.newCall(
-                    Request.Builder()
-                        .url(uri.toString())
-                        .head()
-                        .build()
-                ).await().use { response ->
-                    response.header("Content-Type")?.let { type ->
-                        MimeUtils.mimeTypeToMediaType(type)
+                "http", "https" -> runCatching {
+                    okHttpClient.newCall(
+                        Request.Builder()
+                            .url(uri.toString())
+                            .head()
+                            .build()
+                    ).await().use { response ->
+                        response.header("Content-Type")?.let { type ->
+                            MimeUtils.mimeTypeToMediaType(type)
+                        }
                     }
-                }
+                }.getOrNull()
 
                 "rtsp" -> MediaType.AUDIO // This is either audio-only or A/V, fine either way
 
