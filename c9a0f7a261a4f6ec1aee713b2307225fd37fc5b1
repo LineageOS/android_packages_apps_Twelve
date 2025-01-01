@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "59a2584c_4287dc8b",
+        "filename": "app/src/main/java/org/lineageos/twelve/datasources/jellyfin/JellyfinAuthenticator.kt",
+        "patchSetId": 3
+      },
+      "lineNbr": 90,
+      "author": {
+        "id": 25732
+      },
+      "writtenOn": "2025-01-01T20:30:15Z",
+      "side": 1,
+      "message": "`getOrNull() ?: return null`?",
+      "revId": "c9a0f7a261a4f6ec1aee713b2307225fd37fc5b1",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
