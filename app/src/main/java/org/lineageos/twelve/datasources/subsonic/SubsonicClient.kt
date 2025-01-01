@@ -16,7 +16,7 @@ import org.lineageos.twelve.datasources.subsonic.models.ResponseRoot
 import org.lineageos.twelve.datasources.subsonic.models.ResponseStatus
 import org.lineageos.twelve.datasources.subsonic.models.SubsonicResponse
 import org.lineageos.twelve.datasources.subsonic.models.Version
-import org.lineageos.twelve.ext.executeAsync
+import org.lineageos.twelve.ext.await
 import java.net.SocketTimeoutException
 import java.security.MessageDigest
 
@@ -1169,7 +1169,7 @@ class SubsonicClient(
             Request.Builder()
                 .url(getMethodUrl(method, *queryParameters))
                 .build()
-        ).executeAsync().let { response ->
+        ).await().let { response ->
             when (response.isSuccessful) {
                 true -> response.body?.use { body ->
                     val subsonicResponse =

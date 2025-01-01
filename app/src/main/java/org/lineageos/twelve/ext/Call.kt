@@ -16,28 +16,33 @@ import okio.IOException
 import kotlin.coroutines.resumeWithException
 
 @OptIn(ExperimentalCoroutinesApi::class) // resume with a resource cleanup.
-suspend fun Call.executeAsync(): Response = suspendCancellableCoroutine { continuation ->
-    continuation.invokeOnCancellation {
-        this.cancel()
-    }
-    this.enqueue(
+suspend fun Call.await(): Response = suspendCancellableCoroutine { continuation ->
+    enqueue(
         object : Callback {
-            override fun onFailure(
-                call: Call,
-                e: IOException,
-            ) {
-                continuation.resumeWithException(e)
-            }
-
             override fun onResponse(
                 call: Call,
                 response: Response,
             ) {
-                @Suppress("deprecation")
-                continuation.resume(response) {
-                    response.closeQuietly()
+                with(continuation) {
+                    @Suppress("deprecation")
+                    if (!isCancelled) resume(response) {
+                        response.closeQuietly()
+                    }
+                }
+            }
+
+            override fun onFailure(
+                call: Call,
+                e: IOException,
+            ) {
+                with(continuation) {
+                    if (!isCancelled) resumeWithException(e)
                 }
             }
         },
     )
+
+    continuation.invokeOnCancellation {
+        cancel()
+    }
 }

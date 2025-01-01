@@ -22,7 +22,7 @@ import okhttp3.Response
 import okhttp3.Route
 import org.lineageos.twelve.datasources.jellyfin.models.AuthenticateUser
 import org.lineageos.twelve.datasources.jellyfin.models.AuthenticateUserResult
-import org.lineageos.twelve.ext.executeAsync
+import org.lineageos.twelve.ext.await
 
 class JellyfinAuthenticator(
     serverUri: Uri,
@@ -85,7 +85,7 @@ class JellyfinAuthenticator(
                     ).toRequestBody("application/json".toMediaType())
                 )
                 .build()
-        ).executeAsync()
+        ).await()
 
         if (!response.isSuccessful) {
             return@runBlocking null

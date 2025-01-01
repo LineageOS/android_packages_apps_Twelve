@@ -25,7 +25,7 @@ import org.lineageos.twelve.MainActivity
 import org.lineageos.twelve.TwelveApplication
 import org.lineageos.twelve.ext.applicationContext
 import org.lineageos.twelve.ext.asArray
-import org.lineageos.twelve.ext.executeAsync
+import org.lineageos.twelve.ext.await
 import org.lineageos.twelve.models.MediaType
 import org.lineageos.twelve.models.RequestStatus
 import org.lineageos.twelve.utils.MimeUtils
@@ -192,7 +192,7 @@ class IntentsViewModel(application: Application) : AndroidViewModel(application)
                         .url(uri.toString())
                         .head()
                         .build()
-                ).executeAsync().use { response ->
+                ).await().use { response ->
                     response.header("Content-Type")?.let { type ->
                         MimeUtils.mimeTypeToMediaType(type)
                     }

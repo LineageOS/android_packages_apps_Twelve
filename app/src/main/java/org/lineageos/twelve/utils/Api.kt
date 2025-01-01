@@ -14,7 +14,7 @@ import okhttp3.Request
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.lineageos.twelve.datasources.MediaError
-import org.lineageos.twelve.ext.executeAsync
+import org.lineageos.twelve.ext.await
 import org.lineageos.twelve.models.RequestStatus
 import java.net.SocketTimeoutException
 
@@ -82,7 +82,7 @@ class Api(val okHttpClient: OkHttpClient, private val serverUri: Uri) {
             throw IllegalStateException("No empty response provided")
         }
     ) = runCatching {
-        okHttpClient.newCall(request).executeAsync().let { response ->
+        okHttpClient.newCall(request).await().let { response ->
             if (response.isSuccessful) {
                 response.body?.use { body ->
                     val string = body.string()
