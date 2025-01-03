@@ -83,7 +83,7 @@ class PlaybackService : MediaLibraryService(), Player.Listener, LifecycleOwner {
     private val mediaRepositoryTree by lazy {
         MediaRepositoryTree(
             applicationContext,
-            (application as TwelveApplication).mediaRepository,
+            mediaRepository,
         )
     }
 
@@ -93,6 +93,10 @@ class PlaybackService : MediaLibraryService(), Player.Listener, LifecycleOwner {
 
     private val resumptionPlaylistRepository by lazy {
         (application as TwelveApplication).resumptionPlaylistRepository
+    }
+
+    private val mediaRepository by lazy {
+        (application as TwelveApplication).mediaRepository
     }
 
     private val mediaLibrarySessionCallback = object : MediaLibrarySession.Callback {
@@ -355,6 +359,15 @@ class PlaybackService : MediaLibraryService(), Player.Listener, LifecycleOwner {
         ) {
             lifecycleScope.launch {
                 NowPlayingAppWidgetProvider.update(this@PlaybackService)
+            }
+        }
+
+        if (events.contains(Player.EVENT_MEDIA_ITEM_TRANSITION)) {
+            // Update the play count
+            lifecycleScope.launch {
+                player.currentMediaItem?.localConfiguration?.uri?.let {
+                    mediaRepository.onAudioPlayed(it)
+                }
             }
         }
     }

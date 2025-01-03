@@ -356,6 +356,10 @@ class SubsonicDataSource(arguments: Bundle, cache: Cache? = null) : MediaDataSou
         }
     }
 
+    override suspend fun onAudioPlayed(audioUri: Uri) = RequestStatus.Error<Unit, _>(
+        MediaError.NOT_IMPLEMENTED
+    )
+
     private fun AlbumID3.toMediaItem() = Album(
         uri = getAlbumUri(id),
         title = name,
