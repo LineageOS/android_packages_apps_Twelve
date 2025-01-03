@@ -100,7 +100,7 @@ class MediaRepository(
                     ProviderType.SUBSONIC,
                     it.id,
                     it.name,
-                ) to SubsonicDataSource(arguments, cache)
+                ) to SubsonicDataSource(arguments, database, cache)
             }
         },
         database.getJellyfinProviderDao().getAll().mapLatest { jellyfinProviders ->
@@ -119,7 +119,7 @@ class MediaRepository(
                     database.getJellyfinProviderDao().getToken(it.id)
                 }, { token ->
                     database.getJellyfinProviderDao().updateToken(it.id, token)
-                }, cache)
+                }, cache, database)
             }
         }
     ) { providers -> providers.toList().flatten() }

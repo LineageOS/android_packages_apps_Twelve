@@ -35,6 +35,7 @@ import org.lineageos.twelve.models.MediaItem
 import org.lineageos.twelve.models.MediaType
 import org.lineageos.twelve.models.Playlist
 import org.lineageos.twelve.models.RequestStatus
+import org.lineageos.twelve.models.RequestStatus.Companion.fold
 import org.lineageos.twelve.models.RequestStatus.Companion.map
 import org.lineageos.twelve.models.SortingRule
 import org.lineageos.twelve.models.SortingStrategy
@@ -207,11 +208,22 @@ class LocalDataSource(
         artists(SortingRule(SortingStrategy.NAME)),
         genres(SortingRule(SortingStrategy.NAME)),
         albumsByPlayCount(),
-    ) { albums, artists, genres, topAlbums ->
+        lastPlayedItems(),
+    ) { albums, artists, genres, topAlbums, latest ->
         val now = LocalDateTime.now()
 
         RequestStatus.Success<_, MediaError>(
             listOf(
+                latest.map {
+                    ActivityTab(
+                        "last_played",
+                        LocalizedString(
+                            "Last played",
+                            R.string.activity_last_played
+                        ),
+                        it
+                    )
+                },
                 topAlbums.map {
                     ActivityTab(
                         "top_albums",
@@ -621,6 +633,33 @@ class LocalDataSource(
             )
         }
 
+    override fun lastPlayedAudio() = database.getLastPlayedDao().get("local")
+        .flatMapLatest { uri ->
+            if (uri == null) {
+                flowOf(listOf())
+            } else {
+                contentResolver.queryFlow(
+                    audiosUri,
+                    audiosProjection,
+                    bundleOf(
+                        ContentResolver.QUERY_ARG_SQL_SELECTION to query {
+                            MediaStore.Audio.AudioColumns._ID eq Query.ARG
+                        },
+                        ContentResolver.QUERY_ARG_SQL_SELECTION_ARGS to listOf(
+                            ContentUris.parseId(uri).toString()
+                        ).toTypedArray(),
+                    ),
+                ).mapEachRow(mapAudio)
+            }
+        }
+        .mapLatest { audios ->
+            if (audios.isEmpty()) {
+                RequestStatus.Error<Audio, MediaError>(MediaError.NOT_FOUND)
+            } else {
+                RequestStatus.Success(audios.first())
+            }
+        }
+
     override suspend fun createPlaylist(name: String) = database.getPlaylistDao().create(
         name
     ).let {
@@ -662,10 +701,11 @@ class LocalDataSource(
 
     override suspend fun onAudioPlayed(
         audioUri: Uri
-    ) = database.getLocalMediaStatsProviderDao().increasePlayCount(
-        audioUri,
-    ).let {
-        RequestStatus.Success<_, MediaError>(Unit)
+    ): RequestStatus<Unit, MediaError> {
+        database.getLocalMediaStatsProviderDao().increasePlayCount(audioUri)
+        database.getLastPlayedDao().set("local", audioUri)
+
+        return RequestStatus.Success(Unit)
     }
 
     fun audios() = contentResolver.queryFlow(
@@ -742,6 +782,35 @@ class LocalDataSource(
         .mapLatest {
             RequestStatus.Success<List<Album>, MediaError>(it)
         }
+
+    /**
+     * Get the latest played items (Audio and associated Album, if any).
+     * @see lastPlayedAudio
+     */
+    private fun lastPlayedItems() = lastPlayedAudio().flatMapLatest { rs ->
+        rs.fold(
+            onSuccess = { audio ->
+                contentResolver.queryFlow(
+                    albumsUri,
+                    albumsProjection,
+                    bundleOf(
+                        ContentResolver.QUERY_ARG_SQL_SELECTION to query {
+                            MediaStore.Audio.AlbumColumns.ALBUM_ID eq Query.ARG
+                        },
+                        ContentResolver.QUERY_ARG_SQL_SELECTION_ARGS to listOf(
+                            ContentUris.parseId(audio.albumUri).toString()
+                        ).toTypedArray(),
+                    ),
+                ).mapEachRow(mapAlbum).mapLatest { albums ->
+                    RequestStatus.Success<List<MediaItem<*>>, MediaError>(
+                        listOf(audio as MediaItem<*>) + albums
+                    )
+                }
+            },
+            onLoading = { flowOf(RequestStatus.Error(MediaError.NOT_FOUND)) },
+            onError = { flowOf(RequestStatus.Error(MediaError.NOT_FOUND)) }
+        )
+    }
 
     companion object {
         private val albumsProjection = arrayOf(

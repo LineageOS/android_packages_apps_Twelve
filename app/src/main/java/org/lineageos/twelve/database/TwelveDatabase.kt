@@ -14,6 +14,7 @@ import androidx.room.TypeConverters
 import org.lineageos.twelve.database.converters.UriConverter
 import org.lineageos.twelve.database.dao.ItemDao
 import org.lineageos.twelve.database.dao.JellyfinProviderDao
+import org.lineageos.twelve.database.dao.LastPlayedDao
 import org.lineageos.twelve.database.dao.MediaStatsDao
 import org.lineageos.twelve.database.dao.PlaylistDao
 import org.lineageos.twelve.database.dao.PlaylistItemCrossRefDao
@@ -22,6 +23,7 @@ import org.lineageos.twelve.database.dao.ResumptionPlaylistDao
 import org.lineageos.twelve.database.dao.SubsonicProviderDao
 import org.lineageos.twelve.database.entities.Item
 import org.lineageos.twelve.database.entities.JellyfinProvider
+import org.lineageos.twelve.database.entities.LastPlayed
 import org.lineageos.twelve.database.entities.LocalMediaStats
 import org.lineageos.twelve.database.entities.Playlist
 import org.lineageos.twelve.database.entities.PlaylistItemCrossRef
@@ -46,19 +48,24 @@ import org.lineageos.twelve.database.entities.SubsonicProvider
 
         /* Local media stats */
         LocalMediaStats::class,
+
+        /* Last played */
+        LastPlayed::class,
     ],
-    version = 5,
+    version = 6,
     autoMigrations = [
         AutoMigration(from = 1, to = 2),
         AutoMigration(from = 2, to = 3),
         AutoMigration(from = 3, to = 4),
         AutoMigration(from = 4, to = 5),
+        AutoMigration(from = 5, to = 6),
     ],
 )
 @TypeConverters(UriConverter::class)
 abstract class TwelveDatabase : RoomDatabase() {
     abstract fun getItemDao(): ItemDao
     abstract fun getJellyfinProviderDao(): JellyfinProviderDao
+    abstract fun getLastPlayedDao(): LastPlayedDao
     abstract fun getLocalMediaStatsProviderDao(): MediaStatsDao
     abstract fun getPlaylistDao(): PlaylistDao
     abstract fun getPlaylistItemCrossRefDao(): PlaylistItemCrossRefDao
