@@ -252,6 +252,10 @@ class JellyfinDataSource(
         }
     }
 
+    override suspend fun onAudioPlayed(audioUri: Uri) = RequestStatus.Error<Unit, _>(
+        MediaError.NOT_IMPLEMENTED
+    )
+
     private fun Item.toMediaItemAlbum() = Album(
         uri = getAlbumUri(id.toString()),
         title = name,

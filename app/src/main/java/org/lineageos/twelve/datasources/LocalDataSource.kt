@@ -31,6 +31,7 @@ import org.lineageos.twelve.models.ColumnIndexCache
 import org.lineageos.twelve.models.Genre
 import org.lineageos.twelve.models.GenreContent
 import org.lineageos.twelve.models.LocalizedString
+import org.lineageos.twelve.models.MediaItem
 import org.lineageos.twelve.models.MediaType
 import org.lineageos.twelve.models.Playlist
 import org.lineageos.twelve.models.RequestStatus
@@ -205,11 +206,22 @@ class LocalDataSource(
         albums(SortingRule(SortingStrategy.NAME)),
         artists(SortingRule(SortingStrategy.NAME)),
         genres(SortingRule(SortingStrategy.NAME)),
-    ) { albums, artists, genres ->
+        albumsByPlayCount(),
+    ) { albums, artists, genres, topAlbums ->
         val now = LocalDateTime.now()
 
         RequestStatus.Success<_, MediaError>(
             listOf(
+                topAlbums.map {
+                    ActivityTab(
+                        "top_albums",
+                        LocalizedString(
+                            "Top albums",
+                            R.string.activity_top_albums,
+                        ),
+                        it,
+                    )
+                },
                 albums.map {
                     ActivityTab(
                         "random_albums",
@@ -648,6 +660,19 @@ class LocalDataSource(
         RequestStatus.Success<_, MediaError>(Unit)
     }
 
+    override suspend fun onAudioPlayed(
+        audioUri: Uri
+    ) = database.getLocalMediaStatsProviderDao().increasePlayCount(
+        audioUri,
+    ).let {
+        RequestStatus.Success<_, MediaError>(Unit)
+    }
+
+    fun audios() = contentResolver.queryFlow(
+        audiosUri,
+        audiosProjection
+    ).mapEachRow(mapAudio)
+
     /**
      * Given a list of audio URIs, return a list of [Audio], where null if the audio hasn't been
      * found.
@@ -671,6 +696,51 @@ class LocalDataSource(
             audioUris.map { audioUri ->
                 audios.firstOrNull { it.uri == audioUri }
             }
+        }
+
+    /**
+     * Get the albums of the most played n audios.
+     * @param nTop number of top tracks to consider
+     */
+    private fun albumsByPlayCount(nTop: Int = 100) = database.getLocalMediaStatsProviderDao()
+        .getAllByPlayCount(nTop)
+        .map { stats -> stats.map { it.mediaUri } }
+        .flatMapLatest { uris ->
+            contentResolver.queryFlow(
+                audiosUri,
+                arrayOf(MediaStore.Audio.AlbumColumns.ALBUM_ID),
+                bundleOf(
+                    ContentResolver.QUERY_ARG_SQL_SELECTION to query {
+                        MediaStore.Audio.AudioColumns._ID `in` List(uris.size) {
+                            Query.ARG
+                        }
+                    },
+                    ContentResolver.QUERY_ARG_SQL_SELECTION_ARGS to uris.map {
+                        ContentUris.parseId(it).toString()
+                    }.toTypedArray(),
+                ),
+            )
+        }
+        .mapEachRow { it.getLong(MediaStore.Audio.AudioColumns.ALBUM_ID) }
+        .map { it.distinct() }
+        .flatMapLatest { uris ->
+            contentResolver.queryFlow(
+                albumsUri,
+                albumsProjection,
+                bundleOf(
+                    ContentResolver.QUERY_ARG_SQL_SELECTION to query {
+                        MediaStore.Audio.AlbumColumns.ALBUM_ID `in` List(uris.size) {
+                            Query.ARG
+                        }
+                    },
+                    ContentResolver.QUERY_ARG_SQL_SELECTION_ARGS to uris.map {
+                        it.toString()
+                    }.toTypedArray(),
+                ),
+            ).mapEachRow(mapAlbum)
+        }
+        .mapLatest {
+            RequestStatus.Success<List<Album>, MediaError>(it)
         }
 
     companion object {

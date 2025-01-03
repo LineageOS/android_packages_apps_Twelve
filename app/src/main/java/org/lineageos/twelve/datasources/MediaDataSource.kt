@@ -142,4 +142,11 @@ interface MediaDataSource {
      * @return [RequestStatus.Success] if success, [RequestStatus.Error] with an error otherwise
      */
     suspend fun removeAudioFromPlaylist(playlistUri: Uri, audioUri: Uri): MediaRequestStatus<Unit>
+
+    /**
+     * Notify the source about an audio item being played.
+     * @param audioUri The URI of the audio
+     * @return [RequestStatus.Success] if success, [RequestStatus.Error] with an error otherwise
+     */
+    suspend fun onAudioPlayed(audioUri: Uri): MediaRequestStatus<Unit>
 }
