@@ -11,11 +11,13 @@ import android.os.Bundle
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.mapLatest
 import okhttp3.Cache
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import org.lineageos.twelve.R
+import org.lineageos.twelve.database.TwelveDatabase
 import org.lineageos.twelve.datasources.jellyfin.JellyfinClient
 import org.lineageos.twelve.datasources.jellyfin.models.Item
 import org.lineageos.twelve.datasources.jellyfin.models.ItemType
@@ -26,17 +28,22 @@ import org.lineageos.twelve.models.ArtistWorks
 import org.lineageos.twelve.models.Audio
 import org.lineageos.twelve.models.Genre
 import org.lineageos.twelve.models.GenreContent
+import org.lineageos.twelve.models.LocalizedString
+import org.lineageos.twelve.models.MediaItem
 import org.lineageos.twelve.models.MediaType
 import org.lineageos.twelve.models.Playlist
 import org.lineageos.twelve.models.ProviderArgument
 import org.lineageos.twelve.models.ProviderArgument.Companion.requireArgument
 import org.lineageos.twelve.models.RequestStatus
+import org.lineageos.twelve.models.RequestStatus.Companion.fold
+import org.lineageos.twelve.models.RequestStatus.Companion.map
 import org.lineageos.twelve.models.SortingRule
 import org.lineageos.twelve.models.SortingStrategy
 import org.lineageos.twelve.models.Thumbnail
 import org.lineageos.twelve.utils.toRequestStatus
 import org.lineageos.twelve.utils.toResult
 import java.util.UUID
+import java.util.regex.Pattern
 
 /**
  * Jellyfin backed data source.
@@ -49,6 +56,7 @@ class JellyfinDataSource(
     tokenGetter: () -> String?,
     tokenSetter: (String) -> Unit,
     cache: Cache? = null,
+    private val database: TwelveDatabase,
 ) : MediaDataSource {
     private val server = arguments.requireArgument(ARG_SERVER)
     private val username = arguments.requireArgument(ARG_USERNAME)
@@ -100,7 +108,21 @@ class JellyfinDataSource(
         } ?: RequestStatus.Error(MediaError.NOT_FOUND)
     }
 
-    override fun activity() = flowOf(RequestStatus.Success<_, MediaError>(listOf<ActivityTab>()))
+    override fun activity() = lastPlayedItems().mapLatest { lastPlayedRs ->
+        lastPlayedRs.map { lastPlayed ->
+            listOf(
+                ActivityTab(
+                    "last_played",
+                    LocalizedString(
+                        "Last played",
+                        R.string.activity_last_played,
+                    ),
+                    lastPlayed
+                )
+            ).filter { it.items.isNotEmpty() }
+        }
+    }
+
 
     override fun albums(sortingRule: SortingRule) = suspend {
         client.getAlbums(sortingRule).toRequestStatus {
@@ -214,6 +236,15 @@ class JellyfinDataSource(
         }
     }
 
+    override fun lastPlayedAudio() = database.getLastPlayedDao().get("jellyfin:$username@$server")
+        .flatMapLatest { uri ->
+            if (uri == null) {
+                flowOf(RequestStatus.Error(MediaError.NOT_FOUND))
+            } else {
+                audio(uri)
+            }
+        }
+
     override suspend fun createPlaylist(name: String) = run {
         client.createPlaylist(name).toRequestStatus {
             onPlaylistsChanged()
@@ -252,9 +283,22 @@ class JellyfinDataSource(
         }
     }
 
-    override suspend fun onAudioPlayed(audioUri: Uri) = RequestStatus.Error<Unit, _>(
-        MediaError.NOT_IMPLEMENTED
-    )
+    override suspend fun onAudioPlayed(audioUri: Uri) =
+        if (audioUri.lastPathSegment == "stream") {
+            // When playing "stream?static=[true|false]" gets added to the audio URI.
+            // We don't want to store that.
+            Uri.parse(
+                audioUri.toString()
+                    .removeSuffix("stream?static=true")
+                    .removeSuffix("stream?static=false")
+            )
+        } else {
+            audiosUri
+        }.let {
+            database.getLastPlayedDao().set("jellyfin:$username@$server", it).let {
+                RequestStatus.Success<_, MediaError>(Unit)
+            }
+        }
 
     private fun Item.toMediaItemAlbum() = Album(
         uri = getAlbumUri(id.toString()),
@@ -331,6 +375,32 @@ class JellyfinDataSource(
 
     private fun onPlaylistsChanged() {
         _playlistsChanged.value = Any()
+    }
+
+    /**
+     * Get the latest played items (Audio and associated Album, if any).
+     * @see lastPlayedAudio
+     */
+    private fun lastPlayedItems() = lastPlayedAudio().flatMapLatest { audioRs ->
+        audioRs.fold(
+            onSuccess = { audio ->
+                val albumId = UUID.fromString(audio.albumUri.lastPathSegment!!)
+                suspend {
+                    client.getAlbum(albumId).toRequestStatus { toMediaItemAlbum() }
+                }.asFlow().mapLatest { albumRs ->
+                    val audioAsMediaItemList = listOf(audio as MediaItem<*>)
+                    RequestStatus.Success<_, MediaError>(
+                        albumRs.fold(
+                            onSuccess = { album -> audioAsMediaItemList + listOf(album) },
+                            onLoading = { audioAsMediaItemList },
+                            onError = { audioAsMediaItemList },
+                        )
+                    )
+                }
+            },
+            onLoading = { flowOf(RequestStatus.Error(MediaError.NOT_FOUND)) },
+            onError = { flowOf(RequestStatus.Error(MediaError.NOT_FOUND)) }
+        )
     }
 
     companion object {
