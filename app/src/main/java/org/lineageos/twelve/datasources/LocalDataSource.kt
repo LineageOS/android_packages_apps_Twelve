@@ -31,9 +31,11 @@ import org.lineageos.twelve.models.ColumnIndexCache
 import org.lineageos.twelve.models.Genre
 import org.lineageos.twelve.models.GenreContent
 import org.lineageos.twelve.models.LocalizedString
+import org.lineageos.twelve.models.MediaItem
 import org.lineageos.twelve.models.MediaType
 import org.lineageos.twelve.models.Playlist
 import org.lineageos.twelve.models.RequestStatus
+import org.lineageos.twelve.models.RequestStatus.Companion.fold
 import org.lineageos.twelve.models.RequestStatus.Companion.map
 import org.lineageos.twelve.models.SortingRule
 import org.lineageos.twelve.models.SortingStrategy
@@ -202,14 +204,36 @@ class LocalDataSource(
     }
 
     override fun activity() = combine(
+        lastPlayedMediaItems(),
+        mostPlayedAlbums(),
         albums(SortingRule(SortingStrategy.NAME)),
         artists(SortingRule(SortingStrategy.NAME)),
         genres(SortingRule(SortingStrategy.NAME)),
-    ) { albums, artists, genres ->
+    ) { lastPlayed, mostPlayed, albums, artists, genres ->
         val now = LocalDateTime.now()
 
         RequestStatus.Success<_, MediaError>(
             listOf(
+                lastPlayed.map {
+                    ActivityTab(
+                        "last_played",
+                        LocalizedString(
+                            "Last played",
+                            R.string.activity_last_played,
+                        ),
+                        it,
+                    )
+                },
+                mostPlayed.map {
+                    ActivityTab(
+                        "most_played_albums",
+                        LocalizedString(
+                            "Most played albums",
+                            R.string.activity_most_played_albums
+                        ),
+                        it,
+                    )
+                },
                 albums.map {
                     ActivityTab(
                         "random_albums",
@@ -713,6 +737,73 @@ class LocalDataSource(
                 audios.firstOrNull { it.uri == audioUri }
             }
         }
+
+    private fun mostPlayedAlbums(nTopTracks: Int = 100) =
+        database.getLocalMediaStatsProviderDao()
+            .getAllByPlayCount(nTopTracks)
+            .map { stats -> stats.map { it.mediaUri } }
+            .flatMapLatest { uris ->
+                contentResolver.queryFlow(
+                    audiosUri,
+                    arrayOf(MediaStore.Audio.AlbumColumns.ALBUM_ID),
+                    bundleOf(
+                        ContentResolver.QUERY_ARG_SQL_SELECTION to query {
+                            MediaStore.Audio.AudioColumns._ID `in` List(uris.size) {
+                                Query.ARG
+                            }
+                        },
+                        ContentResolver.QUERY_ARG_SQL_SELECTION_ARGS to uris.map {
+                            ContentUris.parseId(it).toString()
+                        }.toTypedArray(),
+                    )
+                )
+            }
+            .mapEachRow { it.getLong(MediaStore.Audio.AlbumColumns.ALBUM_ID) }
+            .map { it.distinct() }
+            .flatMapLatest { uris ->
+                contentResolver.queryFlow(
+                    albumsUri,
+                    albumsProjection,
+                    bundleOf(
+                        ContentResolver.QUERY_ARG_SQL_SELECTION to query {
+                            MediaStore.Audio.AlbumColumns.ALBUM_ID `in` List(uris.size) {
+                                Query.ARG
+                            }
+                        },
+                        ContentResolver.QUERY_ARG_SQL_SELECTION_ARGS to uris.map {
+                            it.toString()
+                        }.toTypedArray(),
+                    )
+                ).mapEachRow(mapAlbum)
+            }
+            .mapLatest {
+                RequestStatus.Success<List<Album>, MediaError>(it)
+            }
+
+    private fun lastPlayedMediaItems() = lastPlayedAudio().flatMapLatest { rs ->
+        rs.fold(
+            onSuccess = { audio ->
+                contentResolver.queryFlow(
+                    albumsUri,
+                    albumsProjection,
+                    bundleOf(
+                        ContentResolver.QUERY_ARG_SQL_SELECTION to query {
+                            MediaStore.Audio.AlbumColumns.ALBUM_ID eq Query.ARG
+                        },
+                        ContentResolver.QUERY_ARG_SQL_SELECTION_ARGS to listOf(
+                            ContentUris.parseId(audio.albumUri).toString()
+                        ).toTypedArray(),
+                    )
+                ).mapEachRow(mapAlbum).mapLatest { albums ->
+                    RequestStatus.Success<List<MediaItem<*>>, MediaError>(
+                        listOf(audio as MediaItem<*>) + albums,
+                    )
+                }
+            },
+            onLoading = { flowOf(RequestStatus.Error(MediaError.NOT_FOUND)) },
+            onError = { flowOf(RequestStatus.Error(MediaError.NOT_FOUND)) },
+        )
+    }
 
     companion object {
         private const val LAST_PLAYED_KEY = "local"

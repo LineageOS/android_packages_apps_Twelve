@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-     SPDX-FileCopyrightText: 2024 The LineageOS Project
+     SPDX-FileCopyrightText: 2024-2025 The LineageOS Project
      SPDX-License-Identifier: Apache-2.0
 -->
 <resources>
@@ -195,6 +195,7 @@
     <string name="sort_by_unknown">Unknown</string>
 
     <!-- Activities -->
+    <string name="activity_last_played">Last played</string>
     <string name="activity_most_played_albums">Most played albums</string>
     <string name="activity_random_albums">Random albums</string>
     <string name="activity_random_artists">Random artists</string>

@@ -28,11 +28,15 @@ import org.lineageos.twelve.models.ArtistWorks
 import org.lineageos.twelve.models.Audio
 import org.lineageos.twelve.models.Genre
 import org.lineageos.twelve.models.GenreContent
+import org.lineageos.twelve.models.LocalizedString
+import org.lineageos.twelve.models.MediaItem
 import org.lineageos.twelve.models.MediaType
 import org.lineageos.twelve.models.Playlist
 import org.lineageos.twelve.models.ProviderArgument
 import org.lineageos.twelve.models.ProviderArgument.Companion.requireArgument
 import org.lineageos.twelve.models.RequestStatus
+import org.lineageos.twelve.models.RequestStatus.Companion.fold
+import org.lineageos.twelve.models.RequestStatus.Companion.map
 import org.lineageos.twelve.models.SortingRule
 import org.lineageos.twelve.models.SortingStrategy
 import org.lineageos.twelve.models.Thumbnail
@@ -104,7 +108,20 @@ class JellyfinDataSource(
         } ?: RequestStatus.Error(MediaError.NOT_FOUND)
     }
 
-    override fun activity() = flowOf(RequestStatus.Success<_, MediaError>(listOf<ActivityTab>()))
+    override fun activity() = lastPlayedItems().mapLatest { lastPlayedRs ->
+        lastPlayedRs.map { lastPlayed ->
+            listOf(
+                ActivityTab(
+                    "last_played",
+                    LocalizedString(
+                        "Last played",
+                        R.string.activity_last_played
+                    ),
+                    lastPlayed
+                ),
+            ).filter { it.items.isNotEmpty() }
+        }
+    }
 
     override fun albums(sortingRule: SortingRule) = suspend {
         client.getAlbums(sortingRule).toRequestStatus {
@@ -353,6 +370,32 @@ class JellyfinDataSource(
     }
 
     private fun lastPlayedKey() = "jellyfin:$username@$server"
+
+    /**
+     * Get the latest played items (Audio and associated Album, if any).
+     * @see lastPlayedAudio
+     */
+    private fun lastPlayedItems() = lastPlayedAudio().flatMapLatest { audioRs ->
+        audioRs.fold(
+            onSuccess = { audio ->
+                val albumId = UUID.fromString(audio.albumUri.lastPathSegment!!)
+                suspend {
+                    client.getAlbum(albumId).toRequestStatus { toMediaItemAlbum() }
+                }.asFlow().mapLatest { albumRs ->
+                    val audioAsMediaItemList = listOf(audio as MediaItem<*>)
+                    RequestStatus.Success<List<MediaItem<*>>, MediaError>(
+                        albumRs.fold(
+                            onSuccess = { album -> audioAsMediaItemList + album },
+                            onLoading = { audioAsMediaItemList },
+                            onError = { audioAsMediaItemList },
+                        )
+                    )
+                }
+            },
+            onLoading = { flowOf(RequestStatus.Error(MediaError.NOT_FOUND)) },
+            onError = { flowOf(RequestStatus.Error(MediaError.NOT_FOUND)) },
+        )
+    }
 
     companion object {
         private const val ALBUMS_PATH = "albums"
