@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2024 The LineageOS Project
+ * SPDX-FileCopyrightText: 2024-2025 The LineageOS Project
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -9,8 +9,10 @@ import android.content.Context
 import android.net.Uri
 import android.os.Bundle
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.mapLatest
 import okhttp3.Cache
@@ -48,6 +50,8 @@ class JellyfinDataSource(
     deviceIdentifier: String,
     tokenGetter: () -> String?,
     tokenSetter: (String) -> Unit,
+    private val lastPlayedGetter: (String) -> Flow<Uri?>,
+    private val lastPlayedSetter: suspend (String, Uri) -> Long,
     cache: Cache? = null,
 ) : MediaDataSource {
     private val server = arguments.requireArgument(ARG_SERVER)
@@ -214,6 +218,11 @@ class JellyfinDataSource(
         }
     }
 
+    override fun lastPlayedAudio() = lastPlayedGetter(lastPlayedKey())
+        .flatMapLatest { uri ->
+            uri?.let(this::audio) ?: flowOf(RequestStatus.Error(MediaError.NOT_FOUND))
+        }
+
     override suspend fun createPlaylist(name: String) = run {
         client.createPlaylist(name).toRequestStatus {
             onPlaylistsChanged()
@@ -251,6 +260,20 @@ class JellyfinDataSource(
             onPlaylistsChanged()
         }
     }
+
+    override suspend fun onAudioPlayed(audioUri: Uri) =
+        if (audioUri.lastPathSegment == "stream") {
+            // When playing "stream?static=true" gets added to the audio URI.
+            // We don't want to store that.
+            Uri.parse(
+                audioUri.toString().removeSuffix("stream?static=true")
+            )
+        } else {
+            audioUri
+        }.let {
+            lastPlayedSetter(lastPlayedKey(), it)
+                .let { RequestStatus.Success<Unit, MediaError>(Unit) }
+        }
 
     private fun Item.toMediaItemAlbum() = Album(
         uri = getAlbumUri(id.toString()),
@@ -328,6 +351,8 @@ class JellyfinDataSource(
     private fun onPlaylistsChanged() {
         _playlistsChanged.value = Any()
     }
+
+    private fun lastPlayedKey() = "jellyfin:$username@$server"
 
     companion object {
         private const val ALBUMS_PATH = "albums"
