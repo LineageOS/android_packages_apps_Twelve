@@ -65,7 +65,9 @@ class ActivityTabItem @JvmOverloads constructor(
     fun setItem(item: MediaItem<*>) {
         when (item) {
             is Album -> {
-                headlineText = item.title
+                item.title?.let {
+                    headlineText = it
+                } ?: setHeadlineText(R.string.album_unknown)
                 subheadText = item.artistName
                 supportingText = item.year?.toString()
 
@@ -73,7 +75,9 @@ class ActivityTabItem @JvmOverloads constructor(
             }
 
             is Artist -> {
-                headlineText = item.name
+                item.name?.let {
+                    headlineText = it
+                } ?: setHeadlineText(R.string.artist_unknown)
                 subheadText = null
                 supportingText = null
 
