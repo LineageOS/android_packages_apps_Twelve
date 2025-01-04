@@ -12,6 +12,7 @@ import android.os.Build
 import android.provider.MediaStore
 import androidx.core.os.bundleOf
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
@@ -609,6 +610,34 @@ class LocalDataSource(
             )
         }
 
+    override fun lastPlayedAudio() = database.getLastPlayedDao()
+        .get(LAST_PLAYED_KEY)
+        .flatMapLatest { uri ->
+            if (uri == null) {
+                flowOf(listOf())
+            } else {
+                contentResolver.queryFlow(
+                    audiosUri,
+                    audiosProjection,
+                    bundleOf(
+                        ContentResolver.QUERY_ARG_SQL_SELECTION to query {
+                            MediaStore.Audio.AudioColumns._ID eq Query.ARG
+                        },
+                        ContentResolver.QUERY_ARG_SQL_SELECTION_ARGS to listOf(
+                            ContentUris.parseId(uri).toString()
+                        ).toTypedArray(),
+                    ),
+                ).mapEachRow(mapAudio)
+            }
+        }
+        .mapLatest { audios ->
+            if (audios.isEmpty()) {
+                RequestStatus.Error<Audio, MediaError>(MediaError.NOT_FOUND)
+            } else {
+                RequestStatus.Success(audios.first())
+            }
+        }
+
     override suspend fun createPlaylist(name: String) = database.getPlaylistDao().create(
         name
     ).let {
@@ -648,6 +677,19 @@ class LocalDataSource(
         RequestStatus.Success<_, MediaError>(Unit)
     }
 
+    override suspend fun onAudioPlayed(
+        audioUri: Uri
+    ): RequestStatus<Unit, MediaError> {
+        database.getLocalMediaStatsProviderDao().increasePlayCount(audioUri)
+        database.getLastPlayedDao().set(LAST_PLAYED_KEY, audioUri)
+        return RequestStatus.Success(Unit)
+    }
+
+    fun audios() = contentResolver.queryFlow(
+        audiosUri,
+        audiosProjection
+    ).mapEachRow(mapAudio)
+
     /**
      * Given a list of audio URIs, return a list of [Audio], where null if the audio hasn't been
      * found.
@@ -674,6 +716,8 @@ class LocalDataSource(
         }
 
     companion object {
+        private const val LAST_PLAYED_KEY = "local"
+
         private val albumsProjection = arrayOf(
             MediaStore.Audio.AudioColumns._ID,
             MediaStore.Audio.AlbumColumns.ALBUM,

@@ -10,10 +10,13 @@ import android.os.Bundle
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.mapLatest
 import okhttp3.Cache
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import org.lineageos.twelve.R
+import org.lineageos.twelve.database.TwelveDatabase
 import org.lineageos.twelve.datasources.subsonic.SubsonicClient
 import org.lineageos.twelve.datasources.subsonic.models.AlbumID3
 import org.lineageos.twelve.datasources.subsonic.models.ArtistID3
@@ -40,7 +43,11 @@ import org.lineageos.twelve.models.Thumbnail
  * Subsonic based data source.
  */
 @OptIn(ExperimentalCoroutinesApi::class)
-class SubsonicDataSource(arguments: Bundle, cache: Cache? = null) : MediaDataSource {
+class SubsonicDataSource(
+    arguments: Bundle,
+    private val database: TwelveDatabase,
+    cache: Cache? = null,
+) : MediaDataSource {
     private val server = arguments.requireArgument(ARG_SERVER)
     private val username = arguments.requireArgument(ARG_USERNAME)
     private val password = arguments.requireArgument(ARG_PASSWORD)
@@ -307,6 +314,12 @@ class SubsonicDataSource(arguments: Bundle, cache: Cache? = null) : MediaDataSou
         }
     }
 
+    override fun lastPlayedAudio() = database.getLastPlayedDao()
+        .get(lastPlayedKey())
+        .flatMapLatest { uri ->
+            uri?.let(this::audio) ?: flowOf(RequestStatus.Error(MediaError.NOT_FOUND))
+        }
+
     override suspend fun createPlaylist(name: String) = subsonicClient.createPlaylist(
         null, name, listOf()
     ).toRequestStatus {
@@ -355,6 +368,10 @@ class SubsonicDataSource(arguments: Bundle, cache: Cache? = null) : MediaDataSou
             }
         }
     }
+
+    override suspend fun onAudioPlayed(audioUri: Uri) = database.getLastPlayedDao()
+        .set(lastPlayedKey(), audioUri)
+        .let { RequestStatus.Success<Unit, MediaError>(Unit) }
 
     private fun AlbumID3.toMediaItem() = Album(
         uri = getAlbumUri(id),
@@ -488,6 +505,8 @@ class SubsonicDataSource(arguments: Bundle, cache: Cache? = null) : MediaDataSou
     ) = selector?.let {
         sortedBy { t -> it(t) as? Comparable<Any?> }.asMaybeReversed(reverse)
     } ?: this
+
+    private fun lastPlayedKey() = "subsonic:$username@$server"
 
     companion object {
         private const val ALBUMS_PATH = "albums"
