@@ -89,6 +89,13 @@
             android:layout_height="wrap_content" />
 
         <org.lineageos.twelve.ui.views.ListItem
+            android:id="@+id/playNowListItem"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:headlineText="@string/action_play"
+            app:leadingIconImage="@drawable/ic_play_arrow" />
+
+        <org.lineageos.twelve.ui.views.ListItem
             android:id="@+id/addToQueueListItem"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
