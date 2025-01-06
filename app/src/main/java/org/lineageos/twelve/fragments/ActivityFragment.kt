@@ -69,12 +69,7 @@ class ActivityFragment : Fragment(R.layout.fragment_activity) {
                             ArtistFragment.createBundle(item.uri)
                         )
 
-                        is Audio -> findNavController().navigateSafe(
-                            R.id.action_mainFragment_to_fragment_media_item_bottom_sheet_dialog,
-                            MediaItemBottomSheetDialogFragment.createBundle(
-                                item.uri, item.mediaType
-                            )
-                        )
+                        is Audio -> viewModel.playAudio(listOf(item), 0)
 
                         is Genre -> findNavController().navigateSafe(
                             R.id.action_mainFragment_to_fragment_genre,
