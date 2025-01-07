@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2024 The LineageOS Project
+ * SPDX-FileCopyrightText: 2024-2025 The LineageOS Project
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -23,7 +23,6 @@ class TwelveApplication : Application(), SingletonImageLoader.Factory {
     private val database by lazy { TwelveDatabase.getInstance(applicationContext) }
     val mediaRepository by lazy { MediaRepository(applicationContext, MainScope(), database) }
     val resumptionPlaylistRepository by lazy { ResumptionPlaylistRepository(database) }
-    val audioSessionId by lazy { Util.generateAudioSessionIdV21(applicationContext) }
 
     override fun onCreate() {
         super.onCreate()

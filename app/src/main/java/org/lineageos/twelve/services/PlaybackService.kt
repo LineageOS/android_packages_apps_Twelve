@@ -21,6 +21,7 @@ import androidx.media3.common.C
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
+import androidx.media3.common.util.Util
 import androidx.media3.exoplayer.DefaultLoadControl
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.session.DefaultMediaNotificationProvider
@@ -61,12 +62,18 @@ class PlaybackService : MediaLibraryService(), Player.Listener, LifecycleOwner {
          * Arguments:
          * - [ARG_VALUE] ([Boolean]): Whether to enable or disable skip silence
          */
-        TOGGLE_SKIP_SILENCE("toggle_skip_silence", Bundle.EMPTY);
+        TOGGLE_SKIP_SILENCE("toggle_skip_silence", Bundle.EMPTY),
+
+        /**
+         * Get audio session ID.
+         */
+        GET_AUDIO_SESSION_ID("get_audio_session_id", Bundle.EMPTY);
 
         val sessionCommand = SessionCommand(value, extras)
 
         companion object {
             const val ARG_VALUE = "value"
+            const val RSP_VALUE = "value"
 
             fun MediaController.sendCustomCommand(
                 customCommand: CustomCommand,
@@ -100,8 +107,9 @@ class PlaybackService : MediaLibraryService(), Player.Listener, LifecycleOwner {
         (application as TwelveApplication).mediaRepository
     }
 
-    private val audioSessionId
-        get() = (application as TwelveApplication).audioSessionId
+    private val audioSessionId by lazy {
+        Util.generateAudioSessionIdV21(this)
+    }
 
     private val mediaLibrarySessionCallback = object : MediaLibrarySession.Callback {
         override fun onConnect(
@@ -266,6 +274,15 @@ class PlaybackService : MediaLibraryService(), Player.Listener, LifecycleOwner {
                     }
 
                     SessionResult(SessionResult.RESULT_SUCCESS)
+                }
+
+                CustomCommand.GET_AUDIO_SESSION_ID.value -> {
+                    SessionResult(
+                        SessionResult.RESULT_SUCCESS,
+                        Bundle().apply {
+                            putInt(CustomCommand.RSP_VALUE, audioSessionId)
+                        }
+                    )
                 }
 
                 else -> SessionResult(SessionError.ERROR_NOT_SUPPORTED)

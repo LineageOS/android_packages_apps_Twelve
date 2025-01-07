@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2024 The LineageOS Project
+ * SPDX-FileCopyrightText: 2024-2025 The LineageOS Project
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -41,10 +41,10 @@ import com.google.android.material.card.MaterialCardView
 import com.google.android.material.progressindicator.LinearProgressIndicator
 import com.google.android.material.slider.Slider
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import me.bogerchan.niervisualizer.NierVisualizerManager
 import org.lineageos.twelve.R
-import org.lineageos.twelve.TwelveApplication
 import org.lineageos.twelve.ext.getViewProperty
 import org.lineageos.twelve.ext.loadThumbnail
 import org.lineageos.twelve.ext.navigateSafe
@@ -98,8 +98,6 @@ class NowPlayingFragment : Fragment(R.layout.fragment_now_playing) {
     private var animator: ValueAnimator? = null
 
     // AudioFX
-    private val audioSessionId: Int
-        get() = (requireActivity().application as TwelveApplication).audioSessionId
     private val audioEffectsStartForResult =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             // Empty
@@ -112,8 +110,15 @@ class NowPlayingFragment : Fragment(R.layout.fragment_now_playing) {
         private var isVisualizerStarted = false
 
         override fun onCreate(owner: LifecycleOwner) {
-            val initResult = visualizerManager.init(audioSessionId)
-            isVisualizerInitialized = initResult == NierVisualizerManager.SUCCESS
+            owner.lifecycleScope.launch {
+                owner.repeatOnLifecycle(Lifecycle.State.CREATED) {
+                    viewModel.audioSessionId.collectLatest {
+                        isVisualizerInitialized = false
+                        val initResult = visualizerManager.init(it ?: return@collectLatest)
+                        isVisualizerInitialized = initResult == NierVisualizerManager.SUCCESS
+                    }
+                }
+            }
 
             owner.lifecycleScope.launch {
                 owner.repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -266,14 +271,16 @@ class NowPlayingFragment : Fragment(R.layout.fragment_now_playing) {
 
         equalizerMaterialButton.setOnClickListener {
             // Open system equalizer
-            audioEffectsStartForResult.launch(
-                Intent(AudioEffect.ACTION_DISPLAY_AUDIO_EFFECT_CONTROL_PANEL).apply {
-                    putExtra(AudioEffect.EXTRA_PACKAGE_NAME, requireContext().packageName)
-                    putExtra(AudioEffect.EXTRA_AUDIO_SESSION, audioSessionId)
-                    putExtra(AudioEffect.EXTRA_CONTENT_TYPE, AudioEffect.CONTENT_TYPE_MUSIC)
-                },
-                null
-            )
+            lifecycleScope.launch {
+                audioEffectsStartForResult.launch(
+                    Intent(AudioEffect.ACTION_DISPLAY_AUDIO_EFFECT_CONTROL_PANEL).apply {
+                        putExtra(AudioEffect.EXTRA_PACKAGE_NAME, requireContext().packageName)
+                        putExtra(AudioEffect.EXTRA_AUDIO_SESSION, viewModel.audioSessionId.first())
+                        putExtra(AudioEffect.EXTRA_CONTENT_TYPE, AudioEffect.CONTENT_TYPE_MUSIC)
+                    },
+                    null
+                )
+            }
         }
 
         visualizerMaterialButton.setOnClickListener {

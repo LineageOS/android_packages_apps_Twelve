@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2024 The LineageOS Project
+ * SPDX-FileCopyrightText: 2024-2025 The LineageOS Project
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -7,6 +7,7 @@ package org.lineageos.twelve.viewmodels
 
 import android.app.Application
 import android.graphics.BitmapFactory
+import android.os.Bundle
 import androidx.lifecycle.viewModelScope
 import androidx.media3.common.C
 import androidx.media3.common.MediaMetadata
@@ -31,6 +32,7 @@ import me.bogerchan.niervisualizer.renderer.columnar.ColumnarType2Renderer
 import me.bogerchan.niervisualizer.renderer.columnar.ColumnarType3Renderer
 import me.bogerchan.niervisualizer.renderer.columnar.ColumnarType4Renderer
 import me.bogerchan.niervisualizer.renderer.line.LineRenderer
+import org.lineageos.twelve.ext.asSingleFlow
 import org.lineageos.twelve.ext.availableCommandsFlow
 import org.lineageos.twelve.ext.isPlayingFlow
 import org.lineageos.twelve.ext.mediaItemFlow
@@ -45,6 +47,8 @@ import org.lineageos.twelve.models.PlaybackState
 import org.lineageos.twelve.models.RepeatMode
 import org.lineageos.twelve.models.RequestStatus
 import org.lineageos.twelve.models.Thumbnail
+import org.lineageos.twelve.services.PlaybackService
+import org.lineageos.twelve.services.PlaybackService.CustomCommand.Companion.sendCustomCommand
 import org.lineageos.twelve.utils.MimeUtils
 
 open class NowPlayingViewModel(application: Application) : TwelveViewModel(application) {
@@ -264,6 +268,25 @@ open class NowPlayingViewModel(application: Application) : TwelveViewModel(appli
             viewModelScope,
             started = SharingStarted.WhileSubscribed(),
             initialValue = Triple(null, null, 1f)
+        )
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val audioSessionId = mediaController
+        .filterNotNull()
+        .flatMapLatest { mediaController ->
+            mediaController.sendCustomCommand(
+                PlaybackService.CustomCommand.GET_AUDIO_SESSION_ID,
+                Bundle.EMPTY
+            ).asSingleFlow()
+        }
+        .mapLatest { result ->
+            result.extras.getInt(PlaybackService.CustomCommand.ARG_VALUE)
+        }
+        .flowOn(Dispatchers.Main)
+        .stateIn(
+            viewModelScope,
+            started = SharingStarted.WhileSubscribed(),
+            initialValue = null
         )
 
     private val _currentVisualizerType = MutableStateFlow(VisualizerType.entries.first())
