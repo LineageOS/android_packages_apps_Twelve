@@ -16,6 +16,24 @@
       "message": "Probably better than what we have, but likely has weird races with lifecycle I didn\u0027t hit yet..",
       "revId": "16fa363bf94968e11b81aa36892ba611ee97af17",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6a07942a_a542cb5b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 25732
+      },
+      "writtenOn": "2025-01-07T18:17:28Z",
+      "side": 1,
+      "message": "Current lifecycle observer sucks anyway, I\u0027m refactoring it",
+      "parentUuid": "bcc846a1_e47f0dc5",
+      "revId": "16fa363bf94968e11b81aa36892ba611ee97af17",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
