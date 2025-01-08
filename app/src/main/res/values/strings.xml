@@ -216,4 +216,14 @@
 
     <!-- Play all -->
     <string name="play_all">Play all</string>
+
+    <!-- Media repository tree -->
+    <string name="library_item_no_permissions">No permissions</string>
+    <string name="library_item_no_permissions_description">The app doesn\'t have the necessary permissions</string>
+    <string name="library_item_albums">Albums</string>
+    <string name="library_item_artists">Artists</string>
+    <string name="library_item_genres">Genres</string>
+    <string name="library_item_playlists">Playlists</string>
+    <string name="library_item_change_provider">Change provider</string>
+    <string name="library_item_provider_changed">Provider changed, go back to main menu</string>
 </resources>
