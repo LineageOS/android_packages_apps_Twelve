@@ -17,10 +17,10 @@
         android:layout_height="wrap_content">
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/playbackSpeedMaterialButton"
+            android:id="@+id/playbackControlMaterialButton"
             style="@style/Theme.Twelve.NowPlayingFragment.BottomBarButton"
-            android:tooltipText="@string/playback_speed"
-            tools:text="1×" />
+            android:tooltipText="@string/playback_speed_pitch"
+            app:icon="@drawable/ic_settings" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/addOrRemoveFromPlaylistsMaterialButton"
