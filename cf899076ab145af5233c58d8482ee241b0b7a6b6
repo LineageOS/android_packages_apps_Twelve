@@ -16,6 +16,23 @@
       "message": "fwiw, from our side we\u0027re doing everything fine, shoved this under experimental in settings",
       "revId": "cf899076ab145af5233c58d8482ee241b0b7a6b6",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e0f55382_215dd8e3",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2025-01-08T09:54:12Z",
+      "side": 1,
+      "message": "Just android being stupid",
+      "revId": "cf899076ab145af5233c58d8482ee241b0b7a6b6",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
