@@ -89,8 +89,12 @@
 
     <!-- Now playing fragment -->
     <string name="audio_effects">Audio effects</string>
-    <string name="playback_speed_format">%1$s×</string>
+    <string name="playback_speed_pitch">Playback speed/pitch</string>
     <string name="playback_speed">Playback speed</string>
+    <string name="playback_speed_label">Playback speed</string>
+    <string name="playback_speed_format">%1$s×</string>
+    <string name="playback_pitch">Playback pitch</string>
+    <string name="playback_pitch_label">Playback pitch</string>
     <string name="visualizer">Visualizer</string>
 
     <!-- Now playing stats dialog fragment -->
@@ -226,4 +230,5 @@
     <string name="library_item_playlists">Playlists</string>
     <string name="library_item_change_provider">Change provider</string>
     <string name="library_item_provider_changed">Provider changed, go back to main menu</string>
+    <string name="unlock_pitch_change_label">Unlock pitch change</string>
 </resources>
