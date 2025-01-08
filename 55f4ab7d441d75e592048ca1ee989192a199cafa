@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4621f404_683f4620",
+        "filename": "app/src/main/res/layout/fragment_playback_control_dialog.xml",
+        "patchSetId": 8
+      },
+      "lineNbr": 6,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2025-01-08T15:57:54Z",
+      "side": 1,
+      "message": "@seba@sebaubuntu.dev no idea how we can make this look better, but this works for now\nit may hold more settings in the future?",
+      "revId": "55f4ab7d441d75e592048ca1ee989192a199cafa",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
