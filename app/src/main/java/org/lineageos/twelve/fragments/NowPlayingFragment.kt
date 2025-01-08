@@ -84,7 +84,7 @@ class NowPlayingFragment : Fragment(R.layout.fragment_now_playing) {
     private val nestedScrollView by getViewProperty<NestedScrollView>(R.id.nestedScrollView)
     private val nextTrackMaterialButton by getViewProperty<MaterialButton>(R.id.nextTrackMaterialButton)
     private val playPauseMaterialButton by getViewProperty<MaterialButton>(R.id.playPauseMaterialButton)
-    private val playbackSpeedMaterialButton by getViewProperty<MaterialButton>(R.id.playbackSpeedMaterialButton)
+    private val playbackControlMaterialButton by getViewProperty<MaterialButton>(R.id.playbackControlMaterialButton)
     private val previousTrackMaterialButton by getViewProperty<MaterialButton>(R.id.previousTrackMaterialButton)
     private val progressSlider by getViewProperty<Slider>(R.id.progressSlider)
     private val queueMaterialButton by getViewProperty<MaterialButton>(R.id.queueMaterialButton)
@@ -263,8 +263,10 @@ class NowPlayingFragment : Fragment(R.layout.fragment_now_playing) {
         }
 
         // Bottom bar buttons
-        playbackSpeedMaterialButton.setOnClickListener {
-            viewModel.shufflePlaybackSpeed()
+        playbackControlMaterialButton.setOnClickListener {
+            findNavController().navigateSafe(
+                R.id.action_nowPlayingFragment_to_fragment_playback_control_dialog
+            )
         }
 
         equalizerMaterialButton.setOnClickListener {
@@ -365,17 +367,6 @@ class NowPlayingFragment : Fragment(R.layout.fragment_now_playing) {
 
                             is RequestStatus.Error -> throw Exception(
                                 "Error while getting media artwork"
-                            )
-                        }
-                    }
-                }
-
-                launch {
-                    viewModel.playbackParameters.collectLatest {
-                        it?.also {
-                            playbackSpeedMaterialButton.text = getString(
-                                R.string.playback_speed_format,
-                                playbackSpeedFormatter.format(it.speed),
                             )
                         }
                     }
@@ -524,7 +515,7 @@ class NowPlayingFragment : Fragment(R.layout.fragment_now_playing) {
                                 Player.COMMAND_SET_REPEAT_MODE
                             )
 
-                            playbackSpeedMaterialButton.isEnabled = it.contains(
+                            playbackControlMaterialButton.isEnabled = it.contains(
                                 Player.COMMAND_SET_SPEED_AND_PITCH
                             )
                         }
@@ -557,11 +548,5 @@ class NowPlayingFragment : Fragment(R.layout.fragment_now_playing) {
         animator = null
 
         super.onDestroyView()
-    }
-
-    companion object {
-        private val decimalFormatSymbols = DecimalFormatSymbols(Locale.ROOT)
-
-        private val playbackSpeedFormatter = DecimalFormat("0.#", decimalFormatSymbols)
     }
 }

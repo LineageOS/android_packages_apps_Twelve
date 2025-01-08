@@ -57,7 +57,7 @@ class ViewActivity : AppCompatActivity(R.layout.activity_view) {
     private val durationTimestampTextView by lazy { findViewById<TextView>(R.id.durationTimestampTextView) }
     private val nextTrackMaterialButton by lazy { findViewById<MaterialButton>(R.id.nextTrackMaterialButton) }
     private val playPauseMaterialButton by lazy { findViewById<MaterialButton>(R.id.playPauseMaterialButton) }
-    private val playbackSpeedMaterialButton by lazy { findViewById<MaterialButton>(R.id.playbackSpeedMaterialButton) }
+    private val playbackSpeedMaterialButton by lazy { findViewById<MaterialButton>(R.id.playbackControlMaterialButton) }
     private val previousTrackMaterialButton by lazy { findViewById<MaterialButton>(R.id.previousTrackMaterialButton) }
     private val progressSlider by lazy { findViewById<Slider>(R.id.progressSlider) }
     private val repeatMarkerImageView by lazy { findViewById<ImageView>(R.id.repeatMarkerImageView) }

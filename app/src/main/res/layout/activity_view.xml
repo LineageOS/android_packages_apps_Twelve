@@ -137,7 +137,7 @@
                 app:icon="@drawable/ic_play_arrow" />
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/playbackSpeedMaterialButton"
+                android:id="@+id/playbackControlMaterialButton"
                 style="@style/Widget.Material3.Button.IconButton"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
