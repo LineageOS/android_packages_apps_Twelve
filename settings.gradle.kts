@@ -14,8 +14,10 @@ pluginManagement {
         }
         mavenCentral()
         gradlePluginPortal()
+        maven("https://raw.githubusercontent.com/lineage-next/gradle-generatebp/v1.20/.m2")
     }
 }
+
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
