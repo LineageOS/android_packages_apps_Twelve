@@ -38,7 +38,6 @@ import org.lineageos.twelve.ext.isPlayingFlow
 import org.lineageos.twelve.ext.mediaItemFlow
 import org.lineageos.twelve.ext.mediaMetadataFlow
 import org.lineageos.twelve.ext.next
-import org.lineageos.twelve.ext.playbackParametersFlow
 import org.lineageos.twelve.ext.playbackStateFlow
 import org.lineageos.twelve.ext.repeatModeFlow
 import org.lineageos.twelve.ext.shuffleModeFlow
@@ -52,19 +51,6 @@ import org.lineageos.twelve.services.PlaybackService.CustomCommand.Companion.sen
 import org.lineageos.twelve.utils.MimeUtils
 
 open class NowPlayingViewModel(application: Application) : TwelveViewModel(application) {
-    enum class PlaybackSpeed(val value: Float) {
-        ONE(1f),
-        ONE_POINT_FIVE(1.5f),
-        TWO(2f),
-        ZERO_POINT_FIVE(0.5f);
-
-        companion object {
-            fun fromValue(value: Float) = entries.firstOrNull {
-                it.value == value
-            }
-        }
-    }
-
     enum class VisualizerType(val factory: () -> Array<IRenderer>?) {
         NONE({ null }),
         TYPE_1({ arrayOf(ColumnarType1Renderer()) }),
@@ -140,17 +126,6 @@ open class NowPlayingViewModel(application: Application) : TwelveViewModel(appli
             viewModelScope,
             started = SharingStarted.WhileSubscribed(),
             initialValue = RepeatMode.NONE
-        )
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    val playbackParameters = mediaController
-        .filterNotNull()
-        .flatMapLatest { it.playbackParametersFlow() }
-        .flowOn(Dispatchers.Main)
-        .stateIn(
-            viewModelScope,
-            started = SharingStarted.WhileSubscribed(),
-            initialValue = null
         )
 
     val mediaArtwork = combine(
@@ -347,16 +322,6 @@ open class NowPlayingViewModel(application: Application) : TwelveViewModel(appli
 
     fun toggleRepeatMode() {
         typedRepeatMode = typedRepeatMode.next()
-    }
-
-    fun shufflePlaybackSpeed() {
-        mediaController.value?.let {
-            val playbackSpeed = PlaybackSpeed.fromValue(
-                it.playbackParameters.speed
-            ) ?: PlaybackSpeed.ONE
-
-            it.setPlaybackSpeed(playbackSpeed.next().value)
-        }
     }
 
     fun nextVisualizerType() {
