@@ -93,6 +93,8 @@ class PlaybackService : MediaLibraryService(), Player.Listener, LifecycleOwner {
     override val lifecycle: Lifecycle
         get() = dispatcher.lifecycle
 
+    private val player: ExoPlayer
+        get() = mediaLibrarySession?.player as ExoPlayer
     private var mediaLibrarySession: MediaLibrarySession? = null
 
     private val mediaRepositoryTree by lazy {
@@ -356,7 +358,15 @@ class PlaybackService : MediaLibraryService(), Player.Listener, LifecycleOwner {
 
     override fun onTaskRemoved(rootIntent: Intent?) {
         if (sharedPreferences.stopPlaybackOnTaskRemoved || !isPlaybackOngoing) {
-            pauseAllPlayersAndStopSelf()
+            lifecycleScope.launch {
+                if (isPlaybackOngoing) {
+                    resumptionPlaylistRepository.onPlaybackPositionChanged(
+                        player.currentMediaItemIndex,
+                        player.currentPosition
+                    )
+                }
+                pauseAllPlayersAndStopSelf()
+            }
         }
     }
 
