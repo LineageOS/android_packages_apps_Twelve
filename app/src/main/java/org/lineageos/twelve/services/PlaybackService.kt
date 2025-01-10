@@ -38,6 +38,7 @@ import kotlinx.coroutines.launch
 import org.lineageos.twelve.MainActivity
 import org.lineageos.twelve.R
 import org.lineageos.twelve.TwelveApplication
+import org.lineageos.twelve.ext.enableFloatOutput
 import org.lineageos.twelve.ext.enableOffload
 import org.lineageos.twelve.ext.setOffloadEnabled
 import org.lineageos.twelve.ext.skipSilence
@@ -70,7 +71,15 @@ class PlaybackService : MediaLibraryService(), Player.Listener, LifecycleOwner {
          * Response:
          * - [RSP_VALUE] ([Int]): The audio session ID
          */
-        GET_AUDIO_SESSION_ID("get_audio_session_id", Bundle.EMPTY);
+        GET_AUDIO_SESSION_ID("get_audio_session_id", Bundle.EMPTY),
+
+        /**
+         * Toggles float output.
+         *
+         * Arguments:
+         * - [ARG_VALUE] ([Boolean]): Whether to enable or disable float output
+         */
+        TOGGLE_FLOAT_OUTPUT("toggle_float_output", Bundle.EMPTY);
 
         val sessionCommand = SessionCommand(value, extras)
 
@@ -94,6 +103,7 @@ class PlaybackService : MediaLibraryService(), Player.Listener, LifecycleOwner {
         get() = dispatcher.lifecycle
 
     private var mediaLibrarySession: MediaLibrarySession? = null
+    private var turntableRenderersFactory: TurntableRenderersFactory? = null
 
     private val mediaRepositoryTree by lazy {
         MediaRepositoryTree(
@@ -290,6 +300,14 @@ class PlaybackService : MediaLibraryService(), Player.Listener, LifecycleOwner {
                     )
                 }
 
+                CustomCommand.TOGGLE_FLOAT_OUTPUT -> {
+                    args.getBoolean(CustomCommand.ARG_VALUE).let {
+                        turntableRenderersFactory?.setEnableAudioFloatOutput(it)
+                    }
+
+                    SessionResult(SessionResult.RESULT_SUCCESS)
+                }
+
                 null -> SessionResult(SessionError.ERROR_NOT_SUPPORTED)
             }
         }
@@ -307,7 +325,13 @@ class PlaybackService : MediaLibraryService(), Player.Listener, LifecycleOwner {
         val exoPlayer = ExoPlayer.Builder(this)
             .setAudioAttributes(audioAttributes, true)
             .setHandleAudioBecomingNoisy(true)
-            .setRenderersFactory(TurntableRenderersFactory(this))
+            .setRenderersFactory(
+                TurntableRenderersFactory(this).apply {
+                    setEnableAudioFloatOutput(sharedPreferences.enableFloatOutput)
+                }.also {
+                    turntableRenderersFactory = it
+                }
+            )
             .setSkipSilenceEnabled(sharedPreferences.skipSilence)
             .setLoadControl(
                 DefaultLoadControl.Builder()

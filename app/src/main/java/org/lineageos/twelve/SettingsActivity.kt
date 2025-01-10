@@ -26,6 +26,7 @@ import androidx.preference.SwitchPreference
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.MaterialToolbar
 import kotlinx.coroutines.launch
+import org.lineageos.twelve.ext.ENABLE_FLOAT_OUTPUT_KEY
 import org.lineageos.twelve.ext.ENABLE_OFFLOAD_KEY
 import org.lineageos.twelve.ext.SKIP_SILENCE_KEY
 import org.lineageos.twelve.ext.setOffset
@@ -142,6 +143,7 @@ class SettingsActivity : AppCompatActivity(R.layout.activity_settings) {
 
     class RootSettingsFragment : SettingsFragment(R.xml.root_preferences) {
         // Preferences
+        private val enableFloatOutput by lazy { findPreference<SwitchPreference>(ENABLE_FLOAT_OUTPUT_KEY)!! }
         private val enableOffload by lazy { findPreference<SwitchPreference>(ENABLE_OFFLOAD_KEY)!! }
         private val skipSilence by lazy { findPreference<SwitchPreference>(SKIP_SILENCE_KEY)!! }
 
@@ -151,6 +153,13 @@ class SettingsActivity : AppCompatActivity(R.layout.activity_settings) {
             enableOffload.setOnPreferenceChangeListener { _, newValue ->
                 lifecycleScope.launch {
                     viewModel.toggleOffload(newValue as Boolean)
+                }
+                true
+            }
+
+            enableFloatOutput.setOnPreferenceChangeListener { _, newValue ->
+                lifecycleScope.launch {
+                    viewModel.toggleFloatOutput(newValue as Boolean)
                 }
                 true
             }

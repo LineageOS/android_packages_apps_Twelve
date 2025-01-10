@@ -38,6 +38,17 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
         }
     }
 
+    suspend fun toggleFloatOutput(floatOutput: Boolean) {
+        withMediaController {
+            sendCustomCommand(
+                PlaybackService.CustomCommand.TOGGLE_FLOAT_OUTPUT,
+                bundleOf(
+                    PlaybackService.CustomCommand.ARG_VALUE to floatOutput
+                )
+            )
+        }
+    }
+
     @OptIn(UnstableApi::class)
     suspend fun toggleSkipSilence(skipSilence: Boolean) {
         withMediaController {
