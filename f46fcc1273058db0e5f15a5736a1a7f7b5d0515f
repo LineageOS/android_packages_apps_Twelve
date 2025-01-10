@@ -52,6 +52,24 @@
       "parentUuid": "7a589f65_6356d868",
       "revId": "f46fcc1273058db0e5f15a5736a1a7f7b5d0515f",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "11414de9_69a72c1c",
+        "filename": "app/src/main/java/org/lineageos/twelve/viewmodels/LocalPlayerViewModel.kt",
+        "patchSetId": 5
+      },
+      "lineNbr": 63,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2025-01-10T10:28:38Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7dc77161_20848078",
+      "revId": "f46fcc1273058db0e5f15a5736a1a7f7b5d0515f",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
