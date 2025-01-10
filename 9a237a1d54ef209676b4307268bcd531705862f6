@@ -16,6 +16,24 @@
       "message": "since we need app restart anyways this isn\u0027t needed.\n\nwe can probably hotswap the player in a media session somehow by saving the old player state but that sounds horrible",
       "revId": "9a237a1d54ef209676b4307268bcd531705862f6",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "334b982a_8fa74fea",
+        "filename": "app/src/main/java/org/lineageos/twelve/services/PlaybackService.kt",
+        "patchSetId": 1
+      },
+      "lineNbr": 303,
+      "author": {
+        "id": 25732
+      },
+      "writtenOn": "2025-01-10T20:55:52Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3fec2c66_16b17c55",
+      "revId": "9a237a1d54ef209676b4307268bcd531705862f6",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
