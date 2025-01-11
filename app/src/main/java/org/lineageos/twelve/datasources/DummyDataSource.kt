@@ -14,6 +14,7 @@ import org.lineageos.twelve.models.ArtistWorks
 import org.lineageos.twelve.models.Audio
 import org.lineageos.twelve.models.Genre
 import org.lineageos.twelve.models.GenreContent
+import org.lineageos.twelve.models.M3UPlaylist
 import org.lineageos.twelve.models.MediaItem
 import org.lineageos.twelve.models.MediaType
 import org.lineageos.twelve.models.Playlist
@@ -85,6 +86,11 @@ object DummyDataSource : MediaDataSource {
 
     override suspend fun createPlaylist(name: String) =
         RequestStatus.Error<Uri, _>(MediaError.NOT_IMPLEMENTED)
+
+    override suspend fun importPlaylist(
+        name: String,
+        playlist: M3UPlaylist
+    ) = RequestStatus.Error<Unit, _>(MediaError.NOT_IMPLEMENTED)
 
     override suspend fun renamePlaylist(playlistUri: Uri, name: String) =
         RequestStatus.Error<Unit, _>(MediaError.NOT_IMPLEMENTED)

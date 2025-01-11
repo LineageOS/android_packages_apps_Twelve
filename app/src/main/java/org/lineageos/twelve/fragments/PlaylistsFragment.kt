@@ -38,6 +38,7 @@ import org.lineageos.twelve.ui.views.ListItem
 import org.lineageos.twelve.ui.views.SortingChip
 import org.lineageos.twelve.utils.PermissionsChecker
 import org.lineageos.twelve.utils.PermissionsUtils
+import org.lineageos.twelve.utils.PickPlayListContract
 import org.lineageos.twelve.viewmodels.PlaylistsViewModel
 
 /**
@@ -48,7 +49,7 @@ class PlaylistsFragment : Fragment(R.layout.fragment_playlists) {
     private val viewModel by viewModels<PlaylistsViewModel>()
 
     // Views
-    private val createNewPlaylistButton by getViewProperty<Button>(R.id.createNewPlaylistButton)
+    private val createNewPlaylistButton by getViewProperty<Button>(R.id.createOrImportPlaylistButton)
     private val fullscreenLoadingProgressBar by getViewProperty<FullscreenLoadingProgressBar>(R.id.fullscreenLoadingProgressBar)
     private val linearProgressIndicator by getViewProperty<LinearProgressIndicator>(R.id.linearProgressIndicator)
     private val noElementsLinearLayout by getViewProperty<LinearLayout>(R.id.noElementsLinearLayout)
@@ -56,7 +57,7 @@ class PlaylistsFragment : Fragment(R.layout.fragment_playlists) {
     private val sortingChip by getViewProperty<SortingChip>(R.id.sortingChip)
 
     // Recyclerview
-    private val addNewPlaylistItem = Playlist(Uri.EMPTY, "")
+    private val createOrImportPlaylistItem = Playlist(Uri.EMPTY, "")
     private val adapter = object : SimpleListAdapter<Playlist, ListItem>(
         UniqueItemDiffCallback(),
         ::ListItem,
@@ -64,8 +65,8 @@ class PlaylistsFragment : Fragment(R.layout.fragment_playlists) {
         override fun ViewHolder.onPrepareView() {
             view.setOnClickListener {
                 item?.let {
-                    when (it === addNewPlaylistItem) {
-                        true -> openCreateNewPlaylistDialog()
+                    when (it === createOrImportPlaylistItem) {
+                        true -> openCreateOrImportPlaylistDialog()
                         false -> findNavController().navigateSafe(
                             R.id.action_mainFragment_to_fragment_playlist,
                             PlaylistFragment.createBundle(it.uri)
@@ -87,10 +88,10 @@ class PlaylistsFragment : Fragment(R.layout.fragment_playlists) {
         }
 
         override fun ViewHolder.onBindView(item: Playlist) {
-            when (item === addNewPlaylistItem) {
+            when (item === createOrImportPlaylistItem) {
                 true -> {
                     view.setLeadingIconImage(R.drawable.ic_playlist_add)
-                    view.setHeadlineText(R.string.create_playlist)
+                    view.setHeadlineText(R.string.create_or_import_playlist)
                 }
 
                 false -> {
@@ -105,6 +106,21 @@ class PlaylistsFragment : Fragment(R.layout.fragment_playlists) {
     private val permissionsChecker = PermissionsChecker(
         this, PermissionsUtils.mainPermissions
     )
+
+    // Activity callbacks
+    private val getPlaylistFile =
+        registerForActivityResult(PickPlayListContract()) { output ->
+            output?.let {
+                viewLifecycleOwner.lifecycleScope.launch {
+                    val inputStream = requireContext().contentResolver.openInputStream(output.uri)
+                    fullscreenLoadingProgressBar.withProgress {
+                        inputStream?.use { stream ->
+                            viewModel.importPlaylist(output.name, stream)
+                        }
+                    }
+                }
+            }
+        }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -124,7 +140,7 @@ class PlaylistsFragment : Fragment(R.layout.fragment_playlists) {
         recyclerView.adapter = adapter
 
         createNewPlaylistButton.setOnClickListener {
-            openCreateNewPlaylistDialog()
+            openCreateOrImportPlaylistDialog()
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
@@ -160,7 +176,7 @@ class PlaylistsFragment : Fragment(R.layout.fragment_playlists) {
                                 when (isEmpty) {
                                     true -> emptyList()
                                     false -> listOf(
-                                        addNewPlaylistItem,
+                                        createOrImportPlaylistItem,
                                         *it.data.toTypedArray(),
                                     )
                                 }
@@ -194,21 +210,26 @@ class PlaylistsFragment : Fragment(R.layout.fragment_playlists) {
         }
     }
 
-    private fun openCreateNewPlaylistDialog() {
+    private fun openCreateOrImportPlaylistDialog() {
         EditTextMaterialAlertDialogBuilder(requireContext())
-            .setPositiveButton(R.string.create_playlist_confirm) { text ->
+            .setPositiveButton(R.string.create_or_import_playlist_confirm) { text ->
                 viewLifecycleOwner.lifecycleScope.launch {
                     fullscreenLoadingProgressBar.withProgress {
                         viewModel.createPlaylist(text)
                     }
                 }
             }
-            .setTitle(R.string.create_playlist)
+            .setNeutralButton(R.string.create_or_import_playlist_import) { text ->
+                getPlaylistFile.launch(PickPlayListContract.createInput(PLAYLIST_MIME_TYPES, text))
+            }
+            .setTitle(R.string.create_or_import_playlist)
             .setNegativeButton(android.R.string.cancel, null)
             .show()
     }
 
     companion object {
         private val LOG_TAG = PlaylistsFragment::class.simpleName!!
+
+        private val PLAYLIST_MIME_TYPES = arrayOf("audio/m3u", "audio/x-mpegurl")
     }
 }
