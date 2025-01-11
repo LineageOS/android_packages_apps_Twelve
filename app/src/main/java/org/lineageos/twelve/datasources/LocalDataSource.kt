@@ -13,6 +13,7 @@ import android.provider.MediaStore
 import androidx.core.os.bundleOf
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
@@ -671,7 +672,42 @@ class LocalDataSource(
     override suspend fun importPlaylist(
         name: String,
         playlist: M3UPlaylist
-    ) = RequestStatus.Error<Unit, _>(MediaError.NOT_IMPLEMENTED)
+    ) = run {
+        // We have to retrieve the audio URIs from the database to ensure that the audio files
+        // exist in the media provider before adding them to the playlist.
+        val audioUris = contentResolver.queryFlow(
+            audiosUri,
+            audiosProjection,
+            bundleOf(
+                ContentResolver.QUERY_ARG_SQL_SELECTION to query {
+                    MediaStore.Audio.AudioColumns.DISPLAY_NAME `in` List(playlist.entries.size) {
+                        Query.ARG
+                    }
+                },
+                ContentResolver.QUERY_ARG_SQL_SELECTION_ARGS to playlist.getBaseNames()
+                    .toTypedArray(),
+            )
+        ).mapEachRow {
+            it.getLong(MediaStore.Audio.AudioColumns._ID)
+        }.map {
+            it.map { id ->
+                ContentUris.withAppendedId(audiosUri, id)
+            }
+        }.first()
+
+        if (audioUris.isEmpty()) {
+            RequestStatus.Error(MediaError.NOT_FOUND)
+        } else {
+            database.getPlaylistDao().create(name).let { playlistId ->
+                database.getPlaylistWithItemsDao().addItemsToPlaylist(
+                    playlistId,
+                    audioUris
+                )
+            }.let {
+                RequestStatus.Success<_, MediaError>(Unit)
+            }
+        }
+    }
 
     override suspend fun renamePlaylist(playlistUri: Uri, name: String) =
         database.getPlaylistDao().rename(

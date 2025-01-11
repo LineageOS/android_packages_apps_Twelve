@@ -28,6 +28,16 @@ abstract class PlaylistWithItemsDao(database: TwelveDatabase) {
     }
 
     /**
+     * Add items to a playlist (creates a cross-reference).
+     */
+    @Transaction
+    open suspend fun addItemsToPlaylist(playlistId: Long, itemUris: List<Uri>) {
+        itemUris.forEach { itemUri ->
+            _addItemToPlaylist(playlistId, itemDao.getOrInsert(itemUri).id)
+        }
+    }
+
+    /**
      * Remove an item from a playlist (deletes the cross-reference) and delete the item if it's the
      * last association or if the user never listened to it.
      */
