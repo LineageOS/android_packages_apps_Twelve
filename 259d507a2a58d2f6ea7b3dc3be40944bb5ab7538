@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "100b6330_a5a5b797",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 25732
+      },
+      "writtenOn": "2025-01-11T00:47:16Z",
+      "side": 1,
+      "message": "Note: I didn\u0027t remove MediaError strings because we want to use those soon",
+      "revId": "259d507a2a58d2f6ea7b3dc3be40944bb5ab7538",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
