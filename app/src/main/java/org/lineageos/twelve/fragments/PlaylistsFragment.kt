@@ -46,28 +46,28 @@ class PlaylistsFragment : Fragment(R.layout.fragment_playlists) {
     private val viewModel by viewModels<PlaylistsViewModel>()
 
     // Views
-    private val createNewPlaylistButton by getViewProperty<Button>(R.id.createNewPlaylistButton)
+    private val createOrImportPlaylistButton by getViewProperty<Button>(R.id.createOrImportPlaylistButton)
     private val linearProgressIndicator by getViewProperty<LinearProgressIndicator>(R.id.linearProgressIndicator)
     private val noElementsLinearLayout by getViewProperty<LinearLayout>(R.id.noElementsLinearLayout)
     private val recyclerView by getViewProperty<RecyclerView>(R.id.recyclerView)
     private val sortingChip by getViewProperty<SortingChip>(R.id.sortingChip)
 
     // Recyclerview
-    private val addNewPlaylistItem = Playlist(Uri.EMPTY, "")
+    private val createOrImportPlaylistItem = Playlist(Uri.EMPTY, "")
     private val adapter = object : SimpleListAdapter<Playlist, ListItem>(
         UniqueItemDiffCallback(),
         ::ListItem,
     ) {
         override fun ViewHolder.onBindView(item: Playlist) {
-            when (item === addNewPlaylistItem) {
+            when (item === createOrImportPlaylistItem) {
                 true -> {
                     view.setLeadingIconImage(R.drawable.ic_playlist_add)
-                    view.setHeadlineText(R.string.create_playlist)
+                    view.setHeadlineText(R.string.create_or_import_playlist)
 
                     view.setOnClickListener {
                         findNavController().navigateSafe(
-                            R.id.action_mainFragment_to_fragment_create_playlist_dialog,
-                            CreatePlaylistDialogFragment.createBundle(
+                            R.id.action_mainFragment_to_fragment_create_or_import_playlist_dialog,
+                            CreateOrImportPlaylistDialogFragment.createBundle(
                                 providerIdentifier = viewModel.navigationProvider.value
                             )
                         )
@@ -122,10 +122,10 @@ class PlaylistsFragment : Fragment(R.layout.fragment_playlists) {
 
         recyclerView.adapter = adapter
 
-        createNewPlaylistButton.setOnClickListener {
+        createOrImportPlaylistButton.setOnClickListener {
             findNavController().navigateSafe(
-                R.id.action_mainFragment_to_fragment_create_playlist_dialog,
-                CreatePlaylistDialogFragment.createBundle(
+                R.id.action_mainFragment_to_fragment_create_or_import_playlist_dialog,
+                CreateOrImportPlaylistDialogFragment.createBundle(
                     providerIdentifier = viewModel.navigationProvider.value
                 )
             )
@@ -164,7 +164,7 @@ class PlaylistsFragment : Fragment(R.layout.fragment_playlists) {
                                 when (isEmpty) {
                                     true -> emptyList()
                                     false -> listOf(
-                                        addNewPlaylistItem,
+                                        createOrImportPlaylistItem,
                                         *it.data.toTypedArray(),
                                     )
                                 }
