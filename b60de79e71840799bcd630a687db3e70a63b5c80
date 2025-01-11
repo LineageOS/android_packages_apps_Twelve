@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "caed6b67_15a27ec2",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2025-01-11T11:57:42Z",
+      "side": 1,
+      "message": "This is strictly for kotlin 2+, something we\u0027ll never see in AOSP, but one can hope",
+      "revId": "b60de79e71840799bcd630a687db3e70a63b5c80",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
