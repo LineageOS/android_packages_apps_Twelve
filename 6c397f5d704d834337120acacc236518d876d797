@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "dfe52191_6c19ef92",
+        "filename": "app/src/main/java/org/lineageos/twelve/datasources/subsonic/models/AlbumID3.kt",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 13648
+      },
+      "writtenOn": "2025-01-11T11:53:07Z",
+      "side": 1,
+      "message": "move above",
+      "revId": "6c397f5d704d834337120acacc236518d876d797",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d6ef293c_70440984",
+        "filename": "app/src/main/java/org/lineageos/twelve/datasources/subsonic/models/AlbumWithSongsID3.kt",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 13648
+      },
+      "writtenOn": "2025-01-11T11:53:07Z",
+      "side": 1,
+      "message": "same",
+      "revId": "6c397f5d704d834337120acacc236518d876d797",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
