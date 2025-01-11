@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2024 The LineageOS Project
+ * SPDX-FileCopyrightText: 2024-2025 The LineageOS Project
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -25,6 +25,16 @@ abstract class PlaylistWithItemsDao(database: TwelveDatabase) {
     @Transaction
     open suspend fun addItemToPlaylist(playlistId: Long, itemUri: Uri) {
         _addItemToPlaylist(playlistId, itemDao.getOrInsert(itemUri).id)
+    }
+
+    /**
+     * Add items to a playlist (creates a cross-reference).
+     */
+    @Transaction
+    open suspend fun addItemsToPlaylist(playlistId: Long, itemUris: List<Uri>) {
+        itemUris.forEach { itemUri ->
+            _addItemToPlaylist(playlistId, itemDao.getOrInsert(itemUri).id)
+        }
     }
 
     /**
