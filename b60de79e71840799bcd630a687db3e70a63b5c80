@@ -16,6 +16,24 @@
       "message": "This is strictly for kotlin 2+, something we\u0027ll never see in AOSP, but one can hope",
       "revId": "b60de79e71840799bcd630a687db3e70a63b5c80",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a4d6dc58_a1e152dc",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2025-01-11T12:55:23Z",
+      "side": 1,
+      "message": "turns out I can already using koltin 2 there, good to know",
+      "parentUuid": "caed6b67_15a27ec2",
+      "revId": "b60de79e71840799bcd630a687db3e70a63b5c80",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
