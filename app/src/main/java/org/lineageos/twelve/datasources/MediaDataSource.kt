@@ -15,6 +15,7 @@ import org.lineageos.twelve.models.Audio
 import org.lineageos.twelve.models.DataSourceInformation
 import org.lineageos.twelve.models.Genre
 import org.lineageos.twelve.models.GenreContent
+import org.lineageos.twelve.models.M3UPlaylist
 import org.lineageos.twelve.models.MediaItem
 import org.lineageos.twelve.models.MediaType
 import org.lineageos.twelve.models.Playlist
@@ -126,6 +127,14 @@ interface MediaDataSource {
      * @return A [RequestStatus] with the [Uri] of the new playlist if succeeded, an error otherwise
      */
     suspend fun createPlaylist(name: String): MediaRequestStatus<Uri>
+
+    /**
+     * Import a playlist.
+     * @param name The name of the playlist
+     * @param playlist The playlist to import
+     * @return A [RequestStatus] with the [Uri] of the new playlist if succeeded, an error otherwise
+     */
+    suspend fun importPlaylist(name: String, playlist: M3UPlaylist): MediaRequestStatus<Uri>
 
     /**
      * Rename a playlist.

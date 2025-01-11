@@ -57,11 +57,11 @@
                     android:text="@string/no_playlists_comma" />
 
                 <Button
-                    android:id="@+id/createNewPlaylistButton"
+                    android:id="@+id/createOrImportPlaylistButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
-                    android:text="@string/create_playlist_suggestion" />
+                    android:text="@string/create_or_import_playlist_suggestion" />
 
             </LinearLayout>
 
