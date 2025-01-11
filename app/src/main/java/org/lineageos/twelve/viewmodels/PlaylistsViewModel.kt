@@ -15,12 +15,15 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.withContext
+import org.lineageos.twelve.datasources.MediaError
 import org.lineageos.twelve.ext.PLAYLISTS_SORTING_REVERSE_KEY
 import org.lineageos.twelve.ext.PLAYLISTS_SORTING_STRATEGY_KEY
 import org.lineageos.twelve.ext.playlistsSortingRule
 import org.lineageos.twelve.ext.preferenceFlow
 import org.lineageos.twelve.models.RequestStatus
 import org.lineageos.twelve.models.SortingRule
+import org.lineageos.twelve.utils.M3UParser
+import java.io.InputStream
 
 class PlaylistsViewModel(application: Application) : TwelveViewModel(application) {
     val sortingRule = sharedPreferences.preferenceFlow(
@@ -54,4 +57,15 @@ class PlaylistsViewModel(application: Application) : TwelveViewModel(application
             mediaRepository.createPlaylist(it, name)
         }
     }
+
+    suspend fun importPlaylist(
+        name: String,
+        inputStream: InputStream,
+    ) = mediaRepository.navigationProvider.value?.let {
+        withContext(Dispatchers.IO) {
+            M3UParser.parse(inputStream)?.let { playlist ->
+                mediaRepository.importPlaylist(it, playlist.displayTitle ?: name, playlist)
+            } ?: RequestStatus.Error(MediaError.DESERIALIZATION)
+        }
+    } ?: RequestStatus.Error(MediaError.IO)
 }
