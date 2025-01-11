@@ -44,6 +44,7 @@ import org.lineageos.twelve.ext.defaultProvider
 import org.lineageos.twelve.ext.preferenceFlow
 import org.lineageos.twelve.ext.splitLocalDevices
 import org.lineageos.twelve.ext.storageVolumesFlow
+import org.lineageos.twelve.models.M3UPlaylist
 import org.lineageos.twelve.models.Provider
 import org.lineageos.twelve.models.ProviderArgument.Companion.requireArgument
 import org.lineageos.twelve.models.ProviderIdentifier
@@ -608,6 +609,18 @@ class MediaRepository(
     ) ?: RequestStatus.Error(
         MediaError.NOT_FOUND
     )
+
+    /**
+     * @see MediaDataSource.importPlaylist
+     */
+    suspend fun importPlaylist(
+        provider: ProviderIdentifier,
+        name: String,
+        playlist: M3UPlaylist
+    ) = getDataSource(provider)?.importPlaylist(
+        name,
+        playlist
+    ) ?: RequestStatus.Error(MediaError.NOT_FOUND)
 
     /**
      * @see MediaDataSource.renamePlaylist
