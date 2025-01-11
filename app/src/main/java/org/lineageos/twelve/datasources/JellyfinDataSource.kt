@@ -29,6 +29,7 @@ import org.lineageos.twelve.models.Audio
 import org.lineageos.twelve.models.Genre
 import org.lineageos.twelve.models.GenreContent
 import org.lineageos.twelve.models.LocalizedString
+import org.lineageos.twelve.models.M3UPlaylist
 import org.lineageos.twelve.models.MediaItem
 import org.lineageos.twelve.models.MediaType
 import org.lineageos.twelve.models.Playlist
@@ -247,6 +248,11 @@ class JellyfinDataSource(
             getPlaylistUri(id.toString())
         }
     }
+
+    override suspend fun importPlaylist(
+        name: String,
+        playlist: M3UPlaylist
+    ) = RequestStatus.Error<Unit, _>(MediaError.NOT_IMPLEMENTED)
 
     override suspend fun renamePlaylist(playlistUri: Uri, name: String) =
         client.renamePlaylist(UUID.fromString(playlistUri.lastPathSegment!!), name)

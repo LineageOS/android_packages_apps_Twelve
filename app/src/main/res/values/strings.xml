@@ -32,10 +32,14 @@
     <string name="library_fragment_menu_playlists">Playlists</string>
 
     <!-- Playlists fragment -->
-    <string name="create_playlist">Create new playlist</string>
     <string name="no_playlists_comma">No playlists,</string>
+    <string name="create_playlist">Create new playlist</string>
     <string name="create_playlist_suggestion">Create a new one?</string>
     <string name="create_playlist_confirm">Create</string>
+    <string name="create_or_import_playlist">Create or import playlist</string>
+    <string name="create_or_import_playlist_suggestion">Create a new one?</string>
+    <string name="create_or_import_playlist_confirm">Create</string>
+    <string name="create_or_import_playlist_import">Import</string>
 
     <!-- No elements -->
     <string name="no_activity">No activity</string>

@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2024 The LineageOS Project
+ * SPDX-FileCopyrightText: 2024-2025 The LineageOS Project
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -30,6 +30,7 @@ class EditTextMaterialAlertDialogBuilder(
     private var text: String? = null
     private var hint: String? = null
     private var positiveListener: ((text: String) -> Unit)? = null
+    private var neutralListener: ((text: String) -> Unit)? = null
 
     init {
         setView(R.layout.alert_dialog_edit_text)
@@ -50,7 +51,7 @@ class EditTextMaterialAlertDialogBuilder(
         positiveListener?.invoke(editText.text.toString())
     }.also {
         positiveListener = listener
-    }
+    } as EditTextMaterialAlertDialogBuilder
 
     fun setPositiveButton(
         text: CharSequence?,
@@ -59,7 +60,25 @@ class EditTextMaterialAlertDialogBuilder(
         positiveListener?.invoke(editText.text.toString())
     }.also {
         positiveListener = listener
-    }
+    } as EditTextMaterialAlertDialogBuilder
+
+    fun setNeutralButton(
+        textId: Int,
+        listener: ((text: String) -> Unit)?
+    ) = super.setNeutralButton(textId) { _, _ ->
+        neutralListener?.invoke(editText.text.toString())
+    }.also {
+        neutralListener = listener
+    } as EditTextMaterialAlertDialogBuilder
+
+    fun setNeutralButton(
+        text: CharSequence?,
+        listener: ((text: String) -> Unit)?
+    ) = super.setNeutralButton(text) { _, _ ->
+        neutralListener?.invoke(editText.text.toString())
+    }.also {
+        neutralListener = listener
+    } as EditTextMaterialAlertDialogBuilder
 
     override fun show(): AlertDialog = super.show().also {
         editText = it.findViewById(R.id.editText)!!

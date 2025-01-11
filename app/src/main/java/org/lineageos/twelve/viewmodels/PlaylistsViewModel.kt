@@ -21,6 +21,8 @@ import org.lineageos.twelve.ext.playlistsSortingRule
 import org.lineageos.twelve.ext.preferenceFlow
 import org.lineageos.twelve.models.RequestStatus
 import org.lineageos.twelve.models.SortingRule
+import org.lineageos.twelve.utils.M3UParser
+import java.io.InputStream
 
 class PlaylistsViewModel(application: Application) : TwelveViewModel(application) {
     val sortingRule = sharedPreferences.preferenceFlow(
@@ -53,6 +55,16 @@ class PlaylistsViewModel(application: Application) : TwelveViewModel(application
         mediaRepository.navigationProvider.value?.let {
             withContext(Dispatchers.IO) {
                 mediaRepository.createPlaylist(it, name)
+            }
+        }
+    }
+
+    suspend fun importPlaylist(name: String, inputStream: InputStream) {
+        val playlist = M3UParser.parse(inputStream)
+
+        mediaRepository.navigationProvider.value?.let {
+            withContext(Dispatchers.IO) {
+                mediaRepository.importPlaylist(it, name, playlist)
             }
         }
     }
