@@ -18,8 +18,10 @@ import org.lineageos.twelve.datasources.MediaError
 import org.lineageos.twelve.models.Provider
 import org.lineageos.twelve.models.ProviderIdentifier
 import org.lineageos.twelve.models.RequestStatus
+import org.lineageos.twelve.utils.M3UParser
+import java.io.InputStream
 
-class CreatePlaylistViewModel(application: Application) : TwelveViewModel(application) {
+class CreateOrImportPlaylistViewModel(application: Application) : TwelveViewModel(application) {
     private val providerIdentifier = MutableStateFlow<ProviderIdentifier?>(null)
 
     private val playlistName = MutableStateFlow("")
@@ -60,6 +62,17 @@ class CreatePlaylistViewModel(application: Application) : TwelveViewModel(applic
     suspend fun createPlaylist() = providerIdentifier.value?.let {
         withContext(Dispatchers.IO) {
             mediaRepository.createPlaylist(it, playlistName.value)
+        }
+    } ?: RequestStatus.Error(MediaError.IO)
+
+    suspend fun importPlaylist(
+        name: String,
+        inputStream: InputStream,
+    ) = providerIdentifier.value?.let {
+        withContext(Dispatchers.IO) {
+            M3UParser.parse(inputStream)?.let { playlist ->
+                mediaRepository.importPlaylist(it, playlist.displayTitle ?: name, playlist)
+            } ?: RequestStatus.Error(MediaError.DESERIALIZATION)
         }
     } ?: RequestStatus.Error(MediaError.IO)
 }
