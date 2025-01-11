@@ -66,9 +66,10 @@ class AddOrRemoveFromPlaylistsFragment : Fragment(R.layout.fragment_add_or_remov
                     true -> {
                         view.setOnClickListener {
                             findNavController().navigateSafe(
-                                R.id.action_addOrRemoveFromPlaylistsFragment_to_fragment_create_playlist_dialog,
-                                CreatePlaylistDialogFragment.createBundle(
+                                R.id.action_addOrRemoveFromPlaylistsFragment_to_fragment_create_or_import_playlist_dialog,
+                                CreateOrImportPlaylistDialogFragment.createBundle(
                                     providerIdentifier = viewModel.providerOfAudio.value,
+                                    allowImport = false,
                                 )
                             )
                         }
@@ -123,9 +124,10 @@ class AddOrRemoveFromPlaylistsFragment : Fragment(R.layout.fragment_add_or_remov
 
         createNewPlaylistButton.setOnClickListener {
             findNavController().navigateSafe(
-                R.id.action_addOrRemoveFromPlaylistsFragment_to_fragment_create_playlist_dialog,
-                CreatePlaylistDialogFragment.createBundle(
+                R.id.action_addOrRemoveFromPlaylistsFragment_to_fragment_create_or_import_playlist_dialog,
+                CreateOrImportPlaylistDialogFragment.createBundle(
                     providerIdentifier = viewModel.providerOfAudio.value,
+                    allowImport = false,
                 )
             )
         }

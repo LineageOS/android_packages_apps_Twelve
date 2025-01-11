@@ -16,6 +16,7 @@
         android:padding="24dp">
 
         <ImageView
+            android:id="@+id/createOrImportPlaylistImageView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
@@ -25,10 +26,10 @@
             app:tint="?attr/colorOnSurface" />
 
         <TextView
+            android:id="@+id/createOrImportPlaylistTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="@string/create_playlist"
             android:textAlignment="center"
             android:textAppearance="?attr/textAppearanceTitleLarge"
             android:textColor="?attr/colorOnSurface" />
@@ -70,6 +71,14 @@
             android:layout_gravity="end"
             android:layout_marginTop="24dp"
             android:orientation="horizontal">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/importMaterialButton"
+                style="@style/Widget.Material3.Button.TextButton.Dialog"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/create_playlist_import"
+                android:visibility="invisible" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/cancelMaterialButton"
