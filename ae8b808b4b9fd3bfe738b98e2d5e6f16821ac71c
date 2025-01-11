@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5b5986d4_76c598c0",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2025-01-11T22:01:03Z",
+      "side": 1,
+      "message": "I don\u0027t think we can do any better.\nWorks as expected if any media has matching name, probably not the _best_ way to do it, but we can handle metadata later to properly pick album, maybe?\n\ntested by importing a .m3u that contained file names of audio I had in /Music and random filenames",
+      "revId": "ae8b808b4b9fd3bfe738b98e2d5e6f16821ac71c",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
