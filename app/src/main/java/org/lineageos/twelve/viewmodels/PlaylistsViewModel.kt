@@ -51,20 +51,18 @@ class PlaylistsViewModel(application: Application) : TwelveViewModel(application
         sharedPreferences.playlistsSortingRule = sortingRule
     }
 
-    suspend fun createPlaylist(name: String) {
+    suspend fun createPlaylist(name: String) =
         mediaRepository.navigationProvider.value?.let {
             withContext(Dispatchers.IO) {
                 mediaRepository.createPlaylist(it, name)
             }
         }
-    }
 
-    suspend fun importPlaylist(name: String, inputStream: InputStream) {
+    suspend fun importPlaylist(name: String, inputStream: InputStream) =
         mediaRepository.navigationProvider.value?.let {
             withContext(Dispatchers.IO) {
                 val playlist = M3UParser.parse(inputStream)
                 mediaRepository.importPlaylist(it, name, playlist)
             }
         }
-    }
 }
