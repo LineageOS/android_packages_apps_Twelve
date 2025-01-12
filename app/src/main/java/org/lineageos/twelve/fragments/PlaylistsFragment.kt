@@ -115,10 +115,31 @@ class PlaylistsFragment : Fragment(R.layout.fragment_playlists) {
                 val inputStream = requireContext().contentResolver.openInputStream(output.uri)
                 fullscreenLoadingProgressBar.withProgress {
                     inputStream?.use { stream ->
-                        viewModel.importPlaylist(
+                        val result = viewModel.importPlaylist(
                             output.uri.contentBaseName() ?: output.name,
                             stream
                         )
+
+                        when (result) {
+                            is RequestStatus.Loading -> {
+                                // Do nothing
+                            }
+
+                            is RequestStatus.Success -> {
+                                findNavController().navigateSafe(
+                                    R.id.action_mainFragment_to_fragment_playlist,
+                                    PlaylistFragment.createBundle(result.data)
+                                )
+                            }
+
+                            is RequestStatus.Error -> {
+                                Log.e(
+                                    LOG_TAG,
+                                    "Failed to import playlist, error: ${result.error}",
+                                    result.throwable
+                                )
+                            }
+                        }
                     }
                 }
             }
