@@ -24,6 +24,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.lineageos.twelve.R
+import org.lineageos.twelve.ext.contentBaseName
 import org.lineageos.twelve.ext.getParcelable
 import org.lineageos.twelve.ext.getViewProperty
 import org.lineageos.twelve.ext.selectItem
@@ -63,7 +64,10 @@ class CreateOrImportPlaylistDialogFragment : MaterialDialogFragment(
                 val inputStream = requireContext().contentResolver.openInputStream(output.uri)
                 fullscreenLoadingProgressBar.withProgress {
                     inputStream?.use { stream ->
-                        viewModel.importPlaylist(output.name, stream)
+                        viewModel.importPlaylist(
+                            output.uri.contentBaseName() ?: output.name,
+                            stream,
+                        )
                     }
                 }
             }
