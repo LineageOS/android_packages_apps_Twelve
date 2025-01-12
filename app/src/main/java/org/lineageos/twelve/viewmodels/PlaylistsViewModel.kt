@@ -49,11 +49,9 @@ class PlaylistsViewModel(application: Application) : TwelveViewModel(application
         sharedPreferences.playlistsSortingRule = sortingRule
     }
 
-    suspend fun createPlaylist(name: String) {
-        mediaRepository.navigationProvider.value?.let {
-            withContext(Dispatchers.IO) {
-                mediaRepository.createPlaylist(it, name)
-            }
+    suspend fun createPlaylist(name: String) = mediaRepository.navigationProvider.value?.let {
+        withContext(Dispatchers.IO) {
+            mediaRepository.createPlaylist(it, name)
         }
     }
 }
