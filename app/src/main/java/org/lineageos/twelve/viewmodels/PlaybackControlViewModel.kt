@@ -97,8 +97,8 @@ class PlaybackControlViewModel(application: Application) : TwelveViewModel(appli
     companion object {
         private const val SPEED_DEFAULT = 1f
         private const val SPEED_MIN = 0.5f
-        private const val SPEED_MAX = 2.5f
-        private const val SPEED_STEP = 0.25f
+        private const val SPEED_MAX = 5.0f
+        private const val SPEED_STEP = 0.1f
 
         private const val PITCH_DEFAULT = 1f
         private const val PITCH_MIN = 0.5f
