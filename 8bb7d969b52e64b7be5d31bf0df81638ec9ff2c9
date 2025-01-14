@@ -16,6 +16,24 @@
       "message": "@seba@sebaubuntu.dev any idea how to avoid the switch animation? We can\u0027t really get the state onCreateView because mediaController is getting created",
       "revId": "8bb7d969b52e64b7be5d31bf0df81638ec9ff2c9",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8460b07e_5003d7fe",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 25732
+      },
+      "writtenOn": "2025-01-14T23:17:51Z",
+      "side": 1,
+      "message": "`¯\\_(ツ)_/¯`",
+      "parentUuid": "505e31d9_ac5ddda6",
+      "revId": "8bb7d969b52e64b7be5d31bf0df81638ec9ff2c9",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
