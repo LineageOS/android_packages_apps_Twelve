@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f8496376_e02269e7",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2025-01-14T23:34:40Z",
+      "side": 1,
+      "message": "5x was too much even for a pixel, 4x seems fine, we can decrease if things go back in other socs",
+      "revId": "206770c2c08e086d1be33b12f0bf7d01b7c52955",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
