@@ -38,7 +38,7 @@ class PlaybackControlViewModel(application: Application) : TwelveViewModel(appli
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val isSpeedMinusButtonEnabled = playbackParameters
-        .mapLatest { it.speed > SPEED_MIN }
+        .mapLatest { it.speed > (SPEED_MIN + (SPEED_STEP / 2)) }
         .flowOn(Dispatchers.IO)
         .stateIn(
             viewModelScope,
@@ -48,7 +48,7 @@ class PlaybackControlViewModel(application: Application) : TwelveViewModel(appli
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val isSpeedPlusButtonEnabled = playbackParameters
-        .mapLatest { it.speed < SPEED_MAX }
+        .mapLatest { it.speed < (SPEED_MAX - (SPEED_STEP / 2)) }
         .flowOn(Dispatchers.IO)
         .stateIn(
             viewModelScope,
