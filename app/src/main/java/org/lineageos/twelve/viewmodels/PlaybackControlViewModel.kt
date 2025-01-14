@@ -56,6 +56,16 @@ class PlaybackControlViewModel(application: Application) : TwelveViewModel(appli
             initialValue = false
         )
 
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val isPitchUnlockSwitchChecked = playbackParameters
+        .mapLatest { it.pitch != PITCH_DEFAULT }
+        .flowOn(Dispatchers.IO)
+        .stateIn(
+            viewModelScope,
+            started = SharingStarted.WhileSubscribed(),
+            initialValue = false
+        )
+
     fun increasePlaybackSpeed() {
         val newSpeed = (playbackParameters.value.speed + SPEED_STEP).coerceAtMost(SPEED_MAX)
 

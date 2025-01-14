@@ -115,6 +115,12 @@ class PlaybackControlBottomSheetDialogFragment : BottomSheetDialogFragment(
                         playbackPitchSlider.isVisible = it
                     }
                 }
+
+                launch {
+                    viewModel.isPitchUnlockSwitchChecked.collectLatest {
+                        playbackPitchUnlockMaterialSwitch.isChecked = it
+                    }
+                }
             }
         }
     }
