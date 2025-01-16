@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2024 The LineageOS Project
+ * SPDX-FileCopyrightText: 2024-2025 The LineageOS Project
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -14,6 +14,14 @@ data class LocalizedString(
     val stringResIdArgs: List<Any>? = null,
 ) {
     override fun toString() = value
+
+    fun areContentsTheSame(other: LocalizedString) = compareValuesBy(
+        this, other,
+        LocalizedString::value,
+        LocalizedString::stringResId,
+    ) == 0 && this.stringResIdArgs?.toTypedArray().contentEquals(
+        other.stringResIdArgs?.toTypedArray()
+    )
 
     fun getString(context: Context) = stringResId?.let { stringResId ->
         stringResIdArgs?.let { stringResIdArgs ->
