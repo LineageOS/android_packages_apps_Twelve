@@ -27,6 +27,7 @@ import org.lineageos.twelve.models.Album
 import org.lineageos.twelve.models.Artist
 import org.lineageos.twelve.models.ArtistWorks
 import org.lineageos.twelve.models.Audio
+import org.lineageos.twelve.models.DataSourceInformation
 import org.lineageos.twelve.models.Genre
 import org.lineageos.twelve.models.GenreContent
 import org.lineageos.twelve.models.LocalizedString
@@ -35,10 +36,12 @@ import org.lineageos.twelve.models.Playlist
 import org.lineageos.twelve.models.ProviderArgument
 import org.lineageos.twelve.models.ProviderArgument.Companion.requireArgument
 import org.lineageos.twelve.models.RequestStatus
+import org.lineageos.twelve.models.RequestStatus.Companion.map
 import org.lineageos.twelve.models.SortingRule
 import org.lineageos.twelve.models.SortingStrategy
 import org.lineageos.twelve.models.Thumbnail
 import org.lineageos.twelve.utils.toRequestStatus
+import org.lineageos.twelve.utils.toResult
 
 /**
  * Subsonic based data source.
@@ -81,6 +84,78 @@ class SubsonicDataSource(
      * This flow is used to signal a change in the playlists.
      */
     private val _playlistsChanged = MutableStateFlow(Any())
+
+    override fun status() = suspend {
+        val ping = subsonicClient.ping().toRequestStatus { this }
+        val license = subsonicClient.getLicense().toResult { this }
+
+        ping.map {
+            listOfNotNull(
+                DataSourceInformation(
+                    "version",
+                    LocalizedString(
+                        "Subsonic version",
+                        R.string.subsonic_version,
+                    ),
+                    LocalizedString(
+                        it.version.value,
+                        R.string.subsonic_version_format,
+                        listOf(it.version.major, it.version.minor, it.version.revision)
+                    )
+                ),
+                it.type?.let { type ->
+                    DataSourceInformation(
+                        "server_type",
+                        LocalizedString(
+                            "Server type",
+                            R.string.subsonic_server_type,
+                        ),
+                        LocalizedString(type)
+                    )
+                },
+                it.serverVersion?.let { serverVersion ->
+                    DataSourceInformation(
+                        "server_version",
+                        LocalizedString(
+                            "Server version",
+                            R.string.subsonic_server_version,
+                        ),
+                        LocalizedString(serverVersion)
+                    )
+                },
+                it.openSubsonic?.let { openSubsonic ->
+                    DataSourceInformation(
+                        "supports_opensubsonic",
+                        LocalizedString(
+                            "Supports OpenSubsonic extensions",
+                            R.string.subsonic_supports_opensubsonic,
+                        ),
+                        LocalizedString(openSubsonic.toString())
+                    )
+                },
+                license?.let { lic ->
+                    DataSourceInformation(
+                        "license",
+                        LocalizedString(
+                            "License",
+                            R.string.subsonic_license,
+                        ),
+                        when (lic.valid) {
+                            true -> LocalizedString(
+                                "Valid",
+                                R.string.subsonic_license_valid,
+                            )
+
+                            false -> LocalizedString(
+                                "Invalid",
+                                R.string.subsonic_license_invalid,
+                            )
+                        }
+                    )
+                },
+            )
+        }
+    }.asFlow()
 
     override fun isMediaItemCompatible(mediaItemUri: Uri) = mediaItemUri.toString().startsWith(
         dataSourceBaseUri.toString()
