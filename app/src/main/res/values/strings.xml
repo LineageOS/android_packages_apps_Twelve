@@ -229,4 +229,13 @@
     <string name="library_item_playlists">Playlists</string>
     <string name="library_item_change_provider">Change provider</string>
     <string name="library_item_provider_changed">Provider changed, go back to main menu</string>
+
+    <!-- Data source information -->
+    <string name="local_volume_name">Volume name</string>
+    <string name="subsonic_version">Subsonic version</string>
+    <string name="subsonic_version_format">Version %1$d.%2$d.%3$d</string>
+    <string name="subsonic_server_type">Server type</string>
+    <string name="subsonic_server_version">Server version</string>
+    <string name="subsonic_supports_opensubsonic">Supports OpenSubsonic extensions</string>
+    <string name="subsonic_has_valid_license">Has a valid license</string>
 </resources>
