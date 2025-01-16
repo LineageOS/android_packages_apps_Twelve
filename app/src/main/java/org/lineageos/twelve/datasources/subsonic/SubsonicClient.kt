@@ -60,7 +60,7 @@ class SubsonicClient(
      */
     suspend fun ping() = api.get<ResponseRoot>(
         listOf("ping")
-    ).mapResponse { }
+    ).mapResponse { this }
 
     /**
      * Get details about the software license. Takes no extra parameters. Please note that access to
