@@ -26,6 +26,7 @@ import org.lineageos.twelve.models.Album
 import org.lineageos.twelve.models.Artist
 import org.lineageos.twelve.models.ArtistWorks
 import org.lineageos.twelve.models.Audio
+import org.lineageos.twelve.models.DataSourceInformation
 import org.lineageos.twelve.models.Genre
 import org.lineageos.twelve.models.GenreContent
 import org.lineageos.twelve.models.LocalizedString
@@ -90,6 +91,10 @@ class JellyfinDataSource(
      * This flow is used to signal a change in the playlists.
      */
     private val _playlistsChanged = MutableStateFlow(Any())
+
+    override fun status() = flowOf(
+        RequestStatus.Success<_, MediaError>(listOf<DataSourceInformation>())
+    )
 
     override fun isMediaItemCompatible(mediaItemUri: Uri) = mediaItemUri.toString().startsWith(
         dataSourceBaseUri.toString()
