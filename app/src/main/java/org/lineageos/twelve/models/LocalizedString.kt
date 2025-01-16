@@ -7,6 +7,7 @@ package org.lineageos.twelve.models
 
 import android.content.Context
 import androidx.annotation.StringRes
+import org.lineageos.twelve.R
 import kotlin.reflect.safeCast
 
 sealed interface LocalizedString {
@@ -45,5 +46,13 @@ sealed interface LocalizedString {
         private inline fun <reified T : LocalizedString> T.areContentsTheSame(
             other: LocalizedString, comparator: T.(other: T) -> Boolean,
         ) = T::class.safeCast(other)?.let { this.comparator(it) } ?: false
+
+        fun of(value: Boolean?) = StringResIdLocalizedString(
+            when (value) {
+                true -> R.string.yes
+                false -> R.string.no
+                null -> R.string.unknown
+            }
+        )
     }
 }

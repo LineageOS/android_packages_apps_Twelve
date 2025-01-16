@@ -27,6 +27,7 @@ import org.lineageos.twelve.models.Album
 import org.lineageos.twelve.models.Artist
 import org.lineageos.twelve.models.ArtistWorks
 import org.lineageos.twelve.models.Audio
+import org.lineageos.twelve.models.DataSourceInformation
 import org.lineageos.twelve.models.Genre
 import org.lineageos.twelve.models.GenreContent
 import org.lineageos.twelve.models.LocalizedString
@@ -35,10 +36,12 @@ import org.lineageos.twelve.models.Playlist
 import org.lineageos.twelve.models.ProviderArgument
 import org.lineageos.twelve.models.ProviderArgument.Companion.requireArgument
 import org.lineageos.twelve.models.RequestStatus
+import org.lineageos.twelve.models.RequestStatus.Companion.map
 import org.lineageos.twelve.models.SortingRule
 import org.lineageos.twelve.models.SortingStrategy
 import org.lineageos.twelve.models.Thumbnail
 import org.lineageos.twelve.utils.toRequestStatus
+import org.lineageos.twelve.utils.toResult
 
 /**
  * Subsonic based data source.
@@ -81,6 +84,65 @@ class SubsonicDataSource(
      * This flow is used to signal a change in the playlists.
      */
     private val _playlistsChanged = MutableStateFlow(Any())
+
+    override fun status() = suspend {
+        val ping = subsonicClient.ping().toRequestStatus { this }
+        val license = subsonicClient.getLicense().toResult { this }
+
+        ping.map {
+            listOfNotNull(
+                DataSourceInformation(
+                    "version",
+                    LocalizedString.StringResIdLocalizedString(
+                        R.string.subsonic_version,
+                    ),
+                    LocalizedString.StringResIdLocalizedString(
+                        R.string.subsonic_version_format,
+                        listOf(it.version.major, it.version.minor, it.version.revision)
+                    )
+                ),
+                it.type?.let { type ->
+                    DataSourceInformation(
+                        "server_type",
+                        LocalizedString.StringResIdLocalizedString(
+                            R.string.subsonic_server_type,
+                        ),
+                        LocalizedString.StringLocalizedString(type)
+                    )
+                },
+                it.serverVersion?.let { serverVersion ->
+                    DataSourceInformation(
+                        "server_version",
+                        LocalizedString.StringResIdLocalizedString(
+                            R.string.subsonic_server_version,
+                        ),
+                        LocalizedString.StringLocalizedString(serverVersion)
+                    )
+                },
+                it.openSubsonic?.let { openSubsonic ->
+                    DataSourceInformation(
+                        "supports_opensubsonic",
+                        LocalizedString.StringResIdLocalizedString(
+                            R.string.subsonic_supports_opensubsonic,
+                        ),
+                        LocalizedString.of(openSubsonic)
+                    )
+                },
+                license?.let { lic ->
+                    DataSourceInformation(
+                        "license",
+                        LocalizedString.StringResIdLocalizedString(R.string.subsonic_license),
+                        LocalizedString.StringResIdLocalizedString(
+                            when (lic.valid) {
+                                true -> R.string.subsonic_license_valid
+                                false -> R.string.subsonic_license_invalid
+                            }
+                        )
+                    )
+                },
+            )
+        }
+    }.asFlow()
 
     override fun isMediaItemCompatible(mediaItemUri: Uri) = mediaItemUri.toString().startsWith(
         dataSourceBaseUri.toString()
