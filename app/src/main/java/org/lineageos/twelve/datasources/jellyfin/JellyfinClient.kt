@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2024 The LineageOS Project
+ * SPDX-FileCopyrightText: 2024-2025 The LineageOS Project
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -13,6 +13,7 @@ import org.lineageos.twelve.datasources.jellyfin.models.CreatePlaylistResult
 import org.lineageos.twelve.datasources.jellyfin.models.Item
 import org.lineageos.twelve.datasources.jellyfin.models.PlaylistItems
 import org.lineageos.twelve.datasources.jellyfin.models.QueryResult
+import org.lineageos.twelve.datasources.jellyfin.models.SystemInfo
 import org.lineageos.twelve.datasources.jellyfin.models.UpdatePlaylist
 import org.lineageos.twelve.models.SortingRule
 import org.lineageos.twelve.models.SortingStrategy
@@ -212,6 +213,14 @@ class JellyfinClient(
         ),
         queryParameters = listOf(
             "EntryIds" to audioId,
+        ),
+    )
+
+    suspend fun getSystemInfo() = api.get<SystemInfo>(
+        listOf(
+            "System",
+            "Info",
+            "Public",
         ),
     )
 

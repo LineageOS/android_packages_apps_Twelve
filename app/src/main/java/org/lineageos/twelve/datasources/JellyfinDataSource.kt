@@ -26,6 +26,7 @@ import org.lineageos.twelve.models.Album
 import org.lineageos.twelve.models.Artist
 import org.lineageos.twelve.models.ArtistWorks
 import org.lineageos.twelve.models.Audio
+import org.lineageos.twelve.models.DataSourceInformation
 import org.lineageos.twelve.models.Genre
 import org.lineageos.twelve.models.GenreContent
 import org.lineageos.twelve.models.LocalizedString
@@ -90,6 +91,54 @@ class JellyfinDataSource(
      * This flow is used to signal a change in the playlists.
      */
     private val _playlistsChanged = MutableStateFlow(Any())
+
+    override fun status() = suspend {
+        client.getSystemInfo().toRequestStatus {
+            println("SystemInfo: $this")
+            listOfNotNull(
+                serverName?.takeIf { it.isNotBlank() }?.let {
+                    DataSourceInformation(
+                        "server_name",
+                        LocalizedString(
+                            "Server name",
+                            R.string.jellyfin_server_name,
+                        ),
+                        LocalizedString(it)
+                    )
+                },
+                version?.takeIf { it.isNotBlank() }?.let {
+                    DataSourceInformation(
+                        "version",
+                        LocalizedString(
+                            "Jellyfin version",
+                            R.string.jellyfin_version,
+                        ),
+                        LocalizedString(it)
+                    )
+                },
+                productName?.takeIf { it.isNotBlank() }?.let {
+                    DataSourceInformation(
+                        "product_name",
+                        LocalizedString(
+                            "Product name",
+                            R.string.jellyfin_product_name,
+                        ),
+                        LocalizedString(it)
+                    )
+                },
+                operatingSystem?.takeIf { it.isNotBlank() }?.let {
+                    DataSourceInformation(
+                        "operating_system",
+                        LocalizedString(
+                            "Operating system",
+                            R.string.jellyfin_operating_system,
+                        ),
+                        LocalizedString(it)
+                    )
+                },
+            )
+        }
+    }.asFlow()
 
     override fun isMediaItemCompatible(mediaItemUri: Uri) = mediaItemUri.toString().startsWith(
         dataSourceBaseUri.toString()

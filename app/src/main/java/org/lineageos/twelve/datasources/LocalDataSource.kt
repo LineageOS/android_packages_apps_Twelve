@@ -28,6 +28,7 @@ import org.lineageos.twelve.models.Artist
 import org.lineageos.twelve.models.ArtistWorks
 import org.lineageos.twelve.models.Audio
 import org.lineageos.twelve.models.ColumnIndexCache
+import org.lineageos.twelve.models.DataSourceInformation
 import org.lineageos.twelve.models.Genre
 import org.lineageos.twelve.models.GenreContent
 import org.lineageos.twelve.models.LocalizedString
@@ -179,6 +180,21 @@ class LocalDataSource(
             year.takeIf { it != 0 },
         )
     }
+
+    override fun status() = flowOf(
+        RequestStatus.Success<_, MediaError>(
+            listOf(
+                DataSourceInformation(
+                    "volume_name",
+                    LocalizedString(
+                        "Volume name",
+                        R.string.local_volume_name,
+                    ),
+                    LocalizedString(volumeName)
+                ),
+            )
+        )
+    )
 
     override fun isMediaItemCompatible(mediaItemUri: Uri) = listOf(
         albumsUri,
