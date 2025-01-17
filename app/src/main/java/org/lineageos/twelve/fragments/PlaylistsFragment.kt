@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2024 The LineageOS Project
+ * SPDX-FileCopyrightText: 2024-2025 The LineageOS Project
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -12,12 +12,10 @@ import android.view.View
 import android.widget.Button
 import android.widget.LinearLayout
 import androidx.core.view.isVisible
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.progressindicator.LinearProgressIndicator
 import kotlinx.coroutines.coroutineScope
@@ -31,6 +29,7 @@ import org.lineageos.twelve.models.Playlist
 import org.lineageos.twelve.models.RequestStatus
 import org.lineageos.twelve.models.SortingStrategy
 import org.lineageos.twelve.ui.dialogs.EditTextMaterialAlertDialogBuilder
+import org.lineageos.twelve.ui.fragments.InnerNavigationFragment
 import org.lineageos.twelve.ui.recyclerview.SimpleListAdapter
 import org.lineageos.twelve.ui.recyclerview.UniqueItemDiffCallback
 import org.lineageos.twelve.ui.views.FullscreenLoadingProgressBar
@@ -43,7 +42,7 @@ import org.lineageos.twelve.viewmodels.PlaylistsViewModel
 /**
  * View all music playlists.
  */
-class PlaylistsFragment : Fragment(R.layout.fragment_playlists) {
+class PlaylistsFragment : InnerNavigationFragment(R.layout.fragment_playlists) {
     // View models
     private val viewModel by viewModels<PlaylistsViewModel>()
 
@@ -66,7 +65,7 @@ class PlaylistsFragment : Fragment(R.layout.fragment_playlists) {
                 item?.let {
                     when (it === addNewPlaylistItem) {
                         true -> openCreateNewPlaylistDialog()
-                        false -> findNavController().navigateSafe(
+                        false -> parentNavController.navigateSafe(
                             R.id.action_mainFragment_to_fragment_playlist,
                             PlaylistFragment.createBundle(it.uri)
                         )
@@ -75,7 +74,7 @@ class PlaylistsFragment : Fragment(R.layout.fragment_playlists) {
             }
             view.setOnLongClickListener {
                 item?.let {
-                    findNavController().navigateSafe(
+                    parentNavController.navigateSafe(
                         R.id.action_mainFragment_to_fragment_media_item_bottom_sheet_dialog,
                         MediaItemBottomSheetDialogFragment.createBundle(
                             it.uri, it.mediaType,
