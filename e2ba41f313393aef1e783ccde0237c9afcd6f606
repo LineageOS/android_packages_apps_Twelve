@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "38f9287c_ae18bcfd",
+        "filename": "app/src/main/java/org/lineageos/twelve/datasources/LocalDataSource.kt",
+        "patchSetId": 2
+      },
+      "lineNbr": 193,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2025-01-17T10:54:07Z",
+      "side": 1,
+      "message": "I think for local data sources we need actual names... \"external\", \"external_primary\" don\u0027t help",
+      "range": {
+        "startLine": 193,
+        "startChar": 0,
+        "endLine": 193,
+        "endChar": 47
+      },
+      "revId": "e2ba41f313393aef1e783ccde0237c9afcd6f606",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
