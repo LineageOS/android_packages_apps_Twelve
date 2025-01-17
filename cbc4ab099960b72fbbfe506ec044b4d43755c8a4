@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "06a2a4fe_7629b08e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2025-01-17T13:18:03Z",
+      "side": 1,
+      "message": "Comment removed by: Luca Stefani; Reason: _",
+      "revId": "cbc4ab099960b72fbbfe506ec044b4d43755c8a4",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
