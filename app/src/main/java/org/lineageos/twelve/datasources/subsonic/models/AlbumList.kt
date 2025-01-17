@@ -7,7 +7,7 @@ package org.lineageos.twelve.datasources.subsonic.models
 
 import kotlinx.serialization.Serializable
 
-@Suppress("PROVIDED_RUNTIME_TOO_LOW")
+@Suppress("Provided_Runtime_Too_Low")
 @Serializable
 data class AlbumList(
     val album: List<Child>,

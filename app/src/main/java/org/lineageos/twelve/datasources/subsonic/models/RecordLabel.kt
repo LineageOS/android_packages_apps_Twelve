@@ -14,7 +14,7 @@ import kotlinx.serialization.Serializable
  *
  * @param name The record label name
  */
-@Suppress("PROVIDED_RUNTIME_TOO_LOW")
+@Suppress("Provided_Runtime_Too_Low")
 @Serializable
 data class RecordLabel(
     val name: String,

@@ -33,7 +33,7 @@ suspend fun Call.executeAsync(): Response = suspendCancellableCoroutine { contin
                 call: Call,
                 response: Response,
             ) {
-                @Suppress("deprecation")
+                @Suppress("Deprecation")
                 continuation.resume(response) {
                     response.closeQuietly()
                 }
