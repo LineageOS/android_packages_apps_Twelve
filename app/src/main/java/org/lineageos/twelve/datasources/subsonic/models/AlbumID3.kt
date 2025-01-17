@@ -8,7 +8,7 @@ package org.lineageos.twelve.datasources.subsonic.models
 import androidx.annotation.IntRange
 import kotlinx.serialization.Serializable
 
-@Suppress("PROVIDED_RUNTIME_TOO_LOW")
+@Suppress("Provided_Runtime_Too_Low")
 @Serializable
 data class AlbumID3(
     val id: String,

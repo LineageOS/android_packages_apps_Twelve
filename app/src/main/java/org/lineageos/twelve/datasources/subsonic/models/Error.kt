@@ -21,7 +21,7 @@ import kotlinx.serialization.encoding.Encoder
  * @param helpUrl A URL (documentation, configuration, etc) which may provide additional context for
  *   the error)
  */
-@Suppress("PROVIDED_RUNTIME_TOO_LOW")
+@Suppress("Provided_Runtime_Too_Low")
 @Serializable
 data class Error(
     val code: Code,

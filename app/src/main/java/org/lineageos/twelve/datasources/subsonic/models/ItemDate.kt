@@ -16,7 +16,7 @@ import kotlinx.serialization.Serializable
  * @param month The month (1-12)
  * @param day The day (1-31)
  */
-@Suppress("PROVIDED_RUNTIME_TOO_LOW")
+@Suppress("Provided_Runtime_Too_Low")
 @Serializable
 data class ItemDate(
     val year: Int? = null,
