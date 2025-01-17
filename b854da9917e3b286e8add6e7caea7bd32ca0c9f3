@@ -16,6 +16,24 @@
       "message": "```suggestion\n    \u003cstring name\u003d\"subsonic_version_format\" translatable\u003d\"false\"\u003ev%1$d.%2$d.%3$d\u003c/string\u003e\n```",
       "revId": "b854da9917e3b286e8add6e7caea7bd32ca0c9f3",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "7879c3b0_9f4782f6",
+        "filename": "app/src/main/res/values/strings.xml",
+        "patchSetId": 8
+      },
+      "lineNbr": 242,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2025-01-17T18:17:58Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "95b8e508_99876e0a",
+      "revId": "b854da9917e3b286e8add6e7caea7bd32ca0c9f3",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
