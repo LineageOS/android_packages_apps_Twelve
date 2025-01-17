@@ -369,9 +369,20 @@ class MainFragment : Fragment(R.layout.fragment_main) {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 launch {
                     providersViewModel.navigationProvider.collectLatest {
-                        it?.let {
-                            providerMaterialButton.text = it.name
-                            providerMaterialButton.setIconResource(it.type.iconDrawableResId)
+                        it?.let { provider ->
+                            providerMaterialButton.text = provider.name
+                            providerMaterialButton.setIconResource(provider.type.iconDrawableResId)
+
+                            providerMaterialButton.setOnLongClickListener {
+                                findNavController().navigateSafe(
+                                    R.id.action_mainFragment_to_fragment_provider_information_bottom_sheet_dialog,
+                                    ManageProviderFragment.createBundle(
+                                        provider.type,
+                                        provider.typeId
+                                    ),
+                                )
+                                true
+                            }
                         } ?: run {
                             providerMaterialButton.setText(R.string.no_provider)
                             providerMaterialButton.setIconResource(R.drawable.ic_warning)
