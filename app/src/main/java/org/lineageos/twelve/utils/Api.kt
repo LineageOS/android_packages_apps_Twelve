@@ -7,81 +7,108 @@ package org.lineageos.twelve.utils
 
 import android.net.Uri
 import kotlinx.coroutines.CancellationException
+import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.serializer
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.lineageos.twelve.datasources.MediaError
 import org.lineageos.twelve.ext.executeAsync
 import org.lineageos.twelve.models.RequestStatus
 import java.net.SocketTimeoutException
+import kotlin.reflect.KType
+import kotlin.reflect.typeOf
 
-class Api(val okHttpClient: OkHttpClient, private val serverUri: Uri) {
-    val json = Json {
+// Base interface for all API requests
+interface ApiRequestInterface<T> {
+    val type: KType
+    suspend fun execute(api: Api): MethodResult<T>
+}
+
+// Base class for common request functionality
+abstract class BaseRequest {
+    protected fun encodeRequestBody(api: Api, data: Any?) = data?.let {
+        api.json.encodeToString(it)
+    }?.toRequestBody("application/json".toMediaType()) ?: "".toRequestBody()
+}
+
+// GET request implementation
+class GetRequestInterface<T>(
+    private val path: List<String>,
+    override val type: KType,
+    private val queryParameters: List<Pair<String, Any?>> = emptyList()
+) : BaseRequest(), ApiRequestInterface<T> {
+    override suspend fun execute(api: Api): MethodResult<T> {
+        val url = api.buildUrl(path, queryParameters)
+        val request = Request.Builder()
+            .url(url)
+            .get()
+            .build()
+        return api.executeRequest(request, type)
+    }
+}
+
+// POST request implementation
+class PostRequestInterface<T, E>(
+    private val path: List<String>,
+    override val type: KType,
+    private val data: T?,
+    private val queryParameters: List<Pair<String, Any?>> = emptyList(),
+    private val emptyResponse: () -> E
+) : BaseRequest(), ApiRequestInterface<E> {
+    override suspend fun execute(api: Api): MethodResult<E> {
+        val url = api.buildUrl(path, queryParameters)
+        val body = encodeRequestBody(api, data)
+        val request = Request.Builder()
+            .url(url)
+            .post(body)
+            .build()
+        return api.executeRequest(request, type, emptyResponse)
+    }
+}
+
+// DELETE request implementation
+class DeleteRequestInterface<T>(
+    private val path: List<String>,
+    override val type: KType,
+    private val queryParameters: List<Pair<String, Any?>> = emptyList()
+) : BaseRequest(), ApiRequestInterface<T> {
+    override suspend fun execute(api: Api): MethodResult<T> {
+        val url = api.buildUrl(path, queryParameters)
+        val request = Request.Builder()
+            .url(url)
+            .delete()
+            .build()
+        return api.executeRequest(request, type)
+    }
+}
+
+class Api(
+    private val okHttpClient: OkHttpClient,
+    private val serverUri: Uri,
+    val json: Json = Json {
         ignoreUnknownKeys = true
-    }
-
-    // GET method
-    suspend inline fun <reified T> get(
-        path: List<String>,
-        queryParameters: List<Pair<String, Any?>> = emptyList(),
-    ): MethodResult<T> {
-        val url = buildUrl(path, queryParameters)
-        val request = buildRequest(url, "GET")
-        return executeRequest<T>(request)
-    }
-
-    // POST method
-    suspend inline fun <reified T, reified E> post(
-        path: List<String>,
-        queryParameters: List<Pair<String, Any?>> = emptyList(),
-        data: T? = null,
-        emptyResponse: () -> E = { Unit as E }
-    ): MethodResult<E> {
-        val url = buildUrl(path, queryParameters)
-        val body = encodeRequestBody(data)
-        val request = buildRequest(url, "POST", body)
-        return executeRequest<E>(request, emptyResponse)
-    }
-
-    // DELETE method
-    suspend inline fun <reified T> delete(
-        path: List<String>,
-        queryParameters: List<Pair<String, Any?>> = emptyList(),
-    ): MethodResult<T> {
-        val url = buildUrl(path, queryParameters)
-        val request = buildRequest(url, "DELETE")
-        return executeRequest(request) { Unit as T }
-    }
-
+    },
+) {
     fun buildUrl(
         path: List<String>,
         queryParameters: List<Pair<String, Any?>> = emptyList()
     ) = serverUri.buildUpon().apply {
-        path.forEach {
-            appendPath(it)
-        }
+        path.forEach { appendPath(it) }
         queryParameters.forEach { (key, value) ->
             value?.let { appendQueryParameter(key, it.toString()) }
         }
     }.build().toString()
 
-    inline fun <reified T> encodeRequestBody(data: T?) = data?.let {
-        json.encodeToString(it)
-    }?.toRequestBody("application/json".toMediaType()) ?: "".toRequestBody()
-
-    fun buildRequest(url: String, method: String, body: RequestBody? = null) =
-        Request.Builder().url(url).method(method, body).build()
-
-    // Helper function to execute the request
-    suspend inline fun <reified T> executeRequest(
+    suspend fun <T> executeRequest(
         request: Request,
+        type: KType,
         onEmptyResponse: () -> T = {
-            throw IllegalStateException("No onEmptyResponse() provided, but the response is empty")
+            throw IllegalStateException("No onEmptyResponse() provided, but response is empty")
         }
     ) = runCatching {
         okHttpClient.newCall(request).executeAsync().let { response ->
@@ -91,7 +118,9 @@ class Api(val okHttpClient: OkHttpClient, private val serverUri: Uri) {
                     if (string.isEmpty()) {
                         MethodResult.Success(onEmptyResponse())
                     } else {
-                        MethodResult.Success(json.decodeFromString<T>(string))
+                        @Suppress("Unchecked_Cast")
+                        val serializer = json.serializersModule.serializer(type) as KSerializer<T>
+                        MethodResult.Success(json.decodeFromString(serializer, string))
                     }
                 } ?: MethodResult.Success(onEmptyResponse())
             } else {
@@ -100,15 +129,34 @@ class Api(val okHttpClient: OkHttpClient, private val serverUri: Uri) {
         }
     }.fold(
         onSuccess = { it },
-        onFailure = { e ->
-            when (e) {
-                is SocketTimeoutException -> MethodResult.HttpError(408, e)
-                is SerializationException -> MethodResult.DeserializationError(e)
-                is CancellationException -> MethodResult.CancellationError(e)
-                else -> MethodResult.GenericError(e)
-            }
-        },
+        onFailure = { e -> handleError(e) }
     )
+
+    private fun <T> handleError(e: Throwable): MethodResult<T> = when (e) {
+        is SocketTimeoutException -> MethodResult.HttpError(408, e)
+        is SerializationException -> MethodResult.DeserializationError(e)
+        is CancellationException -> MethodResult.CancellationError(e)
+        else -> MethodResult.GenericError(e)
+    }
+}
+
+object ApiRequest {
+    inline fun <reified T> get(
+        path: List<String>,
+        queryParameters: List<Pair<String, Any?>> = emptyList()
+    ) = GetRequestInterface<T>(path, typeOf<T>(), queryParameters)
+
+    inline fun <reified T, reified E> post(
+        path: List<String>,
+        data: T? = null,
+        queryParameters: List<Pair<String, Any?>> = emptyList(),
+        noinline emptyResponse: () -> E = { Unit as E }
+    ) = PostRequestInterface(path, typeOf<E>(), data, queryParameters, emptyResponse)
+
+    inline fun <reified T> delete(
+        path: List<String>,
+        queryParameters: List<Pair<String, Any?>> = emptyList()
+    ) = DeleteRequestInterface<T>(path, typeOf<T>(), queryParameters)
 }
 
 sealed interface MethodResult<T> {
