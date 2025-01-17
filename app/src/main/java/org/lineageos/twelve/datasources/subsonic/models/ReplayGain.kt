@@ -20,7 +20,7 @@ import kotlinx.serialization.Serializable
  * @param fallbackGain An optional fallback gain that clients should apply when the corresponding
  *   gain value is missing (Can be computed from the tracks or exposed as an user setting)
  */
-@Suppress("PROVIDED_RUNTIME_TOO_LOW")
+@Suppress("Provided_Runtime_Too_Low")
 @Serializable
 data class ReplayGain(
     val trackGain: Double? = null,

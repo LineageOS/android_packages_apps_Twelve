@@ -16,7 +16,7 @@ fun <T : Parcelable> Bundle.getParcelable(key: String?, clazz: KClass<T>) =
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
         getParcelable(key, clazz.java)
     } else {
-        @Suppress("DEPRECATION")
+        @Suppress("Deprecation")
         getParcelable(key)
     }
 
@@ -26,7 +26,7 @@ inline fun <reified T : Parcelable> Bundle.getParcelableArray(
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
         getParcelableArray(key, clazz.java)
     } else {
-        @Suppress("DEPRECATION")
+        @Suppress("Deprecation")
         getParcelableArray(key)?.let { parcelableArray ->
             parcelableArray.mapNotNull { parcelable ->
                 T::class.safeCast(parcelable)
@@ -38,6 +38,6 @@ inline fun <reified T : Serializable> Bundle.getSerializable(key: String?, clazz
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
         getSerializable(key, clazz.java)
     } else {
-        @Suppress("DEPRECATION")
+        @Suppress("Deprecation")
         T::class.safeCast(getSerializable(key))
     }
