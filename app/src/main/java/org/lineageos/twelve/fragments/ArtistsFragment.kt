@@ -15,7 +15,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.navigation.fragment.findNavController
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.progressindicator.LinearProgressIndicator
 import kotlinx.coroutines.coroutineScope
@@ -49,6 +49,11 @@ class ArtistsFragment : Fragment(R.layout.fragment_artists) {
     private val recyclerView by getViewProperty<RecyclerView>(R.id.recyclerView)
     private val sortingChip by getViewProperty<SortingChip>(R.id.sortingChip)
 
+    // Navigation
+    val parentNavController by lazy {
+        requireActivity().findNavController(R.id.navHostFragment)
+    }
+
     // Recyclerview
     private val adapter by lazy {
         object : SimpleListAdapter<Artist, ListItem>(
@@ -59,7 +64,7 @@ class ArtistsFragment : Fragment(R.layout.fragment_artists) {
                 view.setLeadingIconImage(R.drawable.ic_person)
                 view.setOnClickListener {
                     item?.let {
-                        findNavController().navigateSafe(
+                        parentNavController.navigateSafe(
                             R.id.action_mainFragment_to_fragment_artist,
                             ArtistFragment.createBundle(it.uri)
                         )
@@ -67,7 +72,7 @@ class ArtistsFragment : Fragment(R.layout.fragment_artists) {
                 }
                 view.setOnLongClickListener {
                     item?.let {
-                        findNavController().navigateSafe(
+                        parentNavController.navigateSafe(
                             R.id.action_mainFragment_to_fragment_media_item_bottom_sheet_dialog,
                             MediaItemBottomSheetDialogFragment.createBundle(
                                 it.uri, it.mediaType,
