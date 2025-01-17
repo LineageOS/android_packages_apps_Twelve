@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     SPDX-FileCopyrightText: 2025 The LineageOS Project
+     SPDX-License-Identifier: Apache-2.0
+-->
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/navigation_inner"
+    app:startDestination="@id/fragment_activity">
+
+    <include app:graph="@navigation/fragment_activity" />
+    <include app:graph="@navigation/fragment_library" />
+
+</navigation>
