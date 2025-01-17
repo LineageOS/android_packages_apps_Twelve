@@ -17,7 +17,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.navigation.fragment.findNavController
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.progressindicator.LinearProgressIndicator
 import kotlinx.coroutines.coroutineScope
@@ -55,6 +55,11 @@ class PlaylistsFragment : Fragment(R.layout.fragment_playlists) {
     private val recyclerView by getViewProperty<RecyclerView>(R.id.recyclerView)
     private val sortingChip by getViewProperty<SortingChip>(R.id.sortingChip)
 
+    // Navigation
+    val parentNavController by lazy {
+        requireActivity().findNavController(R.id.navHostFragment)
+    }
+
     // Recyclerview
     private val addNewPlaylistItem = Playlist(Uri.EMPTY, "")
     private val adapter = object : SimpleListAdapter<Playlist, ListItem>(
@@ -66,7 +71,7 @@ class PlaylistsFragment : Fragment(R.layout.fragment_playlists) {
                 item?.let {
                     when (it === addNewPlaylistItem) {
                         true -> openCreateNewPlaylistDialog()
-                        false -> findNavController().navigateSafe(
+                        false -> parentNavController.navigateSafe(
                             R.id.action_mainFragment_to_fragment_playlist,
                             PlaylistFragment.createBundle(it.uri)
                         )
@@ -75,7 +80,7 @@ class PlaylistsFragment : Fragment(R.layout.fragment_playlists) {
             }
             view.setOnLongClickListener {
                 item?.let {
-                    findNavController().navigateSafe(
+                    parentNavController.navigateSafe(
                         R.id.action_mainFragment_to_fragment_media_item_bottom_sheet_dialog,
                         MediaItemBottomSheetDialogFragment.createBundle(
                             it.uri, it.mediaType,
