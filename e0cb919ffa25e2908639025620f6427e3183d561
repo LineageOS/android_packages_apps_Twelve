@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d09b16aa_01e8083b",
+        "filename": "app/src/main/java/org/lineageos/twelve/datasources/LocalDataSource.kt",
+        "patchSetId": 6
+      },
+      "lineNbr": 197,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2025-01-17T13:48:04Z",
+      "side": 1,
+      "message": "```suggestion\n    override fun status() \u003d flowOf(\n        RequestStatus.Success\u003c_, MediaError\u003e(\n            emptyList\u003cDataSourceInformation\u003e()\n        )\n    )\n```\n\nexternal, external_primary, and for SDcard I currently have the guid?\nJust remove it",
+      "range": {
+        "startLine": 184,
+        "startChar": 0,
+        "endLine": 197,
+        "endChar": 5
+      },
+      "revId": "e0cb919ffa25e2908639025620f6427e3183d561",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}

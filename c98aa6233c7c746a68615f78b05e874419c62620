@@ -22,6 +22,30 @@
       },
       "revId": "c98aa6233c7c746a68615f78b05e874419c62620",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6470f027_0839d477",
+        "filename": "app/src/main/java/org/lineageos/twelve/datasources/SubsonicDataSource.kt",
+        "patchSetId": 5
+      },
+      "lineNbr": 145,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2025-01-17T13:48:04Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "302cef12_d624dd31",
+      "range": {
+        "startLine": 136,
+        "startChar": 0,
+        "endLine": 145,
+        "endChar": 17
+      },
+      "revId": "c98aa6233c7c746a68615f78b05e874419c62620",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
