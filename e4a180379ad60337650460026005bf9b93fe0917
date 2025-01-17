@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5392363a_5fb90269",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2025-01-17T19:36:25Z",
+      "side": 1,
+      "message": "For single words it\u0027s cool, not so much for the rest...\nI think the all uppercase with _ might be the best to have a generic style, but \\o/",
+      "revId": "e4a180379ad60337650460026005bf9b93fe0917",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
