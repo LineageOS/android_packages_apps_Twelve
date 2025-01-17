@@ -10,6 +10,8 @@
     app:startDestination="@id/mainFragment">
 
     <include app:graph="@navigation/fragment_add_or_remove_from_playlists" />
+    <include app:graph="@navigation/fragment_activity" />
+    <include app:graph="@navigation/fragment_library" />
     <include app:graph="@navigation/fragment_album" />
     <include app:graph="@navigation/fragment_artist" />
     <include app:graph="@navigation/fragment_media_item_bottom_sheet_dialog" />
@@ -27,6 +29,22 @@
         android:name="org.lineageos.twelve.fragments.MainFragment"
         android:label="@string/app_name"
         tools:layout="@layout/fragment_main">
+
+        <action
+            android:id="@+id/action_mainFragment_to_fragment_activity"
+            app:destination="@id/fragment_activity"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+
+        <action
+            android:id="@+id/action_mainFragment_to_fragment_library"
+            app:destination="@id/fragment_library"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
 
         <action
             android:id="@+id/action_mainFragment_to_fragment_album"

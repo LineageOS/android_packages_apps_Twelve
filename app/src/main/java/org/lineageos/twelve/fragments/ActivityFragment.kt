@@ -60,24 +60,24 @@ class ActivityFragment : Fragment(R.layout.fragment_activity) {
                 view.setOnItemClickListener { items, position ->
                     when (val item = items[position]) {
                         is Album -> findNavController().navigateSafe(
-                            R.id.action_mainFragment_to_fragment_album,
+                            R.id.action_activityFragment_to_fragment_album,
                             AlbumFragment.createBundle(item.uri)
                         )
 
                         is Artist -> findNavController().navigateSafe(
-                            R.id.action_mainFragment_to_fragment_artist,
+                            R.id.action_activityFragment_to_fragment_artist,
                             ArtistFragment.createBundle(item.uri)
                         )
 
                         is Audio -> viewModel.playAudio(listOf(item), 0)
 
                         is Genre -> findNavController().navigateSafe(
-                            R.id.action_mainFragment_to_fragment_genre,
+                            R.id.action_activityFragment_to_fragment_genre,
                             GenreFragment.createBundle(item.uri)
                         )
 
                         is Playlist -> findNavController().navigateSafe(
-                            R.id.action_mainFragment_to_fragment_playlist,
+                            R.id.action_activityFragment_to_fragment_playlist,
                             PlaylistFragment.createBundle(item.uri)
                         )
                     }
