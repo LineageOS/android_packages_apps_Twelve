@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2024 The LineageOS Project
+ * SPDX-FileCopyrightText: 2024-2025 The LineageOS Project
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -10,12 +10,10 @@ import android.util.Log
 import android.view.View
 import android.widget.LinearLayout
 import androidx.core.view.isVisible
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.progressindicator.LinearProgressIndicator
 import kotlinx.coroutines.coroutineScope
@@ -28,6 +26,7 @@ import org.lineageos.twelve.ext.setProgressCompat
 import org.lineageos.twelve.models.Album
 import org.lineageos.twelve.models.RequestStatus
 import org.lineageos.twelve.models.SortingStrategy
+import org.lineageos.twelve.ui.fragments.InnerNavigationFragment
 import org.lineageos.twelve.ui.recyclerview.DisplayAwareGridLayoutManager
 import org.lineageos.twelve.ui.recyclerview.SimpleListAdapter
 import org.lineageos.twelve.ui.recyclerview.UniqueItemDiffCallback
@@ -40,7 +39,7 @@ import org.lineageos.twelve.viewmodels.AlbumsViewModel
 /**
  * View all music albums.
  */
-class AlbumsFragment : Fragment(R.layout.fragment_albums) {
+class AlbumsFragment : InnerNavigationFragment(R.layout.fragment_albums) {
     // View models
     private val viewModel by viewModels<AlbumsViewModel>()
 
@@ -59,7 +58,7 @@ class AlbumsFragment : Fragment(R.layout.fragment_albums) {
             override fun ViewHolder.onPrepareView() {
                 view.setOnClickListener {
                     item?.let {
-                        findNavController().navigateSafe(
+                        parentNavController.navigateSafe(
                             R.id.action_mainFragment_to_fragment_album,
                             AlbumFragment.createBundle(it.uri)
                         )
@@ -67,7 +66,7 @@ class AlbumsFragment : Fragment(R.layout.fragment_albums) {
                 }
                 view.setOnLongClickListener {
                     item?.let {
-                        findNavController().navigateSafe(
+                        parentNavController.navigateSafe(
                             R.id.action_mainFragment_to_fragment_media_item_bottom_sheet_dialog,
                             MediaItemBottomSheetDialogFragment.createBundle(
                                 it.uri, it.mediaType,

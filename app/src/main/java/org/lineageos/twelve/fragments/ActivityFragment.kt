@@ -10,12 +10,10 @@ import android.util.Log
 import android.view.View
 import android.widget.LinearLayout
 import androidx.core.view.isVisible
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.progressindicator.LinearProgressIndicator
 import kotlinx.coroutines.flow.collectLatest
@@ -31,6 +29,7 @@ import org.lineageos.twelve.models.Audio
 import org.lineageos.twelve.models.Genre
 import org.lineageos.twelve.models.Playlist
 import org.lineageos.twelve.models.RequestStatus
+import org.lineageos.twelve.ui.fragments.InnerNavigationFragment
 import org.lineageos.twelve.ui.recyclerview.SimpleListAdapter
 import org.lineageos.twelve.ui.recyclerview.UniqueItemDiffCallback
 import org.lineageos.twelve.ui.views.ActivityTabView
@@ -41,7 +40,7 @@ import org.lineageos.twelve.viewmodels.ActivityViewModel
 /**
  * User activity, notifications and recommendations.
  */
-class ActivityFragment : Fragment(R.layout.fragment_activity) {
+class ActivityFragment : InnerNavigationFragment(R.layout.fragment_activity) {
     // View models
     private val viewModel by viewModels<ActivityViewModel>()
 
@@ -59,24 +58,24 @@ class ActivityFragment : Fragment(R.layout.fragment_activity) {
             override fun ViewHolder.onPrepareView() {
                 view.setOnItemClickListener { items, position ->
                     when (val item = items[position]) {
-                        is Album -> findNavController().navigateSafe(
+                        is Album -> parentNavController.navigateSafe(
                             R.id.action_mainFragment_to_fragment_album,
                             AlbumFragment.createBundle(item.uri)
                         )
 
-                        is Artist -> findNavController().navigateSafe(
+                        is Artist -> parentNavController.navigateSafe(
                             R.id.action_mainFragment_to_fragment_artist,
                             ArtistFragment.createBundle(item.uri)
                         )
 
                         is Audio -> viewModel.playAudio(listOf(item), 0)
 
-                        is Genre -> findNavController().navigateSafe(
+                        is Genre -> parentNavController.navigateSafe(
                             R.id.action_mainFragment_to_fragment_genre,
                             GenreFragment.createBundle(item.uri)
                         )
 
-                        is Playlist -> findNavController().navigateSafe(
+                        is Playlist -> parentNavController.navigateSafe(
                             R.id.action_mainFragment_to_fragment_playlist,
                             PlaylistFragment.createBundle(item.uri)
                         )
@@ -85,7 +84,7 @@ class ActivityFragment : Fragment(R.layout.fragment_activity) {
 
                 view.setOnItemLongClickListener { items, position ->
                     items[position].let {
-                        findNavController().navigateSafe(
+                        parentNavController.navigateSafe(
                             R.id.action_mainFragment_to_fragment_media_item_bottom_sheet_dialog,
                             MediaItemBottomSheetDialogFragment.createBundle(
                                 it.uri, it.mediaType
