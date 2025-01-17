@@ -7,6 +7,10 @@ package org.lineageos.twelve.utils
 
 import android.net.Uri
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.withContext
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.encodeToString
@@ -90,6 +94,7 @@ class DeleteRequestInterface<T>(
 class Api(
     private val okHttpClient: OkHttpClient,
     private val serverUri: Uri,
+    private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
     val json: Json = Json {
         ignoreUnknownKeys = true
     },
@@ -110,27 +115,58 @@ class Api(
         onEmptyResponse: () -> T = {
             throw IllegalStateException("No onEmptyResponse() provided, but response is empty")
         }
-    ) = runCatching {
-        okHttpClient.newCall(request).executeAsync().let { response ->
-            if (response.isSuccessful) {
-                response.body?.use { body ->
-                    val string = body.string()
-                    if (string.isEmpty()) {
-                        MethodResult.Success(onEmptyResponse())
+    ) = withContext(dispatcher) {
+        withRetry(maxAttempts = 3) {
+            runCatching {
+                okHttpClient.newCall(request).executeAsync().let { response ->
+                    if (response.isSuccessful) {
+                        response.body?.use { body ->
+                            val string = body.string()
+                            if (string.isEmpty()) {
+                                MethodResult.Success(onEmptyResponse())
+                            } else {
+                                @Suppress("Unchecked_Cast")
+                                val serializer =
+                                    json.serializersModule.serializer(type) as KSerializer<T>
+                                MethodResult.Success(json.decodeFromString(serializer, string))
+                            }
+                        } ?: MethodResult.Success(onEmptyResponse())
                     } else {
-                        @Suppress("Unchecked_Cast")
-                        val serializer = json.serializersModule.serializer(type) as KSerializer<T>
-                        MethodResult.Success(json.decodeFromString(serializer, string))
+                        MethodResult.HttpError(response.code, Throwable(response.message))
                     }
-                } ?: MethodResult.Success(onEmptyResponse())
-            } else {
-                MethodResult.HttpError(response.code, Throwable(response.message))
+                }
+            }.fold(
+                onSuccess = { it },
+                onFailure = { e -> handleError(e) }
+            )
+        }
+    }
+
+    private suspend fun <T> withRetry(
+        maxAttempts: Int,
+        initialDelay: Long = 100,
+        maxDelay: Long = 1000,
+        factor: Double = 2.0,
+        block: suspend () -> MethodResult<T>
+    ): MethodResult<T> {
+        var currentDelay = initialDelay
+        repeat(maxAttempts - 1) { _ ->
+            when (val result = block()) {
+                is MethodResult.Success -> return result
+                is MethodResult.HttpError -> when (result.code) {
+                    in 500..599 -> {
+                        delay(currentDelay)
+                        currentDelay = (currentDelay * factor).toLong().coerceAtMost(maxDelay)
+                    }
+
+                    else -> return result
+                }
+
+                else -> return result
             }
         }
-    }.fold(
-        onSuccess = { it },
-        onFailure = { e -> handleError(e) }
-    )
+        return block()
+    }
 
     private fun <T> handleError(e: Throwable): MethodResult<T> = when (e) {
         is SocketTimeoutException -> MethodResult.HttpError(408, e)
