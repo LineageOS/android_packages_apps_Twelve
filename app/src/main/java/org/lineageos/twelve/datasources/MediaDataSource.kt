@@ -33,7 +33,7 @@ interface MediaDataSource {
      * @return [RequestStatus.Success] with a list of [DataSourceInformation] if everything is fine,
      *   else [RequestStatus.Error]
      */
-    fun status(): Flow<MediaRequestStatus<List<DataSourceInformation>>>
+    suspend fun status(): MediaRequestStatus<List<DataSourceInformation>>
 
     /**
      * Check whether this data source can handle the given media item.

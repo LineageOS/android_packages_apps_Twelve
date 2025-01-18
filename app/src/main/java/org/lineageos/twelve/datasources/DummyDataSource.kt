@@ -27,9 +27,8 @@ import org.lineageos.twelve.models.SortingRule
  * No [Uri] is compatible as well.
  */
 object DummyDataSource : MediaDataSource {
-    override fun status() = flowOf(
+    override suspend fun status() =
         RequestStatus.Success<_, MediaError>(listOf<DataSourceInformation>())
-    )
 
     override fun isMediaItemCompatible(mediaItemUri: Uri) = false
 

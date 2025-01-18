@@ -56,5 +56,18 @@ sealed class RequestStatus<T, E> {
             is Success -> onSuccess(data)
             is Error -> onError(error)
         }
+
+        /**
+         * Fold the request status.
+         */
+        suspend fun <T, E, R> RequestStatus<T, E>.folds(
+            onLoading: (Int?) -> R,
+            onSuccess: suspend (T) -> R,
+            onError: (E) -> R,
+        ): R = when (this) {
+            is Loading -> onLoading(progress)
+            is Success -> onSuccess(data)
+            is Error -> onError(error)
+        }
     }
 }

@@ -181,9 +181,8 @@ class LocalDataSource(
         )
     }
 
-    override fun status() = flowOf(
+    override suspend fun status() =
         RequestStatus.Success<_, MediaError>(listOf<DataSourceInformation>())
-    )
 
     override fun isMediaItemCompatible(mediaItemUri: Uri) = listOf(
         albumsUri,

@@ -13,7 +13,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
@@ -21,7 +20,7 @@ import kotlinx.coroutines.withContext
 import org.lineageos.twelve.datasources.MediaError
 import org.lineageos.twelve.models.ProviderType
 import org.lineageos.twelve.models.RequestStatus
-import org.lineageos.twelve.models.RequestStatus.Companion.fold
+import org.lineageos.twelve.models.RequestStatus.Companion.folds
 
 class ProviderViewModel(application: Application) : TwelveViewModel(application) {
     /**
@@ -66,16 +65,16 @@ class ProviderViewModel(application: Application) : TwelveViewModel(application)
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val status = provider
-        .flatMapLatest { provider ->
-            provider.fold(
+        .mapLatest { provider ->
+            provider.folds(
                 onLoading = {
-                    flowOf(RequestStatus.Loading(it))
+                    RequestStatus.Loading(it)
                 },
                 onSuccess = {
                     mediaRepository.status(it)
                 },
                 onError = {
-                    flowOf(RequestStatus.Error(it))
+                    RequestStatus.Error(it)
                 }
             )
         }

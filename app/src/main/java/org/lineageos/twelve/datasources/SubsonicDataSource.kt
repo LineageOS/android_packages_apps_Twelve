@@ -36,7 +36,6 @@ import org.lineageos.twelve.models.Playlist
 import org.lineageos.twelve.models.ProviderArgument
 import org.lineageos.twelve.models.ProviderArgument.Companion.requireArgument
 import org.lineageos.twelve.models.RequestStatus
-import org.lineageos.twelve.models.RequestStatus.Companion.map
 import org.lineageos.twelve.models.SortingRule
 import org.lineageos.twelve.models.SortingStrategy
 import org.lineageos.twelve.models.Thumbnail
@@ -85,64 +84,59 @@ class SubsonicDataSource(
      */
     private val _playlistsChanged = MutableStateFlow(Any())
 
-    override fun status() = suspend {
-        val ping = subsonicClient.ping().toRequestStatus { this }
-        val license = subsonicClient.getLicense().toResult { this }
-
-        ping.map {
-            listOfNotNull(
-                DataSourceInformation(
-                    "version",
-                    LocalizedString.StringResIdLocalizedString(
-                        R.string.subsonic_version,
-                    ),
-                    LocalizedString.StringResIdLocalizedString(
-                        R.string.subsonic_version_format,
-                        listOf(it.version.major, it.version.minor, it.version.revision)
-                    )
+    override suspend fun status() = subsonicClient.ping().toRequestStatus {
+        listOfNotNull(
+            DataSourceInformation(
+                "version",
+                LocalizedString.StringResIdLocalizedString(
+                    R.string.subsonic_version,
                 ),
-                it.type?.let { type ->
-                    DataSourceInformation(
-                        "server_type",
-                        LocalizedString.StringResIdLocalizedString(
-                            R.string.subsonic_server_type,
-                        ),
-                        LocalizedString.StringLocalizedString(type)
+                LocalizedString.StringResIdLocalizedString(
+                    R.string.subsonic_version_format,
+                    listOf(version.major, version.minor, version.revision)
+                )
+            ),
+            type?.let { type ->
+                DataSourceInformation(
+                    "server_type",
+                    LocalizedString.StringResIdLocalizedString(
+                        R.string.subsonic_server_type,
+                    ),
+                    LocalizedString.StringLocalizedString(type)
+                )
+            },
+            serverVersion?.let { serverVersion ->
+                DataSourceInformation(
+                    "server_version",
+                    LocalizedString.StringResIdLocalizedString(
+                        R.string.subsonic_server_version,
+                    ),
+                    LocalizedString.StringLocalizedString(serverVersion)
+                )
+            },
+            openSubsonic?.let { openSubsonic ->
+                DataSourceInformation(
+                    "supports_opensubsonic",
+                    LocalizedString.StringResIdLocalizedString(
+                        R.string.subsonic_supports_opensubsonic,
+                    ),
+                    LocalizedString.of(openSubsonic)
+                )
+            },
+            subsonicClient.getLicense().toResult {
+                DataSourceInformation(
+                    "license",
+                    LocalizedString.StringResIdLocalizedString(R.string.subsonic_license),
+                    LocalizedString.StringResIdLocalizedString(
+                        when (valid) {
+                            true -> R.string.subsonic_license_valid
+                            false -> R.string.subsonic_license_invalid
+                        }
                     )
-                },
-                it.serverVersion?.let { serverVersion ->
-                    DataSourceInformation(
-                        "server_version",
-                        LocalizedString.StringResIdLocalizedString(
-                            R.string.subsonic_server_version,
-                        ),
-                        LocalizedString.StringLocalizedString(serverVersion)
-                    )
-                },
-                it.openSubsonic?.let { openSubsonic ->
-                    DataSourceInformation(
-                        "supports_opensubsonic",
-                        LocalizedString.StringResIdLocalizedString(
-                            R.string.subsonic_supports_opensubsonic,
-                        ),
-                        LocalizedString.of(openSubsonic)
-                    )
-                },
-                license?.let { lic ->
-                    DataSourceInformation(
-                        "license",
-                        LocalizedString.StringResIdLocalizedString(R.string.subsonic_license),
-                        LocalizedString.StringResIdLocalizedString(
-                            when (lic.valid) {
-                                true -> R.string.subsonic_license_valid
-                                false -> R.string.subsonic_license_invalid
-                            }
-                        )
-                    )
-                },
-            )
-        }
-    }.asFlow()
+                )
+            },
+        )
+    }
 
     override fun isMediaItemCompatible(mediaItemUri: Uri) = mediaItemUri.toString().startsWith(
         dataSourceBaseUri.toString()

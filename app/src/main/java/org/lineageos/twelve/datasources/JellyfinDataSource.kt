@@ -92,42 +92,40 @@ class JellyfinDataSource(
      */
     private val _playlistsChanged = MutableStateFlow(Any())
 
-    override fun status() = suspend {
-        client.getSystemInfo().toRequestStatus {
-            listOfNotNull(
-                serverName?.takeIf { it.isNotBlank() }?.let {
-                    DataSourceInformation(
-                        "server_name",
-                        LocalizedString.StringResIdLocalizedString(R.string.jellyfin_server_name),
-                        LocalizedString.StringLocalizedString(it)
-                    )
-                },
-                version?.takeIf { it.isNotBlank() }?.let {
-                    DataSourceInformation(
-                        "version",
-                        LocalizedString.StringResIdLocalizedString(R.string.jellyfin_version),
-                        LocalizedString.StringLocalizedString(it)
-                    )
-                },
-                productName?.takeIf { it.isNotBlank() }?.let {
-                    DataSourceInformation(
-                        "product_name",
-                        LocalizedString.StringResIdLocalizedString(R.string.jellyfin_product_name),
-                        LocalizedString.StringLocalizedString(it)
-                    )
-                },
-                operatingSystem?.takeIf { it.isNotBlank() }?.let {
-                    DataSourceInformation(
-                        "operating_system",
-                        LocalizedString.StringResIdLocalizedString(
-                            R.string.jellyfin_operating_system,
-                        ),
-                        LocalizedString.StringLocalizedString(it)
-                    )
-                },
-            )
-        }
-    }.asFlow()
+    override suspend fun status() = client.getSystemInfo().toRequestStatus {
+        listOfNotNull(
+            serverName?.takeIf { it.isNotBlank() }?.let {
+                DataSourceInformation(
+                    "server_name",
+                    LocalizedString.StringResIdLocalizedString(R.string.jellyfin_server_name),
+                    LocalizedString.StringLocalizedString(it)
+                )
+            },
+            version?.takeIf { it.isNotBlank() }?.let {
+                DataSourceInformation(
+                    "version",
+                    LocalizedString.StringResIdLocalizedString(R.string.jellyfin_version),
+                    LocalizedString.StringLocalizedString(it)
+                )
+            },
+            productName?.takeIf { it.isNotBlank() }?.let {
+                DataSourceInformation(
+                    "product_name",
+                    LocalizedString.StringResIdLocalizedString(R.string.jellyfin_product_name),
+                    LocalizedString.StringLocalizedString(it)
+                )
+            },
+            operatingSystem?.takeIf { it.isNotBlank() }?.let {
+                DataSourceInformation(
+                    "operating_system",
+                    LocalizedString.StringResIdLocalizedString(
+                        R.string.jellyfin_operating_system,
+                    ),
+                    LocalizedString.StringLocalizedString(it)
+                )
+            },
+        )
+    }
 
     override fun isMediaItemCompatible(mediaItemUri: Uri) = mediaItemUri.toString().startsWith(
         dataSourceBaseUri.toString()

@@ -501,7 +501,7 @@ class MediaRepository(
     /**
      * @see MediaDataSource.status
      */
-    fun status(provider: Provider) = withProviderDataSource(provider) {
+    suspend fun status(provider: Provider) = withProviderDataSource(provider) {
         status()
     }
 
@@ -674,7 +674,7 @@ class MediaRepository(
      * @return A flow containing the result of the predicate. It will emit a not found error if
      *   no [MediaDataSource] matches the given provider
      */
-    private fun <T> withProviderDataSource(
+    private fun <T> withProviderDataSourceFlow(
         providerType: ProviderType, providerTypeId: Long,
         predicate: MediaDataSource.() -> Flow<RequestStatus<T, MediaError>>
     ) = allProvidersToDataSource.flatMapLatest {
@@ -687,13 +687,42 @@ class MediaRepository(
      * Find the [MediaDataSource] that matches the given [Provider] and call the given predicate on
      * it.
      *
+     * @param providerType The [ProviderType]
+     * @param providerTypeId The [ProviderType] specific provider ID
+     * @return The result of the predicate. It will emit a not found error if
+     *   no [MediaDataSource] matches the given provider
+     */
+    private suspend fun <T> withProviderDataSource(
+        providerType: ProviderType, providerTypeId: Long,
+        predicate: suspend MediaDataSource.() -> RequestStatus<T, MediaError>
+    ) = allProvidersToDataSource.value.firstOrNull { (provider, _) ->
+        providerType == provider.type && providerTypeId == provider.typeId
+    }?.second?.predicate() ?: RequestStatus.Error(MediaError.NOT_FOUND)
+
+    /**
+     * Find the [MediaDataSource] that matches the given [Provider] and call the given predicate on
+     * it.
+     *
      * @param provider The provider
      * @return A flow containing the result of the predicate. It will emit a not found error if
      *   no [MediaDataSource] matches the given provider
      */
-    private fun <T> withProviderDataSource(
+    private fun <T> withProviderDataSourceFlow(
         provider: Provider,
         predicate: MediaDataSource.() -> Flow<RequestStatus<T, MediaError>>
+    ) = withProviderDataSourceFlow(provider.type, provider.typeId, predicate)
+
+    /**
+     * Find the [MediaDataSource] that matches the given [Provider] and call the given predicate on
+     * it.
+     *
+     * @param provider The provider
+     * @return The result of the predicate. It will emit a not found error if
+     *   no [MediaDataSource] matches the given provider
+     */
+    private suspend fun <T> withProviderDataSource(
+        provider: Provider,
+        predicate: suspend MediaDataSource.() -> RequestStatus<T, MediaError>
     ) = withProviderDataSource(provider.type, provider.typeId, predicate)
 
     /**
