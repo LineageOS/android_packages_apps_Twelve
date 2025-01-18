@@ -11,8 +11,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asFlow
-import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.mapLatest
 import okhttp3.Cache
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
@@ -280,11 +278,10 @@ class SubsonicDataSource(
         }
     }.asFlow()
 
-    override fun audio(audioUri: Uri) = suspend {
+    override suspend fun audio(audioUri: Uri) =
         subsonicClient.getSong(audioUri.lastPathSegment!!).toRequestStatus {
             toMediaItem()
         }
-    }.asFlow()
 
     override fun album(albumUri: Uri) = suspend {
         subsonicClient.getAlbum(albumUri.lastPathSegment!!).toRequestStatus {
@@ -370,8 +367,10 @@ class SubsonicDataSource(
     }
 
     override fun lastPlayedAudio() = lastPlayedGetter(lastPlayedKey())
-        .flatMapLatest { uri ->
-            uri?.let(this::audio) ?: flowOf(RequestStatus.Error(MediaError.NOT_FOUND))
+        .mapLatest { uri ->
+            uri?.let {
+                audio(it)
+            } ?: RequestStatus.Error(MediaError.NOT_FOUND)
         }
 
     override suspend fun createPlaylist(name: String) = subsonicClient.createPlaylist(

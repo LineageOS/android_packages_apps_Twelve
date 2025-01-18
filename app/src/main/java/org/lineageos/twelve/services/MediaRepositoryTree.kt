@@ -275,7 +275,7 @@ class MediaRepositoryTree(
 
         mediaId.startsWith(Audio.AUDIO_MEDIA_ITEM_ID_PREFIX) -> {
             repository.audio(Uri.parse(mediaId.removePrefix(Audio.AUDIO_MEDIA_ITEM_ID_PREFIX)))
-                .toOneShotResult()
+                .toResult()
         }
 
         mediaId.startsWith(Genre.GENRE_MEDIA_ITEM_ID_PREFIX) -> {
@@ -334,23 +334,21 @@ class MediaRepositoryTree(
         private const val PROVIDER_CHANGED_MEDIA_ITEM_ID = "[provider_changed]"
 
         /**
+         * Converts a [RequestStatus] to [T].
+         * Raises an exception on error.
+         */
+        private fun <T, E> RequestStatus<T, E>.toResult() = when (this) {
+            is RequestStatus.Loading -> null
+            is RequestStatus.Success -> data
+            is RequestStatus.Error -> throw Exception("Error while loading data, $error")
+        }
+
+        /**
          * Converts a flow of [RequestStatus] to a one-shot result of [T].
          * Raises an exception on error.
          */
         private suspend fun <T, E> Flow<RequestStatus<T, E>>.toOneShotResult() = mapNotNull {
-            when (it) {
-                is RequestStatus.Loading -> {
-                    null
-                }
-
-                is RequestStatus.Success -> {
-                    it.data
-                }
-
-                is RequestStatus.Error -> throw Exception(
-                    "Error while loading data, ${it.error}"
-                )
-            }
+            it.toResult()
         }.first()
     }
 }

@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2024 The LineageOS Project
+ * SPDX-FileCopyrightText: 2024-2025 The LineageOS Project
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.withContext
 import org.lineageos.twelve.models.RequestStatus
@@ -25,7 +26,7 @@ class AddOrRemoveFromPlaylistsViewModel(application: Application) : TwelveViewMo
     @OptIn(ExperimentalCoroutinesApi::class)
     val audio = audioUri
         .filterNotNull()
-        .flatMapLatest {
+        .mapLatest {
             mediaRepository.audio(it)
         }
         .flowOn(Dispatchers.IO)

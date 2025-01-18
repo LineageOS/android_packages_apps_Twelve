@@ -13,6 +13,7 @@ import android.provider.MediaStore
 import androidx.core.os.bundleOf
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
@@ -392,7 +393,7 @@ class LocalDataSource(
         albums + artists + audios + genres
     }.map { RequestStatus.Success<_, MediaError>(it) }
 
-    override fun audio(audioUri: Uri) = contentResolver.queryFlow(
+    override suspend fun audio(audioUri: Uri) = contentResolver.queryFlow(
         audiosUri,
         audiosProjection,
         bundleOf(
@@ -407,7 +408,7 @@ class LocalDataSource(
         audios.firstOrNull()?.let {
             RequestStatus.Success<_, MediaError>(it)
         } ?: RequestStatus.Error(MediaError.NOT_FOUND)
-    }
+    }.first()
 
     override fun album(albumUri: Uri) = combine(
         contentResolver.queryFlow(

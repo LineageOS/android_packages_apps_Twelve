@@ -59,9 +59,8 @@ object DummyDataSource : MediaDataSource {
         RequestStatus.Success<_, MediaError>(listOf<MediaItem<*>>())
     )
 
-    override fun audio(audioUri: Uri) = flowOf(
+    override suspend fun audio(audioUri: Uri) =
         RequestStatus.Error<Audio, _>(MediaError.NOT_FOUND)
-    )
 
     override fun album(albumUri: Uri) = flowOf(
         RequestStatus.Error<Pair<Album, List<Audio>>, _>(MediaError.NOT_FOUND)

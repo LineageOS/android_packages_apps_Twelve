@@ -85,7 +85,7 @@ interface MediaDataSource {
     /**
      * Get the audio information of the given audio.
      */
-    fun audio(audioUri: Uri): Flow<MediaRequestStatus<Audio>>
+    suspend fun audio(audioUri: Uri): MediaRequestStatus<Audio>
 
     /**
      * Get the album information and all the tracks of the given album.

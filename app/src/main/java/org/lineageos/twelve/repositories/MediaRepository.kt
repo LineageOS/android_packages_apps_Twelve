@@ -555,7 +555,7 @@ class MediaRepository(
     /**
      * @see MediaDataSource.audio
      */
-    fun audio(audioUri: Uri) = withMediaItemsDataSourceFlow(audioUri) {
+    suspend fun audio(audioUri: Uri) = withMediaItemsDataSource(audioUri) {
         audio(audioUri)
     }
 

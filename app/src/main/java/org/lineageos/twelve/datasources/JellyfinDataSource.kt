@@ -202,12 +202,12 @@ class JellyfinDataSource(
         }
     }.asFlow()
 
-    override fun audio(audioUri: Uri) = suspend {
+    override suspend fun audio(audioUri: Uri) = run {
         val id = UUID.fromString(audioUri.lastPathSegment!!)
         client.getAudio(id).toRequestStatus {
             toMediaItemAudio()
         }
-    }.asFlow()
+    }
 
     override fun album(albumUri: Uri) = suspend {
         val id = UUID.fromString(albumUri.lastPathSegment!!)
@@ -269,8 +269,10 @@ class JellyfinDataSource(
     }
 
     override fun lastPlayedAudio() = lastPlayedGetter(lastPlayedKey())
-        .flatMapLatest { uri ->
-            uri?.let(this::audio) ?: flowOf(RequestStatus.Error(MediaError.NOT_FOUND))
+        .mapLatest { uri ->
+            uri?.let {
+                audio(it)
+            } ?: RequestStatus.Error(MediaError.NOT_FOUND)
         }
 
     override suspend fun createPlaylist(name: String) = run {

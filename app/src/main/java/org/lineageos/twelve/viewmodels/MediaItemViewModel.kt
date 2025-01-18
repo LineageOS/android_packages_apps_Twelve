@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2024 The LineageOS Project
+ * SPDX-FileCopyrightText: 2024-2025 The LineageOS Project
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
@@ -40,9 +41,9 @@ class MediaItemViewModel(application: Application) : TwelveViewModel(application
                 it.map { album -> album.first to listOf() }
             }
 
-            MediaType.AUDIO -> mediaRepository.audio(uri).mapLatest {
-                it.map { audio -> audio to listOf(audio) }
-            }
+            MediaType.AUDIO -> flowOf(
+                mediaRepository.audio(uri).map { it to listOf(it) }
+            )
 
             MediaType.GENRE -> mediaRepository.genre(uri).mapLatest {
                 it.map { genre -> genre.first to listOf() }
