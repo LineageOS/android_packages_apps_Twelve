@@ -9,6 +9,7 @@ import android.content.SharedPreferences
 import androidx.core.content.edit
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
+import org.lineageos.twelve.models.ProviderType
 import org.lineageos.twelve.models.RepeatMode
 import org.lineageos.twelve.models.SortingRule
 import org.lineageos.twelve.models.SortingStrategy
@@ -88,6 +89,14 @@ var SharedPreferences.shuffleModeEnabled: Boolean
     get() = getBoolean(SHUFFLE_MODE_ENABLED_KEY, SHUFFLE_MODE_ENABLED_DEFAULT)
     set(value) = edit {
         putBoolean(SHUFFLE_MODE_ENABLED_KEY, value)
+    }
+
+private const val DEFAULT_PROVIDER_KEY = "default_provider"
+private const val DEFAULT_PROVIDER_KEY_DEFAULT = "local"
+var SharedPreferences.defaultProvider: String
+    get() = getString(DEFAULT_PROVIDER_KEY, DEFAULT_PROVIDER_KEY_DEFAULT).toString()
+    set(value) = edit {
+        putString(DEFAULT_PROVIDER_KEY, value)
     }
 
 // Sorting prefs

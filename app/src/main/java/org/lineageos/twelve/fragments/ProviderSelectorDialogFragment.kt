@@ -46,6 +46,7 @@ class ProviderSelectorDialogFragment : DialogFragment(R.layout.fragment_provider
     ) {
         override fun ViewHolder.onPrepareView() {
             view.setOnClickListener {
+                android.util.Log.e("testing", "chosen")
                 item?.let {
                     viewModel.setNavigationProvider(it)
                     findNavController().navigateUp()
