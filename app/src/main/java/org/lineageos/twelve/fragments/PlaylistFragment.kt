@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2024 The LineageOS Project
+ * SPDX-FileCopyrightText: 2024-2025 The LineageOS Project
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -68,6 +68,9 @@ class PlaylistFragment : Fragment(R.layout.fragment_playlist) {
     )
     private val playlistNameTextView by getViewProperty<TextView>(R.id.playlistNameTextView)
     private val recyclerView by getViewProperty<RecyclerView>(R.id.recyclerView)
+    private val shufflePlayExtendedFloatingActionButton by getViewProperty<ExtendedFloatingActionButton>(
+        R.id.shufflePlayExtendedFloatingActionButton
+    )
     private val thumbnailImageView by getViewProperty<ImageView>(R.id.thumbnailImageView)
     private val toolbar by getViewProperty<MaterialToolbar>(R.id.toolbar)
     private val tracksInfoTextView by getViewProperty<TextView>(R.id.tracksInfoTextView)
@@ -190,6 +193,19 @@ class PlaylistFragment : Fragment(R.layout.fragment_playlist) {
             windowInsets
         }
 
+        ViewCompat.setOnApplyWindowInsetsListener(
+            shufflePlayExtendedFloatingActionButton
+        ) { v, windowInsets ->
+            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+
+            v.updateMargin(
+                insets,
+                bottom = true,
+            )
+
+            windowInsets
+        }
+
         toolbar.setupWithNavController(findNavController())
         toolbar.inflateMenu(R.menu.fragment_podcast_toolbar)
         toolbar.setOnMenuItemClickListener {
@@ -212,6 +228,12 @@ class PlaylistFragment : Fragment(R.layout.fragment_playlist) {
 
         playAllExtendedFloatingActionButton.setOnClickListener {
             viewModel.playPlaylist()
+
+            findNavController().navigateSafe(R.id.action_playlistFragment_to_fragment_now_playing)
+        }
+
+        shufflePlayExtendedFloatingActionButton.setOnClickListener {
+            viewModel.shufflePlayPlaylist()
 
             findNavController().navigateSafe(R.id.action_playlistFragment_to_fragment_now_playing)
         }
@@ -279,8 +301,14 @@ class PlaylistFragment : Fragment(R.layout.fragment_playlist) {
                     recyclerView.isVisible = !isEmpty
                     noElementsNestedScrollView.isVisible = isEmpty
                     when (isEmpty) {
-                        true -> playAllExtendedFloatingActionButton.hide()
-                        false -> playAllExtendedFloatingActionButton.show()
+                        true -> {
+                            playAllExtendedFloatingActionButton.hide()
+                            shufflePlayExtendedFloatingActionButton.hide()
+                        }
+                        false -> {
+                            playAllExtendedFloatingActionButton.show()
+                            shufflePlayExtendedFloatingActionButton.show()
+                        }
                     }
                 }
 
