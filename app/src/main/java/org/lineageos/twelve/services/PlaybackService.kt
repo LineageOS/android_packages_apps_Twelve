@@ -359,6 +359,7 @@ class PlaybackService : MediaLibraryService(), LifecycleOwner {
                             player.currentMediaItemIndex,
                             player.currentPosition
                         )
+                        player.seekTo(0)
                     }
 
                     lifecycleScope.launch {
