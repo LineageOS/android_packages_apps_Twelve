@@ -62,4 +62,12 @@ class PlaylistViewModel(application: Application) : TwelveViewModel(application)
             playAudio(it, position)
         }
     }
+
+    fun shufflePlayPlaylist(position: Int = 0) {
+        (playlist.value as? RequestStatus.Success)?.data?.second?.takeUnless {
+            it.isEmpty()
+        }?.let {
+            playAudio(it.shuffled(), position)
+        }
+    }
 }

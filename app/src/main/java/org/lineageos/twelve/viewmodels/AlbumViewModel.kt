@@ -147,4 +147,12 @@ class AlbumViewModel(application: Application) : TwelveViewModel(application) {
             playAudio(audios, startFrom?.let { audios.indexOf(it) } ?: 0)
         }
     }
+
+    fun shufflePlayAlbum(startFrom: Audio? = null) {
+        albumContent.value.mapNotNull {
+            (it as? AlbumContent.AudioItem)?.audio
+        }.takeUnless { it.isEmpty() }?.let { audios ->
+            playAudio(audios.shuffled(), startFrom?.let { audios.indexOf(it) } ?: 0)
+        }
+    }
 }

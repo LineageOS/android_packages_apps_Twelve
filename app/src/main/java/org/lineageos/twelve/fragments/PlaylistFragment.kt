@@ -66,6 +66,9 @@ class PlaylistFragment : Fragment(R.layout.fragment_playlist) {
     private val playAllExtendedFloatingActionButton by getViewProperty<ExtendedFloatingActionButton>(
         R.id.playAllExtendedFloatingActionButton
     )
+    private val shufflePlayExtendedFloatingActionButton by getViewProperty<ExtendedFloatingActionButton>(
+        R.id.shufflePlayExtendedFloatingActionButton
+    )
     private val playlistNameTextView by getViewProperty<TextView>(R.id.playlistNameTextView)
     private val recyclerView by getViewProperty<RecyclerView>(R.id.recyclerView)
     private val thumbnailImageView by getViewProperty<ImageView>(R.id.thumbnailImageView)
@@ -190,6 +193,19 @@ class PlaylistFragment : Fragment(R.layout.fragment_playlist) {
             windowInsets
         }
 
+        ViewCompat.setOnApplyWindowInsetsListener(
+            shufflePlayExtendedFloatingActionButton
+        ) { v, windowInsets ->
+            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+
+            v.updateMargin(
+                insets,
+                bottom = true,
+            )
+
+            windowInsets
+        }
+
         toolbar.setupWithNavController(findNavController())
         toolbar.inflateMenu(R.menu.fragment_podcast_toolbar)
         toolbar.setOnMenuItemClickListener {
@@ -212,6 +228,12 @@ class PlaylistFragment : Fragment(R.layout.fragment_playlist) {
 
         playAllExtendedFloatingActionButton.setOnClickListener {
             viewModel.playPlaylist()
+
+            findNavController().navigateSafe(R.id.action_playlistFragment_to_fragment_now_playing)
+        }
+
+        shufflePlayExtendedFloatingActionButton.setOnClickListener {
+            viewModel.shufflePlayPlaylist()
 
             findNavController().navigateSafe(R.id.action_playlistFragment_to_fragment_now_playing)
         }
@@ -279,8 +301,14 @@ class PlaylistFragment : Fragment(R.layout.fragment_playlist) {
                     recyclerView.isVisible = !isEmpty
                     noElementsNestedScrollView.isVisible = isEmpty
                     when (isEmpty) {
-                        true -> playAllExtendedFloatingActionButton.hide()
-                        false -> playAllExtendedFloatingActionButton.show()
+                        true -> {
+                            playAllExtendedFloatingActionButton.hide()
+                            shufflePlayExtendedFloatingActionButton.hide()
+                        }
+                        false -> {
+                            playAllExtendedFloatingActionButton.show()
+                            shufflePlayExtendedFloatingActionButton.show()
+                        }
                     }
                 }
 
