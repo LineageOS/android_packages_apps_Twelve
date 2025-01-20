@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2024 The LineageOS Project
+ * SPDX-FileCopyrightText: 2024-2025 The LineageOS Project
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -66,6 +66,9 @@ class AlbumFragment : Fragment(R.layout.fragment_album) {
     private val noElementsNestedScrollView by getViewProperty<NestedScrollView>(R.id.noElementsNestedScrollView)
     private val playAllExtendedFloatingActionButton by getViewProperty<ExtendedFloatingActionButton>(
         R.id.playAllExtendedFloatingActionButton
+    )
+    private val shufflePlayExtendedFloatingActionButton by getViewProperty<ExtendedFloatingActionButton>(
+        R.id.shufflePlayExtendedFloatingActionButton
     )
     private val recyclerView by getViewProperty<RecyclerView>(R.id.recyclerView)
     private val thumbnailImageView by getViewProperty<ImageView>(R.id.thumbnailImageView)
@@ -235,6 +238,19 @@ class AlbumFragment : Fragment(R.layout.fragment_album) {
             windowInsets
         }
 
+        ViewCompat.setOnApplyWindowInsetsListener(
+            shufflePlayExtendedFloatingActionButton
+        ) { v, windowInsets ->
+            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+
+            v.updateMargin(
+                insets,
+                bottom = true,
+            )
+
+            windowInsets
+        }
+
         toolbar.setupWithNavController(findNavController())
 
         recyclerView.adapter = adapter
@@ -243,6 +259,12 @@ class AlbumFragment : Fragment(R.layout.fragment_album) {
             viewModel.playAlbum()
 
             findNavController().navigateSafe(R.id.action_albumFragment_to_fragment_now_playing)
+        }
+
+        shufflePlayExtendedFloatingActionButton.setOnClickListener {
+            viewModel.shufflePlayAlbum()
+
+            findNavController().navigateSafe(R.id.action_playlistFragment_to_fragment_now_playing)
         }
 
         viewModel.loadAlbum(albumUri)
@@ -350,8 +372,15 @@ class AlbumFragment : Fragment(R.layout.fragment_album) {
                     recyclerView.isVisible = !isEmpty
                     noElementsNestedScrollView.isVisible = isEmpty
                     when (isEmpty) {
-                        true -> playAllExtendedFloatingActionButton.hide()
-                        false -> playAllExtendedFloatingActionButton.show()
+                        true -> {
+                            playAllExtendedFloatingActionButton.hide()
+                            shufflePlayExtendedFloatingActionButton.hide()
+                        }
+
+                        false -> {
+                            playAllExtendedFloatingActionButton.show()
+                            shufflePlayExtendedFloatingActionButton.show()
+                        }
                     }
                 }
             }
