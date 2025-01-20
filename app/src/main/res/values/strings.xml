@@ -216,8 +216,9 @@
     <string name="content_description_play_pause">Play/pause</string>
     <string name="content_description_thumbnail">Thumbnail</string>
 
-    <!-- Play all -->
+    <!-- Play buttons -->
     <string name="play_all">Play all</string>
+    <string name="shuffle_play">Shuffle play</string>
 
     <!-- Media repository tree -->
     <string name="library_item_no_permissions">No permissions</string>
