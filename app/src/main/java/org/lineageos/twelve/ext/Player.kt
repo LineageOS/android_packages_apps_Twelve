@@ -39,6 +39,7 @@ fun Player.mediaItemFlow() = conflatedCallbackFlow {
     val listener = object : Player.Listener {
         override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
             trySend(mediaItem)
+            seekTo(0)
         }
     }
 
