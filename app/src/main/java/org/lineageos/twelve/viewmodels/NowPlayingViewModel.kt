@@ -44,11 +44,13 @@ import org.lineageos.twelve.ext.mediaItemFlow
 import org.lineageos.twelve.ext.mediaMetadataFlow
 import org.lineageos.twelve.ext.next
 import org.lineageos.twelve.ext.playbackParametersFlow
+import org.lineageos.twelve.ext.playbackProgressFlow
 import org.lineageos.twelve.ext.playbackStateFlow
 import org.lineageos.twelve.ext.repeatModeFlow
 import org.lineageos.twelve.ext.shuffleModeFlow
 import org.lineageos.twelve.ext.tracksFlow
 import org.lineageos.twelve.models.Audio
+import org.lineageos.twelve.models.PlaybackProgress
 import org.lineageos.twelve.models.PlaybackState
 import org.lineageos.twelve.models.RepeatMode
 import org.lineageos.twelve.models.RequestStatus
@@ -264,13 +266,7 @@ open class NowPlayingViewModel(application: Application) : TwelveViewModel(appli
             flow {
                 while (true) {
                     val duration = mediaController.duration.takeIf { it != C.TIME_UNSET }
-                    emit(
-                        Triple(
-                            duration,
-                            duration?.let { mediaController.currentPosition },
-                            mediaController.playbackParameters.speed,
-                        )
-                    )
+                    emit(duration to duration?.let { mediaController.currentPosition })
                     delay(200)
                 }
             }
@@ -279,7 +275,18 @@ open class NowPlayingViewModel(application: Application) : TwelveViewModel(appli
         .stateIn(
             viewModelScope,
             started = SharingStarted.WhileSubscribed(),
-            initialValue = Triple(null, null, 1f)
+            initialValue = null to null
+        )
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val playbackProgress = mediaController
+        .filterNotNull()
+        .flatMapLatest { it.playbackProgressFlow() }
+        .flowOn(Dispatchers.Main)
+        .stateIn(
+            viewModelScope,
+            started = SharingStarted.WhileSubscribed(),
+            initialValue = PlaybackProgress.EMPTY
         )
 
     @OptIn(ExperimentalCoroutinesApi::class)

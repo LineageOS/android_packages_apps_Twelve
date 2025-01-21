@@ -20,10 +20,8 @@ import coil3.request.ImageRequest
 import coil3.request.allowHardware
 import coil3.toBitmap
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.stateIn
 import org.lineageos.twelve.ext.applicationContext
@@ -32,11 +30,13 @@ import org.lineageos.twelve.ext.isPlayingFlow
 import org.lineageos.twelve.ext.mediaMetadataFlow
 import org.lineageos.twelve.ext.next
 import org.lineageos.twelve.ext.playbackParametersFlow
+import org.lineageos.twelve.ext.playbackProgressFlow
 import org.lineageos.twelve.ext.playbackStateFlow
 import org.lineageos.twelve.ext.repeatModeFlow
 import org.lineageos.twelve.ext.shuffleModeEnabled
 import org.lineageos.twelve.ext.shuffleModeFlow
 import org.lineageos.twelve.ext.typedRepeatMode
+import org.lineageos.twelve.models.PlaybackProgress
 import org.lineageos.twelve.models.PlaybackState
 import org.lineageos.twelve.models.RepeatMode
 import org.lineageos.twelve.models.RequestStatus
@@ -145,24 +145,12 @@ class LocalPlayerViewModel(application: Application) : AndroidViewModel(applicat
             initialValue = RequestStatus.Loading()
         )
 
-    val durationCurrentPositionMs = flow {
-        while (true) {
-            val duration = exoPlayer.duration.takeIf { it != C.TIME_UNSET }
-            emit(
-                Triple(
-                    duration,
-                    duration?.let { exoPlayer.currentPosition },
-                    exoPlayer.playbackParameters.speed,
-                )
-            )
-            delay(200)
-        }
-    }
+    val playbackProgress = exoPlayer.playbackProgressFlow()
         .flowOn(Dispatchers.Main)
         .stateIn(
             viewModelScope,
             started = SharingStarted.WhileSubscribed(),
-            initialValue = Triple(null, null, 1f)
+            initialValue = PlaybackProgress.EMPTY
         )
 
     val playbackParameters = exoPlayer.playbackParametersFlow()
