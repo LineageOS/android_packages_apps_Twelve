@@ -69,8 +69,14 @@ class AddOrRemoveFromPlaylistsFragment : Fragment(R.layout.fragment_add_or_remov
                             false -> viewLifecycleOwner.lifecycleScope.launch {
                                 fullscreenLoadingProgressBar.withProgress {
                                     when (it.second) {
-                                        true -> viewModel.removeFromPlaylist(it.first.uri)
-                                        false -> viewModel.addToPlaylist(it.first.uri)
+                                        true -> {
+                                            viewModel.removeFromPlaylist(it.first.uri)
+                                            view.setTrailingIconImage(R.drawable.ic_circle)
+                                        }
+                                        false -> {
+                                            viewModel.addToPlaylist(it.first.uri)
+                                            view.setTrailingIconImage(R.drawable.ic_check_circle)
+                                        }
                                     }
                                 }
                             }
