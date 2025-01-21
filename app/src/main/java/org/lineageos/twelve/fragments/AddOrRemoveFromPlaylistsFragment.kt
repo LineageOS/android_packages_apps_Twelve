@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2024 The LineageOS Project
+ * SPDX-FileCopyrightText: 2024-2025 The LineageOS Project
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -69,8 +69,14 @@ class AddOrRemoveFromPlaylistsFragment : Fragment(R.layout.fragment_add_or_remov
                             false -> viewLifecycleOwner.lifecycleScope.launch {
                                 fullscreenLoadingProgressBar.withProgress {
                                     when (it.second) {
-                                        true -> viewModel.removeFromPlaylist(it.first.uri)
-                                        false -> viewModel.addToPlaylist(it.first.uri)
+                                        true -> {
+                                            viewModel.removeFromPlaylist(it.first.uri)
+                                            view.setTrailingIconImage(R.drawable.ic_circle)
+                                        }
+                                        false -> {
+                                            viewModel.addToPlaylist(it.first.uri)
+                                            view.setTrailingIconImage(R.drawable.ic_check_circle)
+                                        }
                                     }
                                 }
                             }
