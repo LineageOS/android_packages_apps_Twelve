@@ -12,10 +12,6 @@ import androidx.lifecycle.viewModelScope
 import androidx.media3.common.C
 import androidx.media3.common.MediaMetadata
 import androidx.media3.common.util.UnstableApi
-import coil3.imageLoader
-import coil3.request.ImageRequest
-import coil3.request.allowHardware
-import coil3.toBitmap
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
@@ -48,13 +44,13 @@ import org.lineageos.twelve.ext.playbackProgressFlow
 import org.lineageos.twelve.ext.playbackStateFlow
 import org.lineageos.twelve.ext.repeatModeFlow
 import org.lineageos.twelve.ext.shuffleModeFlow
+import org.lineageos.twelve.ext.toThumbnail
 import org.lineageos.twelve.ext.tracksFlow
 import org.lineageos.twelve.models.Audio
 import org.lineageos.twelve.models.PlaybackProgress
 import org.lineageos.twelve.models.PlaybackState
 import org.lineageos.twelve.models.RepeatMode
 import org.lineageos.twelve.models.RequestStatus
-import org.lineageos.twelve.models.Thumbnail
 import org.lineageos.twelve.services.PlaybackService
 import org.lineageos.twelve.services.PlaybackService.CustomCommand.Companion.sendCustomCommand
 import org.lineageos.twelve.utils.MimeUtils
@@ -168,21 +164,7 @@ open class NowPlayingViewModel(application: Application) : TwelveViewModel(appli
     ) { mediaMetadata, playbackState ->
         when (playbackState) {
             PlaybackState.BUFFERING -> RequestStatus.Loading()
-
-            else -> RequestStatus.Success<_, Nothing>(
-                mediaMetadata.artworkUri?.let {
-                    Thumbnail(uri = it)
-                } ?: mediaMetadata.artworkData?.let {
-                    val imageRequest = ImageRequest.Builder(applicationContext)
-                        .data(it)
-                        .allowHardware(false)
-                        .build()
-
-                    applicationContext.imageLoader.execute(imageRequest).image?.let { image ->
-                        Thumbnail(bitmap = image.toBitmap())
-                    }
-                }
-            )
+            else -> RequestStatus.Success<_, Nothing>(mediaMetadata.toThumbnail(applicationContext))
         }
     }
         .flowOn(Dispatchers.IO)

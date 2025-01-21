@@ -15,10 +15,6 @@ import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.preference.PreferenceManager
-import coil3.imageLoader
-import coil3.request.ImageRequest
-import coil3.request.allowHardware
-import coil3.toBitmap
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
@@ -35,12 +31,12 @@ import org.lineageos.twelve.ext.playbackStateFlow
 import org.lineageos.twelve.ext.repeatModeFlow
 import org.lineageos.twelve.ext.shuffleModeEnabled
 import org.lineageos.twelve.ext.shuffleModeFlow
+import org.lineageos.twelve.ext.toThumbnail
 import org.lineageos.twelve.ext.typedRepeatMode
 import org.lineageos.twelve.models.PlaybackProgress
 import org.lineageos.twelve.models.PlaybackState
 import org.lineageos.twelve.models.RepeatMode
 import org.lineageos.twelve.models.RequestStatus
-import org.lineageos.twelve.models.Thumbnail
 
 /**
  * A view model useful to playback stuff locally (not in the playback service).
@@ -121,21 +117,7 @@ class LocalPlayerViewModel(application: Application) : AndroidViewModel(applicat
     ) { mediaMetadata, playbackState ->
         when (playbackState) {
             PlaybackState.BUFFERING -> RequestStatus.Loading()
-
-            else -> RequestStatus.Success<_, Nothing>(
-                mediaMetadata.artworkUri?.let {
-                    Thumbnail(uri = it)
-                } ?: mediaMetadata.artworkData?.let {
-                    val imageRequest = ImageRequest.Builder(applicationContext)
-                        .data(it)
-                        .allowHardware(false)
-                        .build()
-
-                    applicationContext.imageLoader.execute(imageRequest).image?.let { image ->
-                        Thumbnail(bitmap = image.toBitmap())
-                    }
-                }
-            )
+            else -> RequestStatus.Success<_, Nothing>(mediaMetadata.toThumbnail(applicationContext))
         }
     }
         .flowOn(Dispatchers.IO)
