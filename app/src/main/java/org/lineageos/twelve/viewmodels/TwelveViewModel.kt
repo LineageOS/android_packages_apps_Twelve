@@ -9,6 +9,7 @@ import android.app.Application
 import android.content.ComponentName
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.media3.common.PlaybackParameters
 import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
 import androidx.preference.PreferenceManager
@@ -92,6 +93,8 @@ abstract class TwelveViewModel(application: Application) : AndroidViewModel(appl
             // Initialize shuffle and repeat modes
             shuffleModeEnabled = sharedPreferences.shuffleModeEnabled
             typedRepeatMode = sharedPreferences.typedRepeatMode
+
+            playbackParameters = PlaybackParameters.DEFAULT
 
             setMediaItems(audio.map { it.toMedia3MediaItem() }, true)
             prepare()
