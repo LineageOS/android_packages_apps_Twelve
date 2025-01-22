@@ -99,11 +99,6 @@ class MediaRepository(
         }
         .distinctUntilChanged()
         .flowOn(Dispatchers.IO)
-        .stateIn(
-            scope,
-            SharingStarted.WhileSubscribed(),
-            listOf()
-        )
 
     private val mediaStoreProviders = combine(
         sharedPreferences.preferenceFlow(
@@ -143,11 +138,6 @@ class MediaRepository(
         }
     }
         .flowOn(Dispatchers.IO)
-        .stateIn(
-            scope,
-            SharingStarted.WhileSubscribed(),
-            listOf()
-        )
 
     /**
      * HTTP cache
