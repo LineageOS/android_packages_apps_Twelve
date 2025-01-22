@@ -24,6 +24,8 @@ class Provider(
     val name: String,
     val visible: Boolean,
 ) : UniqueItem<Provider> {
+    val identifier = ProviderIdentifier(type, typeId)
+
     override fun areItemsTheSame(other: Provider) = compareValuesBy(
         this,
         other,
