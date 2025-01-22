@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2024 The LineageOS Project
+ * SPDX-FileCopyrightText: 2024-2025 The LineageOS Project
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -24,11 +24,13 @@ import org.lineageos.twelve.fragments.ArtistFragment
 import org.lineageos.twelve.fragments.PlaylistFragment
 import org.lineageos.twelve.models.MediaType
 import org.lineageos.twelve.viewmodels.IntentsViewModel
+import org.lineageos.twelve.viewmodels.ProvidersViewModel
 import kotlin.reflect.cast
 
 class MainActivity : AppCompatActivity(R.layout.activity_main) {
     // View models
     private val intentsViewModel by viewModels<IntentsViewModel>()
+    private val viewModel by viewModels<ProvidersViewModel>()
 
     // NavController
     private val navHostFragment by lazy {

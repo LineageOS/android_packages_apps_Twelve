@@ -13,10 +13,40 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
+import org.lineageos.twelve.ext.defaultProvider
 import org.lineageos.twelve.models.Provider
+import org.lineageos.twelve.models.ProviderIdentifier
 import org.lineageos.twelve.models.RequestStatus
 
 open class ProvidersViewModel(application: Application) : TwelveViewModel(application) {
+    init {
+        // Ensure SharedPreferences and default provider are available
+        val defaultProvider = sharedPreferences.defaultProvider
+
+        // Collect providers and set navigation provider if matches
+        viewModelScope.launch {
+            providers.collect { requestStatus ->
+                when (requestStatus) {
+                    is RequestStatus.Loading -> {
+                        // No action needed during loading state
+                    }
+                    is RequestStatus.Success -> {
+                        // Try to find a provider matching the default provider
+                        requestStatus.data.firstOrNull { defaultProvider.matches(it) }?.let {
+                            // Set navigation provider if a match is found
+                            setNavigationProvider(it)
+                        }
+                    }
+                    is RequestStatus.Error -> {
+                        // Handle error if needed
+                        throw Exception("Error while loading providers")
+                    }
+                }
+            }
+        }
+    }
+
     @OptIn(ExperimentalCoroutinesApi::class)
     val providers = mediaRepository.allVisibleProviders
         .mapLatest { RequestStatus.Success<_, Nothing>(it) }
@@ -36,5 +66,6 @@ open class ProvidersViewModel(application: Application) : TwelveViewModel(applic
 
     fun setNavigationProvider(provider: Provider) {
         mediaRepository.setNavigationProvider(provider)
+        sharedPreferences.defaultProvider = ProviderIdentifier(provider.type, provider.typeId)
     }
 }
