@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ab54bf32_1884a418",
+        "filename": "app/src/main/java/org/lineageos/twelve/repositories/MediaRepository.kt",
+        "patchSetId": 1
+      },
+      "lineNbr": 101,
+      "author": {
+        "id": 25732
+      },
+      "writtenOn": "2025-01-22T15:53:12Z",
+      "side": 1,
+      "message": "Given this is not a hot flow anymore, we can get rid of upper `flowOn`s, since it will use the last scope in the flow chain (here being `allProvidersToDataSource`)",
+      "revId": "344ea06176df2812c064add907ac07a01ab5aa0c",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "de3d2645_de7815e0",
+        "filename": "app/src/main/java/org/lineageos/twelve/repositories/MediaRepository.kt",
+        "patchSetId": 1
+      },
+      "lineNbr": 140,
+      "author": {
+        "id": 25732
+      },
+      "writtenOn": "2025-01-22T15:53:12Z",
+      "side": 1,
+      "message": "ditto",
+      "revId": "344ea06176df2812c064add907ac07a01ab5aa0c",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
