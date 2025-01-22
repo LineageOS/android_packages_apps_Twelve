@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e82e3adb_c474626d",
+        "filename": "app/src/main/java/org/lineageos/twelve/repositories/MediaRepository.kt",
+        "patchSetId": 16
+      },
+      "lineNbr": 261,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2025-01-22T14:24:04Z",
+      "side": 1,
+      "message": "you don\u0027t want that, otherwise it\u0027ll emit null and make local load",
+      "range": {
+        "startLine": 256,
+        "startChar": 0,
+        "endLine": 261,
+        "endChar": 9
+      },
+      "revId": "b1dd81ce546729b2ca685b66ac9fb0e4a7b7a179",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
