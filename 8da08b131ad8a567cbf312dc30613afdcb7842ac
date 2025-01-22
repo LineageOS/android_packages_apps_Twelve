@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "70915f9f_efdccfd5",
+        "filename": "app/src/main/java/org/lineageos/twelve/MainActivity.kt",
+        "patchSetId": 1
+      },
+      "lineNbr": 80,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2025-01-22T11:53:26Z",
+      "side": 1,
+      "message": "move that to the view model init {}",
+      "range": {
+        "startLine": 58,
+        "startChar": 0,
+        "endLine": 80,
+        "endChar": 9
+      },
+      "revId": "8da08b131ad8a567cbf312dc30613afdcb7842ac",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7ecfc2be_f255873d",
+        "filename": "app/src/main/java/org/lineageos/twelve/models/ProviderIdentifier.kt",
+        "patchSetId": 1
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2025-01-22T11:53:26Z",
+      "side": 1,
+      "message": "we have json serializer runtime available, you should be able to do that automatically, just add @Serializable",
+      "range": {
+        "startLine": 8,
+        "startChar": 6,
+        "endLine": 8,
+        "endChar": 24
+      },
+      "revId": "8da08b131ad8a567cbf312dc30613afdcb7842ac",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
