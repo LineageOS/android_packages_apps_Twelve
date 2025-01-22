@@ -44,6 +44,7 @@ import org.lineageos.twelve.ext.splitLocalDevices
 import org.lineageos.twelve.ext.storageVolumesFlow
 import org.lineageos.twelve.models.Provider
 import org.lineageos.twelve.models.ProviderArgument.Companion.requireArgument
+import org.lineageos.twelve.models.ProviderIdentifier
 import org.lineageos.twelve.models.ProviderType
 import org.lineageos.twelve.models.RequestStatus
 import org.lineageos.twelve.models.SortingRule
@@ -248,18 +249,18 @@ class MediaRepository(
     /**
      * The current navigation provider's identifiers.
      */
-    private val _navigationProvider = MutableStateFlow<Pair<ProviderType, Long>?>(null)
+    private val _navigationProviderIdentifier = MutableStateFlow<ProviderIdentifier?>(null)
 
     /**
      * The current navigation provider and its data source.
      */
     private val navigationProviderToDataSource = combine(
-        _navigationProvider,
+        _navigationProviderIdentifier,
         allProvidersToDataSource,
     ) { navigationProvider, allProvidersToDataSource ->
         navigationProvider?.let {
             allProvidersToDataSource.firstOrNull { (provider, _) ->
-                provider.type == it.first && provider.typeId == it.second && provider.visible
+                provider.type == it.type && provider.typeId == it.typeId && provider.visible
             }
         } ?: allProvidersToDataSource.firstOrNull { it.first.visible }
     }
@@ -492,10 +493,10 @@ class MediaRepository(
      * Change the default navigation provider. In case this provider disappears the repository will
      * automatically fallback to the local provider.
      *
-     * @param provider The new navigation provider
+     * @param providerIdentifier The new navigation provider identifier
      */
-    fun setNavigationProvider(provider: Provider) {
-        _navigationProvider.value = provider.type to provider.typeId
+    fun setNavigationProvider(providerIdentifier: ProviderIdentifier) {
+        _navigationProviderIdentifier.value = providerIdentifier
     }
 
     /**
