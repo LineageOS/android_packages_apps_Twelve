@@ -121,8 +121,10 @@ class NowPlayingFragment : Fragment(R.layout.fragment_now_playing) {
                             visualizerManager.start(visualizerSurfaceView, it)
                             isVisualizerStarted = true
                         } ?: run {
-                            visualizerManager.stop()
-                            isVisualizerStarted = false
+                            if (isVisualizerStarted) {
+                                visualizerManager.stop()
+                                isVisualizerStarted = false
+                            }
                         }
                     }
                 }
