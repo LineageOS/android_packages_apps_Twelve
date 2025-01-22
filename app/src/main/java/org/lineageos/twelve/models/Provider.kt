@@ -19,11 +19,11 @@ import org.lineageos.twelve.datasources.MediaDataSource
  * @param visible Whether the user should be aware of it
  */
 class Provider(
-    val type: ProviderType,
-    val typeId: Long,
+    override val type: ProviderType,
+    override val typeId: Long,
     val name: String,
     val visible: Boolean,
-) : UniqueItem<Provider> {
+) : ProviderIdentifier(type, typeId), UniqueItem<Provider> {
     override fun areItemsTheSame(other: Provider) = compareValuesBy(
         this,
         other,
