@@ -217,7 +217,9 @@ class ViewActivity : AppCompatActivity(R.layout.activity_view) {
 
                         if (!playbackProgress.isPlaying) {
                             // We don't need animation, just update to the current values
-                            progressSlider.value = newValue
+                            // When playback stops, it's current position still does go on for
+                            // some extra milliseconds
+                            progressSlider.value = newValue.coerceAtMost(newValueTo)
 
                             currentTimestampTextView.text =
                                 TimestampFormatter.formatTimestampMillis(currentPositionMs)
