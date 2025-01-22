@@ -47,6 +47,7 @@ import org.lineageos.twelve.ext.getViewProperty
 import org.lineageos.twelve.ext.loadThumbnail
 import org.lineageos.twelve.ext.navigateSafe
 import org.lineageos.twelve.ext.updatePadding
+import org.lineageos.twelve.models.MediaType
 import org.lineageos.twelve.models.PlaybackState
 import org.lineageos.twelve.models.RepeatMode
 import org.lineageos.twelve.models.RequestStatus
@@ -67,10 +68,10 @@ class NowPlayingFragment : Fragment(R.layout.fragment_now_playing) {
     private val viewModel by viewModels<NowPlayingViewModel>()
 
     // Views
-    private val addOrRemoveFromPlaylistsMaterialButton by getViewProperty<MaterialButton>(R.id.addOrRemoveFromPlaylistsMaterialButton)
     private val albumArtConstraintLayout by getViewProperty<ConstraintLayout?>(R.id.albumArtConstraintLayout)
     private val albumArtImageView by getViewProperty<ImageView>(R.id.albumArtImageView)
     private val albumTitleTextView by getViewProperty<TextView>(R.id.albumTitleTextView)
+    private val audioInformationMaterialButton by getViewProperty<MaterialButton>(R.id.audioInformationMaterialButton)
     private val audioTitleTextView by getViewProperty<TextView>(R.id.audioTitleTextView)
     private val artistNameTextView by getViewProperty<TextView>(R.id.artistNameTextView)
     private val currentTimestampTextView by getViewProperty<TextView>(R.id.currentTimestampTextView)
@@ -267,13 +268,17 @@ class NowPlayingFragment : Fragment(R.layout.fragment_now_playing) {
             )
         }
 
-        addOrRemoveFromPlaylistsMaterialButton.setOnClickListener {
+        audioInformationMaterialButton.setOnClickListener {
             when (val value = viewModel.audio.value) {
                 is RequestStatus.Success -> {
                     val audio = value.data
                     findNavController().navigateSafe(
-                        R.id.action_nowPlayingFragment_to_fragment_add_or_remove_from_playlists,
-                        AddOrRemoveFromPlaylistsFragment.createBundle(audio.uri)
+                        R.id.action_nowPlayingFragment_to_fragment_media_item_bottom_sheet_dialog,
+                        MediaItemBottomSheetDialogFragment.createBundle(
+                            audio.uri,
+                            MediaType.AUDIO,
+                            fromNowPlaying = true,
+                        )
                     )
                 }
 
