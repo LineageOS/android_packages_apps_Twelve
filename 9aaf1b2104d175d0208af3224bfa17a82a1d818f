@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3f7588e0_98701974",
+        "filename": "app/src/main/java/org/lineageos/twelve/ext/SharedPreferences.kt",
+        "patchSetId": 5
+      },
+      "lineNbr": 87,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2025-01-22T12:21:13Z",
+      "side": 1,
+      "message": "```suggestion\n        putString(DEFAULT_PROVIDER_KEY, json)\n```",
+      "range": {
+        "startLine": 87,
+        "startChar": 0,
+        "endLine": 87,
+        "endChar": 60
+      },
+      "revId": "9aaf1b2104d175d0208af3224bfa17a82a1d818f",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
