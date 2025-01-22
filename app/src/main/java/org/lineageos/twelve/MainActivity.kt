@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2024 The LineageOS Project
+ * SPDX-FileCopyrightText: 2024-2025 The LineageOS Project
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -16,19 +16,24 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.NavHostFragment
+import androidx.preference.PreferenceManager
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import org.lineageos.twelve.ext.defaultProvider
 import org.lineageos.twelve.ext.navigateSafe
 import org.lineageos.twelve.fragments.AlbumFragment
 import org.lineageos.twelve.fragments.ArtistFragment
 import org.lineageos.twelve.fragments.PlaylistFragment
 import org.lineageos.twelve.models.MediaType
+import org.lineageos.twelve.models.RequestStatus
 import org.lineageos.twelve.viewmodels.IntentsViewModel
+import org.lineageos.twelve.viewmodels.ProvidersViewModel
 import kotlin.reflect.cast
 
 class MainActivity : AppCompatActivity(R.layout.activity_main) {
     // View models
     private val intentsViewModel by viewModels<IntentsViewModel>()
+    private val viewModel by viewModels<ProvidersViewModel>()
 
     // NavController
     private val navHostFragment by lazy {
@@ -49,6 +54,30 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
         intentsViewModel.onIntent(intent)
         addOnNewIntentListener(intentListener)
+
+        // Restore provider from previous session.
+        lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.providers.collect { requestStatus ->
+                    when (requestStatus) {
+                        is RequestStatus.Loading -> {
+                            // Do nothing
+                        }
+
+                        is RequestStatus.Success -> {
+                            val sharedPreferences =
+                                PreferenceManager.getDefaultSharedPreferences(application)!!
+                            val defaultProvider = sharedPreferences.defaultProvider
+                            requestStatus.data.firstOrNull { defaultProvider.matches(it) }?.let {
+                                viewModel.setNavigationProvider(it)
+                            }
+                        }
+
+                        is RequestStatus.Error -> throw Exception("Error while loading providers")
+                    }
+                }
+            }
+        }
 
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
