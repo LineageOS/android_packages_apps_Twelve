@@ -9,6 +9,10 @@ import android.content.SharedPreferences
 import androidx.core.content.edit
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
+import org.lineageos.twelve.models.Provider
+import org.lineageos.twelve.models.ProviderType
 import org.lineageos.twelve.models.RepeatMode
 import org.lineageos.twelve.models.SortingRule
 import org.lineageos.twelve.models.SortingStrategy
@@ -66,6 +70,21 @@ const val SKIP_SILENCE_KEY = "skip_silence"
 private const val SKIP_SILENCE_DEFAULT = false
 val SharedPreferences.skipSilence: Boolean
     get() = getBoolean(SKIP_SILENCE_KEY, SKIP_SILENCE_DEFAULT)
+
+private const val DEFAULT_PROVIDER_KEY = "default_provider"
+var SharedPreferences.defaultProvider: Provider?
+    get() {
+        val json = getString(DEFAULT_PROVIDER_KEY, null)
+        return if (json != null) {
+            Json.decodeFromString<Provider>(json)
+        } else {
+            null
+        }
+    }
+    set(value) = edit {
+        val json = Json.encodeToString(value)
+        putString(DEFAULT_PROVIDER_KEY, json)
+    }
 
 // Experimental prefs
 const val SPLIT_LOCAL_DEVICES_KEY = "split_local_devices"

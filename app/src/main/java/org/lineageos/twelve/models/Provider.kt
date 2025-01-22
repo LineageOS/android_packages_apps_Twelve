@@ -5,6 +5,8 @@
 
 package org.lineageos.twelve.models
 
+import android.os.Build
+import kotlinx.serialization.Serializable
 import org.lineageos.twelve.datasources.MediaDataSource
 
 /**
@@ -18,6 +20,7 @@ import org.lineageos.twelve.datasources.MediaDataSource
  * @param name The name of the provider given by the user
  * @param visible Whether the user should be aware of it
  */
+@Serializable
 class Provider(
     val type: ProviderType,
     val typeId: Long,
