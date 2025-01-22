@@ -28,11 +28,6 @@ class GenresViewModel(application: Application) : TwelveViewModel(application) {
         getter = SharedPreferences::genresSortingRule,
     )
         .flowOn(Dispatchers.IO)
-        .stateIn(
-            viewModelScope,
-            SharingStarted.WhileSubscribed(),
-            sharedPreferences.genresSortingRule
-        )
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val genres = sortingRule

@@ -29,11 +29,6 @@ class PlaylistsViewModel(application: Application) : TwelveViewModel(application
         getter = SharedPreferences::playlistsSortingRule,
     )
         .flowOn(Dispatchers.IO)
-        .stateIn(
-            viewModelScope,
-            SharingStarted.WhileSubscribed(),
-            sharedPreferences.playlistsSortingRule
-        )
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val playlists = sortingRule

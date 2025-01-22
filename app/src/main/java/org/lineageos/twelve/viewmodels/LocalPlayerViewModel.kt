@@ -12,7 +12,6 @@ import androidx.lifecycle.viewModelScope
 import androidx.media3.common.AudioAttributes
 import androidx.media3.common.C
 import androidx.media3.common.MediaItem
-import androidx.media3.common.MediaMetadata
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.preference.PreferenceManager
 import kotlinx.coroutines.Dispatchers
@@ -33,9 +32,7 @@ import org.lineageos.twelve.ext.shuffleModeEnabled
 import org.lineageos.twelve.ext.shuffleModeFlow
 import org.lineageos.twelve.ext.toThumbnail
 import org.lineageos.twelve.ext.typedRepeatMode
-import org.lineageos.twelve.models.PlaybackProgress
 import org.lineageos.twelve.models.PlaybackState
-import org.lineageos.twelve.models.RepeatMode
 import org.lineageos.twelve.models.RequestStatus
 
 /**
@@ -73,43 +70,18 @@ class LocalPlayerViewModel(application: Application) : AndroidViewModel(applicat
 
     val mediaMetadata = exoPlayer.mediaMetadataFlow()
         .flowOn(Dispatchers.Main)
-        .stateIn(
-            viewModelScope,
-            started = SharingStarted.WhileSubscribed(),
-            initialValue = MediaMetadata.EMPTY
-        )
 
-    val playbackState = exoPlayer.playbackStateFlow()
+    private val playbackState = exoPlayer.playbackStateFlow()
         .flowOn(Dispatchers.Main)
-        .stateIn(
-            viewModelScope,
-            started = SharingStarted.WhileSubscribed(),
-            initialValue = null
-        )
 
     val isPlaying = exoPlayer.isPlayingFlow()
         .flowOn(Dispatchers.Main)
-        .stateIn(
-            viewModelScope,
-            started = SharingStarted.WhileSubscribed(),
-            initialValue = false
-        )
 
     val shuffleMode = exoPlayer.shuffleModeFlow()
         .flowOn(Dispatchers.Main)
-        .stateIn(
-            viewModelScope,
-            started = SharingStarted.WhileSubscribed(),
-            initialValue = false
-        )
 
     val repeatMode = exoPlayer.repeatModeFlow()
         .flowOn(Dispatchers.Main)
-        .stateIn(
-            viewModelScope,
-            started = SharingStarted.WhileSubscribed(),
-            initialValue = RepeatMode.NONE
-        )
 
     val mediaArtwork = combine(
         mediaMetadata,
@@ -129,27 +101,12 @@ class LocalPlayerViewModel(application: Application) : AndroidViewModel(applicat
 
     val playbackProgress = exoPlayer.playbackProgressFlow()
         .flowOn(Dispatchers.Main)
-        .stateIn(
-            viewModelScope,
-            started = SharingStarted.WhileSubscribed(),
-            initialValue = PlaybackProgress.EMPTY
-        )
 
     val playbackParameters = exoPlayer.playbackParametersFlow()
         .flowOn(Dispatchers.Main)
-        .stateIn(
-            viewModelScope,
-            started = SharingStarted.WhileSubscribed(),
-            initialValue = null
-        )
 
     val availableCommands = exoPlayer.availableCommandsFlow()
         .flowOn(Dispatchers.Main)
-        .stateIn(
-            viewModelScope,
-            started = SharingStarted.WhileSubscribed(),
-            initialValue = null
-        )
 
     override fun onCleared() {
         exoPlayer.release()

@@ -28,11 +28,6 @@ class ArtistsViewModel(application: Application) : TwelveViewModel(application) 
         getter = SharedPreferences::artistsSortingRule,
     )
         .flowOn(Dispatchers.IO)
-        .stateIn(
-            viewModelScope,
-            SharingStarted.WhileSubscribed(),
-            sharedPreferences.artistsSortingRule
-        )
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val artists = sortingRule

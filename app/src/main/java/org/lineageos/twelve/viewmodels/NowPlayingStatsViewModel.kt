@@ -49,11 +49,6 @@ class NowPlayingStatsViewModel(application: Application) : NowPlayingViewModel(a
             }
         }
         .flowOn(Dispatchers.IO)
-        .stateIn(
-            viewModelScope,
-            started = SharingStarted.WhileSubscribed(),
-            initialValue = null
-        )
 
     /**
      * Whether the output is in non-passthrough PCM float mode.
