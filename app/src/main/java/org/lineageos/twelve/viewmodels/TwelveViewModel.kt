@@ -49,7 +49,7 @@ abstract class TwelveViewModel(application: Application) : AndroidViewModel(appl
         )
     }
 
-    private val mediaControllerFlow = channelFlow {
+    protected val mediaControllerFlow = channelFlow {
         val mediaController = MediaController.Builder(applicationContext, sessionToken)
             .buildAsync()
             .await()

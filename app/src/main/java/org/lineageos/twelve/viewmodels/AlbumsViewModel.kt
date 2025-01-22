@@ -28,11 +28,6 @@ class AlbumsViewModel(application: Application) : TwelveViewModel(application) {
         getter = SharedPreferences::albumsSortingRule,
     )
         .flowOn(Dispatchers.IO)
-        .stateIn(
-            viewModelScope,
-            SharingStarted.WhileSubscribed(),
-            sharedPreferences.albumsSortingRule
-        )
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val albums = sortingRule

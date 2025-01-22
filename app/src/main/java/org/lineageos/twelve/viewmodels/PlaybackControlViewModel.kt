@@ -13,7 +13,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.mapLatest
@@ -26,8 +25,7 @@ class PlaybackControlViewModel(application: Application) : TwelveViewModel(appli
     val pitchSliderVisible = _pitchSliderVisible.asStateFlow()
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val playbackParameters = mediaController
-        .filterNotNull()
+    val playbackParameters = mediaControllerFlow
         .flatMapLatest { it.playbackParametersFlow() }
         .flowOn(Dispatchers.Main)
         .stateIn(
@@ -40,31 +38,16 @@ class PlaybackControlViewModel(application: Application) : TwelveViewModel(appli
     val isSpeedMinusButtonEnabled = playbackParameters
         .mapLatest { it.speed > (SPEED_MIN + (SPEED_STEP / 2)) }
         .flowOn(Dispatchers.IO)
-        .stateIn(
-            viewModelScope,
-            started = SharingStarted.WhileSubscribed(),
-            initialValue = false
-        )
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val isSpeedPlusButtonEnabled = playbackParameters
         .mapLatest { it.speed < (SPEED_MAX - (SPEED_STEP / 2)) }
         .flowOn(Dispatchers.IO)
-        .stateIn(
-            viewModelScope,
-            started = SharingStarted.WhileSubscribed(),
-            initialValue = false
-        )
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val isPitchUnlockSwitchChecked = playbackParameters
         .mapLatest { it.pitch != PITCH_DEFAULT }
         .flowOn(Dispatchers.IO)
-        .stateIn(
-            viewModelScope,
-            started = SharingStarted.WhileSubscribed(),
-            initialValue = false
-        )
 
     fun increasePlaybackSpeed() {
         val newSpeed = (playbackParameters.value.speed + SPEED_STEP).coerceAtMost(SPEED_MAX)
