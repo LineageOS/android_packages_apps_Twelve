@@ -20,6 +20,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.animation.doOnStart
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
@@ -437,10 +438,9 @@ class NowPlayingFragment : Fragment(R.layout.fragment_now_playing) {
                         val newValueTo = durationMs.toFloat().takeIf { it > 0 } ?: 1f
                         val newValue = currentPositionMs.toFloat()
 
-                        progressSlider.valueTo = newValueTo
-
                         if (!playbackProgress.isPlaying) {
                             // We don't need animation, just update to the current values
+                            progressSlider.valueTo = newValueTo
                             progressSlider.value = newValue
 
                             currentTimestampTextView.text =
@@ -450,6 +450,9 @@ class NowPlayingFragment : Fragment(R.layout.fragment_now_playing) {
                                 interpolator = LinearInterpolator()
                                 duration = (newValueTo - newValue).toLong()
                                     .div(playbackProgress.playbackSpeed.roundToLong())
+                                doOnStart {
+                                    progressSlider.valueTo = newValueTo
+                                }
                                 addUpdateListener {
                                     val value = it.animatedValue as Float
 

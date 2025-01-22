@@ -17,6 +17,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.animation.doOnStart
 import androidx.core.util.Consumer
 import androidx.core.view.isVisible
 import androidx.lifecycle.Lifecycle
@@ -213,10 +214,9 @@ class ViewActivity : AppCompatActivity(R.layout.activity_view) {
                         val newValueTo = durationMs.toFloat().takeIf { it > 0 } ?: 1f
                         val newValue = currentPositionMs.toFloat()
 
-                        progressSlider.valueTo = newValueTo
-
                         if (!playbackProgress.isPlaying) {
                             // We don't need animation, just update to the current values
+                            progressSlider.valueTo = newValueTo
                             progressSlider.value = newValue
 
                             currentTimestampTextView.text =
@@ -226,6 +226,9 @@ class ViewActivity : AppCompatActivity(R.layout.activity_view) {
                                 interpolator = LinearInterpolator()
                                 duration = (newValueTo - newValue).toLong()
                                     .div(playbackProgress.playbackSpeed.roundToLong())
+                                doOnStart {
+                                    progressSlider.valueTo = newValueTo
+                                }
                                 addUpdateListener {
                                     val value = it.animatedValue as Float
 
