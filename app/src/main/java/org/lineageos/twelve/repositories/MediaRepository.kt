@@ -44,6 +44,7 @@ import org.lineageos.twelve.ext.splitLocalDevices
 import org.lineageos.twelve.ext.storageVolumesFlow
 import org.lineageos.twelve.models.Provider
 import org.lineageos.twelve.models.ProviderArgument.Companion.requireArgument
+import org.lineageos.twelve.models.ProviderIdentifier
 import org.lineageos.twelve.models.ProviderType
 import org.lineageos.twelve.models.RequestStatus
 import org.lineageos.twelve.models.SortingRule
@@ -494,7 +495,7 @@ class MediaRepository(
      *
      * @param provider The new navigation provider
      */
-    fun setNavigationProvider(provider: Provider) {
+    fun setNavigationProvider(provider: ProviderIdentifier) {
         _navigationProvider.value = provider.type to provider.typeId
     }
 
