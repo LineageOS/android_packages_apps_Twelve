@@ -6,27 +6,16 @@
 package org.lineageos.twelve.viewmodels
 
 import android.app.Application
-import android.content.ComponentName
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.media3.session.MediaController
-import androidx.media3.session.SessionToken
 import androidx.preference.PreferenceManager
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.channelFlow
-import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.guava.await
 import org.lineageos.twelve.TwelveApplication
-import org.lineageos.twelve.ext.applicationContext
 import org.lineageos.twelve.ext.shuffleModeEnabled
 import org.lineageos.twelve.ext.typedRepeatMode
 import org.lineageos.twelve.models.Audio
 import org.lineageos.twelve.models.RepeatMode
-import org.lineageos.twelve.services.PlaybackService
 
 /**
  * Base view model for all app view models.
@@ -43,30 +32,7 @@ abstract class TwelveViewModel(application: Application) : AndroidViewModel(appl
         PreferenceManager.getDefaultSharedPreferences(application)!!
     }
 
-    private val sessionToken by lazy {
-        SessionToken(
-            applicationContext,
-            ComponentName(applicationContext, PlaybackService::class.java)
-        )
-    }
-
-    protected val mediaControllerFlow = channelFlow {
-        val mediaController = MediaController.Builder(applicationContext, sessionToken)
-            .buildAsync()
-            .await()
-
-        trySend(mediaController)
-
-        awaitClose {
-            mediaController.release()
-        }
-    }
-        .flowOn(Dispatchers.Main)
-        .shareIn(
-            viewModelScope,
-            SharingStarted.Eagerly,
-            replay = 1
-        )
+    protected val mediaControllerFlow = getApplication<TwelveApplication>().mediaControllerFlow
 
     protected val mediaController = mediaControllerFlow
         .stateIn(
