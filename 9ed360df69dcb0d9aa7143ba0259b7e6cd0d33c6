@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "49aeedb7_28362135",
+        "filename": "app/src/main/java/org/lineageos/twelve/models/ProviderIdentifier.kt",
+        "patchSetId": 4
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2025-01-22T12:12:17Z",
+      "side": 1,
+      "message": "data classes override equals with a sane implementation that matches fields vs the class, can remove it and use \u003d\u003d directly",
+      "range": {
+        "startLine": 12,
+        "startChar": 0,
+        "endLine": 14,
+        "endChar": 5
+      },
+      "revId": "9ed360df69dcb0d9aa7143ba0259b7e6cd0d33c6",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
