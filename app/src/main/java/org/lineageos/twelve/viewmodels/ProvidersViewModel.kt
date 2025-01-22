@@ -13,10 +13,15 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
+import org.lineageos.twelve.ext.defaultProvider
 import org.lineageos.twelve.models.Provider
 import org.lineageos.twelve.models.RequestStatus
 
 open class ProvidersViewModel(application: Application) : TwelveViewModel(application) {
+    init {
+        mediaRepository.setNavigationProvider(sharedPreferences.defaultProvider)
+    }
+
     @OptIn(ExperimentalCoroutinesApi::class)
     val providers = mediaRepository.allVisibleProviders
         .mapLatest { RequestStatus.Success<_, Nothing>(it) }
@@ -36,5 +41,6 @@ open class ProvidersViewModel(application: Application) : TwelveViewModel(applic
 
     fun setNavigationProvider(provider: Provider) {
         mediaRepository.setNavigationProvider(provider)
+        sharedPreferences.defaultProvider = provider
     }
 }
