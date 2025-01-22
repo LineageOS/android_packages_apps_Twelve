@@ -441,7 +441,7 @@ class NowPlayingFragment : Fragment(R.layout.fragment_now_playing) {
 
                         if (!playbackProgress.isPlaying) {
                             // We don't need animation, just update to the current values
-                            progressSlider.value = newValue
+                            progressSlider.value = newValue.coerceAtMost(newValueTo)
 
                             currentTimestampTextView.text =
                                 TimestampFormatter.formatTimestampMillis(currentPositionMs)
@@ -454,7 +454,7 @@ class NowPlayingFragment : Fragment(R.layout.fragment_now_playing) {
                                     val value = it.animatedValue as Float
 
                                     if (!isProgressSliderDragging) {
-                                        progressSlider.value = value
+                                        progressSlider.value = value.coerceAtMost(newValueTo)
                                     }
 
                                     currentTimestampTextView.text =
