@@ -26,7 +26,6 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.guava.await
 import me.bogerchan.niervisualizer.renderer.IRenderer
 import me.bogerchan.niervisualizer.renderer.circle.CircleBarRenderer
 import me.bogerchan.niervisualizer.renderer.circle.CircleRenderer
@@ -268,7 +267,7 @@ open class NowPlayingViewModel(application: Application) : TwelveViewModel(appli
             mediaController.sendCustomCommand(
                 PlaybackService.CustomCommand.GET_AUDIO_SESSION_ID,
                 Bundle.EMPTY
-            ).await().extras.getInt(PlaybackService.CustomCommand.RSP_VALUE)
+            ).extras.getInt(PlaybackService.CustomCommand.RSP_VALUE)
         }
         .flowOn(Dispatchers.Main)
         .stateIn(
