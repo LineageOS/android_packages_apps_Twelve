@@ -16,6 +16,52 @@
       "message": "Happens even when is playing, just added clamping everywhere",
       "revId": "c6bce7c7f18bd816adcbfc8c9717bdb1b4495ca2",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3db0a370_97d01ca6",
+        "filename": "app/src/main/java/org/lineageos/twelve/fragments/NowPlayingFragment.kt",
+        "patchSetId": 3
+      },
+      "lineNbr": 449,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2025-01-22T15:15:27Z",
+      "side": 1,
+      "message": "and this will likely never run?",
+      "range": {
+        "startLine": 449,
+        "startChar": 50,
+        "endLine": 449,
+        "endChar": 70
+      },
+      "revId": "c6bce7c7f18bd816adcbfc8c9717bdb1b4495ca2",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "dbe3793d_17690b04",
+        "filename": "app/src/main/java/org/lineageos/twelve/fragments/NowPlayingFragment.kt",
+        "patchSetId": 3
+      },
+      "lineNbr": 451,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2025-01-22T15:15:27Z",
+      "side": 1,
+      "message": "may be negative...",
+      "range": {
+        "startLine": 451,
+        "startChar": 44,
+        "endLine": 451,
+        "endChar": 65
+      },
+      "revId": "c6bce7c7f18bd816adcbfc8c9717bdb1b4495ca2",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
