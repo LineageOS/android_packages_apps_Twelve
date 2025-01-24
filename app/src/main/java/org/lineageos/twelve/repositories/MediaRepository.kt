@@ -515,6 +515,13 @@ class MediaRepository(
     fun activity() = navigationDataSource.flatMapLatest { it.activity() }
 
     /**
+     * @see MediaDataSource.lyrics
+     */
+    fun lyrics(audioUri: Uri) = withMediaItemsDataSourceFlow(audioUri) {
+        lyrics(audioUri)
+    }
+
+    /**
      * @see MediaDataSource.albums
      */
     fun albums(

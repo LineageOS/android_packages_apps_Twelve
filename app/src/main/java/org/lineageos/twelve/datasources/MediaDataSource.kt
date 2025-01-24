@@ -15,6 +15,7 @@ import org.lineageos.twelve.models.Audio
 import org.lineageos.twelve.models.DataSourceInformation
 import org.lineageos.twelve.models.Genre
 import org.lineageos.twelve.models.GenreContent
+import org.lineageos.twelve.models.Lyrics
 import org.lineageos.twelve.models.MediaItem
 import org.lineageos.twelve.models.MediaType
 import org.lineageos.twelve.models.Playlist
@@ -164,4 +165,6 @@ interface MediaDataSource {
      * @return [RequestStatus.Success] if success, [RequestStatus.Error] with an error otherwise
      */
     suspend fun onAudioPlayed(audioUri: Uri): MediaRequestStatus<Unit>
+
+    fun lyrics(audioUri: Uri): Flow<RequestStatus<Lyrics, MediaError>>
 }

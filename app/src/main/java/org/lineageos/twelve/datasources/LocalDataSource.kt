@@ -32,6 +32,7 @@ import org.lineageos.twelve.models.DataSourceInformation
 import org.lineageos.twelve.models.Genre
 import org.lineageos.twelve.models.GenreContent
 import org.lineageos.twelve.models.LocalizedString
+import org.lineageos.twelve.models.Lyrics
 import org.lineageos.twelve.models.MediaItem
 import org.lineageos.twelve.models.MediaType
 import org.lineageos.twelve.models.Playlist
@@ -713,6 +714,10 @@ class LocalDataSource(
         database.getLastPlayedDao().set(LAST_PLAYED_KEY, audioUri)
         return RequestStatus.Success(Unit)
     }
+
+    override fun lyrics(audioUri: Uri) = flowOf(
+        RequestStatus.Error<Lyrics, _>(MediaError.NOT_IMPLEMENTED)
+    )
 
     fun audios() = contentResolver.queryFlow(
         audiosUri,

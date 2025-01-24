@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-     SPDX-FileCopyrightText: 2024 The LineageOS Project
+     SPDX-FileCopyrightText: 2024-2025 The LineageOS Project
      SPDX-License-Identifier: Apache-2.0
 -->
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -109,6 +109,17 @@
 
                     <SurfaceView
                         android:id="@+id/visualizerSurfaceView"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:background="#55000000"
+                        android:visibility="visible"
+                        app:layout_constraintBottom_toBottomOf="@+id/albumArtImageView"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/lyricsTextView"
                         android:layout_width="0dp"
                         android:layout_height="0dp"
                         android:background="#55000000"
