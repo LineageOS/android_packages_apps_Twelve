@@ -6,6 +6,7 @@
 package org.lineageos.twelve.datasources
 
 import android.net.Uri
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import org.lineageos.twelve.models.ActivityTab
 import org.lineageos.twelve.models.Album
@@ -15,6 +16,7 @@ import org.lineageos.twelve.models.Audio
 import org.lineageos.twelve.models.DataSourceInformation
 import org.lineageos.twelve.models.Genre
 import org.lineageos.twelve.models.GenreContent
+import org.lineageos.twelve.models.Lyrics
 import org.lineageos.twelve.models.MediaItem
 import org.lineageos.twelve.models.MediaType
 import org.lineageos.twelve.models.Playlist
@@ -108,4 +110,8 @@ object DummyDataSource : MediaDataSource {
     ) = RequestStatus.Error<Unit, _>(MediaError.NOT_IMPLEMENTED)
 
     override suspend fun onAudioPlayed(audioUri: Uri) = RequestStatus.Success<_, MediaError>(Unit)
+
+    override fun lyrics(audioUri: Uri) = flowOf(
+        RequestStatus.Error<Lyrics, _>(MediaError.NOT_IMPLEMENTED)
+    )
 }

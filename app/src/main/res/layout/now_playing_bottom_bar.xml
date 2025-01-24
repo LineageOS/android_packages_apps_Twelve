@@ -17,6 +17,12 @@
         android:layout_height="wrap_content">
 
         <com.google.android.material.button.MaterialButton
+            android:id="@+id/lyricsMaterialButton"
+            style="@style/Theme.Twelve.NowPlayingFragment.BottomBarButton"
+            android:tooltipText="@string/lyrics"
+            app:icon="@drawable/ic_lyrics" />
+
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/playbackSpeedMaterialButton"
             style="@style/Theme.Twelve.NowPlayingFragment.BottomBarButton"
             android:tooltipText="@string/playback_speed"

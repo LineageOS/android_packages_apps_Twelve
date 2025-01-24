@@ -15,6 +15,11 @@ import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.mapLatest
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.jsonArray
+import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
 import okhttp3.Cache
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import org.lineageos.twelve.R
@@ -30,6 +35,7 @@ import org.lineageos.twelve.models.DataSourceInformation
 import org.lineageos.twelve.models.Genre
 import org.lineageos.twelve.models.GenreContent
 import org.lineageos.twelve.models.LocalizedString
+import org.lineageos.twelve.models.Lyrics
 import org.lineageos.twelve.models.MediaItem
 import org.lineageos.twelve.models.MediaType
 import org.lineageos.twelve.models.Playlist
@@ -126,6 +132,17 @@ class JellyfinDataSource(
                     )
                 },
             )
+        }
+    }.asFlow()
+
+    override fun lyrics(audioUri: Uri) = suspend {
+        val id = UUID.fromString(audioUri.lastPathSegment!!)
+        android.util.Log.e("Testing", "UUID: $id")
+        val item = client.getLyrics(id)
+        android.util.Log.e("Testing", "Fetched Item: $item")
+        item.toRequestStatus {
+            android.util.Log.e("Testing", "Calling toLyrics")
+            toLyrics()
         }
     }.asFlow()
 
@@ -363,6 +380,15 @@ class JellyfinDataSource(
         genreName = genres?.firstOrNull(),
         year = productionYear,
     )
+
+    private fun org.lineageos.twelve.datasources.jellyfin.models.Lyrics.toLyrics(): Lyrics {
+        val formattedLyrics = lyrics?.joinToString("\n") { lyricLine ->
+            val startText = lyricLine.start.let { "[${it}s] " }
+            "$startText${lyricLine.text}"
+        } ?: "No lyrics available"
+
+        return Lyrics(lyrics = formattedLyrics)
+    }
 
     private fun Item.toMediaItemGenre() = Genre(
         uri = getGenreUri(id.toString()),

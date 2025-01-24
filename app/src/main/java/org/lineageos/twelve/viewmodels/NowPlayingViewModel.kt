@@ -89,6 +89,20 @@ open class NowPlayingViewModel(application: Application) : TwelveViewModel(appli
         )
 
     @OptIn(ExperimentalCoroutinesApi::class)
+    val lyrics = mediaItem
+        .filterNotNull()
+        .flatMapLatest {
+            val audioUri = Uri.parse(it.mediaId.removePrefix(Audio.AUDIO_MEDIA_ITEM_ID_PREFIX))
+            mediaRepository.lyrics(audioUri)
+        }
+        .flowOn(Dispatchers.Main)
+        .stateIn(
+            viewModelScope,
+            started = SharingStarted.WhileSubscribed(),
+            initialValue = RequestStatus.Loading()
+        )
+
+    @OptIn(ExperimentalCoroutinesApi::class)
     val audio = mediaItem
         .filterNotNull()
         .flatMapLatest {
