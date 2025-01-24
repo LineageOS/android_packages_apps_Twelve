@@ -20,12 +20,12 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.flow.stateIn
 import me.bogerchan.niervisualizer.renderer.IRenderer
 import me.bogerchan.niervisualizer.renderer.circle.CircleBarRenderer
@@ -90,13 +90,23 @@ open class NowPlayingViewModel(application: Application) : TwelveViewModel(appli
         )
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val audio = mediaItem
-        .filterNotNull()
-        .flatMapLatest {
-            runCatching {
-                Uri.parse(it.mediaId)
-            }.getOrNull()?.let { mediaItemUri ->
-                mediaRepository.audio(mediaItemUri)
+    private val mediaItemUri = mediaItem
+        .mapLatest { mediaItem ->
+            mediaItem?.let {
+                runCatching { Uri.parse(it.mediaId) }.getOrNull()
+            }
+        }
+        .flowOn(Dispatchers.IO)
+        .shareIn(
+            viewModelScope,
+            started = SharingStarted.WhileSubscribed(),
+        )
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val audio = mediaItemUri
+        .flatMapLatest { mediaItemUri ->
+            mediaItemUri?.let {
+                mediaRepository.audio(it)
             } ?: flowOf(RequestStatus.Error(MediaError.NOT_FOUND))
         }
         .flowOn(Dispatchers.IO)
@@ -302,6 +312,20 @@ open class NowPlayingViewModel(application: Application) : TwelveViewModel(appli
             viewModelScope,
             started = SharingStarted.WhileSubscribed(),
             initialValue = false
+        )
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val lyrics = mediaItemUri
+        .flatMapLatest { mediaItemUri ->
+            mediaItemUri?.let {
+                mediaRepository.lyrics(it)
+            } ?: flowOf(RequestStatus.Loading())
+        }
+        .flowOn(Dispatchers.Main)
+        .stateIn(
+            viewModelScope,
+            started = SharingStarted.WhileSubscribed(),
+            initialValue = RequestStatus.Loading()
         )
 
     fun togglePlayPause() {
