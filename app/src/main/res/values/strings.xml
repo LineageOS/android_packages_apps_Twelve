@@ -88,6 +88,7 @@
     <!-- Now playing fragment -->
     <string name="audio_information">Audio information</string>
     <string name="audio_effects">Audio effects</string>
+    <string name="lyrics">Lyrics</string>
     <string name="playback_speed">Playback speed</string>
     <string name="playback_speed_format">%1$s×</string>
     <string name="playback_pitch_slider_description">Playback pitch</string>
