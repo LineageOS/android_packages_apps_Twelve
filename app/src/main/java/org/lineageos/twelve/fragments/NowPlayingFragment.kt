@@ -80,6 +80,8 @@ class NowPlayingFragment : Fragment(R.layout.fragment_now_playing) {
     private val fileTypeMaterialCardView by getViewProperty<MaterialCardView>(R.id.fileTypeMaterialCardView)
     private val fileTypeTextView by getViewProperty<TextView>(R.id.fileTypeTextView)
     private val linearProgressIndicator by getViewProperty<LinearProgressIndicator>(R.id.linearProgressIndicator)
+    private val lyricsMaterialButton by getViewProperty<MaterialButton>(R.id.lyricsMaterialButton)
+    private val lyricsTextView by getViewProperty<TextView>(R.id.lyricsTextView)
     private val nestedScrollView by getViewProperty<NestedScrollView>(R.id.nestedScrollView)
     private val nextTrackMaterialButton by getViewProperty<MaterialButton>(R.id.nextTrackMaterialButton)
     private val playPauseMaterialButton by getViewProperty<MaterialButton>(R.id.playPauseMaterialButton)
@@ -268,6 +270,25 @@ class NowPlayingFragment : Fragment(R.layout.fragment_now_playing) {
             findNavController().navigateSafe(
                 R.id.action_nowPlayingFragment_to_fragment_playback_control_bottom_sheet_dialog
             )
+        }
+
+        lyricsMaterialButton.setOnClickListener {
+            lifecycleScope.launch {
+                viewModel.lyrics.collectLatest { requestStatus ->
+                    when (requestStatus) {
+                        is RequestStatus.Loading -> {
+                        }
+
+                        is RequestStatus.Success -> {
+                            lyricsTextView.text = requestStatus.data.toString()
+                        }
+
+                        is RequestStatus.Error -> {
+                            lyricsTextView.text = getString(R.string.error_loading_lyrics)
+                        }
+                    }
+                }
+            }
         }
 
         audioInformationMaterialButton.setOnClickListener {

@@ -31,6 +31,7 @@ import org.lineageos.twelve.models.DataSourceInformation
 import org.lineageos.twelve.models.Genre
 import org.lineageos.twelve.models.GenreContent
 import org.lineageos.twelve.models.LocalizedString
+import org.lineageos.twelve.models.Lyrics
 import org.lineageos.twelve.models.MediaType
 import org.lineageos.twelve.models.Playlist
 import org.lineageos.twelve.models.ProviderArgument
@@ -431,6 +432,10 @@ class SubsonicDataSource(
 
     override suspend fun onAudioPlayed(audioUri: Uri) = lastPlayedSetter(lastPlayedKey(), audioUri)
         .let { RequestStatus.Success<Unit, MediaError>(Unit) }
+
+    override fun lyrics(audioUri: Uri) = flowOf(
+        RequestStatus.Error<Lyrics, _>(MediaError.NOT_IMPLEMENTED)
+    )
 
     private fun AlbumID3.toMediaItem() = Album(
         uri = getAlbumUri(id),
