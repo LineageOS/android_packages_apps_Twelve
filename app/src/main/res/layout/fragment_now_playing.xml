@@ -118,12 +118,13 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
-                    <TextView
-                        android:id="@+id/lyricsTextView"
+                    <org.lineageos.twelve.ui.views.LyricsView
+                        android:id="@+id/LyricsView"
                         android:layout_width="0dp"
                         android:layout_height="0dp"
-                        android:background="#55000000"
+                        android:background="#80000000"
                         android:visibility="visible"
+                        android:gravity="center_horizontal|center_vertical"
                         app:layout_constraintBottom_toBottomOf="@+id/albumArtImageView"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
