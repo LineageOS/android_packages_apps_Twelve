@@ -270,9 +270,12 @@ class JellyfinDataSource(
             uri?.let(this::audio) ?: flowOf(RequestStatus.Error(MediaError.NOT_FOUND))
         }
 
-    override fun lyrics(audioUri: Uri) = flowOf(
-        RequestStatus.Error<Lyrics, _>(MediaError.NOT_IMPLEMENTED)
-    )
+    override fun lyrics(audioUri: Uri) = suspend {
+        val id = UUID.fromString(audioUri.lastPathSegment!!)
+        client.getLyrics(id).toRequestStatus {
+            toModel()
+        }
+    }.asFlow()
 
     override suspend fun createPlaylist(name: String) = run {
         client.createPlaylist(name).toRequestStatus {
@@ -363,6 +366,17 @@ class JellyfinDataSource(
         .setGenreName(genres?.firstOrNull())
         .setYear(productionYear)
         .build()
+
+    private fun org.lineageos.twelve.datasources.jellyfin.models.Lyrics.toModel() = Lyrics(
+        lines = lyrics.orEmpty().map { lyric ->
+            val start = lyric.start / 10000
+
+            Lyrics.Line(
+                line = lyric.text,
+                durationMs = start..start,
+            )
+        },
+    )
 
     private fun Item.toMediaItemGenre() = Genre.Builder(getGenreUri(id.toString()))
         .setThumbnail(
