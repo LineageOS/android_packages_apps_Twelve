@@ -90,6 +90,23 @@ open class NowPlayingViewModel(application: Application) : TwelveViewModel(appli
         )
 
     @OptIn(ExperimentalCoroutinesApi::class)
+    val lyrics = mediaItem
+        .filterNotNull()
+        .flatMapLatest {
+            runCatching {
+                Uri.parse(it.mediaId)
+            }.getOrNull()?.let { mediaItemUri ->
+                mediaRepository.lyrics(mediaItemUri)
+            } ?: flowOf(RequestStatus.Error(MediaError.NOT_FOUND))
+        }
+        .flowOn(Dispatchers.Main)
+        .stateIn(
+            viewModelScope,
+            started = SharingStarted.WhileSubscribed(),
+            initialValue = RequestStatus.Loading()
+        )
+
+    @OptIn(ExperimentalCoroutinesApi::class)
     val audio = mediaItem
         .filterNotNull()
         .flatMapLatest {
