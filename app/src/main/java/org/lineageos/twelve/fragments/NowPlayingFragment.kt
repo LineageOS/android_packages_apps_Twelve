@@ -74,16 +74,20 @@ class NowPlayingFragment : Fragment(R.layout.fragment_now_playing) {
     private val audioInformationMaterialButton by getViewProperty<MaterialButton>(R.id.audioInformationMaterialButton)
     private val audioTitleTextView by getViewProperty<TextView>(R.id.audioTitleTextView)
     private val artistNameTextView by getViewProperty<TextView>(R.id.artistNameTextView)
+    private val currentLyricTextView by getViewProperty<TextView>(R.id.currentLyricTextView)
     private val currentTimestampTextView by getViewProperty<TextView>(R.id.currentTimestampTextView)
     private val durationTimestampTextView by getViewProperty<TextView>(R.id.durationTimestampTextView)
     private val equalizerMaterialButton by getViewProperty<MaterialButton>(R.id.equalizerMaterialButton)
     private val fileTypeMaterialCardView by getViewProperty<MaterialCardView>(R.id.fileTypeMaterialCardView)
     private val fileTypeTextView by getViewProperty<TextView>(R.id.fileTypeTextView)
     private val linearProgressIndicator by getViewProperty<LinearProgressIndicator>(R.id.linearProgressIndicator)
+    private val lyricsMaterialCardView by getViewProperty<MaterialCardView>(R.id.lyricsMaterialCardView)
     private val nestedScrollView by getViewProperty<NestedScrollView>(R.id.nestedScrollView)
+    private val nextLyricTextView by getViewProperty<TextView>(R.id.nextLyricTextView)
     private val nextTrackMaterialButton by getViewProperty<MaterialButton>(R.id.nextTrackMaterialButton)
     private val playPauseMaterialButton by getViewProperty<MaterialButton>(R.id.playPauseMaterialButton)
     private val playbackSpeedMaterialButton by getViewProperty<MaterialButton>(R.id.playbackSpeedMaterialButton)
+    private val previousLyricTextView by getViewProperty<TextView>(R.id.previousLyricTextView)
     private val previousTrackMaterialButton by getViewProperty<MaterialButton>(R.id.previousTrackMaterialButton)
     private val progressSlider by getViewProperty<Slider>(R.id.progressSlider)
     private val queueMaterialButton by getViewProperty<MaterialButton>(R.id.queueMaterialButton)
@@ -511,6 +515,26 @@ class NowPlayingFragment : Fragment(R.layout.fragment_now_playing) {
                         if (it) {
                             visualizerPermissionsChecker.withPermissionsGranted {
                                 visualizerNVDataSource.workFlow.collect()
+                            }
+                        }
+                    }
+                }
+
+                launch {
+                    viewModel.lyrics.collectLatest {
+                        when (it) {
+                            is RequestStatus.Loading -> {
+                                // Do nothing
+                            }
+
+                            is RequestStatus.Success -> {
+                                lyricsMaterialCardView.isVisible = true
+                                // TODO: lyricsView.lyrics = it.data.lyrics
+                            }
+
+                            is RequestStatus.Error -> {
+                                lyricsMaterialCardView.isVisible = false
+                                // TODO: lyricsView?.lyrics = null
                             }
                         }
                     }
