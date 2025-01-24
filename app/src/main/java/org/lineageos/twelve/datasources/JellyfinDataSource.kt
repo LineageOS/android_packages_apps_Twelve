@@ -30,6 +30,7 @@ import org.lineageos.twelve.models.DataSourceInformation
 import org.lineageos.twelve.models.Genre
 import org.lineageos.twelve.models.GenreContent
 import org.lineageos.twelve.models.LocalizedString
+import org.lineageos.twelve.models.Lyrics
 import org.lineageos.twelve.models.MediaItem
 import org.lineageos.twelve.models.MediaType
 import org.lineageos.twelve.models.Playlist
@@ -269,6 +270,13 @@ class JellyfinDataSource(
             uri?.let(this::audio) ?: flowOf(RequestStatus.Error(MediaError.NOT_FOUND))
         }
 
+    override fun lyrics(audioUri: Uri) = suspend {
+        val id = UUID.fromString(audioUri.lastPathSegment!!)
+        client.getLyrics(id).toRequestStatus {
+            toLyrics()
+        }
+    }.asFlow()
+
     override suspend fun createPlaylist(name: String) = run {
         client.createPlaylist(name).toRequestStatus {
             onPlaylistsChanged()
@@ -358,6 +366,17 @@ class JellyfinDataSource(
         .setGenreName(genres?.firstOrNull())
         .setYear(productionYear)
         .build()
+
+    private fun org.lineageos.twelve.datasources.jellyfin.models.Lyrics.toLyrics(): Lyrics {
+        return Lyrics(
+            lyrics = (lyrics ?: emptyList()).map { lyric ->
+                Lyrics.LyricLine(
+                    start = lyric.start / 10000,
+                    line = lyric.text
+                )
+            }
+        )
+    }
 
     private fun Item.toMediaItemGenre() = Genre.Builder(getGenreUri(id.toString()))
         .setThumbnail(
