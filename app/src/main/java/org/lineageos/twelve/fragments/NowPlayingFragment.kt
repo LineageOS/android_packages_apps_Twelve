@@ -47,10 +47,12 @@ import org.lineageos.twelve.ext.getViewProperty
 import org.lineageos.twelve.ext.loadThumbnail
 import org.lineageos.twelve.ext.navigateSafe
 import org.lineageos.twelve.ext.updatePadding
+import org.lineageos.twelve.models.Lyrics
 import org.lineageos.twelve.models.MediaType
 import org.lineageos.twelve.models.PlaybackState
 import org.lineageos.twelve.models.RepeatMode
 import org.lineageos.twelve.models.RequestStatus
+import org.lineageos.twelve.ui.views.LyricsView
 import org.lineageos.twelve.ui.visualizer.VisualizerNVDataSource
 import org.lineageos.twelve.utils.PermissionsChecker
 import org.lineageos.twelve.utils.PermissionsUtils
@@ -81,7 +83,7 @@ class NowPlayingFragment : Fragment(R.layout.fragment_now_playing) {
     private val fileTypeTextView by getViewProperty<TextView>(R.id.fileTypeTextView)
     private val linearProgressIndicator by getViewProperty<LinearProgressIndicator>(R.id.linearProgressIndicator)
     private val lyricsMaterialButton by getViewProperty<MaterialButton>(R.id.lyricsMaterialButton)
-    private val lyricsTextView by getViewProperty<TextView>(R.id.lyricsTextView)
+    private val lyricsView by getViewProperty<LyricsView>(R.id.LyricsView)
     private val nestedScrollView by getViewProperty<NestedScrollView>(R.id.nestedScrollView)
     private val nextTrackMaterialButton by getViewProperty<MaterialButton>(R.id.nextTrackMaterialButton)
     private val playPauseMaterialButton by getViewProperty<MaterialButton>(R.id.playPauseMaterialButton)
@@ -106,6 +108,9 @@ class NowPlayingFragment : Fragment(R.layout.fragment_now_playing) {
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             // Empty
         }
+
+    // Lyrics
+    private var lyrics: Lyrics? = null
 
     // Visualizer
     private val visualizerManager = NierVisualizerManager()
@@ -280,11 +285,10 @@ class NowPlayingFragment : Fragment(R.layout.fragment_now_playing) {
                         }
 
                         is RequestStatus.Success -> {
-                            lyricsTextView.text = requestStatus.data.toString()
+                            lyricsView.lyrics = requestStatus.data.lyrics
                         }
 
                         is RequestStatus.Error -> {
-                            lyricsTextView.text = getString(R.string.error_loading_lyrics)
                         }
                     }
                 }
@@ -471,6 +475,7 @@ class NowPlayingFragment : Fragment(R.layout.fragment_now_playing) {
                                     .div(playbackProgress.playbackSpeed.roundToLong())
                                 addUpdateListener {
                                     val value = it.animatedValue as Float
+                                    lyricsView.syncLyrics(value)
 
                                     if (!isProgressSliderDragging) {
                                         progressSlider.value = value

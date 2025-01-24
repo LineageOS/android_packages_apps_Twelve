@@ -382,12 +382,14 @@ class JellyfinDataSource(
     )
 
     private fun org.lineageos.twelve.datasources.jellyfin.models.Lyrics.toLyrics(): Lyrics {
-        val formattedLyrics = lyrics?.joinToString("\n") { lyricLine ->
-            val startText = lyricLine.start.let { "[${it}s] " }
-            "$startText${lyricLine.text}"
-        } ?: "No lyrics available"
-
-        return Lyrics(lyrics = formattedLyrics)
+        return Lyrics(
+            lyrics = (lyrics ?: emptyList()).map { lyric ->
+                Lyrics.LyricLine(
+                    start = lyric.start / 10000,
+                    line = lyric.text
+                )
+            }
+        )
     }
 
     private fun Item.toMediaItemGenre() = Genre(
