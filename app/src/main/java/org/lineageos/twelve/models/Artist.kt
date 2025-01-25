@@ -20,7 +20,7 @@ import org.lineageos.twelve.ext.toByteArray
 data class Artist(
     override val uri: Uri,
     val name: String?,
-    val thumbnail: Thumbnail?,
+    override val thumbnail: Thumbnail?,
 ) : MediaItem<Artist> {
     override val mediaType = MediaType.ARTIST
 

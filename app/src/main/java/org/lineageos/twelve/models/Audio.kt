@@ -9,11 +9,13 @@ import android.net.Uri
 import androidx.media3.common.MediaMetadata
 import androidx.media3.exoplayer.source.MediaSource
 import org.lineageos.twelve.ext.buildMediaItem
+import org.lineageos.twelve.ext.toByteArray
 
 /**
  * An audio.
  *
  * @param uri The URI of the audio
+ * @param thumbnail The thumbnail of the audio
  * @param playbackUri A URI that is understood by Media3 to play the audio. If required, this can be
  *   equal to [uri] and a proper [MediaSource.Factory] can be implemented
  * @param mimeType The MIME type of the audio
@@ -32,6 +34,7 @@ import org.lineageos.twelve.ext.buildMediaItem
  */
 data class Audio(
     override val uri: Uri,
+    override val thumbnail: Thumbnail?,
     val playbackUri: Uri,
     val mimeType: String,
     val title: String,
@@ -75,6 +78,7 @@ data class Audio(
 
     override fun areContentsTheSame(other: Audio) = compareValuesBy(
         this, other,
+        Audio::thumbnail,
         Audio::mimeType,
         Audio::title,
         Audio::type,
@@ -101,6 +105,9 @@ data class Audio(
         genre = genreName,
         sourceUri = playbackUri,
         mimeType = mimeType,
+        artworkData = thumbnail?.bitmap?.toByteArray(),
+        artworkType = thumbnail?.type?.media3Value,
+        artworkUri = thumbnail?.uri,
         discNumber = discNumber,
         trackNumber = trackNumber,
         durationMs = durationMs,

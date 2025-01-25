@@ -455,6 +455,12 @@ class SubsonicDataSource(
 
     private fun Child.toMediaItem() = Audio(
         uri = getAudioUri(id),
+        thumbnail = albumId?.let {
+            Thumbnail.Builder()
+                .setUri(Uri.parse(subsonicClient.getCoverArt(it)))
+                .setType(Thumbnail.Type.FRONT_COVER)
+                .build()
+        },
         playbackUri = Uri.parse(subsonicClient.stream(id)),
         mimeType = contentType ?: "",
         title = title,

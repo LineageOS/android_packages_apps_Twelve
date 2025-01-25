@@ -21,6 +21,13 @@ sealed interface MediaItem<T : MediaItem<T>> : UniqueItem<T> {
      */
     val uri: Uri
 
+    /**
+     * A [Thumbnail] for this media item. Note that this field may be null even if it has a valid
+     * thumbnail to avoid memory clogging, for example when multiple child items uses the thumbnail
+     * of their parent.
+     */
+    val thumbnail: Thumbnail?
+
     override fun areItemsTheSame(other: T) = this.uri == other.uri
 
     /**

@@ -20,7 +20,7 @@ import org.lineageos.twelve.ext.toByteArray
 data class Playlist(
     override val uri: Uri,
     val name: String,
-    val thumbnail: Thumbnail? = null,
+    override val thumbnail: Thumbnail? = null,
 ) : MediaItem<Playlist> {
     override val mediaType = MediaType.PLAYLIST
 

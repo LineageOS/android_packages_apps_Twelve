@@ -26,7 +26,7 @@ data class Album(
     val artistUri: Uri,
     val artistName: String?,
     val year: Int?,
-    val thumbnail: Thumbnail?,
+    override val thumbnail: Thumbnail?,
 ) : MediaItem<Album> {
     override val mediaType = MediaType.ALBUM
 

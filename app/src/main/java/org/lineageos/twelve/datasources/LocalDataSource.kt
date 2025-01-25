@@ -168,8 +168,14 @@ class LocalDataSource(
             }
         } ?: (null to null)
 
+        val thumbnail = Thumbnail.Builder()
+            .setUri(albumUri)
+            .setType(Thumbnail.Type.FRONT_COVER)
+            .build()
+
         Audio(
             uri,
+            thumbnail,
             uri,
             mimeType,
             title,

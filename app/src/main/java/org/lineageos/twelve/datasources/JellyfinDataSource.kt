@@ -348,6 +348,7 @@ class JellyfinDataSource(
 
     private fun Item.toMediaItemAudio() = Audio(
         uri = getAudioUri(id.toString()),
+        thumbnail = null,
         title = name ?: "",
         artistUri = getArtistUri(id.toString()),
         artistName = artists?.firstOrNull(),
