@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-     SPDX-FileCopyrightText: 2024 The LineageOS Project
+     SPDX-FileCopyrightText: 2024-2025 The LineageOS Project
      SPDX-License-Identifier: Apache-2.0
 -->
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
@@ -32,15 +32,14 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="160dp"
             android:layout_marginTop="16dp"
+            android:clipChildren="false"
             android:clipToPadding="false"
-            android:orientation="horizontal"
-            android:paddingHorizontal="12dp"
-            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-            app:spanCount="1"
-            tools:listitem="@layout/item_activity_tab" />
-
+            tools:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+            tools:listitem="@layout/item_activity_tab"
+            tools:orientation="horizontal"
+            tools:spanCount="1" />
     </LinearLayout>
 
 </com.google.android.material.card.MaterialCardView>
