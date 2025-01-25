@@ -6,11 +6,16 @@
 package org.lineageos.twelve.ui.views
 
 import android.content.Context
+import android.view.LayoutInflater
+import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.carousel.CarouselLayoutManager
+import com.google.android.material.carousel.CarouselSnapHelper
 import org.lineageos.twelve.R
 import org.lineageos.twelve.models.ActivityTab
 import org.lineageos.twelve.models.Album
@@ -21,7 +26,6 @@ import org.lineageos.twelve.models.MediaItem
 import org.lineageos.twelve.models.Playlist
 import org.lineageos.twelve.models.areContentsTheSame
 import org.lineageos.twelve.models.areItemsTheSame
-import org.lineageos.twelve.ui.recyclerview.SimpleListAdapter
 
 class ActivityTabView(context: Context) : FrameLayout(context) {
     // Views
@@ -29,21 +33,23 @@ class ActivityTabView(context: Context) : FrameLayout(context) {
     private val titleTextView by lazy { findViewById<TextView>(R.id.titleTextView) }
 
     // RecyclerView
-    private val adapter = object : SimpleListAdapter<MediaItem<*>, ActivityTabItem>(
+    private val adapter = object : ListAdapter<MediaItem<*>, ActivityTabItem>(
         mediaItemDiffCallback,
-        ::ActivityTabItem,
     ) {
-        override fun ViewHolder.onPrepareView() {
-            view.setOnClickListener {
+
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = ActivityTabItem(
+            LayoutInflater.from(parent.context).inflate(R.layout.item_activity_tab, parent, false)
+        ).apply {
+            itemView.setOnClickListener {
                 onItemClickListener(currentList, bindingAdapterPosition)
             }
-            view.setOnLongClickListener {
+            itemView.setOnLongClickListener {
                 onItemLongClickListener(currentList, bindingAdapterPosition)
             }
         }
 
-        override fun ViewHolder.onBindView(item: MediaItem<*>) {
-            view.setItem(item)
+        override fun onBindViewHolder(holder: ActivityTabItem, position: Int) {
+            holder.setItem(getItem(position))
         }
     }
 
@@ -56,6 +62,8 @@ class ActivityTabView(context: Context) : FrameLayout(context) {
     init {
         inflate(context, R.layout.view_activity_tab, this)
 
+        recyclerView.layoutManager = CarouselLayoutManager()
+        CarouselSnapHelper(false).attachToRecyclerView(recyclerView)
         recyclerView.adapter = adapter
     }
 
