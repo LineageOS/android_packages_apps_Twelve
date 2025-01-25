@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-     SPDX-FileCopyrightText: 2024 The LineageOS Project
+     SPDX-FileCopyrightText: 2024-2025 The LineageOS Project
      SPDX-License-Identifier: Apache-2.0
 -->
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -42,9 +42,10 @@
                     android:id="@+id/albumsRecyclerView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-                    app:spanCount="1" />
+                    app:spanCount="2"
+                    tools:itemCount="3"
+                    tools:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                    tools:listitem="@layout/item_album" />
 
             </LinearLayout>
 
@@ -70,9 +71,10 @@
                     android:id="@+id/appearsInAlbumRecyclerView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-                    app:spanCount="1" />
+                    app:spanCount="2"
+                    tools:itemCount="2"
+                    tools:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                    tools:listitem="@layout/item_album" />
 
             </LinearLayout>
 
@@ -98,9 +100,10 @@
                     android:id="@+id/appearsInPlaylistRecyclerView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
                     app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-                    app:spanCount="1" />
+                    app:spanCount="1"
+                    tools:itemCount="3"
+                    tools:listitem="@layout/list_item" />
 
             </LinearLayout>
 
