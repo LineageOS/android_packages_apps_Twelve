@@ -11,12 +11,15 @@ import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
 import androidx.core.os.bundleOf
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.launch
 import org.lineageos.twelve.R
 import org.lineageos.twelve.database.TwelveDatabase
 import org.lineageos.twelve.database.entities.Item
@@ -51,6 +54,7 @@ import org.lineageos.twelve.query.neq
 import org.lineageos.twelve.query.query
 import java.time.LocalDateTime
 import kotlin.random.Random
+import kotlin.time.Duration.Companion.seconds
 
 /**
  * [MediaStore.Audio] backed data source.
@@ -61,9 +65,10 @@ import kotlin.random.Random
  */
 @OptIn(ExperimentalCoroutinesApi::class)
 class LocalDataSource(
+    private val scope: CoroutineScope,
     private val contentResolver: ContentResolver,
     private val volumeName: String,
-    private val database: TwelveDatabase
+    private val database: TwelveDatabase,
 ) : MediaDataSource {
     private val albumsUri = MediaStore.Audio.Albums.getContentUri(volumeName)
     private val artistsUri = MediaStore.Audio.Artists.getContentUri(volumeName)
@@ -640,7 +645,7 @@ class LocalDataSource(
         }
 
     override fun lastPlayedAudio() = database.getLastPlayedDao()
-        .get(LAST_PLAYED_KEY)
+        .getFlow(LAST_PLAYED_KEY)
         .flatMapLatest { uri ->
             if (uri == null) {
                 flowOf(listOf())
@@ -709,8 +714,18 @@ class LocalDataSource(
     override suspend fun onAudioPlayed(
         audioUri: Uri
     ): RequestStatus<Unit, MediaError> {
-        database.getLocalMediaStatsProviderDao().increasePlayCount(audioUri)
-        database.getLastPlayedDao().set(LAST_PLAYED_KEY, audioUri)
+        val lastPlayedDao = database.getLastPlayedDao()
+        lastPlayedDao.set(LAST_PLAYED_KEY, audioUri)
+
+        // Increase playback count only after a certain delay, to avoid counting tracks
+        // that are immediately skipped
+        scope.launch {
+            delay(PLAYBACK_COUNT_INCREASE_DELAY)
+            if (lastPlayedDao.get(LAST_PLAYED_KEY) == audioUri) {
+                database.getLocalMediaStatsProviderDao().increasePlayCount(audioUri)
+            }
+        }
+
         return RequestStatus.Success(Unit)
     }
 
@@ -813,6 +828,7 @@ class LocalDataSource(
 
     companion object {
         private const val LAST_PLAYED_KEY = "local"
+        private val PLAYBACK_COUNT_INCREASE_DELAY = 5.seconds
 
         private val albumsProjection = arrayOf(
             MediaStore.Audio.AudioColumns._ID,

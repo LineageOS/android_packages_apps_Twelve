@@ -16,5 +16,8 @@ interface LastPlayedDao {
     suspend fun set(dataSource: String, mediaUri: Uri): Long
 
     @Query("SELECT media_uri FROM LASTPLAYED WHERE data_source = :dataSource")
-    fun get(dataSource: String): Flow<Uri?>
+    fun getFlow(dataSource: String): Flow<Uri?>
+
+    @Query("SELECT media_uri FROM LASTPLAYED WHERE data_source = :dataSource")
+    suspend fun get(dataSource: String): Uri?
 }
