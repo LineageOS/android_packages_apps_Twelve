@@ -173,6 +173,11 @@ class LocalDataSource(
             }
         } ?: (null to null)
 
+        val thumbnail = Thumbnail.Builder()
+            .setUri(ContentUris.withAppendedId(albumsUri, albumId))
+            .setType(Thumbnail.Type.FRONT_COVER)
+            .build()
+
         Audio(
             uri,
             uri,
@@ -181,6 +186,7 @@ class LocalDataSource(
             audioType,
             duration,
             artistUri,
+            thumbnail,
             artist.takeIf { it != MediaStore.UNKNOWN_STRING },
             albumUri,
             album.takeIf { it != MediaStore.UNKNOWN_STRING },
