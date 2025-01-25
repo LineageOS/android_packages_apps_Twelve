@@ -40,9 +40,12 @@ import org.lineageos.twelve.ext.updatePadding
 import org.lineageos.twelve.models.Album
 import org.lineageos.twelve.models.Playlist
 import org.lineageos.twelve.models.RequestStatus
+import org.lineageos.twelve.ui.recyclerview.DisplayAwareGridLayoutManager
 import org.lineageos.twelve.ui.recyclerview.SimpleListAdapter
 import org.lineageos.twelve.ui.recyclerview.UniqueItemDiffCallback
+import org.lineageos.twelve.ui.views.AlbumsItem
 import org.lineageos.twelve.ui.views.HorizontalListItem
+import org.lineageos.twelve.ui.views.ListItem
 import org.lineageos.twelve.utils.PermissionsChecker
 import org.lineageos.twelve.utils.PermissionsUtils
 import org.lineageos.twelve.viewmodels.ArtistViewModel
@@ -71,9 +74,9 @@ class ArtistFragment : Fragment(R.layout.fragment_artist) {
 
     // Recyclerview
     private val createAlbumAdapter = {
-        object : SimpleListAdapter<Album, HorizontalListItem>(
+        object : SimpleListAdapter<Album, AlbumsItem>(
             UniqueItemDiffCallback(),
-            ::HorizontalListItem,
+            ::AlbumsItem,
         ) {
             override fun ViewHolder.onPrepareView() {
                 view.setOnClickListener {
@@ -101,25 +104,19 @@ class ArtistFragment : Fragment(R.layout.fragment_artist) {
             }
 
             override fun ViewHolder.onBindView(item: Album) {
-                view.loadThumbnailImage(item.thumbnail, R.drawable.ic_album)
-
-                item.title?.also {
-                    view.headlineText = it
-                } ?: view.setHeadlineText(R.string.album_unknown)
-                view.headlineMaxLines = 2
-                view.supportingText = item.year?.toString()
+                view.setItem(item)
             }
         }
     }
     private val albumsAdapter by lazy { createAlbumAdapter() }
     private val appearsInAlbumAdapter by lazy { createAlbumAdapter() }
     private val appearsInPlaylistAdapter by lazy {
-        object : SimpleListAdapter<Playlist, HorizontalListItem>(
+        object : SimpleListAdapter<Playlist, ListItem>(
             UniqueItemDiffCallback(),
-            ::HorizontalListItem,
+            ::ListItem,
         ) {
             override fun ViewHolder.onPrepareView() {
-                view.setThumbnailImage(R.drawable.ic_playlist_play)
+                view.setLeadingIconImage(R.drawable.ic_playlist_play)
                 view.setOnClickListener {
                     // TODO
                 }
@@ -207,8 +204,14 @@ class ArtistFragment : Fragment(R.layout.fragment_artist) {
 
         toolbar.setupWithNavController(findNavController())
 
-        albumsRecyclerView.adapter = albumsAdapter
-        appearsInAlbumRecyclerView.adapter = appearsInAlbumAdapter
+        albumsRecyclerView.apply {
+            layoutManager = DisplayAwareGridLayoutManager(context, 2)
+            adapter = albumsAdapter
+        }
+        appearsInAlbumRecyclerView.apply {
+            layoutManager = DisplayAwareGridLayoutManager(context, 2)
+            adapter = appearsInAlbumAdapter
+        }
         appearsInPlaylistRecyclerView.adapter = appearsInPlaylistAdapter
 
         viewModel.loadAlbum(artistUri)
