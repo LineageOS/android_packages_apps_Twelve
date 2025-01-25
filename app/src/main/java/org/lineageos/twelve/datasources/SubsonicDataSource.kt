@@ -460,6 +460,12 @@ class SubsonicDataSource(
         title = title,
         type = type.toAudioType(),
         durationMs = (duration?.toLong()?.let { it * 1000 }) ?: 0,
+        thumbnail = albumId?.let {
+            Thumbnail.Builder()
+                .setUri(Uri.parse(subsonicClient.getCoverArt(it)))
+                .setType(Thumbnail.Type.FRONT_COVER)
+                .build()
+        },
         artistUri = artistId?.let { getArtistUri(it) } ?: Uri.EMPTY,
         artistName = artist,
         albumUri = albumId?.let { getAlbumUri(it) } ?: Uri.EMPTY,

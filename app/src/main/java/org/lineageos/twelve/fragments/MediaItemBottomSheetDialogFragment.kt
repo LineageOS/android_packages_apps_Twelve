@@ -219,7 +219,7 @@ class MediaItemBottomSheetDialogFragment : BottomSheetDialogFragment(
                         when (mediaItem) {
                             is Album -> mediaItem.thumbnail
                             is Artist -> mediaItem.thumbnail
-                            is Audio -> null
+                            is Audio -> mediaItem.thumbnail
                             is Genre -> mediaItem.thumbnail
                             is Playlist -> mediaItem.thumbnail
                         }.let { thumbnail ->

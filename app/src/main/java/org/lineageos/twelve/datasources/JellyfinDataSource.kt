@@ -351,6 +351,7 @@ class JellyfinDataSource(
         title = name ?: "",
         artistUri = getArtistUri(id.toString()),
         artistName = artists?.firstOrNull(),
+        thumbnail = null,
         albumUri = getAlbumUri(id.toString()),
         playbackUri = Uri.parse(client.getAudioPlaybackUrl(id)),
         mimeType = container ?: sourceType ?: "",

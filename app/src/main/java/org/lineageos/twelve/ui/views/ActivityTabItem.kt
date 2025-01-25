@@ -89,7 +89,7 @@ class ActivityTabItem @JvmOverloads constructor(
                 subheadText = item.artistName
                 supportingText = item.albumTitle
 
-                setPlaceholderImage(R.drawable.ic_music_note)
+                loadThumbnailImage(item.thumbnail, R.drawable.ic_music_note)
             }
 
             is Genre -> {
