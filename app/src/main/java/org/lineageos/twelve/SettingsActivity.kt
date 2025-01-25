@@ -10,10 +10,12 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.CallSuper
 import androidx.annotation.Px
 import androidx.annotation.XmlRes
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.ViewCompat
@@ -21,14 +23,20 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreference
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.MaterialToolbar
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import org.lineageos.twelve.database.TwelveDatabase
 import org.lineageos.twelve.ext.ENABLE_OFFLOAD_KEY
 import org.lineageos.twelve.ext.SKIP_SILENCE_KEY
 import org.lineageos.twelve.ext.setOffset
+import org.lineageos.twelve.repositories.MediaRepository
 import org.lineageos.twelve.viewmodels.SettingsViewModel
 import kotlin.reflect.safeCast
 
@@ -144,6 +152,7 @@ class SettingsActivity : AppCompatActivity(R.layout.activity_settings) {
         // Preferences
         private val enableOffload by lazy { findPreference<SwitchPreference>(ENABLE_OFFLOAD_KEY)!! }
         private val skipSilence by lazy { findPreference<SwitchPreference>(SKIP_SILENCE_KEY)!! }
+        private val resetLocalStats by lazy { findPreference<Preference>("reset_local_stats")!! }
 
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
             super.onCreatePreferences(savedInstanceState, rootKey)
@@ -161,6 +170,33 @@ class SettingsActivity : AppCompatActivity(R.layout.activity_settings) {
                 }
                 true
             }
+
+            resetLocalStats.setOnPreferenceClickListener {
+                showResetLocalStatsDialog()
+                true
+            }
+        }
+
+        private fun showResetLocalStatsDialog() {
+            val context = requireActivity()
+            AlertDialog.Builder(context)
+                .setTitle(R.string.reset_local_stats_confirm_title)
+                .setMessage(R.string.reset_local_stats_confirm_message)
+                .setPositiveButton(R.string.reset_local_stats_confirm_positive) { di, _ ->
+                    lifecycleScope.launch {
+                        TwelveDatabase.getInstance(context)
+                            .getLocalMediaStatsProviderDao()
+                            .deleteAll()
+                        Toast.makeText(
+                            context,
+                            R.string.reset_local_stats_success,
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        di.dismiss()
+                    }
+                }
+                .setNegativeButton(android.R.string.cancel) { _, _ -> /* Do nothing */ }
+                .show()
         }
     }
 }

@@ -173,6 +173,13 @@
     <string name="skip_silence">Skip silence</string>
     <string name="skip_silence_summary">Skip silence when playing audio</string>
 
+    <!-- Reset local stats -->
+    <string name="reset_local_stats">Reset local media playback statistics</string>
+    <string name="reset_local_stats_confirm_title">Reset local stats</string>
+    <string name="reset_local_stats_confirm_message">Are you sure you want to reset all local media playback statistics? This action cannot be undone.</string>
+    <string name="reset_local_stats_confirm_positive">Reset</string>
+    <string name="reset_local_stats_success">Local media playback statistics have been reset</string>
+
     <!-- Experimental preferences -->
     <string name="split_local_devices">Split local devices</string>
     <string name="split_local_devices_summary">If enabled, internal storage and external devices (SD cards, USB devices, etc.) will appear under different providers</string>
