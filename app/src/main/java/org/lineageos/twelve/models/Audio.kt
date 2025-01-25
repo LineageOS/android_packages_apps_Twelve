@@ -38,6 +38,7 @@ data class Audio(
     val type: Type,
     val durationMs: Long,
     val artistUri: Uri,
+    val thumbnail: Thumbnail?,
     val artistName: String?,
     val albumUri: Uri,
     val albumTitle: String?,
@@ -80,6 +81,7 @@ data class Audio(
         Audio::type,
         Audio::durationMs,
         Audio::artistUri,
+        Audio::thumbnail,
         Audio::artistName,
         Audio::albumUri,
         Audio::albumTitle,
@@ -104,5 +106,6 @@ data class Audio(
         discNumber = discNumber,
         trackNumber = trackNumber,
         durationMs = durationMs,
+        artworkUri = thumbnail?.uri,
     )
 }

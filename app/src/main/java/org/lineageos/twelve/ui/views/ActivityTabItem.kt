@@ -70,7 +70,7 @@ class ActivityTabItem(view: View) : RecyclerView.ViewHolder(view) {
 
             is Audio -> {
                 headlineText = item.title
-                onNoThumbnail(R.drawable.ic_music_note)
+                loadThumbnailImage(item.thumbnail, R.drawable.ic_music_note)
             }
 
             is Genre -> {
