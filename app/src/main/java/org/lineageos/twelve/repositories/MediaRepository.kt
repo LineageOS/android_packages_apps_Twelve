@@ -82,6 +82,7 @@ class MediaRepository(
      * Local data source singleton.
      */
     private val localDataSource = LocalDataSource(
+        scope,
         contentResolver,
         MediaStore.VOLUME_EXTERNAL,
         database
@@ -128,6 +129,7 @@ class MediaRepository(
                         it.getDescription(context),
                         splitLocalDevices,
                     ) to LocalDataSource(
+                        scope,
                         contentResolver,
                         mediaStoreVolumeName,
                         database,
@@ -166,7 +168,7 @@ class MediaRepository(
                 ) to SubsonicDataSource(
                     arguments,
                     { datasource ->
-                        database.getLastPlayedDao().get(datasource)
+                        database.getLastPlayedDao().getFlow(datasource)
                     }, { datasource, uri ->
                         database.getLastPlayedDao().set(datasource, uri)
                     },
@@ -195,7 +197,7 @@ class MediaRepository(
                     }, { token ->
                         database.getJellyfinProviderDao().updateToken(it.id, token)
                     }, { datasource ->
-                        database.getLastPlayedDao().get(datasource)
+                        database.getLastPlayedDao().getFlow(datasource)
                     }, { datasource, uri ->
                         database.getLastPlayedDao().set(datasource, uri)
                     },
