@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8d8fc407_126eff58",
+        "filename": "app/src/main/java/org/lineageos/twelve/SettingsActivity.kt",
+        "patchSetId": 1
+      },
+      "lineNbr": 189,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2025-01-26T10:50:32Z",
+      "side": 1,
+      "message": "introduce a SettingsViewModel that extends AndroidViewModel and move the the logic into MediaRepository.",
+      "range": {
+        "startLine": 187,
+        "startChar": 0,
+        "endLine": 189,
+        "endChar": 40
+      },
+      "revId": "b04cd311fca27068ce27c834442293179efbe45e",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
