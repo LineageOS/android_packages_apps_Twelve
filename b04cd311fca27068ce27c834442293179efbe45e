@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f479ebdd_bad228e1",
+        "filename": "app/src/main/java/org/lineageos/twelve/datasources/LocalDataSource.kt",
+        "patchSetId": 1
+      },
+      "lineNbr": 712,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2025-01-26T10:52:43Z",
+      "side": 0,
+      "message": "you can likely add a timestamp row in the db that tells you when was the last time you updated it, then augment the query with `where (newTimestamp - oldTimestamp) \u003e 500000` (or whatever)",
+      "range": {
+        "startLine": 712,
+        "startChar": 49,
+        "endLine": 712,
+        "endChar": 66
+      },
+      "revId": "b04cd311fca27068ce27c834442293179efbe45e",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
