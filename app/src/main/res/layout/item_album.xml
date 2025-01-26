@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-     SPDX-FileCopyrightText: 2024 The LineageOS Project
+     SPDX-FileCopyrightText: 2024-2025 The LineageOS Project
      SPDX-License-Identifier: Apache-2.0
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -27,7 +27,7 @@
             android:adjustViewBounds="true"
             android:background="?attr/colorPrimary"
             android:contentDescription="@string/content_description_thumbnail"
-            android:padding="8dp"
+            android:padding="48dp"
             android:src="@drawable/ic_album"
             android:visibility="gone"
             app:tint="?attr/colorOnPrimary"
