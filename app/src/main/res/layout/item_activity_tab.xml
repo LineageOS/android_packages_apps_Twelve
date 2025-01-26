@@ -20,7 +20,7 @@
         android:layout_height="match_parent"
         android:background="?attr/colorPrimary"
         android:contentDescription="@string/content_description_thumbnail"
-        android:padding="8dp"
+        android:padding="48dp"
         android:scaleType="centerCrop"
         app:tint="?attr/colorOnPrimary"
         tools:src="@drawable/ic_person" />
