@@ -24,6 +24,30 @@
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "3d70e01c_7b6adf49",
+        "filename": "app/src/main/java/org/lineageos/twelve/viewmodels/AlbumViewModel.kt",
+        "patchSetId": 2
+      },
+      "lineNbr": 145,
+      "author": {
+        "id": 25732
+      },
+      "writtenOn": "2025-01-27T00:00:35Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "976e6477_fed339fd",
+      "range": {
+        "startLine": 145,
+        "startChar": 0,
+        "endLine": 145,
+        "endChar": 50
+      },
+      "revId": "83a2728687952b75262de6254705ee6f2c1f7189",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "b89bc1f8_69bcb097",
@@ -47,6 +71,30 @@
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "9ba643fc_bf3439be",
+        "filename": "app/src/main/java/org/lineageos/twelve/viewmodels/AlbumViewModel.kt",
+        "patchSetId": 2
+      },
+      "lineNbr": 161,
+      "author": {
+        "id": 25732
+      },
+      "writtenOn": "2025-01-27T00:00:35Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b89bc1f8_69bcb097",
+      "range": {
+        "startLine": 161,
+        "startChar": 0,
+        "endLine": 161,
+        "endChar": 50
+      },
+      "revId": "83a2728687952b75262de6254705ee6f2c1f7189",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "a1469631_28a032a5",
@@ -60,6 +108,30 @@
       "writtenOn": "2025-01-26T11:06:22Z",
       "side": 1,
       "message": "AlbumContent.AudioItem::class.safeCast(it)?.audio",
+      "range": {
+        "startLine": 176,
+        "startChar": 0,
+        "endLine": 176,
+        "endChar": 50
+      },
+      "revId": "83a2728687952b75262de6254705ee6f2c1f7189",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2126e6f2_43c7afad",
+        "filename": "app/src/main/java/org/lineageos/twelve/viewmodels/AlbumViewModel.kt",
+        "patchSetId": 2
+      },
+      "lineNbr": 176,
+      "author": {
+        "id": 25732
+      },
+      "writtenOn": "2025-01-27T00:00:35Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a1469631_28a032a5",
       "range": {
         "startLine": 176,
         "startChar": 0,
