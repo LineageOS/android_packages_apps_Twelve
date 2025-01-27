@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "37996ef9_8129ddd7",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 25732
+      },
+      "writtenOn": "2025-01-27T22:50:04Z",
+      "side": 1,
+      "message": "Kotlin Serializable\u0027s plugin does that for us?",
+      "revId": "152237c63715291f5b3f936d9aa073e67f57eb42",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
