@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "db9f292c_762fdff0",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 25732
+      },
+      "writtenOn": "2025-01-27T22:49:43Z",
+      "side": 1,
+      "message": "I like it, especially since it fits with the new create playlist one",
+      "revId": "bc7e303a8fcaadb40cc956e2bcbbcf04ada64c58",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
