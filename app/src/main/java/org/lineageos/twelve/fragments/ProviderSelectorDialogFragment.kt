@@ -52,7 +52,8 @@ class ProviderSelectorDialogFragment : MaterialDialogFragment(
                 }
             }
 
-            view.setOnLongClickListener {
+            view.setTrailingView(R.layout.provider_more_button)
+            view.trailingView?.setOnClickListener {
                 item?.let {
                     findNavController().navigateSafe(
                         R.id.action_providerSelectorDialogFragment_to_fragment_provider_information_bottom_sheet_dialog,
@@ -62,8 +63,6 @@ class ProviderSelectorDialogFragment : MaterialDialogFragment(
                             .build(),
                     )
                 }
-
-                true
             }
         }
 
