@@ -7,7 +7,6 @@ package org.lineageos.twelve.fragments
 
 import android.os.Bundle
 import android.view.View
-import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -16,7 +15,6 @@ import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.button.MaterialButton
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.launch
 import org.lineageos.twelve.R
 import org.lineageos.twelve.ext.getViewProperty
@@ -31,7 +29,9 @@ import org.lineageos.twelve.viewmodels.ProvidersViewModel
 /**
  * Fragment used to select a media provider.
  */
-class ProviderSelectorDialogFragment : DialogFragment(R.layout.fragment_provider_selector_dialog) {
+class ProviderSelectorDialogFragment : MaterialDialogFragment(
+    R.layout.fragment_provider_selector_dialog
+) {
     // View models
     private val viewModel by viewModels<ProvidersViewModel>()
 
@@ -73,10 +73,6 @@ class ProviderSelectorDialogFragment : DialogFragment(R.layout.fragment_provider
             view.setSupportingText(item.type.nameStringResId)
         }
     }
-
-    override fun onCreateDialog(savedInstanceState: Bundle?) = MaterialAlertDialogBuilder(
-        requireContext()
-    ).show()!!
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
