@@ -18,7 +18,7 @@ import kotlinx.serialization.Serializable
 open class ProviderIdentifier(
     val type: ProviderType,
     val typeId: Long,
-) : Comparable<ProviderIdentifier> {
+) : Comparable<ProviderIdentifier>, java.io.Serializable {
     override fun compareTo(other: ProviderIdentifier) = compareValuesBy(
         this, other,
         ProviderIdentifier::type,
