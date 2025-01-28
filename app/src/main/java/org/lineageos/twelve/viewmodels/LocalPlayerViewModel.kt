@@ -172,7 +172,9 @@ class LocalPlayerViewModel(application: Application) : AndroidViewModel(applicat
 
     fun togglePlayPause() {
         exoPlayer.apply {
-            if (playWhenReady) {
+            if (playbackState == ExoPlayer.STATE_ENDED) {
+                seekTo(0)
+            } else if (playWhenReady) {
                 pause()
             } else {
                 play()
