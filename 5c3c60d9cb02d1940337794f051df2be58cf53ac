@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b8ff51af_3a9b8f28",
+        "filename": "app/src/main/java/org/lineageos/twelve/fragments/MaterialDialogFragment.kt",
+        "patchSetId": 1
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2025-01-28T07:33:14Z",
+      "side": 1,
+      "message": "abstract?",
+      "revId": "5c3c60d9cb02d1940337794f051df2be58cf53ac",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
