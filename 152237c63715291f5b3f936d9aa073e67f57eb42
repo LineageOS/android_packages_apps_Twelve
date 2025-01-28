@@ -16,6 +16,24 @@
       "message": "Kotlin Serializable\u0027s plugin does that for us?",
       "revId": "152237c63715291f5b3f936d9aa073e67f57eb42",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "677d27dc_244e1efd",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2025-01-28T07:27:23Z",
+      "side": 1,
+      "message": "Uh I don\u0027t think so?\nneeds the parcelize compiler plugin?",
+      "parentUuid": "37996ef9_8129ddd7",
+      "revId": "152237c63715291f5b3f936d9aa073e67f57eb42",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
