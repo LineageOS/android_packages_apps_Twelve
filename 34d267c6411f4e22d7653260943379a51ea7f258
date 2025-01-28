@@ -33,6 +33,24 @@
       "message": "Try to just change `playWhenReady` to `isPlaying`, that\u0027s what we do with now playing fragment",
       "revId": "34d267c6411f4e22d7653260943379a51ea7f258",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a0746dae_726d9336",
+        "filename": "app/src/main/java/org/lineageos/twelve/viewmodels/LocalPlayerViewModel.kt",
+        "patchSetId": 2
+      },
+      "lineNbr": 176,
+      "author": {
+        "id": 10067
+      },
+      "writtenOn": "2025-01-28T19:40:23Z",
+      "side": 1,
+      "message": "it doesn\u0027t do anything with if isPlaying pause() else play()",
+      "parentUuid": "e2c67611_1f8c5fc6",
+      "revId": "34d267c6411f4e22d7653260943379a51ea7f258",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
