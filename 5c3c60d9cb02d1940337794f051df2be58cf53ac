@@ -57,6 +57,30 @@
       },
       "revId": "5c3c60d9cb02d1940337794f051df2be58cf53ac",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "7b0aa108_b0bae095",
+        "filename": "app/src/main/java/org/lineageos/twelve/fragments/MaterialDialogFragment.kt",
+        "patchSetId": 1
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2025-01-30T13:33:05Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1942901f_151115d7",
+      "range": {
+        "startLine": 18,
+        "startChar": 0,
+        "endLine": 27,
+        "endChar": 1
+      },
+      "revId": "5c3c60d9cb02d1940337794f051df2be58cf53ac",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
