@@ -16,6 +16,47 @@
       "message": "abstract?",
       "revId": "5c3c60d9cb02d1940337794f051df2be58cf53ac",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5b24486e_2958a7d5",
+        "filename": "app/src/main/java/org/lineageos/twelve/fragments/MaterialDialogFragment.kt",
+        "patchSetId": 1
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2025-01-30T12:58:03Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b8ff51af_3a9b8f28",
+      "revId": "5c3c60d9cb02d1940337794f051df2be58cf53ac",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1942901f_151115d7",
+        "filename": "app/src/main/java/org/lineageos/twelve/fragments/MaterialDialogFragment.kt",
+        "patchSetId": 1
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2025-01-30T12:58:03Z",
+      "side": 1,
+      "message": "```suggestion\nabstract class MaterialDialogFragment(@LayoutRes contentLayoutId: Int) :\n    DialogFragment(contentLayoutId) {\n\n    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog \u003d\n        MaterialAlertDialogBuilder(requireContext())\n            .show()\n}```",
+      "range": {
+        "startLine": 18,
+        "startChar": 0,
+        "endLine": 27,
+        "endChar": 1
+      },
+      "revId": "5c3c60d9cb02d1940337794f051df2be58cf53ac",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
