@@ -30,7 +30,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.lineageos.twelve.R
 import org.lineageos.twelve.datasources.MediaError
-import org.lineageos.twelve.ext.getSerializable
+import org.lineageos.twelve.ext.getParcelable
 import org.lineageos.twelve.ext.getViewProperty
 import org.lineageos.twelve.ext.selectItem
 import org.lineageos.twelve.models.ProviderArgument
@@ -60,7 +60,7 @@ class ManageProviderFragment : Fragment(R.layout.fragment_manage_provider) {
 
     // Arguments
     private val providerType: ProviderType?
-        get() = arguments?.getSerializable(ARG_PROVIDER_TYPE, ProviderType::class)
+        get() = arguments?.getParcelable(ARG_PROVIDER_TYPE, ProviderType::class)
     private val providerTypeId: Long?
         get() = arguments?.getLong(ARG_PROVIDER_TYPE_ID, -1L).takeIf { it != -1L }
 
@@ -172,7 +172,7 @@ class ManageProviderFragment : Fragment(R.layout.fragment_manage_provider) {
                 return@setOnClickListener
             }
 
-            val wrongArguments = providerType.arguments.mapNotNull { argument ->
+            val wrongArguments = ProviderType.getArguments(providerType).mapNotNull { argument ->
                 providerArguments.validateArgument(argument)?.let {
                     argument to it
                 }
@@ -287,7 +287,7 @@ class ManageProviderFragment : Fragment(R.layout.fragment_manage_provider) {
                                     it.iconDrawableResId
                                 )
 
-                                argumentsAdapter.submitList(it.arguments)
+                                argumentsAdapter.submitList(ProviderType.getArguments(it))
                             } ?: run {
                                 providerTypeTextInputLayout.startIconDrawable = null
 

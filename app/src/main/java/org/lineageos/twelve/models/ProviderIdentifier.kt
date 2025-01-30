@@ -5,6 +5,8 @@
 
 package org.lineageos.twelve.models
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
 import kotlinx.serialization.Serializable
 
 /**
@@ -15,10 +17,11 @@ import kotlinx.serialization.Serializable
  */
 @Suppress("PROVIDED_RUNTIME_TOO_LOW")
 @Serializable
+@Parcelize
 open class ProviderIdentifier(
     val type: ProviderType,
     val typeId: Long,
-) : Comparable<ProviderIdentifier> {
+) : Comparable<ProviderIdentifier>, Parcelable {
     override fun compareTo(other: ProviderIdentifier) = compareValuesBy(
         this, other,
         ProviderIdentifier::type,

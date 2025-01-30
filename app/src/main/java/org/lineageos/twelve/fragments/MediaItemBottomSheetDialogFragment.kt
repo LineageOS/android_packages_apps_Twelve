@@ -26,7 +26,6 @@ import kotlinx.coroutines.launch
 import org.lineageos.twelve.R
 import org.lineageos.twelve.datasources.MediaError
 import org.lineageos.twelve.ext.getParcelable
-import org.lineageos.twelve.ext.getSerializable
 import org.lineageos.twelve.ext.getViewProperty
 import org.lineageos.twelve.ext.navigateSafe
 import org.lineageos.twelve.models.Album
@@ -71,7 +70,7 @@ class MediaItemBottomSheetDialogFragment : BottomSheetDialogFragment(
     private val uri: Uri
         get() = requireArguments().getParcelable(ARG_URI, Uri::class)!!
     private val mediaType: MediaType
-        get() = requireArguments().getSerializable(ARG_MEDIA_TYPE, MediaType::class)!!
+        get() = requireArguments().getParcelable(ARG_MEDIA_TYPE, MediaType::class)!!
     private val fromAlbum: Boolean
         get() = requireArguments().getBoolean(ARG_FROM_ALBUM)
     private val fromArtist: Boolean

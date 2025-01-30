@@ -27,7 +27,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.lineageos.twelve.R
-import org.lineageos.twelve.ext.getSerializable
+import org.lineageos.twelve.ext.getParcelable
 import org.lineageos.twelve.ext.getViewProperty
 import org.lineageos.twelve.ext.navigateSafe
 import org.lineageos.twelve.models.DataSourceInformation
@@ -75,7 +75,7 @@ class ProviderInformationBottomSheetDialogFragment : BottomSheetDialogFragment(
 
     // Arguments
     private val providerType: ProviderType
-        get() = requireArguments().getSerializable(ARG_PROVIDER_TYPE, ProviderType::class)!!
+        get() = requireArguments().getParcelable(ARG_PROVIDER_TYPE, ProviderType::class)!!
     private val providerTypeId: Long
         get() = requireArguments().getLong(ARG_PROVIDER_TYPE_ID, -1L).takeIf {
             it != -1L

@@ -5,10 +5,14 @@
 
 package org.lineageos.twelve.models
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
 /**
  * Media types handled by the data sources.
  */
-enum class MediaType {
+@Parcelize
+enum class MediaType : Parcelable {
     ALBUM,
     ARTIST,
     AUDIO,
