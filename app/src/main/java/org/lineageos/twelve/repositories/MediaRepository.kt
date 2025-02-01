@@ -34,6 +34,7 @@ import okhttp3.Cache
 import org.lineageos.twelve.database.TwelveDatabase
 import org.lineageos.twelve.datasources.DummyDataSource
 import org.lineageos.twelve.datasources.JellyfinDataSource
+import org.lineageos.twelve.datasources.FallbackDataSource
 import org.lineageos.twelve.datasources.LocalDataSource
 import org.lineageos.twelve.datasources.MediaDataSource
 import org.lineageos.twelve.datasources.MediaError
@@ -77,6 +78,23 @@ class MediaRepository(
      * Shared preferences.
      */
     private val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+
+    /**
+     * Fallback provider.
+     */
+    private val fallbackProvider = Provider(
+        ProviderType.FALLBACK,
+        MEDIA_STORE_PROVIDER_ID,
+        Build.MODEL,
+        false,
+    )
+
+    /**
+     * Fallback data source singleton.
+     */
+    private val fallbackDataSource = FallbackDataSource(
+        contentResolver,
+    )
 
     /**
      * Local data source singleton.
@@ -202,7 +220,8 @@ class MediaRepository(
                     cache
                 )
             }
-        }
+        },
+        flowOf(listOf(fallbackProvider to fallbackDataSource)),
     ) { providers -> providers.toList().flatten() }
         .flowOn(Dispatchers.IO)
         .stateIn(
@@ -346,6 +365,7 @@ class MediaRepository(
      * @return A flow of [Bundle] containing the arguments.
      */
     fun providerArguments(providerIdentifier: ProviderIdentifier) = when (providerIdentifier.type) {
+        ProviderType.FALLBACK,
         ProviderType.LOCAL -> flowOf(Bundle.EMPTY)
 
         ProviderType.SUBSONIC -> database.getSubsonicProviderDao().getById(
@@ -387,6 +407,7 @@ class MediaRepository(
     suspend fun addProvider(
         providerType: ProviderType, name: String, arguments: Bundle
     ) = when (providerType) {
+        ProviderType.FALLBACK,
         ProviderType.LOCAL -> throw Exception("Cannot create local providers")
 
         ProviderType.SUBSONIC -> {
@@ -430,6 +451,7 @@ class MediaRepository(
         arguments: Bundle
     ) {
         when (providerIdentifier.type) {
+            ProviderType.FALLBACK,
             ProviderType.LOCAL -> throw Exception("Cannot update local providers")
 
             ProviderType.SUBSONIC -> {
@@ -473,6 +495,7 @@ class MediaRepository(
      */
     suspend fun deleteProvider(providerIdentifier: ProviderIdentifier) {
         when (providerIdentifier.type) {
+            ProviderType.FALLBACK,
             ProviderType.LOCAL -> throw Exception("Cannot delete local providers")
 
             ProviderType.SUBSONIC -> database.getSubsonicProviderDao().delete(

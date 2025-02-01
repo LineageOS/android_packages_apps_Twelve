@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2024 The LineageOS Project
+ * SPDX-FileCopyrightText: 2024-2025 The LineageOS Project
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -26,6 +26,15 @@ enum class ProviderType(
     @DrawableRes val iconDrawableResId: Int,
     val arguments: List<ProviderArgument<*>>,
 ) {
+    /**
+     * Fallback provider.
+     */
+    FALLBACK(
+        R.string.provider_type_fallback,
+        R.drawable.ic_shelves,
+        listOf(),
+    ),
+
     /**
      * Local provider.
      */
