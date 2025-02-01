@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b01d0171_6cc41712",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 25732
+      },
+      "writtenOn": "2025-02-01T16:24:37Z",
+      "side": 1,
+      "message": "Just realized: enum classes are serializable because they use the enum ordinal to save it",
+      "revId": "e29ee3302a736216629c7a5f491b96db5fca3ec6",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
