@@ -66,5 +66,20 @@ enum class ProviderType(
             JellyfinDataSource.ARG_USERNAME,
             JellyfinDataSource.ARG_PASSWORD,
         ),
-    )
+    ),
+
+    /**
+     * Audiobookshelf provider.
+     *
+     * [Home page](https://audiobookshelf.org)
+     */
+    AUDIOBOOKSHELF(
+        R.string.provider_type_audiobookshelf,
+        R.drawable.ic_jellyfin, // TODO: Replace with audiobookshelf icon
+        listOf(
+            JellyfinDataSource.ARG_SERVER,
+            JellyfinDataSource.ARG_USERNAME,
+            JellyfinDataSource.ARG_PASSWORD,
+        ),
+    ),
 }

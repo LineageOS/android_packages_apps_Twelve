@@ -32,6 +32,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import okhttp3.Cache
 import org.lineageos.twelve.database.TwelveDatabase
+import org.lineageos.twelve.datasources.AudiobookshelfDataSource
 import org.lineageos.twelve.datasources.DummyDataSource
 import org.lineageos.twelve.datasources.JellyfinDataSource
 import org.lineageos.twelve.datasources.LocalDataSource
@@ -202,7 +203,34 @@ class MediaRepository(
                     cache
                 )
             }
-        }
+        },
+        database.getAudiobookshelfProviderDao().getAll().mapLatest { audiobookshelfProviders ->
+            audiobookshelfProviders.map {
+                val arguments = bundleOf(
+                    JellyfinDataSource.ARG_SERVER.key to it.url,
+                    JellyfinDataSource.ARG_USERNAME.key to it.username,
+                    JellyfinDataSource.ARG_PASSWORD.key to it.password,
+                )
+
+                Provider(
+                    ProviderType.AUDIOBOOKSHELF,
+                    it.id,
+                    it.name,
+                    true,
+                ) to AudiobookshelfDataSource(
+                    arguments, {
+                        database.getAudiobookshelfProviderDao().getToken(it.id)
+                    }, { token ->
+                        database.getAudiobookshelfProviderDao().updateToken(it.id, token)
+                    }, { datasource ->
+                        database.getLastPlayedDao().get(datasource)
+                    }, { datasource, uri ->
+                        database.getLastPlayedDao().set(datasource, uri)
+                    },
+                    cache
+                )
+            }
+        },
     ) { providers -> providers.toList().flatten() }
         .flowOn(Dispatchers.IO)
         .stateIn(
@@ -373,6 +401,18 @@ class MediaRepository(
                 )
             }
         }
+
+        ProviderType.AUDIOBOOKSHELF -> database.getAudiobookshelfProviderDao().getById(
+            providerIdentifier.typeId
+        ).mapLatest { audiobookshelfProvider ->
+            audiobookshelfProvider?.let {
+                bundleOf(
+                    JellyfinDataSource.ARG_SERVER.key to it.url,
+                    JellyfinDataSource.ARG_USERNAME.key to it.username,
+                    JellyfinDataSource.ARG_PASSWORD.key to it.password,
+                )
+            }
+        }
     }
 
     /**
@@ -410,6 +450,18 @@ class MediaRepository(
             val password = arguments.requireArgument(JellyfinDataSource.ARG_PASSWORD)
 
             val typeId = database.getJellyfinProviderDao().create(
+                name, server, username, password
+            )
+
+            providerType to typeId
+        }
+
+        ProviderType.AUDIOBOOKSHELF -> {
+            val server = arguments.requireArgument(JellyfinDataSource.ARG_SERVER)
+            val username = arguments.requireArgument(JellyfinDataSource.ARG_USERNAME)
+            val password = arguments.requireArgument(JellyfinDataSource.ARG_PASSWORD)
+
+            val typeId = database.getAudiobookshelfProviderDao().create(
                 name, server, username, password
             )
 
@@ -463,6 +515,20 @@ class MediaRepository(
                     password
                 )
             }
+
+            ProviderType.AUDIOBOOKSHELF -> {
+                val server = arguments.requireArgument(JellyfinDataSource.ARG_SERVER)
+                val username = arguments.requireArgument(JellyfinDataSource.ARG_USERNAME)
+                val password = arguments.requireArgument(JellyfinDataSource.ARG_PASSWORD)
+
+                database.getAudiobookshelfProviderDao().update(
+                    providerIdentifier.typeId,
+                    name,
+                    server,
+                    username,
+                    password
+                )
+            }
         }
     }
 
@@ -480,6 +546,10 @@ class MediaRepository(
             )
 
             ProviderType.JELLYFIN -> database.getJellyfinProviderDao().delete(
+                providerIdentifier.typeId
+            )
+
+            ProviderType.AUDIOBOOKSHELF -> database.getAudiobookshelfProviderDao().delete(
                 providerIdentifier.typeId
             )
         }
