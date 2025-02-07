@@ -12,6 +12,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import org.lineageos.twelve.database.converters.UriConverter
+import org.lineageos.twelve.database.dao.AudiobookshelfProviderDao
 import org.lineageos.twelve.database.dao.ItemDao
 import org.lineageos.twelve.database.dao.JellyfinProviderDao
 import org.lineageos.twelve.database.dao.LastPlayedDao
@@ -21,6 +22,7 @@ import org.lineageos.twelve.database.dao.PlaylistItemCrossRefDao
 import org.lineageos.twelve.database.dao.PlaylistWithItemsDao
 import org.lineageos.twelve.database.dao.ResumptionPlaylistDao
 import org.lineageos.twelve.database.dao.SubsonicProviderDao
+import org.lineageos.twelve.database.entities.AudiobookshelfProvider
 import org.lineageos.twelve.database.entities.Item
 import org.lineageos.twelve.database.entities.JellyfinProvider
 import org.lineageos.twelve.database.entities.LastPlayed
@@ -43,6 +45,7 @@ import org.lineageos.twelve.database.entities.SubsonicProvider
         ResumptionPlaylist::class,
 
         /* Providers */
+        AudiobookshelfProvider::class,
         JellyfinProvider::class,
         SubsonicProvider::class,
 
@@ -52,12 +55,13 @@ import org.lineageos.twelve.database.entities.SubsonicProvider
         /* Local Media Stats */
         LocalMediaStats::class,
     ],
-    version = 5,
+    version = 6,
     autoMigrations = [
         AutoMigration(from = 1, to = 2),
         AutoMigration(from = 2, to = 3),
         AutoMigration(from = 3, to = 4),
         AutoMigration(from = 4, to = 5),
+        AutoMigration(from = 5, to = 6),
     ],
 )
 @TypeConverters(UriConverter::class)
@@ -71,6 +75,7 @@ abstract class TwelveDatabase : RoomDatabase() {
     abstract fun getPlaylistWithItemsDao(): PlaylistWithItemsDao
     abstract fun getResumptionPlaylistDao(): ResumptionPlaylistDao
     abstract fun getSubsonicProviderDao(): SubsonicProviderDao
+    abstract fun getAudiobookshelfProviderDao(): AudiobookshelfProviderDao
 
     companion object {
         @Volatile
