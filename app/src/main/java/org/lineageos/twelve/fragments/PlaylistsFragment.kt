@@ -59,16 +59,6 @@ class PlaylistsFragment : Fragment(R.layout.fragment_playlists) {
         ::ListItem,
     ) {
         override fun ViewHolder.onBindView(item: Playlist) {
-            view.setOnLongClickListener {
-                findNavController().navigateSafe(
-                    R.id.action_mainFragment_to_fragment_media_item_bottom_sheet_dialog,
-                    MediaItemBottomSheetDialogFragment.createBundle(
-                        item.uri, item.mediaType,
-                    )
-                )
-                true
-            }
-
             when (item === addNewPlaylistItem) {
                 true -> {
                     view.setOnClickListener {
@@ -90,6 +80,15 @@ class PlaylistsFragment : Fragment(R.layout.fragment_playlists) {
                             R.id.action_mainFragment_to_fragment_playlist,
                             PlaylistFragment.createBundle(item.uri)
                         )
+                    }
+                    view.setOnLongClickListener {
+                        findNavController().navigateSafe(
+                            R.id.action_mainFragment_to_fragment_media_item_bottom_sheet_dialog,
+                            MediaItemBottomSheetDialogFragment.createBundle(
+                                item.uri, item.mediaType,
+                            )
+                        )
+                        true
                     }
 
                     view.setLeadingIconImage(R.drawable.ic_playlist_play)
