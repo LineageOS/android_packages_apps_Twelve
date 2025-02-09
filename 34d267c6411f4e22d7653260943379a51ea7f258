@@ -68,6 +68,24 @@
       "parentUuid": "e2c67611_1f8c5fc6",
       "revId": "34d267c6411f4e22d7653260943379a51ea7f258",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8a5d2054_71ba5890",
+        "filename": "app/src/main/java/org/lineageos/twelve/viewmodels/LocalPlayerViewModel.kt",
+        "patchSetId": 2
+      },
+      "lineNbr": 176,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2025-02-09T18:58:57Z",
+      "side": 1,
+      "message": "Why don\u0027t we simply set the repeatMode to default loop?",
+      "parentUuid": "a0746dae_726d9336",
+      "revId": "34d267c6411f4e22d7653260943379a51ea7f258",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
