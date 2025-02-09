@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ea2805ef_884c2911",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2025-02-09T17:04:04Z",
+      "side": 1,
+      "message": "not using the safe version scares me, but those are not user triggered actions so should be safe.",
+      "revId": "0836d86b0f9104fcd269e7d4b410fe4e71aefe0b",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
