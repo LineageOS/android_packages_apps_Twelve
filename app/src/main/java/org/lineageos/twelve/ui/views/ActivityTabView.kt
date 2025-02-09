@@ -33,25 +33,20 @@ class ActivityTabView(context: Context) : FrameLayout(context) {
         mediaItemDiffCallback,
         ::ActivityTabItem,
     ) {
-        override fun ViewHolder.onPrepareView() {
-            view.setOnClickListener {
-                onItemClickListener(currentList, bindingAdapterPosition)
-            }
-            view.setOnLongClickListener {
-                onItemLongClickListener(currentList, bindingAdapterPosition)
-            }
-        }
-
         override fun ViewHolder.onBindView(item: MediaItem<*>) {
             view.setItem(item)
+            view.setOnClickListener {
+                onItemClickListener(item)
+            }
+            view.setOnLongClickListener {
+                onItemLongClickListener(item)
+            }
         }
     }
 
     // Callbacks
-    private var onItemClickListener: (items: List<MediaItem<*>>, position: Int) -> Unit =
-        { _, _ -> }
-    private var onItemLongClickListener: (items: List<MediaItem<*>>, position: Int) -> Boolean =
-        { _, _ -> false }
+    private var onItemClickListener: (item: MediaItem<*>) -> Unit = { _ -> }
+    private var onItemLongClickListener: (item: MediaItem<*>) -> Boolean = { _ -> false }
 
     init {
         inflate(context, R.layout.view_activity_tab, this)
@@ -59,14 +54,12 @@ class ActivityTabView(context: Context) : FrameLayout(context) {
         recyclerView.adapter = adapter
     }
 
-    fun setOnItemClickListener(listener: ((items: List<MediaItem<*>>, position: Int) -> Unit)?) {
-        onItemClickListener = listener ?: { _, _ -> }
+    fun setOnItemClickListener(listener: (item: MediaItem<*>) -> Unit) {
+        onItemClickListener = listener
     }
 
-    fun setOnItemLongClickListener(
-        listener: ((items: List<MediaItem<*>>, position: Int) -> Boolean)?
-    ) {
-        onItemLongClickListener = listener ?: { _, _ -> false }
+    fun setOnItemLongClickListener(listener: (item: MediaItem<*>) -> Boolean) {
+        onItemLongClickListener = listener
     }
 
     fun setActivityTab(activityTab: ActivityTab) {

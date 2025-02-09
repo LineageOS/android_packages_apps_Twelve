@@ -75,32 +75,25 @@ class ArtistFragment : Fragment(R.layout.fragment_artist) {
             UniqueItemDiffCallback(),
             ::HorizontalListItem,
         ) {
-            override fun ViewHolder.onPrepareView() {
+            override fun ViewHolder.onBindView(item: Album) {
                 view.setOnClickListener {
-                    item?.let {
-                        findNavController().navigateSafe(
-                            R.id.action_artistFragment_to_fragment_album,
-                            AlbumFragment.createBundle(it.uri)
-                        )
-                    }
+                    findNavController().navigateSafe(
+                        R.id.action_artistFragment_to_fragment_album,
+                        AlbumFragment.createBundle(item.uri)
+                    )
                 }
                 view.setOnLongClickListener {
-                    item?.let {
-                        findNavController().navigateSafe(
-                            R.id.action_artistFragment_to_fragment_media_item_bottom_sheet_dialog,
-                            MediaItemBottomSheetDialogFragment.createBundle(
-                                it.uri,
-                                it.mediaType,
-                                fromArtist = true,
-                            )
+                    findNavController().navigateSafe(
+                        R.id.action_artistFragment_to_fragment_media_item_bottom_sheet_dialog,
+                        MediaItemBottomSheetDialogFragment.createBundle(
+                            item.uri,
+                            item.mediaType,
+                            fromArtist = true,
                         )
-                        true
-                    }
-                    false
+                    )
+                    true
                 }
-            }
 
-            override fun ViewHolder.onBindView(item: Album) {
                 view.loadThumbnailImage(item.thumbnail, R.drawable.ic_album)
 
                 item.title?.also {
@@ -120,26 +113,24 @@ class ArtistFragment : Fragment(R.layout.fragment_artist) {
         ) {
             override fun ViewHolder.onPrepareView() {
                 view.setThumbnailImage(R.drawable.ic_playlist_play)
+            }
+
+            override fun ViewHolder.onBindView(item: Playlist) {
                 view.setOnClickListener {
                     // TODO
                 }
                 view.setOnLongClickListener {
-                    item?.let {
-                        findNavController().navigateSafe(
-                            R.id.action_albumFragment_to_fragment_media_item_bottom_sheet_dialog,
-                            MediaItemBottomSheetDialogFragment.createBundle(
-                                it.uri,
-                                it.mediaType,
-                                fromArtist = true,
-                            )
+                    findNavController().navigateSafe(
+                        R.id.action_albumFragment_to_fragment_media_item_bottom_sheet_dialog,
+                        MediaItemBottomSheetDialogFragment.createBundle(
+                            item.uri,
+                            item.mediaType,
+                            fromArtist = true,
                         )
-                        true
-                    }
-                    false
+                    )
+                    true
                 }
-            }
 
-            override fun ViewHolder.onBindView(item: Playlist) {
                 view.headlineText = item.name
             }
         }
