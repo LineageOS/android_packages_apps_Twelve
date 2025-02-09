@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a05b843c_510145f1",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2025-02-09T17:14:14Z",
+      "side": 1,
+      "message": "Moved out of chain, this is good for activity",
+      "revId": "d45a953d0b09b76b3ba5206ca6eff327c3c2f462",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
