@@ -76,33 +76,23 @@ class GenreFragment : Fragment(R.layout.fragment_genre) {
             UniqueItemDiffCallback(),
             ::HorizontalMediaItemView,
         ) {
-            override fun ViewHolder.onPrepareView() {
-                view.setOnClickListener {
-                    item?.let {
-                        findNavController().navigateSafe(
-                            R.id.action_genreFragment_to_fragment_album,
-                            AlbumFragment.createBundle(it.uri)
-                        )
-                    }
-                }
-
-                view.setOnLongClickListener {
-                    item?.let {
-                        findNavController().navigateSafe(
-                            R.id.action_genreFragment_to_fragment_media_item_bottom_sheet_dialog,
-                            MediaItemBottomSheetDialogFragment.createBundle(
-                                it.uri,
-                                it.mediaType,
-                                fromGenre = true,
-                            )
-                        )
-                        true
-                    }
-                    false
-                }
-            }
-
             override fun ViewHolder.onBindView(item: Album) {
+                view.setOnClickListener {
+                    findNavController().navigateSafe(
+                        R.id.action_genreFragment_to_fragment_album,
+                        AlbumFragment.createBundle(item.uri)
+                    )
+                }
+                view.setOnLongClickListener {
+                    findNavController().navigateSafe(
+                        R.id.action_genreFragment_to_fragment_media_item_bottom_sheet_dialog,
+                        MediaItemBottomSheetDialogFragment.createBundle(
+                            item.uri, item.mediaType,
+                        )
+                    )
+                    true
+                }
+
                 view.setItem(item)
             }
         }
@@ -112,33 +102,24 @@ class GenreFragment : Fragment(R.layout.fragment_genre) {
             UniqueItemDiffCallback(),
             ::HorizontalMediaItemView,
         ) {
-            override fun ViewHolder.onPrepareView() {
+            override fun ViewHolder.onBindView(item: Playlist) {
                 view.setOnClickListener {
-                    item?.let {
-                        findNavController().navigateSafe(
-                            R.id.action_genreFragment_to_fragment_playlist,
-                            PlaylistFragment.createBundle(it.uri)
-                        )
-                    }
+                    findNavController().navigateSafe(
+                        R.id.action_genreFragment_to_fragment_playlist,
+                        PlaylistFragment.createBundle(item.uri)
+                    )
                 }
                 view.setOnLongClickListener {
-                    item?.let {
-                        findNavController().navigateSafe(
-                            R.id.action_genreFragment_to_fragment_media_item_bottom_sheet_dialog,
-                            MediaItemBottomSheetDialogFragment.createBundle(
-                                it.uri,
-                                it.mediaType,
-                                fromGenre = true,
-                            )
+                    findNavController().navigateSafe(
+                        R.id.action_genreFragment_to_fragment_media_item_bottom_sheet_dialog,
+                        MediaItemBottomSheetDialogFragment.createBundle(
+                            item.uri, item.mediaType,
                         )
-                        true
-                    }
-                    false
+                    )
+                    true
                 }
-            }
 
-            override fun ViewHolder.onBindView(item: Playlist) {
-                view.setItem(item)
+                view.headlineText = item.name
             }
         }
     }
@@ -147,32 +128,24 @@ class GenreFragment : Fragment(R.layout.fragment_genre) {
             UniqueItemDiffCallback(),
             ::HorizontalMediaItemView,
         ) {
-            override fun ViewHolder.onPrepareView() {
-                view.setOnClickListener {
-                    item?.let {
-                        viewModel.playAudio(currentList, bindingAdapterPosition)
-                        findNavController().navigateSafe(
-                            R.id.action_genreFragment_to_fragment_now_playing
-                        )
-                    }
-                }
-
-                view.setOnLongClickListener {
-                    item?.let {
-                        findNavController().navigateSafe(
-                            R.id.action_genreFragment_to_fragment_media_item_bottom_sheet_dialog,
-                            MediaItemBottomSheetDialogFragment.createBundle(
-                                it.uri,
-                                it.mediaType,
-                                fromGenre = true,
-                            )
-                        )
-                        true
-                    } ?: false
-                }
-            }
-
             override fun ViewHolder.onBindView(item: Audio) {
+                view.setOnClickListener {
+                    viewModel.playAudio(currentList, bindingAdapterPosition)
+                    findNavController().navigateSafe(
+                        R.id.action_genreFragment_to_fragment_now_playing
+                    )
+                }
+                view.setOnLongClickListener {
+                    findNavController().navigateSafe(
+                        R.id.action_genreFragment_to_fragment_media_item_bottom_sheet_dialog,
+                        MediaItemBottomSheetDialogFragment.createBundle(
+                            item.uri, item.mediaType,
+                            fromGenre = true,
+                        )
+                    )
+                    true
+                }
+
                 view.setItem(item)
             }
         }
