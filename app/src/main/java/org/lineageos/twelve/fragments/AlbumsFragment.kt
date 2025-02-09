@@ -31,7 +31,7 @@ import org.lineageos.twelve.models.SortingStrategy
 import org.lineageos.twelve.ui.recyclerview.DisplayAwareGridLayoutManager
 import org.lineageos.twelve.ui.recyclerview.SimpleListAdapter
 import org.lineageos.twelve.ui.recyclerview.UniqueItemDiffCallback
-import org.lineageos.twelve.ui.views.AlbumsItem
+import org.lineageos.twelve.ui.views.MediaItemGridItem
 import org.lineageos.twelve.ui.views.SortingChip
 import org.lineageos.twelve.utils.PermissionsChecker
 import org.lineageos.twelve.utils.PermissionsUtils
@@ -52,9 +52,9 @@ class AlbumsFragment : Fragment(R.layout.fragment_albums) {
 
     // Recyclerview
     private val adapter by lazy {
-        object : SimpleListAdapter<Album, AlbumsItem>(
+        object : SimpleListAdapter<Album, MediaItemGridItem>(
             UniqueItemDiffCallback(),
-            ::AlbumsItem,
+            ::MediaItemGridItem,
         ) {
             override fun ViewHolder.onPrepareView() {
                 view.setOnClickListener {
