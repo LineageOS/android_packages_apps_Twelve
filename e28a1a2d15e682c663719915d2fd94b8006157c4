@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2818cb48_3942f604",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 25732
+      },
+      "writtenOn": "2025-02-09T23:35:49Z",
+      "side": 1,
+      "message": "If we want to prefer code readability by adding a listener allocation every time a new list gets submitted, sure",
+      "revId": "e28a1a2d15e682c663719915d2fd94b8006157c4",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
