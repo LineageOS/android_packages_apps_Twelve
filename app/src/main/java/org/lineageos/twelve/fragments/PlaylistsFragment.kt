@@ -58,47 +58,43 @@ class PlaylistsFragment : Fragment(R.layout.fragment_playlists) {
         UniqueItemDiffCallback(),
         ::ListItem,
     ) {
-        override fun ViewHolder.onPrepareView() {
-            view.setOnClickListener {
-                item?.let {
-                    when (it === createOrImportPlaylistItem) {
-                        true -> findNavController().navigateSafe(
-                            R.id.action_mainFragment_to_fragment_create_or_import_playlist_dialog,
-                            CreateOrImportPlaylistDialogFragment.createBundle(
-                                providerIdentifier = viewModel.navigationProvider.value
-                            )
-                        )
-
-                        false -> findNavController().navigateSafe(
-                            R.id.action_mainFragment_to_fragment_playlist,
-                            PlaylistFragment.createBundle(it.uri)
-                        )
-                    }
-                }
-            }
-            view.setOnLongClickListener {
-                item?.let {
-                    findNavController().navigateSafe(
-                        R.id.action_mainFragment_to_fragment_media_item_bottom_sheet_dialog,
-                        MediaItemBottomSheetDialogFragment.createBundle(
-                            it.uri, it.mediaType,
-                        )
-                    )
-                    true
-                } ?: false
-            }
-        }
-
         override fun ViewHolder.onBindView(item: Playlist) {
             when (item === createOrImportPlaylistItem) {
                 true -> {
                     view.setLeadingIconImage(R.drawable.ic_playlist_add)
                     view.setHeadlineText(R.string.create_or_import_playlist)
+
+                    view.setOnClickListener {
+                        findNavController().navigateSafe(
+                            R.id.action_mainFragment_to_fragment_create_or_import_playlist_dialog,
+                            CreateOrImportPlaylistDialogFragment.createBundle(
+                                providerIdentifier = viewModel.navigationProvider.value
+                            )
+                        )
+                    }
                 }
 
                 false -> {
                     view.setLeadingIconImage(R.drawable.ic_playlist_play)
                     view.headlineText = item.name
+
+                    view.setOnClickListener {
+                        findNavController().navigateSafe(
+                            R.id.action_mainFragment_to_fragment_playlist,
+                            PlaylistFragment.createBundle(item.uri)
+                        )
+                    }
+
+                    view.setOnLongClickListener {
+                        findNavController().navigateSafe(
+                            R.id.action_mainFragment_to_fragment_media_item_bottom_sheet_dialog,
+                            MediaItemBottomSheetDialogFragment.createBundle(
+                                item.uri,
+                                item.mediaType,
+                            )
+                        )
+                        true
+                    }
                 }
             }
         }
