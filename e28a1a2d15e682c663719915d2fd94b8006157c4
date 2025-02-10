@@ -16,6 +16,24 @@
       "message": "If we want to prefer code readability by adding a listener allocation every time a new list gets submitted, sure",
       "revId": "e28a1a2d15e682c663719915d2fd94b8006157c4",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4d6af1ae_8efdedb4",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2025-02-10T08:36:32Z",
+      "side": 1,
+      "message": "I do.",
+      "parentUuid": "2818cb48_3942f604",
+      "revId": "e28a1a2d15e682c663719915d2fd94b8006157c4",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
