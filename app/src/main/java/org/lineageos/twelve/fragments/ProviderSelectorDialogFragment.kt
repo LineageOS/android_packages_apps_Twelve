@@ -7,6 +7,7 @@ package org.lineageos.twelve.fragments
 
 import android.os.Bundle
 import android.view.View
+import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -20,6 +21,7 @@ import org.lineageos.twelve.R
 import org.lineageos.twelve.ext.getViewProperty
 import org.lineageos.twelve.ext.navigateSafe
 import org.lineageos.twelve.models.Provider
+import org.lineageos.twelve.models.ProviderType
 import org.lineageos.twelve.models.RequestStatus
 import org.lineageos.twelve.ui.recyclerview.SimpleListAdapter
 import org.lineageos.twelve.ui.recyclerview.UniqueItemDiffCallback
@@ -53,6 +55,17 @@ class ProviderSelectorDialogFragment : MaterialDialogFragment(
                 viewModel.setNavigationProvider(item)
                 findNavController().navigateUp()
             }
+
+            when (item.type) {
+                ProviderType.LOCAL -> {
+                    view.trailingView?.isVisible = false
+                }
+
+                else -> {
+                    view.trailingView?.isVisible = true
+                }
+            }
+
             view.trailingView?.setOnClickListener {
                 findNavController().navigateSafe(
                     R.id.action_providerSelectorDialogFragment_to_fragment_provider_information_bottom_sheet_dialog,
