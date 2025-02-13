@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5b4f6514_0d61b398",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 25732
+      },
+      "writtenOn": "2025-02-13T19:05:15Z",
+      "side": 1,
+      "message": "No more Pair\u003c\u003e stuff",
+      "revId": "f010219437224d400fbaed75e4f6ade6e18fc256",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
