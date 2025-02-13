@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7da900ac_cb25ccf0",
+        "filename": "app/src/main/java/org/lineageos/twelve/models/Album.kt",
+        "patchSetId": 1
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2025-02-13T04:04:45Z",
+      "side": 1,
+      "message": "move to cl before?",
+      "revId": "fa4da49f00590f4a5e99fa7d3cf7125c59e4bf71",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
