@@ -193,16 +193,6 @@ class LocalDataSource(
         RequestStatus.Success<_, MediaError>(listOf<DataSourceInformation>())
     )
 
-    override fun isMediaItemCompatible(mediaItemUri: Uri) = listOf(
-        albumsUri,
-        artistsUri,
-        genresUri,
-        audiosUri,
-        playlistsBaseUri,
-    ).any {
-        mediaItemUri.toString().startsWith(it.toString())
-    }
-
     override suspend fun mediaTypeOf(mediaItemUri: Uri) = with(mediaItemUri.toString()) {
         when {
             startsWith(albumsUri.toString()) -> MediaType.ALBUM
@@ -211,9 +201,7 @@ class LocalDataSource(
             startsWith(audiosUri.toString()) -> MediaType.AUDIO
             startsWith(playlistsBaseUri.toString()) -> MediaType.PLAYLIST
             else -> null
-        }?.let {
-            RequestStatus.Success<_, MediaError>(it)
-        } ?: RequestStatus.Error(MediaError.NOT_FOUND)
+        }
     }
 
     override fun activity() = combine(

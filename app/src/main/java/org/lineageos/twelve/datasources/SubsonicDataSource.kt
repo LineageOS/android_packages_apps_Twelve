@@ -144,10 +144,6 @@ class SubsonicDataSource(
         }
     }.asFlow()
 
-    override fun isMediaItemCompatible(mediaItemUri: Uri) = mediaItemUri.toString().startsWith(
-        dataSourceBaseUri.toString()
-    )
-
     override suspend fun mediaTypeOf(mediaItemUri: Uri) = with(mediaItemUri.toString()) {
         when {
             startsWith(albumsUri.toString()) -> MediaType.ALBUM
@@ -156,9 +152,7 @@ class SubsonicDataSource(
             startsWith(genresUri.toString()) -> MediaType.GENRE
             startsWith(playlistsUri.toString()) -> MediaType.PLAYLIST
             else -> null
-        }?.let {
-            RequestStatus.Success<_, MediaError>(it)
-        } ?: RequestStatus.Error(MediaError.NOT_FOUND)
+        }
     }
 
     override fun activity() = suspend {
