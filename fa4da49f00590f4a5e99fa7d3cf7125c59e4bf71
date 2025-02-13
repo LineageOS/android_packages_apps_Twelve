@@ -16,6 +16,24 @@
       "message": "move to cl before?",
       "revId": "fa4da49f00590f4a5e99fa7d3cf7125c59e4bf71",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f3715208_dc89123a",
+        "filename": "app/src/main/java/org/lineageos/twelve/models/Album.kt",
+        "patchSetId": 1
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 25732
+      },
+      "writtenOn": "2025-02-13T18:22:51Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7da900ac_cb25ccf0",
+      "revId": "fa4da49f00590f4a5e99fa7d3cf7125c59e4bf71",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
