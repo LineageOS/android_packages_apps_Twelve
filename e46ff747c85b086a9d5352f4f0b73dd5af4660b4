@@ -16,6 +16,23 @@
       "message": "Gives us back the new slider design, didn\u0027t test AOSP build tho",
       "revId": "e46ff747c85b086a9d5352f4f0b73dd5af4660b4",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3876ec1b_b59c6b09",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2025-02-13T19:26:55Z",
+      "side": 1,
+      "message": "It does, I was quite sure I tested it before and it didn\u0027t work, maybe incremental resources broke it.",
+      "revId": "e46ff747c85b086a9d5352f4f0b73dd5af4660b4",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
