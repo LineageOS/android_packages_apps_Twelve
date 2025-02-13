@@ -34,4 +34,35 @@ sealed interface MediaItem<T : MediaItem<T>> : UniqueItem<T> {
      * Convert this item to a media item.
      */
     fun toMedia3MediaItem(): androidx.media3.common.MediaItem
+
+    /**
+     * Builder for a [MediaItem].
+     *
+     * [Code inspiration](https://dev.to/glefloch/self-referencing-generics-wait-what--1amb)
+     *
+     * @param B The builder class
+     * @param T The [MediaItem] type
+     * @param uri The [Uri] of the media item
+     */
+    abstract class Builder<B : Builder<B, T>, T : MediaItem<T>>(
+        protected val uri: Uri,
+    ) {
+        protected var thumbnail: Thumbnail? = null
+
+        /**
+         * @see MediaItem.thumbnail
+         */
+        fun setThumbnail(thumbnail: Thumbnail?) = self.also {
+            this.thumbnail = thumbnail
+        }
+
+        /**
+         * Build the [MediaItem].
+         */
+        abstract fun build(): T
+
+        private val self: B
+            @Suppress("UNCHECKED_CAST")
+            get() = this as B
+    }
 }

@@ -342,7 +342,7 @@ class SubsonicDataSource(
 
         if (exists) {
             RequestStatus.Success<_, MediaError>(
-                Genre(genreUri, genreName) to GenreContent(
+                Genre.Builder(genreUri).setName(genreName).build() to GenreContent(
                     appearsInAlbums.orEmpty(),
                     listOf(),
                     audios.orEmpty(),
