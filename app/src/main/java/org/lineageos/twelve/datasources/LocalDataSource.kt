@@ -167,8 +167,12 @@ class LocalDataSource(
             }
         } ?: (null to null)
 
+        val albumArt = uri.buildUpon()
+            .appendPath(AUDIO_ALBUMART)
+            .build()
+
         val thumbnail = Thumbnail.Builder()
-            .setUri(albumUri)
+            .setUri(albumArt)
             .setType(Thumbnail.Type.FRONT_COVER)
             .build()
 
@@ -845,6 +849,9 @@ class LocalDataSource(
     }
 
     companion object {
+        // packages/providers/MediaProvider/src/com/android/providers/media/LocalUriMatcher.java
+        private const val AUDIO_ALBUMART = "albumart"
+
         private const val LAST_PLAYED_KEY = "local"
 
         private val albumsProjection = arrayOf(
