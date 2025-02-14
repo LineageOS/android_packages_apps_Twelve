@@ -16,6 +16,23 @@
       "message": "This is used for the legacy MediaSession and the notification provider, should fix the GitLab issue, but Android Auto and the test app is still a nope",
       "revId": "33444d7eb77e50ce351e0dee0942e70119c0b853",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "bdd324e7_edd9ab09",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2025-02-14T18:11:32Z",
+      "side": 1,
+      "message": "using coil makes me happy",
+      "revId": "33444d7eb77e50ce351e0dee0942e70119c0b853",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
