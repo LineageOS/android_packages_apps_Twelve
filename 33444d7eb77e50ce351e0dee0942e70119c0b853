@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c7d0cb23_f0f05293",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 25732
+      },
+      "writtenOn": "2025-02-14T17:42:52Z",
+      "side": 1,
+      "message": "This is used for the legacy MediaSession and the notification provider, should fix the GitLab issue, but Android Auto and the test app is still a nope",
+      "revId": "33444d7eb77e50ce351e0dee0942e70119c0b853",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
