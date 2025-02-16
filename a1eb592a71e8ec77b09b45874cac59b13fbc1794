@@ -16,6 +16,29 @@
       "message": "I\u0027m sure there\u0027s a less ugly way to do this",
       "revId": "a1eb592a71e8ec77b09b45874cac59b13fbc1794",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d5c3ed15_1c6facdd",
+        "filename": "app/src/main/java/org/lineageos/twelve/services/PlaybackService.kt",
+        "patchSetId": 1
+      },
+      "lineNbr": 177,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2025-02-16T17:42:34Z",
+      "side": 1,
+      "message": "```suggestion\n            startIndex \u003d startIndex.coerceIn(mediaItems.indices)\n```",
+      "range": {
+        "startLine": 177,
+        "startChar": 0,
+        "endLine": 177,
+        "endChar": 87
+      },
+      "revId": "a1eb592a71e8ec77b09b45874cac59b13fbc1794",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
