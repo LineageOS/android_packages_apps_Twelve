@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "7511d0bc_5a3a3a1c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 25732
+      },
+      "writtenOn": "2025-02-16T17:33:45Z",
+      "side": 1,
+      "message": "I\u0027m sure there\u0027s a less ugly way to do this",
+      "revId": "a1eb592a71e8ec77b09b45874cac59b13fbc1794",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
