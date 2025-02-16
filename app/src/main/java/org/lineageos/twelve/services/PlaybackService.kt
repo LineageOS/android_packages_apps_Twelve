@@ -174,7 +174,7 @@ class PlaybackService : MediaLibraryService(), LifecycleOwner {
             }.filterNotNull()
 
             // Shouldn't be needed, but just to be sure
-            startIndex = startIndex.coerceIn(0, mediaItems.size - 1)
+            startIndex = startIndex.coerceIn(0, (mediaItems.size - 1).coerceAtLeast(0))
 
             MediaSession.MediaItemsWithStartPosition(mediaItems, startIndex, startPositionMs)
         }
