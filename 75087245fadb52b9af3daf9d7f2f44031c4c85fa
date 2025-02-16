@@ -16,6 +16,24 @@
       "message": "typo resumption",
       "revId": "75087245fadb52b9af3daf9d7f2f44031c4c85fa",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "dba316a9_3d033d6a",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2025-02-16T17:54:28Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ace17b87_47bd7ad7",
+      "revId": "75087245fadb52b9af3daf9d7f2f44031c4c85fa",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
