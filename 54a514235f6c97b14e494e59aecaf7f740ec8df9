@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f226e4c4_1499278d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2025-02-16T12:03:19Z",
+      "side": 1,
+      "message": "Everything worked fine so far, but the doc clearly say \"use this if you use network media when screen goes off\"",
+      "revId": "54a514235f6c97b14e494e59aecaf7f740ec8df9",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
