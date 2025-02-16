@@ -329,6 +329,7 @@ class PlaybackService : MediaLibraryService(), LifecycleOwner {
                     )
                     .build()
             )
+            .setWakeMode(C.WAKE_MODE_NETWORK)
             .experimentalSetDynamicSchedulingEnabled(true)
             .build()
 
