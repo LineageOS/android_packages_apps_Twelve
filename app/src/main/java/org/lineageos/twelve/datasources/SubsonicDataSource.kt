@@ -375,9 +375,21 @@ class SubsonicDataSource(
             uri?.let(this::audio) ?: flowOf(RequestStatus.Error(MediaError.NOT_FOUND))
         }
 
-    override fun lyrics(audioUri: Uri) = flowOf(
-        RequestStatus.Error<Lyrics, _>(MediaError.NOT_IMPLEMENTED)
-    )
+    override fun lyrics(audioUri: Uri) = suspend {
+        val audioId = audioUri.lastPathSegment!!
+
+        subsonicClient.getLyricsBySongId(audioId).toRequestStatus {
+            toModel()
+        }.let {
+            when (it) {
+                is RequestStatus.Loading -> RequestStatus.Loading(it.progress)
+                is RequestStatus.Success -> it.data?.let { lyrics ->
+                    RequestStatus.Success<_, MediaError>(lyrics)
+                } ?: RequestStatus.Error(MediaError.NOT_FOUND)
+                is RequestStatus.Error -> RequestStatus.Error(it.error, it.throwable)
+            }
+        }
+    }.asFlow()
 
     override suspend fun createPlaylist(name: String) = subsonicClient.createPlaylist(
         null, name, listOf()
@@ -501,6 +513,22 @@ class SubsonicDataSource(
 
         else -> Audio.Type.MUSIC
     }
+
+    private fun org.lineageos.twelve.datasources.subsonic.models.LyricsList.toModel() =
+        structuredLyrics.firstOrNull()?.let { structuredLyrics ->
+            val offset = structuredLyrics.offset ?: 0
+
+            Lyrics(
+                structuredLyrics.line.map {
+                    val start = offset + (it.start ?: 0)
+
+                    Lyrics.Line(
+                        it.value,
+                        start..start,
+                    )
+                }
+            )
+        }
 
     private fun Error.Code.toRequestStatusType() = when (this) {
         Error.Code.GENERIC_ERROR -> MediaError.IO
