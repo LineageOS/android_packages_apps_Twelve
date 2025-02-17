@@ -7,10 +7,12 @@ package org.lineageos.twelve.services
 
 import android.app.PendingIntent
 import android.content.Intent
+import android.content.res.Resources
 import android.media.audiofx.AudioEffect
 import android.os.Bundle
 import android.os.IBinder
 import androidx.annotation.OptIn
+import androidx.annotation.StringRes
 import androidx.core.os.bundleOf
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
@@ -25,6 +27,7 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.common.util.Util
 import androidx.media3.exoplayer.DefaultLoadControl
 import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.session.CommandButton
 import androidx.media3.session.DefaultMediaNotificationProvider
 import androidx.media3.session.LibraryResult
 import androidx.media3.session.MediaController
@@ -91,6 +94,75 @@ class PlaybackService : MediaLibraryService(), LifecycleOwner {
         }
     }
 
+    enum class ButtonCommand(
+        @StringRes val displayName: Int,
+        val icon: Int,
+    ) {
+        /**
+         * Shuffle off to on.
+         */
+        SHUFFLE_OFF_TO_ON(
+            R.string.shuffle_on,
+            CommandButton.ICON_SHUFFLE_OFF,
+        ),
+
+        /**
+         * Shuffle on to off.
+         */
+        SHUFFLE_ON_TO_OFF(
+            R.string.shuffle_off,
+            CommandButton.ICON_SHUFFLE_ON,
+        ),
+
+        /**
+         * Repeat off to all.
+         */
+        REPEAT_OFF_TO_ALL(
+            R.string.repeat_all,
+            CommandButton.ICON_REPEAT_OFF,
+        ),
+
+        /**
+         * Repeat all to one.
+         */
+        REPEAT_ALL_TO_ONE(
+            R.string.repeat_one,
+            CommandButton.ICON_REPEAT_ALL,
+        ),
+
+        /**
+         * Repeat one to off.
+         */
+        REPEAT_ONE_TO_OFF(
+            R.string.repeat_off,
+            CommandButton.ICON_REPEAT_ONE,
+        );
+
+        companion object {
+            fun fromCustomAction(
+                customAction: String
+            ) = ButtonCommand.entries.firstOrNull { it.name == customAction }
+
+            fun getShuffleModeButton(shuffleMode: Boolean) =
+                if (shuffleMode) SHUFFLE_ON_TO_OFF else SHUFFLE_OFF_TO_ON
+
+            fun getRepeatModeButton(repeatMode: Int) = when (repeatMode) {
+                Player.REPEAT_MODE_OFF -> REPEAT_OFF_TO_ALL
+                Player.REPEAT_MODE_ONE -> REPEAT_ONE_TO_OFF
+                Player.REPEAT_MODE_ALL -> REPEAT_ALL_TO_ONE
+                else -> throw IllegalArgumentException("Unknown repeat mode")
+            }
+        }
+    }
+
+    fun ButtonCommand.commandButton(resources: Resources) = CommandButton.Builder()
+        .setDisplayName(resources.getString(displayName))
+        .setSessionCommand(
+            SessionCommand(name, Bundle.EMPTY)
+        )
+        .setIconResId(CommandButton.getIconResIdForIconConstant(icon))
+        .build()
+
     private val dispatcher = ServiceLifecycleDispatcher(this)
     override val lifecycle: Lifecycle
         get() = dispatcher.lifecycle
@@ -131,6 +203,10 @@ class PlaybackService : MediaLibraryService(), LifecycleOwner {
                     .apply {
                         for (command in CustomCommand.entries) {
                             add(command.sessionCommand)
+                        }
+
+                        for (command in ButtonCommand.entries) {
+                            add(command.commandButton(resources).sessionCommand!!)
                         }
                     }
                     .build()
@@ -304,7 +380,34 @@ class PlaybackService : MediaLibraryService(), LifecycleOwner {
                     )
                 }
 
-                null -> SessionResult(SessionError.ERROR_NOT_SUPPORTED)
+                null -> when (ButtonCommand.fromCustomAction(customCommand.customAction)) {
+                    ButtonCommand.SHUFFLE_OFF_TO_ON -> {
+                        player.shuffleModeEnabled = true
+                        SessionResult(SessionResult.RESULT_SUCCESS)
+                    }
+
+                    ButtonCommand.SHUFFLE_ON_TO_OFF -> {
+                        player.shuffleModeEnabled = false
+                        SessionResult(SessionResult.RESULT_SUCCESS)
+                    }
+
+                    ButtonCommand.REPEAT_OFF_TO_ALL -> {
+                        player.repeatMode = Player.REPEAT_MODE_ALL
+                        SessionResult(SessionResult.RESULT_SUCCESS)
+                    }
+
+                    ButtonCommand.REPEAT_ALL_TO_ONE -> {
+                        player.repeatMode = Player.REPEAT_MODE_ONE
+                        SessionResult(SessionResult.RESULT_SUCCESS)
+                    }
+
+                    ButtonCommand.REPEAT_ONE_TO_OFF -> {
+                        player.repeatMode = Player.REPEAT_MODE_OFF
+                        SessionResult(SessionResult.RESULT_SUCCESS)
+                    }
+
+                    null -> SessionResult(SessionError.ERROR_NOT_SUPPORTED)
+                }
             }
         }
     }
@@ -349,6 +452,7 @@ class PlaybackService : MediaLibraryService(), LifecycleOwner {
         )
             .setBitmapLoader(CoilBitmapLoader(this, lifecycleScope))
             .setSessionActivity(getSingleTopActivity())
+            .setCustomLayout(getCustomLayout())
             .build()
 
         setMediaNotificationProvider(
@@ -390,6 +494,15 @@ class PlaybackService : MediaLibraryService(), LifecycleOwner {
                     lifecycleScope.launch {
                         NowPlayingAppWidgetProvider.update(this@PlaybackService)
                     }
+                }
+
+                // Update the shuffle and repeat buttons
+                if (events.containsAny(
+                        Player.EVENT_REPEAT_MODE_CHANGED,
+                        Player.EVENT_SHUFFLE_MODE_ENABLED_CHANGED
+                    )
+                ) {
+                    mediaLibrarySession.setCustomLayout(getCustomLayout())
                 }
             }
         }
@@ -457,5 +570,10 @@ class PlaybackService : MediaLibraryService(), LifecycleOwner {
             putExtra(MainActivity.EXTRA_OPEN_NOW_PLAYING, true)
         },
         PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
+    )
+
+    private fun getCustomLayout() = listOf(
+        ButtonCommand.getShuffleModeButton(player.shuffleModeEnabled).commandButton(resources),
+        ButtonCommand.getRepeatModeButton(player.repeatMode).commandButton(resources),
     )
 }
