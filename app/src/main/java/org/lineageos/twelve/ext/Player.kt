@@ -160,12 +160,20 @@ fun Player.tracksFlow() = conflatedCallbackFlow {
 fun Player.queueFlow() = conflatedCallbackFlow {
     val emitQueue = {
         val currentMediaItemIndex = currentMediaItemIndex
+        val currentTimeline = currentTimeline
 
-        trySend(
-            mediaItems.mapIndexed { index, mediaItem ->
-                QueueItem(mediaItem, index == currentMediaItemIndex)
+        val queue = buildList {
+            if (currentTimeline.isEmpty) {
+                return@buildList
             }
-        )
+
+            for (index in 0 until currentTimeline.windowCount) {
+                val mediaItem = currentTimeline.getWindow(index, Timeline.Window()).mediaItem
+                add(QueueItem(mediaItem, index == currentMediaItemIndex))
+            }
+        }
+
+        trySend(queue)
     }
 
     val listener = object : Player.Listener {
