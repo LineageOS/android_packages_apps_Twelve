@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bfbf6ca9_6ec1106b",
+        "filename": "app/src/main/java/org/lineageos/twelve/datasources/JellyfinDataSource.kt",
+        "patchSetId": 10
+      },
+      "lineNbr": 376,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2025-02-17T22:08:03Z",
+      "side": 1,
+      "message": "shouldn\u0027t we do start..(start + start[i+1]-start[i])\nI think current line would last until next line (ignoring edge cases)",
+      "revId": "da8a1496ac12707adea2879ee04c81a98304229d",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
