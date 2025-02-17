@@ -92,6 +92,7 @@ class NowPlayingFragment : Fragment(R.layout.fragment_now_playing) {
     private val queueMaterialButton by getViewProperty<MaterialButton>(R.id.queueMaterialButton)
     private val repeatMarkerImageView by getViewProperty<ImageView>(R.id.repeatMarkerImageView)
     private val repeatMaterialButton by getViewProperty<MaterialButton>(R.id.repeatMaterialButton)
+    private val showLyricsMaterialButton by getViewProperty<MaterialButton>(R.id.showLyricsMaterialButton)
     private val shuffleMarkerImageView by getViewProperty<ImageView>(R.id.shuffleMarkerImageView)
     private val shuffleMaterialButton by getViewProperty<MaterialButton>(R.id.shuffleMaterialButton)
     private val toolbar by getViewProperty<MaterialToolbar>(R.id.toolbar)
@@ -272,6 +273,11 @@ class NowPlayingFragment : Fragment(R.layout.fragment_now_playing) {
 
         queueMaterialButton.setOnClickListener {
             findNavController().navigateSafe(R.id.action_nowPlayingFragment_to_fragment_queue)
+        }
+
+        // Lyrics
+        showLyricsMaterialButton.setOnClickListener {
+            findNavController().navigateSafe(R.id.action_nowPlayingFragment_to_fragment_lyrics)
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
