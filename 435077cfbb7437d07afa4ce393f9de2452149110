@@ -18,6 +18,24 @@
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "fca6c6d1_65a4d3b9",
+        "filename": "app/src/main/java/org/lineageos/twelve/services/PlaybackService.kt",
+        "patchSetId": 9
+      },
+      "lineNbr": 99,
+      "author": {
+        "id": 25732
+      },
+      "writtenOn": "2025-02-17T21:35:04Z",
+      "side": 1,
+      "message": "Done: I\u0027ve merged both enum classes",
+      "parentUuid": "48e91305_31766ae0",
+      "revId": "435077cfbb7437d07afa4ce393f9de2452149110",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "53fe268b_dfa20c86",
@@ -31,6 +49,24 @@
       "writtenOn": "2025-02-17T21:23:53Z",
       "side": 1,
       "message": "can we make it non-null?\nwe know it won\u0027t ever be null",
+      "revId": "435077cfbb7437d07afa4ce393f9de2452149110",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "87f60b67_b3ca7ec7",
+        "filename": "app/src/main/java/org/lineageos/twelve/services/PlaybackService.kt",
+        "patchSetId": 9
+      },
+      "lineNbr": 156,
+      "author": {
+        "id": 25732
+      },
+      "writtenOn": "2025-02-17T21:35:04Z",
+      "side": 1,
+      "message": "Acknowledged",
+      "parentUuid": "53fe268b_dfa20c86",
       "revId": "435077cfbb7437d07afa4ce393f9de2452149110",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
