@@ -26,9 +26,7 @@ import androidx.core.view.isVisible
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.media3.common.Player
@@ -108,52 +106,7 @@ class NowPlayingFragment : Fragment(R.layout.fragment_now_playing) {
     // Visualizer
     private val visualizerManager = NierVisualizerManager()
     private val visualizerNVDataSource by lazy { VisualizerNVDataSource() }
-    private val visualizerViewLifecycleObserver = object : DefaultLifecycleObserver {
-        private var isVisualizerStarted = false
-
-        override fun onCreate(owner: LifecycleOwner) {
-            visualizerManager.init(visualizerNVDataSource)
-
-            owner.lifecycleScope.launch {
-                owner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                    viewModel.currentVisualizerType.collectLatest { currentVisualizerType ->
-                        currentVisualizerType.factory.invoke()?.let {
-                            visualizerManager.start(visualizerSurfaceView, it)
-                            isVisualizerStarted = true
-                        } ?: run {
-                            if (isVisualizerStarted) {
-                                visualizerManager.stop()
-                                isVisualizerStarted = false
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        override fun onResume(owner: LifecycleOwner) {
-            if (isVisualizerStarted) {
-                visualizerManager.resume()
-            }
-        }
-
-        override fun onPause(owner: LifecycleOwner) {
-            if (isVisualizerStarted) {
-                visualizerManager.pause()
-            }
-        }
-
-        override fun onStop(owner: LifecycleOwner) {
-            if (isVisualizerStarted) {
-                visualizerManager.stop()
-            }
-            isVisualizerStarted = false
-        }
-
-        override fun onDestroy(owner: LifecycleOwner) {
-            visualizerManager.release()
-        }
-    }
+    private var isVisualizerStarted = false
 
     // Permissions
     private val visualizerPermissionsChecker = PermissionsChecker(
@@ -162,6 +115,26 @@ class NowPlayingFragment : Fragment(R.layout.fragment_now_playing) {
         true,
         R.string.visualizer_permissions_toast,
     )
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        visualizerManager.init(visualizerNVDataSource)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (isVisualizerStarted) {
+            visualizerManager.resume()
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        if (isVisualizerStarted) {
+            visualizerManager.pause()
+        }
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -217,8 +190,6 @@ class NowPlayingFragment : Fragment(R.layout.fragment_now_playing) {
         // Visualizer
         visualizerSurfaceView.setZOrderOnTop(true)
         visualizerSurfaceView.holder.setFormat(PixelFormat.TRANSPARENT)
-
-        viewLifecycleOwner.lifecycle.addObserver(visualizerViewLifecycleObserver)
 
         // Audio information
         audioTitleTextView.isSelected = true
@@ -505,12 +476,30 @@ class NowPlayingFragment : Fragment(R.layout.fragment_now_playing) {
                 }
 
                 launch {
-                    viewModel.isVisualizerEnabled.collectLatest {
-                        visualizerSurfaceView.isVisible = it
+                    viewModel.isVisualizerEnabled.collectLatest { enable ->
+                        visualizerSurfaceView.isVisible = enable
 
-                        if (it) {
-                            visualizerPermissionsChecker.withPermissionsGranted {
+                        if (!enable) {
+                            return@collectLatest
+                        }
+
+                        visualizerPermissionsChecker.withPermissionsGranted {
+                            launch {
                                 visualizerNVDataSource.workFlow.collect()
+                            }
+
+                            launch {
+                                viewModel.currentVisualizerType.collectLatest { type ->
+                                    type.factory.invoke()?.let {
+                                        visualizerManager.start(visualizerSurfaceView, it)
+                                        isVisualizerStarted = true
+                                    } ?: run {
+                                        if (isVisualizerStarted) {
+                                            visualizerManager.stop()
+                                            isVisualizerStarted = false
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
@@ -523,7 +512,18 @@ class NowPlayingFragment : Fragment(R.layout.fragment_now_playing) {
         animator?.cancel()
         animator = null
 
+        if (isVisualizerStarted) {
+            visualizerManager.stop()
+        }
+        isVisualizerStarted = false
+
         super.onDestroyView()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        visualizerManager.release()
     }
 
     companion object {
