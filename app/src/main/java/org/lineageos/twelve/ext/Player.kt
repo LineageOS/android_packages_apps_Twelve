@@ -157,13 +157,41 @@ fun Player.tracksFlow() = conflatedCallbackFlow {
     }
 }
 
+fun Player.mediaItemsShuffled(): Pair<Int, List<MediaItem>> {
+    val currentMediaItemIndex = currentMediaItemIndex
+
+    var index = currentTimeline.getFirstWindowIndex(shuffleModeEnabled).takeIf {
+        it != C.INDEX_UNSET
+    } ?: return currentMediaItemIndex to mediaItems
+
+    val mediaItems = mutableListOf<MediaItem>()
+    var newIndex = 0
+
+    repeat(currentTimeline.windowCount) { i ->
+        if (index == currentMediaItemIndex) {
+            newIndex = i
+        }
+        mediaItems.add(getMediaItemAt(index))
+
+        index = currentTimeline.getNextWindowIndex(
+            index,
+            Player.REPEAT_MODE_OFF,
+            shuffleModeEnabled
+        )
+    }
+
+    return newIndex to mediaItems
+}
+
 fun Player.queueFlow() = conflatedCallbackFlow {
     val emitQueue = {
-        val currentMediaItemIndex = currentMediaItemIndex
-
+        val (currentIndex, mediaItems) = mediaItemsShuffled()
         trySend(
             mediaItems.mapIndexed { index, mediaItem ->
-                QueueItem(mediaItem, index == currentMediaItemIndex)
+                QueueItem(
+                    mediaItem = mediaItem,
+                    isCurrent = index == currentIndex
+                )
             }
         )
     }
@@ -174,6 +202,10 @@ fun Player.queueFlow() = conflatedCallbackFlow {
         }
 
         override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
+            emitQueue()
+        }
+
+        override fun onShuffleModeEnabledChanged(shuffleModeEnabled: Boolean) {
             emitQueue()
         }
     }
