@@ -16,6 +16,24 @@
       "message": "Is it safe to merge this? Currently -bg crashes...\nThey would be overridden by the next merge but we fixed these",
       "revId": "d38f574c545ab288d558d3a98471866b9b1388f7",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f0992f66_2b2e7dda",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 4550
+      },
+      "writtenOn": "2025-02-17T20:33:18Z",
+      "side": 1,
+      "message": "It is safe to merge, we just avoid merging translation changes in general because they are overriden in the next sync.",
+      "parentUuid": "76001718_46f04ad8",
+      "revId": "d38f574c545ab288d558d3a98471866b9b1388f7",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
