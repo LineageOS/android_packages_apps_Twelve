@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "588542f5_cd6cb02b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2025-02-18T09:34:11Z",
+      "side": 1,
+      "message": "I don\u0027t really like it, and we should still take care of insets, currently we probably only use systemBars as baseline, but rounded corners insets aren\u0027t used to the buttons are partially hidden",
+      "revId": "1fb463e5502642787573ed2868aefdbb82080c57",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
