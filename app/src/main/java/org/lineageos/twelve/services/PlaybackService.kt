@@ -423,6 +423,7 @@ class PlaybackService : MediaLibraryService(), LifecycleOwner {
             .build().apply {
                 setOffloadEnabled(sharedPreferences.enableOffload)
                 audioSessionId = this@PlaybackService.audioSessionId
+                setShuffleOrder(TwelveShuffleOrder(0, 0))
             }
 
         openAudioEffectSession()
