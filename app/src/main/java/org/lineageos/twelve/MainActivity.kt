@@ -33,6 +33,7 @@ import kotlinx.coroutines.launch
 import org.lineageos.twelve.ext.navigateSafe
 import org.lineageos.twelve.ext.slideDown
 import org.lineageos.twelve.ext.slideUp
+import org.lineageos.twelve.ext.updateBarsVisibility
 import org.lineageos.twelve.fragments.AlbumFragment
 import org.lineageos.twelve.fragments.ArtistFragment
 import org.lineageos.twelve.fragments.GenreFragment
@@ -40,12 +41,14 @@ import org.lineageos.twelve.fragments.PlaylistFragment
 import org.lineageos.twelve.models.MediaType
 import org.lineageos.twelve.models.Result
 import org.lineageos.twelve.ui.views.NowPlayingBar
+import org.lineageos.twelve.viewmodels.FullscreenViewModel
 import org.lineageos.twelve.viewmodels.IntentsViewModel
 import org.lineageos.twelve.viewmodels.NowPlayingViewModel
 import kotlin.reflect.cast
 
 class MainActivity : AppCompatActivity(R.layout.activity_main) {
     // View models
+    private val fullscreenViewModel by viewModels<FullscreenViewModel>()
     private val intentsViewModel by viewModels<IntentsViewModel>()
     private val nowPlayingViewModel by viewModels<NowPlayingViewModel>()
 
@@ -130,6 +133,12 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
     }
 
     private fun CoroutineScope.loadData() {
+        launch {
+            fullscreenViewModel.fullscreenMode.collectLatest {
+                window.updateBarsVisibility(systemBars = !it)
+            }
+        }
+
         launch {
             intentsViewModel.parsedIntent.collectLatest { parsedIntent ->
                 parsedIntent?.handle {

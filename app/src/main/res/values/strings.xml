@@ -196,6 +196,8 @@
     <string name="experimental_header">Experimental</string>
 
     <!-- General preferences -->
+    <string name="fullscreen_mode">Fullscreen mode</string>
+    <string name="fullscreen_mode_summary">Enable fullscreen mode. This will hide the navigation bar and status bar, but will still make sure that no touchable content overlaps with display cutouts</string>
     <string name="enable_offload">Enable offload</string>
     <string name="enable_offload_summary">Use the offload audio path for audio playback. Disabling this may increase power usage but can be useful if you experience issues with audio playback or post processing</string>
     <string name="enable_float_output">Enable 32-bit floating point output</string>
