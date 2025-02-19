@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a1134a63_47368308",
+        "filename": "app/src/main/java/org/lineageos/twelve/models/Lyrics.kt",
+        "patchSetId": 4
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2025-02-19T21:16:31Z",
+      "side": 1,
+      "message": "ditto, inline",
+      "range": {
+        "startLine": 34,
+        "startChar": 0,
+        "endLine": 37,
+        "endChar": 13
+      },
+      "revId": "84e257e54ff67e065f5a288f2072bced35806cdb",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4883ed8f_77559819",
+        "filename": "app/src/main/java/org/lineageos/twelve/models/Lyrics.kt",
+        "patchSetId": 4
+      },
+      "lineNbr": 89,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2025-02-19T21:16:31Z",
+      "side": 1,
+      "message": "I\u0027m all for \u003d methods, but this is really annoying to read.\nI think this is much cleaner to understand.\n\n```suggestion\n        fun build(): Lyrics {\n            val sortedLines \u003d lines.sortedBy { it.startMs }\n            val finalLines \u003d sortedLines.mapIndexed { index, entry -\u003e\n                val endMs \u003d when {\n                    entry.endMs !\u003d null -\u003e entry.endMs\n                    entry.startMs !\u003d null \u0026\u0026 index \u003c sortedLines.size - 1 -\u003e {\n                        sortedLines.drop(index + 1)\n                            .firstNotNullOfOrNull { it.startMs } ?: entry.startMs\n                    }\n\n                    else -\u003e entry.startMs\n                }\n\n                Line(\n                    text \u003d entry.text,\n                    durationMs \u003d entry.startMs?.let { it..(endMs ?: it) }\n                )\n            }\n\n            return Lyrics(finalLines)\n        }\n```\n\nshould be more or less equivalent, by dropping we remove the useless startMs \u003e it check as (I think) it\u0027s safe to assume after the current index it\u0027ll always be true?",
+      "range": {
+        "startLine": 75,
+        "startChar": 0,
+        "endLine": 89,
+        "endChar": 9
+      },
+      "revId": "84e257e54ff67e065f5a288f2072bced35806cdb",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "484f8523_352075a5",
+        "filename": "app/src/main/java/org/lineageos/twelve/models/Lyrics.kt",
+        "patchSetId": 4
+      },
+      "lineNbr": 95,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2025-02-19T21:16:31Z",
+      "side": 1,
+      "message": "you use this once, inline it.",
+      "range": {
+        "startLine": 91,
+        "startChar": 0,
+        "endLine": 95,
+        "endChar": 9
+      },
+      "revId": "84e257e54ff67e065f5a288f2072bced35806cdb",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
