@@ -251,10 +251,18 @@ class MediaRepositoryTree(
     /**
      * Given a list of media items, gets an equivalent list of items that can be passed to the
      * player. This should be used with onAddMediaItems and onSetMediaItems.
-     * TODO: [MediaItem.requestMetadata] support.
      */
-    suspend fun resolveMediaItems(mediaItems: List<MediaItem>) = mediaItems.mapNotNull {
-        it.takeIf { it.localConfiguration?.uri != null } ?: getItem(it.mediaId)
+    suspend fun resolveMediaItems(mediaItems: List<MediaItem>) = buildList {
+        mediaItems.forEach { item ->
+            val searchQuery = item.requestMetadata.searchQuery
+            when {
+                searchQuery != null -> addAll(search(searchQuery))
+                item.localConfiguration?.uri != null -> add(item)
+                else -> getItem(item.mediaId)?.let { mediaItem ->
+                    add(mediaItem)
+                }
+            }
+        }
     }
 
     /**
