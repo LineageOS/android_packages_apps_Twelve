@@ -97,6 +97,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "531fdf2c_759a8f27",
+        "filename": "app/src/main/java/org/lineageos/twelve/models/Lyrics.kt",
+        "patchSetId": 4
+      },
+      "lineNbr": 89,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2025-02-20T08:35:39Z",
+      "side": 1,
+      "message": "your method is n^2, for every item you traverse the list, up to the last item where you go n deep starting from 1... (assuming all startMs are not null) (if null it\u0027s plain n+n+n+n...)\n\nwe can use a slice that is a view of the original list instead, so no memory or real \"processing\" is done\n\nsortedLines.slice(index + 1 until sortedLines.size)\nThis is O(n) as for each item you search in its \u003eneighbourhood with worst case O(n-index) in case of null, but it should be close to never (and would be n+n-1+...+1)",
+      "parentUuid": "513216a2_b3e41a31",
+      "range": {
+        "startLine": 75,
+        "startChar": 0,
+        "endLine": 89,
+        "endChar": 9
+      },
+      "revId": "84e257e54ff67e065f5a288f2072bced35806cdb",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "484f8523_352075a5",
         "filename": "app/src/main/java/org/lineageos/twelve/models/Lyrics.kt",
         "patchSetId": 4
