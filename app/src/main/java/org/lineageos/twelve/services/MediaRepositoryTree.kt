@@ -7,6 +7,7 @@ package org.lineageos.twelve.services
 
 import android.content.Context
 import android.net.Uri
+import android.util.Log
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
 import kotlinx.coroutines.flow.Flow
@@ -321,6 +322,8 @@ class MediaRepositoryTree(
     }
 
     companion object {
+        private val LOG_TAG = MediaRepositoryTree::class.java.simpleName
+
         // Root ID
         private const val ROOT_MEDIA_ITEM_ID = "[root]"
 
@@ -343,7 +346,9 @@ class MediaRepositoryTree(
 
         /**
          * Converts a flow of [RequestStatus] to a one-shot result of [T].
-         * Raises an exception on error.
+         * On loading, returns null.
+         * On success, returns the data.
+         * On error, logs the exception and returns null.
          */
         private suspend fun <T, E> Flow<RequestStatus<T, E>>.toOneShotResult() = mapNotNull {
             when (it) {
@@ -355,9 +360,10 @@ class MediaRepositoryTree(
                     it.data
                 }
 
-                is RequestStatus.Error -> throw Exception(
-                    "Error while loading data, ${it.error}"
-                )
+                is RequestStatus.Error -> {
+                    Log.e(LOG_TAG, "Failed to get data", it.throwable)
+                    null
+                }
             }
         }.first()
     }
