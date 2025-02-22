@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c2b45dd9_bad46ff4",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 25732
+      },
+      "writtenOn": "2025-02-22T01:57:50Z",
+      "side": 1,
+      "message": "...`drop()` makes a new list from what I can see, lmk if you wanna finish implementing this",
+      "revId": "738f9c5905067fa633a94cc62e2df31e881aa91b",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
