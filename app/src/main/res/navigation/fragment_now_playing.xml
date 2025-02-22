@@ -9,9 +9,9 @@
     android:id="@+id/fragment_now_playing"
     app:startDestination="@id/nowPlayingFragment">
 
-    <fragment
+    <dialog
         android:id="@+id/nowPlayingFragment"
-        android:name="org.lineageos.twelve.fragments.NowPlayingFragment"
+        android:name="org.lineageos.twelve.fragments.NowPlayingBottomSheetDialogFragment"
         tools:layout="@layout/fragment_now_playing">
 
         <action
@@ -54,6 +54,6 @@
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
 
-    </fragment>
+    </dialog>
 
 </navigation>

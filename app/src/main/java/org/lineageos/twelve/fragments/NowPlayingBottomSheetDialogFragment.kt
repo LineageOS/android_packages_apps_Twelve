@@ -25,7 +25,6 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import androidx.core.widget.NestedScrollView
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -33,6 +32,8 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.media3.common.Player
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.appbar.MaterialToolbar
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.progressindicator.LinearProgressIndicator
@@ -50,6 +51,7 @@ import org.lineageos.twelve.models.MediaType
 import org.lineageos.twelve.models.PlaybackState
 import org.lineageos.twelve.models.RepeatMode
 import org.lineageos.twelve.models.RequestStatus
+import org.lineageos.twelve.ui.views.NowPlayingBar
 import org.lineageos.twelve.ui.visualizer.VisualizerNVDataSource
 import org.lineageos.twelve.utils.PermissionsChecker
 import org.lineageos.twelve.utils.PermissionsUtils
@@ -60,13 +62,20 @@ import kotlin.math.roundToLong
 import kotlin.reflect.safeCast
 
 /**
- * Now playing fragment.
+ * Now playing bottom sheet dialog fragment.
  */
-class NowPlayingFragment : Fragment(R.layout.fragment_now_playing) {
+class NowPlayingBottomSheetDialogFragment : BottomSheetDialogFragment(
+    R.layout.fragment_now_playing
+) {
     // View models
     private val viewModel by viewModels<NowPlayingViewModel>()
 
-    // Views
+    // Mini player views
+    private val miniPlayerLayout by getViewProperty<ConstraintLayout>(R.id.miniPlayerLayout)
+    private val nowPlayingBar by getViewProperty<NowPlayingBar>(R.id.nowPlayingBar)
+
+    // Full player views
+    private val fullPlayerLayout by getViewProperty<ConstraintLayout>(R.id.fullPlayerLayout)
     private val albumArtConstraintLayout by getViewProperty<ConstraintLayout?>(R.id.albumArtConstraintLayout)
     private val albumArtImageView by getViewProperty<ImageView>(R.id.albumArtImageView)
     private val albumTitleTextView by getViewProperty<TextView>(R.id.albumTitleTextView)
@@ -99,6 +108,9 @@ class NowPlayingFragment : Fragment(R.layout.fragment_now_playing) {
     private val visualizerMaterialButton by getViewProperty<MaterialButton>(R.id.visualizerMaterialButton)
     private val visualizerSurfaceView by getViewProperty<SurfaceView>(R.id.visualizerSurfaceView)
 
+    // Sheet state
+    private var lastState = BottomSheetBehavior.STATE_COLLAPSED
+
     // Progress slider state
     private var isProgressSliderDragging = false
     private var animator: ValueAnimator? = null
@@ -128,9 +140,66 @@ class NowPlayingFragment : Fragment(R.layout.fragment_now_playing) {
         visualizerManager.init(visualizerNVDataSource)
     }
 
+    private fun updateViewVisibility(isExpanded: Boolean) {
+        miniPlayerLayout.isVisible = !isExpanded
+        fullPlayerLayout.isVisible = isExpanded
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setupBottomSheet()
+        setupPlayerControls()
+    }
+
+    private fun setupBottomSheet() {
+        val bottomSheetBehavior = BottomSheetBehavior.from(view?.parent as View)
+
+        // Set up initial state and behavior
+        bottomSheetBehavior.apply {
+            state = BottomSheetBehavior.STATE_COLLAPSED
+            isDraggable = true
+            peekHeight = resources.getDimensionPixelSize(R.dimen.mini_player_height)
+        }
+
+        // Handle view transitions between mini and full player
+        bottomSheetBehavior.addBottomSheetCallback(object :
+            BottomSheetBehavior.BottomSheetCallback() {
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+                when (newState) {
+                    BottomSheetBehavior.STATE_EXPANDED -> {
+                        updateViewVisibility(isExpanded = true)
+                        lastState = newState
+                    }
+
+                    BottomSheetBehavior.STATE_COLLAPSED -> {
+                        updateViewVisibility(isExpanded = false)
+                        lastState = newState
+                    }
+
+                    else -> {}
+                }
+            }
+
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {
+                // Animate between mini and full player
+                miniPlayerLayout.alpha = 1 - slideOffset
+                fullPlayerLayout.alpha = slideOffset
+            }
+        })
+
+        // Make mini player clickable to expand
+        miniPlayerLayout.setOnClickListener {
+            bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+        }
+
+        // Now playing bar
+        nowPlayingBar.setOnPlayPauseClickListener {
+            viewModel.togglePlayPause()
+        }
+    }
+
+    private fun setupPlayerControls() {
         // Insets
         ViewCompat.setOnApplyWindowInsetsListener(toolbar) { v, windowInsets ->
             val insets = windowInsets.getInsets(WindowInsetsCompat.Type.displayCutout())
@@ -537,6 +606,48 @@ class NowPlayingFragment : Fragment(R.layout.fragment_now_playing) {
                         }
                     }
                 }
+
+                launch {
+                    viewModel.durationCurrentPositionMs.collectLatest {
+                        nowPlayingBar.updateDurationCurrentPositionMs(it.first, it.second)
+                    }
+                }
+
+                launch {
+                    viewModel.isPlaying.collectLatest {
+                        nowPlayingBar.updateIsPlaying(it)
+                    }
+                }
+
+                launch {
+                    viewModel.mediaItem.collectLatest {
+                        nowPlayingBar.updateMediaItem(it)
+                    }
+                }
+
+                launch {
+                    viewModel.mediaMetadata.collectLatest {
+                        nowPlayingBar.updateMediaMetadata(it)
+                    }
+                }
+
+                launch {
+                    viewModel.mediaArtwork.collectLatest {
+                        when (it) {
+                            is RequestStatus.Loading -> {
+                                // Do nothing
+                            }
+
+                            is RequestStatus.Success -> {
+                                nowPlayingBar.updateMediaArtwork(it.data)
+                            }
+
+                            is RequestStatus.Error -> throw Exception(
+                                "Error while getting media artwork"
+                            )
+                        }
+                    }
+                }
             }
         }
     }
@@ -575,7 +686,7 @@ class NowPlayingFragment : Fragment(R.layout.fragment_now_playing) {
     }
 
     companion object {
-        private val LOG_TAG = NowPlayingFragment::class.simpleName!!
+        private val LOG_TAG = NowPlayingBottomSheetDialogFragment::class.simpleName!!
 
         private val decimalFormatSymbols = DecimalFormatSymbols(Locale.ROOT)
 
