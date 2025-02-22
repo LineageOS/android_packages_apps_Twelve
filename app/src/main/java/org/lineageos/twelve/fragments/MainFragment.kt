@@ -70,7 +70,6 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
     // Views
     private val navigationBarView by getViewProperty<NavigationBarView>(R.id.navigationBarView)
-    private val nowPlayingBar by getViewProperty<NowPlayingBar>(R.id.nowPlayingBar)
     private val providerMaterialButton by getViewProperty<MaterialButton>(R.id.providerMaterialButton)
     private val searchLinearProgressIndicator by getViewProperty<LinearProgressIndicator>(R.id.searchLinearProgressIndicator)
     private val searchNoElementsLinearLayout by getViewProperty<LinearLayout>(R.id.searchNoElementsLinearLayout)
@@ -351,15 +350,6 @@ class MainFragment : Fragment(R.layout.fragment_main) {
             }
         }
 
-        // Now playing bar
-        nowPlayingBar.setOnPlayPauseClickListener {
-            viewModel.togglePlayPause()
-        }
-
-        nowPlayingBar.setOnNowPlayingClickListener {
-            findNavController().navigateSafe(R.id.action_mainFragment_to_fragment_now_playing)
-        }
-
         // Search
         searchRecyclerView.adapter = searchAdapter
 
@@ -383,48 +373,6 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                         } ?: run {
                             providerMaterialButton.setText(R.string.no_provider)
                             providerMaterialButton.setIconResource(R.drawable.ic_warning)
-                        }
-                    }
-                }
-
-                launch {
-                    viewModel.durationCurrentPositionMs.collectLatest {
-                        nowPlayingBar.updateDurationCurrentPositionMs(it.first, it.second)
-                    }
-                }
-
-                launch {
-                    viewModel.isPlaying.collectLatest {
-                        nowPlayingBar.updateIsPlaying(it)
-                    }
-                }
-
-                launch {
-                    viewModel.mediaItem.collectLatest {
-                        nowPlayingBar.updateMediaItem(it)
-                    }
-                }
-
-                launch {
-                    viewModel.mediaMetadata.collectLatest {
-                        nowPlayingBar.updateMediaMetadata(it)
-                    }
-                }
-
-                launch {
-                    viewModel.mediaArtwork.collectLatest {
-                        when (it) {
-                            is RequestStatus.Loading -> {
-                                // Do nothing
-                            }
-
-                            is RequestStatus.Success -> {
-                                nowPlayingBar.updateMediaArtwork(it.data)
-                            }
-
-                            is RequestStatus.Error -> throw Exception(
-                                "Error while getting media artwork"
-                            )
                         }
                     }
                 }
