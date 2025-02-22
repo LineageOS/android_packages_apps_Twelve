@@ -145,6 +145,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "b122c7d5_78a81d8f",
+        "filename": "app/src/main/java/org/lineageos/twelve/models/Lyrics.kt",
+        "patchSetId": 4
+      },
+      "lineNbr": 89,
+      "author": {
+        "id": 25732
+      },
+      "writtenOn": "2025-02-22T01:57:07Z",
+      "side": 1,
+      "message": "Current one might be the best, sorted sub-set is backed by original Java sorted set",
+      "parentUuid": "bfc73691_87874cc4",
+      "range": {
+        "startLine": 75,
+        "startChar": 0,
+        "endLine": 89,
+        "endChar": 9
+      },
+      "revId": "84e257e54ff67e065f5a288f2072bced35806cdb",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "484f8523_352075a5",
         "filename": "app/src/main/java/org/lineageos/twelve/models/Lyrics.kt",
         "patchSetId": 4
