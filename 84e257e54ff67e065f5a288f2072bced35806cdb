@@ -167,6 +167,30 @@
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "fff60b52_03aa4963",
+        "filename": "app/src/main/java/org/lineageos/twelve/models/Lyrics.kt",
+        "patchSetId": 4
+      },
+      "lineNbr": 89,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2025-02-22T13:07:44Z",
+      "side": 1,
+      "message": "Acknowledged",
+      "parentUuid": "b122c7d5_78a81d8f",
+      "range": {
+        "startLine": 75,
+        "startChar": 0,
+        "endLine": 89,
+        "endChar": 9
+      },
+      "revId": "84e257e54ff67e065f5a288f2072bced35806cdb",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "484f8523_352075a5",
