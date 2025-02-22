@@ -5,6 +5,8 @@
 
 package org.lineageos.twelve.models
 
+import org.lineageos.twelve.ext.dropAsView
+
 /**
  * Lyrics.
  *
@@ -75,15 +77,15 @@ data class Lyrics(
          */
         fun build() = Lyrics(
             lines = lines.sortedBy { it.startMs }.let { sortedLines ->
-                val startDurations = sortedLines.mapNotNull { it.startMs }.toSortedSet()
-
-                sortedLines.map { line ->
+                sortedLines.mapIndexed { i, line ->
                     val endMs = when {
                         line.endMs != null -> line.endMs
 
-                        line.startMs != null -> startDurations
-                            .tailSet(line.startMs + 1L)
-                            .firstOrNull()?.minus(1L)
+                        line.startMs != null -> sortedLines
+                            .dropAsView(i + 1)
+                            .firstNotNullOfOrNull { nextLine ->
+                                nextLine.startMs?.takeIf { it > line.startMs }
+                            }?.minus(1L)
 
                         else -> null
                     }
