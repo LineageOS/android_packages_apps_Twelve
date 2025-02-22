@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c6c5fa15_c3d8c6c3",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2025-02-22T18:56:14Z",
+      "side": 1,
+      "message": "For this to work properly the fragment needs to die.\nThe layout shall be included in the Main fragment as a persistent sheet and we\u0027d need to move all the code there (with similar behaviour handling as the now playing fragment)\nIt\u0027s probably lots of work to get it working properly with action bar and all, but definitely better looking :)",
+      "revId": "1eade39a18b705af53904a896368ab40914f75d7",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
