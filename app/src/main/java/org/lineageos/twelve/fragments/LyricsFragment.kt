@@ -29,12 +29,12 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.lineageos.twelve.R
 import org.lineageos.twelve.ext.getViewProperty
-import org.lineageos.twelve.ext.updateMargin
 import org.lineageos.twelve.ext.updatePadding
 import org.lineageos.twelve.models.Lyrics
 import org.lineageos.twelve.models.RequestStatus
 import org.lineageos.twelve.ui.recyclerview.CenterSmoothScroller
 import org.lineageos.twelve.ui.recyclerview.SimpleListAdapter
+import org.lineageos.twelve.ui.views.NowPlayingBar
 import org.lineageos.twelve.viewmodels.LyricsViewModel
 import org.lineageos.twelve.viewmodels.NowPlayingViewModel
 
@@ -52,6 +52,7 @@ class LyricsFragment : Fragment(R.layout.fragment_lyrics) {
         R.id.followCurrentLineExtendedFloatingActionButton
     )
     private val noElementsNestedScrollView by getViewProperty<NestedScrollView>(R.id.noElementsNestedScrollView)
+    private val nowPlayingBar by getViewProperty<NowPlayingBar>(R.id.nowPlayingBar)
     private val recyclerView by getViewProperty<RecyclerView>(R.id.recyclerView)
     private val toolbar by getViewProperty<MaterialToolbar>(R.id.toolbar)
 
@@ -104,35 +105,30 @@ class LyricsFragment : Fragment(R.layout.fragment_lyrics) {
         }
 
         ViewCompat.setOnApplyWindowInsetsListener(recyclerView) { v, windowInsets ->
-            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+            val insets = windowInsets.getInsets(
+                WindowInsetsCompat.Type.systemBars() or WindowInsetsCompat.Type.displayCutout()
+            )
 
             v.updatePadding(
                 insets,
-                bottom = true,
+                start = true,
+                top = true,
+                end = true,
             )
 
             windowInsets
         }
 
         ViewCompat.setOnApplyWindowInsetsListener(noElementsNestedScrollView) { v, windowInsets ->
-            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.displayCutout())
+            val insets = windowInsets.getInsets(
+                WindowInsetsCompat.Type.systemBars() or WindowInsetsCompat.Type.displayCutout()
+            )
 
             v.updatePadding(
                 insets,
-                bottom = true,
-            )
-
-            windowInsets
-        }
-
-        ViewCompat.setOnApplyWindowInsetsListener(
-            followCurrentLineExtendedFloatingActionButton
-        ) { v, windowInsets ->
-            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
-
-            v.updateMargin(
-                insets,
-                bottom = true,
+                start = true,
+                top = true,
+                end = true,
             )
 
             windowInsets
@@ -142,6 +138,14 @@ class LyricsFragment : Fragment(R.layout.fragment_lyrics) {
 
         recyclerView.adapter = adapter
         recyclerView.addOnScrollListener(scrollListener)
+
+        nowPlayingBar.setOnPlayPauseClickListener {
+            viewModel.togglePlayPause()
+        }
+
+        nowPlayingBar.setOnNowPlayingClickListener {
+            findNavController().navigateUp()
+        }
 
         followCurrentLineExtendedFloatingActionButton.setOnClickListener {
             viewModel.setPositionSynced(true)
@@ -206,6 +210,48 @@ class LyricsFragment : Fragment(R.layout.fragment_lyrics) {
         launch {
             viewModel.positionSynced.collectLatest {
                 followCurrentLineExtendedFloatingActionButton.isVisible = !it
+            }
+        }
+
+        launch {
+            viewModel.durationCurrentPositionMs.collectLatest {
+                nowPlayingBar.updateDurationCurrentPositionMs(it.first, it.second)
+            }
+        }
+
+        launch {
+            viewModel.isPlaying.collectLatest {
+                nowPlayingBar.updateIsPlaying(it)
+            }
+        }
+
+        launch {
+            viewModel.mediaItem.collectLatest {
+                nowPlayingBar.updateMediaItem(it)
+            }
+        }
+
+        launch {
+            viewModel.mediaMetadata.collectLatest {
+                nowPlayingBar.updateMediaMetadata(it)
+            }
+        }
+
+        launch {
+            viewModel.mediaArtwork.collectLatest {
+                when (it) {
+                    is RequestStatus.Loading -> {
+                        // Do nothing
+                    }
+
+                    is RequestStatus.Success -> {
+                        nowPlayingBar.updateMediaArtwork(it.data)
+                    }
+
+                    is RequestStatus.Error -> throw Exception(
+                        "Error while getting media artwork"
+                    )
+                }
             }
         }
     }
