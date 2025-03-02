@@ -13,6 +13,7 @@ sealed interface Query {
     companion object {
         const val ARG = "?"
         const val NULL = "NULL"
+        val TRUE = True
     }
 }
 
@@ -35,6 +36,10 @@ class StringOp<T>(private val lhs: Column, private val op: Operator, private val
 
 class In<T>(private val value: T, private val values: Collection<T>) : Query {
     override fun build() = "$value IN (${values.joinToString(", ")})"
+}
+
+data object True : Query {
+    override fun build() = "1 = 1"
 }
 
 infix fun Query.and(other: Query) = LogicalOp(this, Operator.AND, other)

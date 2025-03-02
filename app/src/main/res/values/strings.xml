@@ -185,6 +185,11 @@
     <!-- Experimental preferences -->
     <string name="split_local_devices">Split local devices</string>
     <string name="split_local_devices_summary">If enabled, internal storage and external devices (SD cards, USB devices, etc.) will appear under different providers</string>
+    <string name="split_local_library_title">Split local library</string>
+    <string name="split_local_library_summary">If enabled, local library will be split into Music, Podcast, Audiobook</string>
+    <string name="library_music">Music</string>
+    <string name="library_podcast">Podcast</string>
+    <string name="library_audiobook">Audiobook</string>
 
     <!-- Now playing widget -->
     <string name="now_playing_widget_description">Now playing</string>
