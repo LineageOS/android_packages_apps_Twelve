@@ -191,7 +191,7 @@ class MediaRepositoryTree(
             it.toMedia3MediaItem(context.resources)
         }
 
-        CHANGE_PROVIDER_MEDIA_ITEM_ID -> repository.allVisibleProviders.value.map {
+        CHANGE_PROVIDER_MEDIA_ITEM_ID -> repository.providers.value.map {
             it.toMedia3MediaItem()
         }
 
