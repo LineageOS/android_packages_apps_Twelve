@@ -15,13 +15,11 @@ import org.lineageos.twelve.datasources.MediaDataSource
  * @param type The provider type
  * @param typeId The ID of the provider relative to the [ProviderType]
  * @param name The name of the provider given by the user
- * @param visible Whether the user should be aware of it
  */
 class Provider(
     type: ProviderType,
     typeId: Long,
     val name: String,
-    val visible: Boolean,
 ) : ProviderIdentifier(type, typeId), UniqueItem<Provider> {
     override fun areItemsTheSame(other: Provider) = compareValuesBy(
         this,
@@ -34,6 +32,5 @@ class Provider(
         this,
         other,
         Provider::name,
-        Provider::visible,
     ) == 0
 }

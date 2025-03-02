@@ -107,32 +107,36 @@ class MediaRepository(
         mediaStoreVolumes,
     ) { splitLocalDevices, mediaStoreVolumes ->
         buildList {
-            add(
-                Provider(
-                    ProviderType.LOCAL,
-                    LOCAL_PROVIDER_ID,
-                    Build.MODEL,
-                    !splitLocalDevices,
-                ) to localDataSource
-            )
+            when {
+                splitLocalDevices -> {
+                    mediaStoreVolumes.forEach {
+                        val mediaStoreVolumeName = it.mediaStoreVolumeName ?: throw Exception(
+                            "MediaStore volume name cannot be null"
+                        )
 
-            mediaStoreVolumes.forEach {
-                val mediaStoreVolumeName = it.mediaStoreVolumeName ?: throw Exception(
-                    "MediaStore volume name cannot be null"
-                )
+                        add(
+                            Provider(
+                                ProviderType.LOCAL,
+                                mediaStoreVolumeName.hashCode().toLong(),
+                                it.getDescription(context),
+                            ) to LocalDataSource(
+                                contentResolver,
+                                mediaStoreVolumeName,
+                                database,
+                            )
+                        )
+                    }
+                }
 
-                add(
-                    Provider(
-                        ProviderType.LOCAL,
-                        mediaStoreVolumeName.hashCode().toLong(),
-                        it.getDescription(context),
-                        splitLocalDevices,
-                    ) to LocalDataSource(
-                        contentResolver,
-                        mediaStoreVolumeName,
-                        database,
+                else -> {
+                    add(
+                        Provider(
+                            ProviderType.LOCAL,
+                            LOCAL_PROVIDER_ID,
+                            Build.MODEL,
+                        ) to localDataSource
                     )
-                )
+                }
             }
         }
     }
@@ -144,9 +148,9 @@ class MediaRepository(
     private val cache = Cache(context.cacheDir, 50 * 1024 * 1024)
 
     /**
-     * All the providers. This is our single point of truth for the providers.
+     * This is our single point of truth for the providers.
      */
-    private val allProvidersToDataSource = combine(
+    private val providersToDataSource = combine(
         mediaStoreProviders,
         database.getSubsonicProviderDao().getAll().mapLatest { subsonicProviders ->
             subsonicProviders.map {
@@ -162,7 +166,6 @@ class MediaRepository(
                     ProviderType.SUBSONIC,
                     it.id,
                     it.name,
-                    true,
                 ) to SubsonicDataSource(
                     arguments,
                     { datasource ->
@@ -186,7 +189,6 @@ class MediaRepository(
                     ProviderType.JELLYFIN,
                     it.id,
                     it.name,
-                    true,
                 ) to JellyfinDataSource(
                     context,
                     arguments,
@@ -212,23 +214,11 @@ class MediaRepository(
         )
 
     /**
-     * All providers available to the app.
+     * Providers available to the app.
      */
-    private val allProviders = allProvidersToDataSource.mapLatest {
+    val providers = providersToDataSource.mapLatest {
         it.map { (provider, _) -> provider }
     }
-        .flowOn(Dispatchers.IO)
-        .stateIn(
-            scope,
-            SharingStarted.Eagerly,
-            listOf(),
-        )
-
-    /**
-     * All providers that the user can be aware of.
-     */
-    val allVisibleProviders = allProviders
-        .mapLatest { it.filter { provider -> provider.visible } }
         .flowOn(Dispatchers.IO)
         .stateIn(
             scope,
@@ -253,13 +243,13 @@ class MediaRepository(
      */
     private val navigationProviderToDataSource = combine(
         navigationProviderIdentifier,
-        allProvidersToDataSource,
-    ) { navigationProviderIdentifier, allProvidersToDataSource ->
+        providersToDataSource,
+    ) { navigationProviderIdentifier, providersToDataSource ->
         navigationProviderIdentifier?.let {
-            allProvidersToDataSource.firstOrNull { (provider, _) ->
-                provider.type == it.type && provider.typeId == it.typeId && provider.visible
+            providersToDataSource.firstOrNull { (provider, _) ->
+                provider.type == it.type && provider.typeId == it.typeId
             }
-        } ?: allProvidersToDataSource.firstOrNull { it.first.visible }
+        } ?: providersToDataSource.firstOrNull()
     }
         .flowOn(Dispatchers.IO)
         .stateIn(
@@ -307,7 +297,7 @@ class MediaRepository(
      * @param uris The media items' URIs
      * @return A flow of the provider that handles these media items' URIs.
      */
-    fun providerOfMediaItems(vararg uris: Uri) = allProvidersToDataSource.mapLatest {
+    fun providerOfMediaItems(vararg uris: Uri) = providersToDataSource.mapLatest {
         it.firstOrNull { (_, dataSource) ->
             uris.all { uri -> dataSource.isMediaItemCompatible(uri) }
         }?.first
@@ -322,7 +312,7 @@ class MediaRepository(
      */
     suspend fun getProviderOfMediaItems(
         vararg uris: Uri
-    ) = allProvidersToDataSource.value.firstOrNull { (_, dataSource) ->
+    ) = providersToDataSource.value.firstOrNull { (_, dataSource) ->
         uris.all { uri -> dataSource.isMediaItemCompatible(uri) }
     }?.first
 
@@ -332,7 +322,7 @@ class MediaRepository(
      * @param providerIdentifier The [ProviderIdentifier]
      * @return A flow of the corresponding [Provider].
      */
-    fun provider(providerIdentifier: ProviderIdentifier) = allProviders.mapLatest {
+    fun provider(providerIdentifier: ProviderIdentifier) = providers.mapLatest {
         it.firstOrNull { provider ->
             providerIdentifier.type == provider.type && providerIdentifier.typeId == provider.typeId
         }
@@ -514,7 +504,7 @@ class MediaRepository(
      */
     suspend fun mediaTypeOf(
         mediaItemUri: Uri
-    ) = allProvidersToDataSource.value.firstNotNullOfOrNull { (_, dataSource) ->
+    ) = providersToDataSource.value.firstNotNullOfOrNull { (_, dataSource) ->
         dataSource.mediaTypeOf(mediaItemUri)
     }
 
@@ -665,7 +655,7 @@ class MediaRepository(
      */
     private fun getDataSource(
         providerIdentifier: ProviderIdentifier,
-    ) = allProvidersToDataSource.value.firstOrNull { (provider, _) ->
+    ) = providersToDataSource.value.firstOrNull { (provider, _) ->
         providerIdentifier.type == provider.type && providerIdentifier.typeId == provider.typeId
     }?.second
 
@@ -680,7 +670,7 @@ class MediaRepository(
     private fun <T> withProviderDataSource(
         providerIdentifier: ProviderIdentifier,
         predicate: MediaDataSource.() -> Flow<RequestStatus<T, MediaError>>
-    ) = allProvidersToDataSource.flatMapLatest {
+    ) = providersToDataSource.flatMapLatest {
         it.firstOrNull { (provider, _) ->
             providerIdentifier.type == provider.type && providerIdentifier.typeId == provider.typeId
         }?.second?.predicate() ?: flowOf(RequestStatus.Error(MediaError.NOT_FOUND))
@@ -696,7 +686,7 @@ class MediaRepository(
      */
     private fun <T> withMediaItemsDataSourceFlow(
         vararg uris: Uri, predicate: MediaDataSource.() -> Flow<RequestStatus<T, MediaError>>
-    ) = allProvidersToDataSource.flatMapLatest {
+    ) = providersToDataSource.flatMapLatest {
         it.firstOrNull { (_, dataSource) ->
             uris.all { uri -> dataSource.isMediaItemCompatible(uri) }
         }?.second?.predicate() ?: flowOf(RequestStatus.Error(MediaError.NOT_FOUND))
@@ -712,7 +702,7 @@ class MediaRepository(
      */
     private suspend fun <T> withMediaItemsDataSource(
         vararg uris: Uri, predicate: suspend MediaDataSource.() -> RequestStatus<T, MediaError>
-    ) = allProvidersToDataSource.value.firstOrNull { (_, dataSource) ->
+    ) = providersToDataSource.value.firstOrNull { (_, dataSource) ->
         uris.all { uri -> dataSource.isMediaItemCompatible(uri) }
     }?.second?.predicate() ?: RequestStatus.Error(MediaError.NOT_FOUND)
 
