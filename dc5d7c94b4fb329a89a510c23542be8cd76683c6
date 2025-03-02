@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "63f8873b_1b5a2b1f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2025-03-02T18:26:26Z",
+      "side": 1,
+      "message": "Works in activity but elsewhere it still uses the wrong query?",
+      "revId": "dc5d7c94b4fb329a89a510c23542be8cd76683c6",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
