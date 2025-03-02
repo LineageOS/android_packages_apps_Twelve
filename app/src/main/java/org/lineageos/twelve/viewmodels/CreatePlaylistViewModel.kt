@@ -25,7 +25,7 @@ class CreatePlaylistViewModel(application: Application) : TwelveViewModel(applic
     private val playlistName = MutableStateFlow("")
 
     val providersWithSelection = combine(
-        mediaRepository.allVisibleProviders,
+        mediaRepository.allProviders,
         providerIdentifier
     ) { allVisibleProviders, providerIdentifier ->
         allVisibleProviders to providerIdentifier?.let {

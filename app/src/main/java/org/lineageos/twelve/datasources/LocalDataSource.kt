@@ -9,6 +9,7 @@ import android.content.ContentResolver
 import android.content.ContentUris
 import android.net.Uri
 import android.os.Build
+import android.provider.BaseColumns
 import android.provider.MediaStore
 import androidx.core.os.bundleOf
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -59,13 +60,21 @@ import kotlin.random.Random
  * @param contentResolver The [ContentResolver]
  * @param volumeName The volume name
  * @param database The app's database
+ * @param filterQuery The query to filter the media items
  */
 @OptIn(ExperimentalCoroutinesApi::class)
 class LocalDataSource(
     private val contentResolver: ContentResolver,
     private val volumeName: String,
-    private val database: TwelveDatabase
+    private val database: TwelveDatabase,
+    private val filterQuery: Query = Query.TRUE,
 ) : MediaDataSource {
+    init {
+        println("LocalDataSource initialized")
+        println("Volume name: $volumeName")
+        println("Filter query: ${filterQuery.build()}")
+    }
+
     private val albumsUri = MediaStore.Audio.Albums.getContentUri(volumeName)
     private val artistsUri = MediaStore.Audio.Artists.getContentUri(volumeName)
     private val genresUri = MediaStore.Audio.Genres.getContentUri(volumeName)
@@ -377,7 +386,7 @@ class LocalDataSource(
             audiosProjection,
             bundleOf(
                 ContentResolver.QUERY_ARG_SQL_SELECTION to query {
-                    MediaStore.Audio.AudioColumns.TITLE like Query.ARG
+                    filterQuery and (MediaStore.Audio.AudioColumns.TITLE like Query.ARG)
                 },
                 ContentResolver.QUERY_ARG_SQL_SELECTION_ARGS to arrayOf(query),
             )
@@ -401,7 +410,7 @@ class LocalDataSource(
         audiosProjection,
         bundleOf(
             ContentResolver.QUERY_ARG_SQL_SELECTION to query {
-                MediaStore.Audio.AudioColumns._ID eq Query.ARG
+                filterQuery and (MediaStore.Audio.AudioColumns._ID eq Query.ARG)
             },
             ContentResolver.QUERY_ARG_SQL_SELECTION_ARGS to arrayOf(
                 ContentUris.parseId(audioUri).toString(),
@@ -431,7 +440,7 @@ class LocalDataSource(
             audiosProjection,
             bundleOf(
                 ContentResolver.QUERY_ARG_SQL_SELECTION to query {
-                    MediaStore.Audio.AudioColumns.ALBUM_ID eq Query.ARG
+                    filterQuery and (MediaStore.Audio.AudioColumns.ALBUM_ID eq Query.ARG)
                 },
                 ContentResolver.QUERY_ARG_SQL_SELECTION_ARGS to arrayOf(
                     ContentUris.parseId(albumUri).toString(),
@@ -477,7 +486,7 @@ class LocalDataSource(
             audioAlbumIdsProjection,
             bundleOf(
                 ContentResolver.QUERY_ARG_SQL_SELECTION to query {
-                    MediaStore.Audio.AudioColumns.ARTIST_ID eq Query.ARG
+                    filterQuery and (MediaStore.Audio.AudioColumns.ARTIST_ID eq Query.ARG)
                 },
                 ContentResolver.QUERY_ARG_SQL_SELECTION_ARGS to arrayOf(
                     ContentUris.parseId(artistUri).toString(),
@@ -550,7 +559,7 @@ class LocalDataSource(
                 audioAlbumIdsProjection,
                 bundleOf(
                     ContentResolver.QUERY_ARG_SQL_SELECTION to query {
-                        genreSelection
+                        filterQuery and genreSelection
                     },
                     ContentResolver.QUERY_ARG_SQL_SELECTION_ARGS to arrayOf(
                         *genreSelectionArgs,
@@ -583,7 +592,7 @@ class LocalDataSource(
                 audiosProjection,
                 bundleOf(
                     ContentResolver.QUERY_ARG_SQL_SELECTION to query {
-                        genreSelection
+                        filterQuery and genreSelection
                     },
                     ContentResolver.QUERY_ARG_SQL_SELECTION_ARGS to arrayOf(
                         *genreSelectionArgs,
@@ -651,7 +660,7 @@ class LocalDataSource(
                     audiosProjection,
                     bundleOf(
                         ContentResolver.QUERY_ARG_SQL_SELECTION to query {
-                            MediaStore.Audio.AudioColumns._ID eq Query.ARG
+                            filterQuery and (MediaStore.Audio.AudioColumns._ID eq Query.ARG)
                         },
                         ContentResolver.QUERY_ARG_SQL_SELECTION_ARGS to listOf(
                             ContentUris.parseId(uri).toString()
@@ -729,9 +738,9 @@ class LocalDataSource(
         audiosProjection,
         bundleOf(
             ContentResolver.QUERY_ARG_SQL_SELECTION to query {
-                MediaStore.Audio.AudioColumns._ID `in` List(audioUris.size) {
+                filterQuery and (MediaStore.Audio.AudioColumns._ID `in` List(audioUris.size) {
                     Query.ARG
-                }
+                })
             },
             ContentResolver.QUERY_ARG_SQL_SELECTION_ARGS to audioUris.map {
                 ContentUris.parseId(it).toString()
@@ -755,9 +764,10 @@ class LocalDataSource(
                     arrayOf(MediaStore.Audio.AlbumColumns.ALBUM_ID),
                     bundleOf(
                         ContentResolver.QUERY_ARG_SQL_SELECTION to query {
-                            MediaStore.Audio.AudioColumns._ID `in` List(uris.size) {
-                                Query.ARG
-                            }
+                            filterQuery and (
+                                    MediaStore.Audio.AudioColumns._ID `in` List(uris.size) {
+                                        Query.ARG
+                                    })
                         },
                         ContentResolver.QUERY_ARG_SQL_SELECTION_ARGS to uris.map {
                             ContentUris.parseId(it).toString()
@@ -819,7 +829,7 @@ class LocalDataSource(
         private const val LAST_PLAYED_KEY = "local"
 
         private val albumsProjection = arrayOf(
-            MediaStore.Audio.AudioColumns._ID,
+            BaseColumns._ID,
             MediaStore.Audio.AlbumColumns.ALBUM,
             MediaStore.Audio.AlbumColumns.ARTIST_ID,
             MediaStore.Audio.AlbumColumns.ARTIST,
@@ -827,17 +837,17 @@ class LocalDataSource(
         )
 
         private val artistsProjection = arrayOf(
-            MediaStore.Audio.AudioColumns._ID,
+            BaseColumns._ID,
             MediaStore.Audio.ArtistColumns.ARTIST,
         )
 
         private val genresProjection = arrayOf(
-            MediaStore.Audio.AudioColumns._ID,
+            BaseColumns._ID,
             MediaStore.Audio.GenresColumns.NAME,
         )
 
         private val audiosProjection = mutableListOf(
-            MediaStore.Audio.AudioColumns._ID,
+            BaseColumns._ID,
             MediaStore.Audio.AudioColumns.MIME_TYPE,
             MediaStore.Audio.AudioColumns.TITLE,
             MediaStore.Audio.AudioColumns.IS_MUSIC,

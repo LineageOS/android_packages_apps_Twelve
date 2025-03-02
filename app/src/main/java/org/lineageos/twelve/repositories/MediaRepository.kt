@@ -40,10 +40,13 @@ import org.lineageos.twelve.datasources.MediaError
 import org.lineageos.twelve.datasources.SubsonicDataSource
 import org.lineageos.twelve.ext.DEFAULT_PROVIDER_KEY
 import org.lineageos.twelve.ext.SPLIT_LOCAL_DEVICES_KEY
+import org.lineageos.twelve.ext.SPLIT_LOCAL_LIBRARY_KEY
 import org.lineageos.twelve.ext.defaultProvider
 import org.lineageos.twelve.ext.preferenceFlow
 import org.lineageos.twelve.ext.splitLocalDevices
+import org.lineageos.twelve.ext.splitLocalLibrary
 import org.lineageos.twelve.ext.storageVolumesFlow
+import org.lineageos.twelve.models.LocalLibrary
 import org.lineageos.twelve.models.Provider
 import org.lineageos.twelve.models.ProviderArgument.Companion.requireArgument
 import org.lineageos.twelve.models.ProviderIdentifier
@@ -104,35 +107,82 @@ class MediaRepository(
             SPLIT_LOCAL_DEVICES_KEY,
             getter = SharedPreferences::splitLocalDevices,
         ),
+        sharedPreferences.preferenceFlow(
+            SPLIT_LOCAL_LIBRARY_KEY,
+            getter = SharedPreferences::splitLocalLibrary,
+        ),
         mediaStoreVolumes,
-    ) { splitLocalDevices, mediaStoreVolumes ->
+    ) { splitLocalDevices, splitLocalLibrary, mediaStoreVolumes ->
         buildList {
-            add(
-                Provider(
-                    ProviderType.LOCAL,
-                    LOCAL_PROVIDER_ID,
-                    Build.MODEL,
-                    !splitLocalDevices,
-                ) to localDataSource
-            )
+            when {
+                splitLocalDevices && splitLocalLibrary -> {
+                    mediaStoreVolumes.forEach { mediaStoreVolume ->
+                        LocalLibrary.entries.forEach {
+                            val mediaStoreVolumeName = mediaStoreVolume.mediaStoreVolumeName
+                                ?: throw Exception("MediaStore volume name cannot be null")
 
-            mediaStoreVolumes.forEach {
-                val mediaStoreVolumeName = it.mediaStoreVolumeName ?: throw Exception(
-                    "MediaStore volume name cannot be null"
-                )
+                            add(
+                                Provider(
+                                    ProviderType.LOCAL,
+                                    (mediaStoreVolumeName + it.name).hashCode().toLong(),
+                                    it.localizedString.getString(context.resources),
+                                ) to LocalDataSource(
+                                    contentResolver,
+                                    mediaStoreVolumeName,
+                                    database,
+                                    it.query,
+                                )
+                            )
+                        }
+                    }
+                }
 
-                add(
-                    Provider(
-                        ProviderType.LOCAL,
-                        mediaStoreVolumeName.hashCode().toLong(),
-                        it.getDescription(context),
-                        splitLocalDevices,
-                    ) to LocalDataSource(
-                        contentResolver,
-                        mediaStoreVolumeName,
-                        database,
+                splitLocalDevices -> {
+                    mediaStoreVolumes.forEach {
+                        val mediaStoreVolumeName = it.mediaStoreVolumeName ?: throw Exception(
+                            "MediaStore volume name cannot be null"
+                        )
+
+                        add(
+                            Provider(
+                                ProviderType.LOCAL,
+                                mediaStoreVolumeName.hashCode().toLong(),
+                                it.getDescription(context),
+                            ) to LocalDataSource(
+                                contentResolver,
+                                mediaStoreVolumeName,
+                                database,
+                            )
+                        )
+                    }
+                }
+
+                splitLocalLibrary -> {
+                    LocalLibrary.entries.forEach {
+                        add(
+                            Provider(
+                                ProviderType.LOCAL,
+                                it.name.hashCode().toLong(),
+                                it.localizedString.getString(context.resources),
+                            ) to LocalDataSource(
+                                contentResolver,
+                                MediaStore.VOLUME_EXTERNAL,
+                                database,
+                                it.query,
+                            )
+                        )
+                    }
+                }
+
+                else -> {
+                    add(
+                        Provider(
+                            ProviderType.LOCAL,
+                            LOCAL_PROVIDER_ID,
+                            Build.MODEL,
+                        ) to localDataSource
                     )
-                )
+                }
             }
         }
     }
@@ -162,7 +212,6 @@ class MediaRepository(
                     ProviderType.SUBSONIC,
                     it.id,
                     it.name,
-                    true,
                 ) to SubsonicDataSource(
                     arguments,
                     { datasource ->
@@ -186,7 +235,6 @@ class MediaRepository(
                     ProviderType.JELLYFIN,
                     it.id,
                     it.name,
-                    true,
                 ) to JellyfinDataSource(
                     context,
                     arguments,
@@ -214,21 +262,9 @@ class MediaRepository(
     /**
      * All providers available to the app.
      */
-    private val allProviders = allProvidersToDataSource.mapLatest {
+    val allProviders = allProvidersToDataSource.mapLatest {
         it.map { (provider, _) -> provider }
     }
-        .flowOn(Dispatchers.IO)
-        .stateIn(
-            scope,
-            SharingStarted.Eagerly,
-            listOf(),
-        )
-
-    /**
-     * All providers that the user can be aware of.
-     */
-    val allVisibleProviders = allProviders
-        .mapLatest { it.filter { provider -> provider.visible } }
         .flowOn(Dispatchers.IO)
         .stateIn(
             scope,
@@ -257,9 +293,9 @@ class MediaRepository(
     ) { navigationProviderIdentifier, allProvidersToDataSource ->
         navigationProviderIdentifier?.let {
             allProvidersToDataSource.firstOrNull { (provider, _) ->
-                provider.type == it.type && provider.typeId == it.typeId && provider.visible
+                provider.type == it.type && provider.typeId == it.typeId
             }
-        } ?: allProvidersToDataSource.firstOrNull { it.first.visible }
+        } ?: allProvidersToDataSource.firstOrNull()
     }
         .flowOn(Dispatchers.IO)
         .stateIn(

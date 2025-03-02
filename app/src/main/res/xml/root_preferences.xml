@@ -51,6 +51,13 @@
         <SwitchPreference
             app:defaultValue="false"
             app:iconSpaceReserved="false"
+            app:key="split_local_library"
+            app:summary="@string/split_local_library_summary"
+            app:title="@string/split_local_library_title" />
+
+        <SwitchPreference
+            app:defaultValue="false"
+            app:iconSpaceReserved="false"
             app:key="split_local_devices"
             app:summary="@string/split_local_devices_summary"
             app:title="@string/split_local_devices" />

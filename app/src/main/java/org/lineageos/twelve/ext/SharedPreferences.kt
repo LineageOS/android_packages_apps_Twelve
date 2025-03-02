@@ -79,6 +79,12 @@ var SharedPreferences.defaultProvider: ProviderIdentifier?
         putString(DEFAULT_PROVIDER_KEY, Json.encodeToString(value))
     }
 
+// Library prefs
+const val SPLIT_LOCAL_LIBRARY_KEY = "split_local_library"
+private const val SPLIT_LOCAL_LIBRARY_DEFAULT = false
+val SharedPreferences.splitLocalLibrary: Boolean
+    get() = getBoolean(SPLIT_LOCAL_LIBRARY_KEY, SPLIT_LOCAL_LIBRARY_DEFAULT)
+
 // Experimental prefs
 const val SPLIT_LOCAL_DEVICES_KEY = "split_local_devices"
 private const val SPLIT_LOCAL_DEVICES_DEFAULT = false
