@@ -40,10 +40,13 @@ import org.lineageos.twelve.datasources.MediaError
 import org.lineageos.twelve.datasources.SubsonicDataSource
 import org.lineageos.twelve.ext.DEFAULT_PROVIDER_KEY
 import org.lineageos.twelve.ext.SPLIT_LOCAL_DEVICES_KEY
+import org.lineageos.twelve.ext.SPLIT_LOCAL_LIBRARY_KEY
 import org.lineageos.twelve.ext.defaultProvider
 import org.lineageos.twelve.ext.preferenceFlow
 import org.lineageos.twelve.ext.splitLocalDevices
+import org.lineageos.twelve.ext.splitLocalLibrary
 import org.lineageos.twelve.ext.storageVolumesFlow
+import org.lineageos.twelve.models.LocalLibrary
 import org.lineageos.twelve.models.Provider
 import org.lineageos.twelve.models.ProviderArgument.Companion.requireArgument
 import org.lineageos.twelve.models.ProviderIdentifier
@@ -104,10 +107,36 @@ class MediaRepository(
             SPLIT_LOCAL_DEVICES_KEY,
             getter = SharedPreferences::splitLocalDevices,
         ),
+        sharedPreferences.preferenceFlow(
+            SPLIT_LOCAL_LIBRARY_KEY,
+            getter = SharedPreferences::splitLocalLibrary,
+        ),
         mediaStoreVolumes,
-    ) { splitLocalDevices, mediaStoreVolumes ->
+    ) { splitLocalDevices, splitLocalLibrary, mediaStoreVolumes ->
         buildList {
             when {
+                splitLocalDevices && splitLocalLibrary -> {
+                    mediaStoreVolumes.forEach { mediaStoreVolume ->
+                        LocalLibrary.entries.forEach {
+                            val mediaStoreVolumeName = mediaStoreVolume.mediaStoreVolumeName
+                                ?: throw Exception("MediaStore volume name cannot be null")
+
+                            add(
+                                Provider(
+                                    ProviderType.LOCAL,
+                                    (mediaStoreVolumeName + it.name).hashCode().toLong(),
+                                    it.localizedString.getString(context.resources),
+                                ) to LocalDataSource(
+                                    contentResolver,
+                                    mediaStoreVolumeName,
+                                    database,
+                                    it.query,
+                                )
+                            )
+                        }
+                    }
+                }
+
                 splitLocalDevices -> {
                     mediaStoreVolumes.forEach {
                         val mediaStoreVolumeName = it.mediaStoreVolumeName ?: throw Exception(
@@ -123,6 +152,23 @@ class MediaRepository(
                                 contentResolver,
                                 mediaStoreVolumeName,
                                 database,
+                            )
+                        )
+                    }
+                }
+
+                splitLocalLibrary -> {
+                    LocalLibrary.entries.forEach {
+                        add(
+                            Provider(
+                                ProviderType.LOCAL,
+                                it.name.hashCode().toLong(),
+                                it.localizedString.getString(context.resources),
+                            ) to LocalDataSource(
+                                contentResolver,
+                                MediaStore.VOLUME_EXTERNAL,
+                                database,
+                                it.query,
                             )
                         )
                     }
