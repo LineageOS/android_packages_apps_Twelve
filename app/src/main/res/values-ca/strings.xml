@@ -21,14 +21,11 @@
     <string name="library_fragment_menu_genres">Gèneres</string>
     <string name="library_fragment_menu_playlists">Llistes de reproducció</string>
     <string name="create_playlist">Crea una llista de reproducció nova</string>
-    <string name="no_playlists_comma">Cap llista de reproducció,</string>
-    <string name="create_playlist_suggestion">Voleu crear-ne una nova?</string>
     <string name="create_playlist_confirm">Crea</string>
     <string name="no_activity">Sense activitat</string>
     <string name="no_albums">No hi ha àlbums</string>
     <string name="no_artists">No hi ha artistes</string>
     <string name="no_genres">No hi ha gèneres</string>
-    <string name="no_playlists">No hi ha llistes de reproducció</string>
     <string name="no_audios">No hi ha àudios</string>
     <string name="no_results">No hi ha resultats</string>
     <string name="album_unknown">Àlbum desconegut</string>

@@ -8,9 +8,6 @@ package org.lineageos.twelve.fragments
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.widget.Button
-import android.widget.LinearLayout
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -45,9 +42,7 @@ class PlaylistsFragment : Fragment(R.layout.fragment_playlists) {
     private val viewModel by viewModels<PlaylistsViewModel>()
 
     // Views
-    private val createNewPlaylistButton by getViewProperty<Button>(R.id.createNewPlaylistButton)
     private val linearProgressIndicator by getViewProperty<LinearProgressIndicator>(R.id.linearProgressIndicator)
-    private val noElementsLinearLayout by getViewProperty<LinearLayout>(R.id.noElementsLinearLayout)
     private val recyclerView by getViewProperty<RecyclerView>(R.id.recyclerView)
     private val sortingChip by getViewProperty<SortingChip>(R.id.sortingChip)
 
@@ -132,15 +127,6 @@ class PlaylistsFragment : Fragment(R.layout.fragment_playlists) {
 
         recyclerView.adapter = adapter
 
-        createNewPlaylistButton.setOnClickListener {
-            findNavController().navigateSafe(
-                R.id.action_mainFragment_to_fragment_create_playlist_dialog,
-                CreatePlaylistDialogFragment.createBundle(
-                    providerIdentifier = viewModel.navigationProvider.value
-                )
-            )
-        }
-
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 permissionsChecker.withPermissionsGranted {
@@ -168,34 +154,15 @@ class PlaylistsFragment : Fragment(R.layout.fragment_playlists) {
                         }
 
                         is FlowResult.Success -> {
-                            val isEmpty = it.data.isEmpty()
-
-                            val favorite = it.data.find { playlist -> playlist.isFavorite }
+                            val favorite = it.data.find { playlist -> playlist.isFavorite } ?: run {
+                                Log.e(LOG_TAG, "Failed to find favorite playlist")
+                                return@collectLatest
+                            }
                             val playlists = it.data.filter { playlist -> !playlist.isFavorite }
 
                             adapter.submitList(
-                                buildList {
-                                    when (isEmpty) {
-                                        true -> {
-                                            if (favorite != null) {
-                                                add(Playlist.NEW_PLAYLIST)
-                                                add(favorite)
-                                            }
-                                        }
-
-                                        false -> {
-                                            add(Playlist.NEW_PLAYLIST)
-                                            if (favorite != null) {
-                                                add(favorite)
-                                            }
-                                            addAll(playlists)
-                                        }
-                                    }
-                                }
+                                listOf(Playlist.NEW_PLAYLIST, favorite) + playlists
                             )
-
-                            recyclerView.isVisible = !isEmpty || favorite != null
-                            noElementsLinearLayout.isVisible = isEmpty && favorite == null
                         }
 
                         is FlowResult.Error -> {
@@ -206,9 +173,6 @@ class PlaylistsFragment : Fragment(R.layout.fragment_playlists) {
                             )
 
                             adapter.submitList(emptyList())
-
-                            recyclerView.isVisible = false
-                            noElementsLinearLayout.isVisible = true
                         }
                     }
                 }

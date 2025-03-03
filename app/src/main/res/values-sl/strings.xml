@@ -21,14 +21,11 @@
     <string name="library_fragment_menu_genres">Zvrsti</string>
     <string name="library_fragment_menu_playlists">Seznami predvajanja</string>
     <string name="create_playlist">Ustvari nov seznam predvajanja</string>
-    <string name="no_playlists_comma">Ni seznamov predvajanja,</string>
-    <string name="create_playlist_suggestion">Ustvari novega?</string>
     <string name="create_playlist_confirm">Ustvari</string>
     <string name="no_activity">Ni dejavnosti</string>
     <string name="no_albums">Ni albumov</string>
     <string name="no_artists">Ni izvajalcev</string>
     <string name="no_genres">Ni zvrsti</string>
-    <string name="no_playlists">Ni seznamov predvajanja</string>
     <string name="no_audios">Ni zvočnih posnetkov</string>
     <string name="no_results">Ni rezultatov</string>
     <string name="album_unknown">Neznan album</string>

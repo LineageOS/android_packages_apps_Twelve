@@ -21,14 +21,11 @@
     <string name="library_fragment_menu_genres">Janrlar</string>
     <string name="library_fragment_menu_playlists">Pleylistlər</string>
     <string name="create_playlist">Yeni pleylist yarat</string>
-    <string name="no_playlists_comma">Pleylist yoxdur,</string>
-    <string name="create_playlist_suggestion">Yenisi yaradılsın?</string>
     <string name="create_playlist_confirm">Yarat</string>
     <string name="no_activity">Fəaliyyət yoxdur</string>
     <string name="no_albums">Albom yoxdur</string>
     <string name="no_artists">Sənətçi yoxdur</string>
     <string name="no_genres">Janr yoxdur</string>
-    <string name="no_playlists">Pleylist yoxdur</string>
     <string name="no_audios">Səs yoxdur</string>
     <string name="no_results">Nəticə yoxdur</string>
     <string name="album_unknown">Bilinməyən albom</string>

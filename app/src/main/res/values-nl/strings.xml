@@ -21,14 +21,11 @@
     <string name="library_fragment_menu_genres">Genres</string>
     <string name="library_fragment_menu_playlists">Afspeellijsten</string>
     <string name="create_playlist">Nieuwe afspeellijst aanmaken</string>
-    <string name="no_playlists_comma">Geen afspeellijsten.</string>
-    <string name="create_playlist_suggestion">Een nieuwe aanmaken?</string>
     <string name="create_playlist_confirm">Maak</string>
     <string name="no_activity">Geen activiteit</string>
     <string name="no_albums">Geen albums.</string>
     <string name="no_artists">Geen artiesten.</string>
     <string name="no_genres">Geen genres</string>
-    <string name="no_playlists">Geen afspeellijsten</string>
     <string name="no_audios">Geen audio</string>
     <string name="no_results">Geen resultaten</string>
     <string name="album_unknown">Onbekend album</string>

@@ -21,14 +21,11 @@
     <string name="library_fragment_menu_genres">Είδη</string>
     <string name="library_fragment_menu_playlists">Λίστες αναπαραγωγής</string>
     <string name="create_playlist">Δημιουργία νέας λίστας αναπαραγωγής</string>
-    <string name="no_playlists_comma">Δεν υπάρχουν λίστες αναπαραγωγής,</string>
-    <string name="create_playlist_suggestion">Δημιουργία νέας;</string>
     <string name="create_playlist_confirm">Δημιουργία</string>
     <string name="no_activity">Καμία δραστηριότητα</string>
     <string name="no_albums">Δεν υπάρχουν άλμπουμ</string>
     <string name="no_artists">Δεν υπάρχουν καλλιτέχνες</string>
     <string name="no_genres">Δεν υπάρχουν είδη</string>
-    <string name="no_playlists">Δεν υπάρχουν λίστες αναπαραγωγής</string>
     <string name="no_audios">Δεν υπάρχουν ήχοι</string>
     <string name="no_results">Δεν υπάρχουν αποτελέσματα</string>
     <string name="album_unknown">Άγνωστο άλμπουμ</string>

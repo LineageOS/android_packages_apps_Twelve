@@ -21,14 +21,11 @@
     <string name="library_fragment_menu_genres">سبک‌ها</string>
     <string name="library_fragment_menu_playlists">فهرست‌های پخش</string>
     <string name="create_playlist">ایجاد فهرست پخش جدید</string>
-    <string name="no_playlists_comma">بدون لیست پخش،</string>
-    <string name="create_playlist_suggestion">یک مورد جدید ایجاد کنید؟</string>
     <string name="create_playlist_confirm">ایجاد</string>
     <string name="no_activity">بدون فعالیت</string>
     <string name="no_albums">بدون آلبوم</string>
     <string name="no_artists">بدون هنرمند</string>
     <string name="no_genres">بدون سبک</string>
-    <string name="no_playlists">بدون فهرست‌پخش</string>
     <string name="no_audios">بدون فایل صوتی</string>
     <string name="no_results">بدون نتیجه</string>
     <string name="album_unknown">آلبوم ناشناخته</string>

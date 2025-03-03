@@ -21,14 +21,11 @@
     <string name="library_fragment_menu_genres">流派</string>
     <string name="library_fragment_menu_playlists">播放列表</string>
     <string name="create_playlist">创建播放列表</string>
-    <string name="no_playlists_comma">没有播放列表，</string>
-    <string name="create_playlist_suggestion">创建一个新的？</string>
     <string name="create_playlist_confirm">创建</string>
     <string name="no_activity">无活动</string>
     <string name="no_albums">没有专辑</string>
     <string name="no_artists">没有艺术家</string>
     <string name="no_genres">没有流派</string>
-    <string name="no_playlists">没有播放列表</string>
     <string name="no_audios">没有音频</string>
     <string name="no_results">无结果</string>
     <string name="album_unknown">未知专辑</string>

@@ -19,13 +19,10 @@
     <string name="library_fragment_menu_genres">Tónlistarstílar</string>
     <string name="library_fragment_menu_playlists">Spilunarlistar</string>
     <string name="create_playlist">Búa til nýjan spilunarlista</string>
-    <string name="no_playlists_comma">Engir spilunarlistar,</string>
-    <string name="create_playlist_suggestion">Búa til nýjan?</string>
     <string name="create_playlist_confirm">Útbúa</string>
     <string name="no_albums">Engar hljómplötur</string>
     <string name="no_artists">Engir flytjendur</string>
     <string name="no_genres">Engir tónlistarstílar</string>
-    <string name="no_playlists">Engir spilunarlistar</string>
     <string name="no_audios">Engar hljóðskrár</string>
     <string name="no_results">Engar niðurstöður</string>
     <plurals name="tracks_count">

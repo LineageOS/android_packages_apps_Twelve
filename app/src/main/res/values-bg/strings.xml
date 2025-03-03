@@ -21,14 +21,11 @@
     <string name="library_fragment_menu_genres">Жанрове</string>
     <string name="library_fragment_menu_playlists">Плейлисти</string>
     <string name="create_playlist">Създаване на нов плейлист</string>
-    <string name="no_playlists_comma">Няма плейлисти.</string>
-    <string name="create_playlist_suggestion">Създаване на нов?</string>
     <string name="create_playlist_confirm">Създай</string>
     <string name="no_activity">Няма активност</string>
     <string name="no_albums">Няма албуми</string>
     <string name="no_artists">Няма изпълнители</string>
     <string name="no_genres">‎Няма жанрове‎</string>
-    <string name="no_playlists">Няма плейлисти</string>
     <string name="no_audios">Няма аудиофайлове</string>
     <string name="no_results">Няма резултати</string>
     <string name="album_unknown">Неизвестен албум</string>

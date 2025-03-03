@@ -21,14 +21,11 @@
     <string name="library_fragment_menu_genres">Gjenars</string>
     <string name="library_fragment_menu_playlists">Listis di riproduzion</string>
     <string name="create_playlist">Cree une gnove liste di riproduzion</string>
-    <string name="no_playlists_comma">Nissune liste di riproduzion,</string>
-    <string name="create_playlist_suggestion">Creâ une gnove?</string>
     <string name="create_playlist_confirm">Cree</string>
     <string name="no_activity">Nissune ativitât</string>
     <string name="no_albums">Nissun album</string>
     <string name="no_artists">Nissun artist</string>
     <string name="no_genres">Nissun gjenar</string>
-    <string name="no_playlists">Nissune liste di riproduzion</string>
     <string name="no_audios">Nissun audio</string>
     <string name="no_results">Nissun risultât</string>
     <string name="album_unknown">Album no cognossût</string>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-     SPDX-FileCopyrightText: 2024 The LineageOS Project
+     SPDX-FileCopyrightText: 2024-2025 The LineageOS Project
      SPDX-License-Identifier: Apache-2.0
 -->
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -25,36 +25,9 @@
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone"
         app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         app:spanCount="1" />
-
-    <LinearLayout
-        android:id="@+id/noElementsLinearLayout"
-        style="@style/Theme.Twelve.NoElements.LinearLayout"
-        android:layout_gravity="center"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
-
-        <ImageView
-            style="@style/Theme.Twelve.NoElements.ImageView"
-            android:contentDescription="@string/no_playlists"
-            android:src="@drawable/ic_playlist_play" />
-
-        <Space style="@style/Theme.Twelve.NoElements.Space" />
-
-        <TextView
-            style="@style/Theme.Twelve.NoElements.TextView"
-            android:text="@string/no_playlists_comma" />
-
-        <Button
-            android:id="@+id/createNewPlaylistButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="@string/create_playlist_suggestion" />
-
-    </LinearLayout>
 
     <com.google.android.material.progressindicator.LinearProgressIndicator
         android:id="@+id/linearProgressIndicator"

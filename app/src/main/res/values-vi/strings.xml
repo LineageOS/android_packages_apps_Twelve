@@ -21,14 +21,11 @@
     <string name="library_fragment_menu_genres">Thể loại</string>
     <string name="library_fragment_menu_playlists">Danh sách phát</string>
     <string name="create_playlist">Tạo danh sách phát mới</string>
-    <string name="no_playlists_comma">Không có danh sách phát,</string>
-    <string name="create_playlist_suggestion">Tạo một cái mới?</string>
     <string name="create_playlist_confirm">Tạo</string>
     <string name="no_activity">Không có hoạt động</string>
     <string name="no_albums">Không có album</string>
     <string name="no_artists">Không có nghệ sĩ</string>
     <string name="no_genres">Không có thể loại</string>
-    <string name="no_playlists">Không có danh sách phát</string>
     <string name="no_audios">Không có âm thanh</string>
     <string name="no_results">Không có kết quả</string>
     <string name="album_unknown">Không rõ album</string>
