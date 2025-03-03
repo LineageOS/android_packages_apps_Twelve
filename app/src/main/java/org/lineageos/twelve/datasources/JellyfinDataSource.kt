@@ -39,12 +39,11 @@ import org.lineageos.twelve.models.ProviderArgument
 import org.lineageos.twelve.models.ProviderArgument.Companion.requireArgument
 import org.lineageos.twelve.models.Result
 import org.lineageos.twelve.models.Result.Companion.fold
+import org.lineageos.twelve.models.Result.Companion.getOrNull
 import org.lineageos.twelve.models.Result.Companion.map
 import org.lineageos.twelve.models.SortingRule
 import org.lineageos.twelve.models.SortingStrategy
 import org.lineageos.twelve.models.Thumbnail
-import org.lineageos.twelve.utils.toRequestStatus
-import org.lineageos.twelve.utils.toResult
 import java.util.UUID
 
 /**
@@ -95,30 +94,30 @@ class JellyfinDataSource(
     private val _playlistsChanged = MutableStateFlow(Any())
 
     override fun status() = suspend {
-        client.getSystemInfo().toRequestStatus {
+        client.getSystemInfo().map { systemInfo ->
             listOfNotNull(
-                serverName?.takeIf { it.isNotBlank() }?.let {
+                systemInfo.serverName?.takeIf { it.isNotBlank() }?.let {
                     DataSourceInformation(
                         "server_name",
                         LocalizedString.StringResIdLocalizedString(R.string.jellyfin_server_name),
                         LocalizedString.StringLocalizedString(it)
                     )
                 },
-                version?.takeIf { it.isNotBlank() }?.let {
+                systemInfo.version?.takeIf { it.isNotBlank() }?.let {
                     DataSourceInformation(
                         "version",
                         LocalizedString.StringResIdLocalizedString(R.string.jellyfin_version),
                         LocalizedString.StringLocalizedString(it)
                     )
                 },
-                productName?.takeIf { it.isNotBlank() }?.let {
+                systemInfo.productName?.takeIf { it.isNotBlank() }?.let {
                     DataSourceInformation(
                         "product_name",
                         LocalizedString.StringResIdLocalizedString(R.string.jellyfin_product_name),
                         LocalizedString.StringLocalizedString(it)
                     )
                 },
-                operatingSystem?.takeIf { it.isNotBlank() }?.let {
+                systemInfo.operatingSystem?.takeIf { it.isNotBlank() }?.let {
                     DataSourceInformation(
                         "operating_system",
                         LocalizedString.StringResIdLocalizedString(
@@ -155,32 +154,32 @@ class JellyfinDataSource(
     }
 
     override fun albums(sortingRule: SortingRule) = suspend {
-        client.getAlbums(sortingRule).toRequestStatus {
-            items.map { it.toMediaItemAlbum() }
+        client.getAlbums(sortingRule).map { queryResult ->
+            queryResult.items.map { it.toMediaItemAlbum() }
         }
     }.asFlow()
 
     override fun artists(sortingRule: SortingRule) = suspend {
-        client.getArtists(sortingRule).toRequestStatus {
-            items.map { it.toMediaItemArtist() }
+        client.getArtists(sortingRule).map { queryResult ->
+            queryResult.items.map { it.toMediaItemArtist() }
         }
     }.asFlow()
 
     override fun genres(sortingRule: SortingRule) = suspend {
-        client.getGenres(sortingRule).toRequestStatus {
-            items.map { it.toMediaItemGenre() }
+        client.getGenres(sortingRule).map { queryResult ->
+            queryResult.items.map { it.toMediaItemGenre() }
         }
     }.asFlow()
 
     override fun playlists(sortingRule: SortingRule) = _playlistsChanged.mapLatest {
-        client.getPlaylists(sortingRule).toRequestStatus {
-            items.map { it.toMediaItemPlaylist() }
+        client.getPlaylists(sortingRule).map { queryResult ->
+            queryResult.items.map { it.toMediaItemPlaylist() }
         }
     }
 
     override fun search(query: String) = suspend {
-        client.getItems(query).toRequestStatus {
-            items.mapNotNull {
+        client.getItems(query).map { queryResult ->
+            queryResult.items.mapNotNull {
                 when (it.type) {
                     ItemType.MUSIC_ALBUM -> it.toMediaItemAlbum()
 
@@ -202,27 +201,27 @@ class JellyfinDataSource(
 
     override fun audio(audioUri: Uri) = suspend {
         val id = UUID.fromString(audioUri.lastPathSegment!!)
-        client.getAudio(id).toRequestStatus {
-            toMediaItemAudio()
+        client.getAudio(id).map {
+            it.toMediaItemAudio()
         }
     }.asFlow()
 
     override fun album(albumUri: Uri) = suspend {
         val id = UUID.fromString(albumUri.lastPathSegment!!)
-        client.getAlbum(id).toRequestStatus {
-            toMediaItemAlbum() to (client.getAlbumTracks(id).toResult {
-                items.map { it.toMediaItemAudio() }
-            }.orEmpty())
+        client.getAlbum(id).map { item ->
+            item.toMediaItemAlbum() to (client.getAlbumTracks(id).map { queryResult ->
+                queryResult.items.map { it.toMediaItemAudio() }
+            }.getOrNull().orEmpty())
         }
     }.asFlow()
 
     override fun artist(artistUri: Uri) = suspend {
         val id = UUID.fromString(artistUri.lastPathSegment!!)
-        client.getArtist(id).toRequestStatus {
-            toMediaItemArtist() to ArtistWorks(
-                albums = client.getArtistWorks(id).toResult {
-                    items.map { it.toMediaItemAlbum() }
-                }.orEmpty(),
+        client.getArtist(id).map { item ->
+            item.toMediaItemArtist() to ArtistWorks(
+                albums = client.getArtistWorks(id).map { queryResult ->
+                    queryResult.items.map { it.toMediaItemAlbum() }
+                }.getOrNull().orEmpty(),
                 appearsInAlbum = listOf(),
                 appearsInPlaylist = listOf(),
             )
@@ -231,9 +230,9 @@ class JellyfinDataSource(
 
     override fun genre(genreUri: Uri) = suspend {
         val id = UUID.fromString(genreUri.lastPathSegment!!)
-        client.getGenre(id).toRequestStatus {
-            val items = client.getGenreContent(id).toResult { items }.orEmpty()
-            toMediaItemGenre() to GenreContent(
+        client.getGenre(id).map { item ->
+            val items = client.getGenreContent(id).map { it.items }.getOrNull().orEmpty()
+            item.toMediaItemGenre() to GenreContent(
                 appearsInAlbums = items.filter { it.type == ItemType.MUSIC_ALBUM }
                     .map { it.toMediaItemAlbum() },
                 appearsInPlaylists = items.filter { it.type == ItemType.PLAYLIST }
@@ -246,10 +245,10 @@ class JellyfinDataSource(
 
     override fun playlist(playlistUri: Uri) = _playlistsChanged.mapLatest {
         val id = UUID.fromString(playlistUri.lastPathSegment!!)
-        client.getPlaylist(id).toRequestStatus {
-            toMediaItemPlaylist() to client.getPlaylistTracks(id).toResult {
-                items.map { it.toMediaItemAudio() }
-            }.orEmpty()
+        client.getPlaylist(id).map { item ->
+            item.toMediaItemPlaylist() to client.getPlaylistTracks(id).map { queryResult ->
+                queryResult.items.map { it.toMediaItemAudio() }
+            }.getOrNull().orEmpty()
         }
     }
 
@@ -257,10 +256,10 @@ class JellyfinDataSource(
         val audioId = UUID.fromString(audioUri.lastPathSegment!!)
         val sortingRule = SortingRule(SortingStrategy.NAME)
 
-        client.getPlaylists(sortingRule).toRequestStatus {
-            items.map { playlist ->
+        client.getPlaylists(sortingRule).map { queryResult ->
+            queryResult.items.map { playlist ->
                 val playlistItems =
-                    client.getPlaylistItemIds(playlist.id).toResult { itemIds }.orEmpty()
+                    client.getPlaylistItemIds(playlist.id).map { it.itemIds }.getOrNull().orEmpty()
                 playlist.toMediaItemPlaylist() to (audioId in playlistItems)
             }
         }
@@ -273,8 +272,8 @@ class JellyfinDataSource(
 
     override fun lyrics(audioUri: Uri) = suspend {
         val id = UUID.fromString(audioUri.lastPathSegment!!)
-        client.getLyrics(id).toRequestStatus {
-            toModel()
+        client.getLyrics(id).map { lyrics ->
+            lyrics.toModel()
         }.let {
             when (it) {
                 is Result.Success -> it.data?.let { lyrics ->
@@ -287,16 +286,16 @@ class JellyfinDataSource(
     }.asFlow()
 
     override suspend fun createPlaylist(name: String) = run {
-        client.createPlaylist(name).toRequestStatus {
+        client.createPlaylist(name).map { createPlaylistResult ->
             onPlaylistsChanged()
 
-            getPlaylistUri(id.toString())
+            getPlaylistUri(createPlaylistResult.id.toString())
         }
     }
 
     override suspend fun renamePlaylist(playlistUri: Uri, name: String) =
         client.renamePlaylist(UUID.fromString(playlistUri.lastPathSegment!!), name)
-            .toRequestStatus {
+            .map {
                 onPlaylistsChanged()
             }
 
@@ -309,7 +308,7 @@ class JellyfinDataSource(
     ) = run {
         val playlistId = UUID.fromString(playlistUri.lastPathSegment!!)
         val audioId = UUID.fromString(audioUri.lastPathSegment!!)
-        client.addItemToPlaylist(playlistId, audioId).toRequestStatus {
+        client.addItemToPlaylist(playlistId, audioId).map {
             onPlaylistsChanged()
         }
     }
@@ -319,7 +318,7 @@ class JellyfinDataSource(
     ) = run {
         val playlistId = UUID.fromString(playlistUri.lastPathSegment!!)
         val audioId = UUID.fromString(audioUri.lastPathSegment!!)
-        client.removeItemFromPlaylist(playlistId, audioId).toRequestStatus {
+        client.removeItemFromPlaylist(playlistId, audioId).map {
             onPlaylistsChanged()
         }
     }
@@ -442,7 +441,7 @@ class JellyfinDataSource(
             onSuccess = { audio ->
                 val albumId = UUID.fromString(audio.albumUri!!.lastPathSegment!!)
                 suspend {
-                    client.getAlbum(albumId).toRequestStatus { toMediaItemAlbum() }
+                    client.getAlbum(albumId).map { it.toMediaItemAlbum() }
                 }.asFlow().mapLatest { albumRs ->
                     val audioAsMediaItemList = listOf(audio as MediaItem<*>)
                     Result.Success<List<MediaItem<*>>, Error>(

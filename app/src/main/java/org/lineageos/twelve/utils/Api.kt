@@ -27,6 +27,8 @@ import java.net.SocketTimeoutException
 import kotlin.reflect.KType
 import kotlin.reflect.typeOf
 
+typealias MethodResult<T> = Result<T, ApiError>
+
 // Base interface for all API requests
 interface ApiRequestInterface<T> {
     val type: KType
@@ -123,21 +125,24 @@ class Api(
                         response.body?.use { body ->
                             val string = body.string()
                             if (string.isEmpty()) {
-                                MethodResult.Success(onEmptyResponse())
+                                Result.Success(onEmptyResponse())
                             } else {
                                 @Suppress("UNCHECKED_CAST")
                                 val serializer =
                                     json.serializersModule.serializer(type) as KSerializer<T>
-                                MethodResult.Success(json.decodeFromString(serializer, string))
+                                Result.Success(json.decodeFromString(serializer, string))
                             }
-                        } ?: MethodResult.Success(onEmptyResponse())
+                        } ?: Result.Success(onEmptyResponse())
                     } else {
-                        MethodResult.HttpError(response.code, Throwable(response.message))
+                        Result.Error<T, ApiError>(
+                            ApiError.HttpError(response.code),
+                            Throwable(response.message)
+                        )
                     }
                 }
             }.fold(
                 onSuccess = { it },
-                onFailure = { e -> handleError(e) }
+                onFailure = { e -> Result.Error(handleError(e), e) }
             )
         }
     }
@@ -152,27 +157,29 @@ class Api(
         var currentDelay = initialDelay
         repeat(maxAttempts - 1) { _ ->
             when (val result = block()) {
-                is MethodResult.Success -> return result
-                is MethodResult.HttpError -> when (result.code) {
-                    in 500..599 -> {
-                        delay(currentDelay)
-                        currentDelay = (currentDelay * factor).toLong().coerceAtMost(maxDelay)
+                is Result.Success -> return result
+                is Result.Error -> when (result.error) {
+                    is ApiError.HttpError -> when (result.error.code) {
+                        in 500..599 -> {
+                            delay(currentDelay)
+                            currentDelay = (currentDelay * factor).toLong().coerceAtMost(maxDelay)
+                        }
+
+                        else -> return result
                     }
 
                     else -> return result
                 }
-
-                else -> return result
             }
         }
         return block()
     }
 
-    private fun <T> handleError(e: Throwable): MethodResult<T> = when (e) {
-        is SocketTimeoutException -> MethodResult.HttpError(408, e)
-        is SerializationException -> MethodResult.DeserializationError(e)
-        is CancellationException -> MethodResult.CancellationError(e)
-        else -> MethodResult.GenericError(e)
+    private fun handleError(e: Throwable): ApiError = when (e) {
+        is SocketTimeoutException -> ApiError.HttpError(408)
+        is SerializationException -> ApiError.DeserializationError
+        is CancellationException -> ApiError.CancellationError
+        else -> ApiError.GenericError
     }
 }
 
@@ -195,39 +202,36 @@ object ApiRequest {
     ) = DeleteRequestInterface<T>(path, typeOf<T>(), queryParameters)
 }
 
-sealed interface MethodResult<T> {
-    data class Success<T>(val result: T) : MethodResult<T>
-    data class HttpError<T>(val code: Int, val error: Throwable? = null) : MethodResult<T>
-    data class GenericError<T>(val error: Throwable? = null) : MethodResult<T>
-    data class DeserializationError<T>(val error: Throwable? = null) : MethodResult<T>
-    data class CancellationError<T>(val error: Throwable? = null) : MethodResult<T>
-    data class InvalidResponse<T>(val error: Throwable? = null) : MethodResult<T>
+sealed interface ApiError {
+    data class HttpError(val code: Int) : ApiError
+    data object GenericError : ApiError
+    data object DeserializationError : ApiError
+    data object CancellationError : ApiError
+    data object InvalidResponse : ApiError
 }
 
-suspend fun <T, O> MethodResult<T>.toRequestStatus(
-    resultGetter: suspend T.() -> O
-): Result<O, Error> = when (this) {
-    is MethodResult.Success -> Result.Success(result.resultGetter())
+fun ApiError.toError() = when (this) {
+    is ApiError.HttpError -> when (code) {
+        401 -> Error.AUTHENTICATION_REQUIRED
+        403 -> Error.INVALID_CREDENTIALS
+        404 -> Error.NOT_FOUND
+        else -> Error.IO
+    }
 
-    is MethodResult.HttpError -> Result.Error(
-        when (code) {
-            401 -> Error.AUTHENTICATION_REQUIRED
-            403 -> Error.INVALID_CREDENTIALS
-            404 -> Error.NOT_FOUND
-            else -> Error.IO
-        },
-        error
-    )
+    is ApiError.GenericError -> Error.IO
+    is ApiError.DeserializationError -> Error.DESERIALIZATION
+    is ApiError.CancellationError -> Error.CANCELLED
+    is ApiError.InvalidResponse -> Error.INVALID_RESPONSE
+}
 
-    is MethodResult.DeserializationError -> Result.Error(Error.DESERIALIZATION, error)
-    is MethodResult.CancellationError -> Result.Error(Error.CANCELLED, error)
-    is MethodResult.InvalidResponse -> Result.Error(Error.INVALID_RESPONSE, error)
-    is MethodResult.GenericError -> Result.Error(Error.IO, error)
+fun <T> MethodResult<T>.mapToError() = when (this) {
+    is Result.Success -> Result.Success<T, Error>(data)
+    is Result.Error -> Result.Error(error.toError(), throwable)
 }
 
 suspend fun <T, O> MethodResult<T>.toResult(
     resultGetter: suspend T.() -> O
 ) = when (this) {
-    is MethodResult.Success -> result.resultGetter()
+    is Result.Success -> data.resultGetter()
     else -> null
 }

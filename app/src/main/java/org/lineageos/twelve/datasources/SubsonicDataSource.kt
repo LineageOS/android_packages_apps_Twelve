@@ -37,13 +37,11 @@ import org.lineageos.twelve.models.Playlist
 import org.lineageos.twelve.models.ProviderArgument
 import org.lineageos.twelve.models.ProviderArgument.Companion.requireArgument
 import org.lineageos.twelve.models.Result
+import org.lineageos.twelve.models.Result.Companion.getOrNull
 import org.lineageos.twelve.models.Result.Companion.map
 import org.lineageos.twelve.models.SortingRule
 import org.lineageos.twelve.models.SortingStrategy
 import org.lineageos.twelve.models.Thumbnail
-import org.lineageos.twelve.utils.toRequestStatus
-import org.lineageos.twelve.utils.toResult
-import org.lineageos.twelve.datasources.subsonic.models.Error as SubsonicError
 
 /**
  * Subsonic based data source.
@@ -88,8 +86,8 @@ class SubsonicDataSource(
     private val _playlistsChanged = MutableStateFlow(Any())
 
     override fun status() = suspend {
-        val ping = subsonicClient.ping().toRequestStatus { this }
-        val license = subsonicClient.getLicense().toResult { this }
+        val ping = subsonicClient.ping()
+        val license = subsonicClient.getLicense().getOrNull()
 
         ping.map {
             listOfNotNull(
@@ -161,36 +159,36 @@ class SubsonicDataSource(
         val mostPlayedAlbums = subsonicClient.getAlbumList2(
             "frequent",
             10
-        ).toRequestStatus {
+        ).map { albumList2 ->
             ActivityTab(
                 "most_played_albums",
                 LocalizedString.StringResIdLocalizedString(
                     R.string.activity_most_played_albums,
                 ),
-                album.sortedByDescending { it.playCount }.map { it.toMediaItem() }
+                albumList2.album.sortedByDescending { it.playCount }.map { it.toMediaItem() }
             )
         }
 
         val randomAlbums = subsonicClient.getAlbumList2(
             "random",
             10
-        ).toRequestStatus {
+        ).map { albumList2 ->
             ActivityTab(
                 "random_albums",
                 LocalizedString.StringResIdLocalizedString(
                     R.string.activity_random_albums,
                 ),
-                album.map { it.toMediaItem() }
+                albumList2.album.map { it.toMediaItem() }
             )
         }
 
-        val randomSongs = subsonicClient.getRandomSongs(20).toRequestStatus {
+        val randomSongs = subsonicClient.getRandomSongs(20).map { songs ->
             ActivityTab(
                 "random_songs",
                 LocalizedString.StringResIdLocalizedString(
                     R.string.activity_random_songs,
                 ),
-                song.map { it.toMediaItem() }
+                songs.song.map { it.toMediaItem() }
             )
         }
 
@@ -211,8 +209,8 @@ class SubsonicDataSource(
         subsonicClient.getAlbumList2(
             "alphabeticalByName",
             500
-        ).toRequestStatus {
-            album.maybeSortedBy(
+        ).map { albumList2 ->
+            albumList2.album.maybeSortedBy(
                 sortingRule.reverse,
                 when (sortingRule.strategy) {
                     SortingStrategy.ARTIST_NAME -> { album -> album.artist }
@@ -226,8 +224,8 @@ class SubsonicDataSource(
     }.asFlow()
 
     override fun artists(sortingRule: SortingRule) = suspend {
-        subsonicClient.getArtists().toRequestStatus {
-            index.flatMap { it.artist }.maybeSortedBy(
+        subsonicClient.getArtists().map { artistsID3 ->
+            artistsID3.index.flatMap { it.artist }.maybeSortedBy(
                 sortingRule.reverse,
                 when (sortingRule.strategy) {
                     SortingStrategy.NAME -> { artist -> artist.name }
@@ -239,8 +237,8 @@ class SubsonicDataSource(
     }.asFlow()
 
     override fun genres(sortingRule: SortingRule) = suspend {
-        subsonicClient.getGenres().toRequestStatus {
-            genre.maybeSortedBy(
+        subsonicClient.getGenres().map { genres ->
+            genres.genre.maybeSortedBy(
                 sortingRule.reverse,
                 when (sortingRule.strategy) {
                     SortingStrategy.NAME -> { genre -> genre.value }
@@ -252,8 +250,8 @@ class SubsonicDataSource(
     }.asFlow()
 
     override fun playlists(sortingRule: SortingRule) = _playlistsChanged.mapLatest {
-        subsonicClient.getPlaylists().toRequestStatus {
-            playlist.maybeSortedBy(
+        subsonicClient.getPlaylists().map { playlists ->
+            playlists.playlist.maybeSortedBy(
                 sortingRule.reverse,
                 when (sortingRule.strategy) {
                     SortingStrategy.CREATION_DATE -> { playlist ->
@@ -275,31 +273,31 @@ class SubsonicDataSource(
     }
 
     override fun search(query: String) = suspend {
-        subsonicClient.search3(query).toRequestStatus {
-            song.orEmpty().map { it.toMediaItem() } +
-                    artist.orEmpty().map { it.toMediaItem() } +
-                    album.orEmpty().map { it.toMediaItem() }
+        subsonicClient.search3(query).map { searchResult3 ->
+            searchResult3.song.orEmpty().map { it.toMediaItem() } +
+                    searchResult3.artist.orEmpty().map { it.toMediaItem() } +
+                    searchResult3.album.orEmpty().map { it.toMediaItem() }
         }
     }.asFlow()
 
     override fun audio(audioUri: Uri) = suspend {
-        subsonicClient.getSong(audioUri.lastPathSegment!!).toRequestStatus {
-            toMediaItem()
+        subsonicClient.getSong(audioUri.lastPathSegment!!).map { child ->
+            child.toMediaItem()
         }
     }.asFlow()
 
     override fun album(albumUri: Uri) = suspend {
-        subsonicClient.getAlbum(albumUri.lastPathSegment!!).toRequestStatus {
-            toAlbumID3().toMediaItem() to song.map {
+        subsonicClient.getAlbum(albumUri.lastPathSegment!!).map { albumWithSongsID3 ->
+            albumWithSongsID3.toAlbumID3().toMediaItem() to albumWithSongsID3.song.map {
                 it.toMediaItem()
             }
         }
     }.asFlow()
 
     override fun artist(artistUri: Uri) = suspend {
-        subsonicClient.getArtist(artistUri.lastPathSegment!!).toRequestStatus {
-            toArtistID3().toMediaItem() to ArtistWorks(
-                albums = album.map { it.toMediaItem() },
+        subsonicClient.getArtist(artistUri.lastPathSegment!!).map { artistWithAlbumsID3 ->
+            artistWithAlbumsID3.toArtistID3().toMediaItem() to ArtistWorks(
+                albums = artistWithAlbumsID3.album.map { it.toMediaItem() },
                 appearsInAlbum = listOf(),
                 appearsInPlaylist = listOf(),
             )
@@ -313,8 +311,8 @@ class SubsonicDataSource(
             "byGenre",
             size = 500,
             genre = genreName
-        ).toRequestStatus {
-            album.map { it.toMediaItem() }
+        ).map { albumList2 ->
+            albumList2.album.map { it.toMediaItem() }
         }.let {
             when (it) {
                 is Result.Success -> it.data
@@ -322,8 +320,8 @@ class SubsonicDataSource(
             }
         }
 
-        val audios = subsonicClient.getSongsByGenre(genreName).toRequestStatus {
-            song.map { it.toMediaItem() }
+        val audios = subsonicClient.getSongsByGenre(genreName).map { songs ->
+            songs.song.map { it.toMediaItem() }
         }.let {
             when (it) {
                 is Result.Success -> it.data
@@ -350,8 +348,8 @@ class SubsonicDataSource(
     }.asFlow()
 
     override fun playlist(playlistUri: Uri) = _playlistsChanged.mapLatest {
-        subsonicClient.getPlaylist(playlistUri.lastPathSegment!!).toRequestStatus {
-            toPlaylist().toMediaItem() to entry.orEmpty().map {
+        subsonicClient.getPlaylist(playlistUri.lastPathSegment!!).map { playlistWithSongs ->
+            playlistWithSongs.toPlaylist().toMediaItem() to playlistWithSongs.entry.orEmpty().map {
                 it.toMediaItem()
             }
         }
@@ -360,13 +358,14 @@ class SubsonicDataSource(
     override fun audioPlaylistsStatus(audioUri: Uri) = _playlistsChanged.mapLatest {
         val audioId = audioUri.lastPathSegment!!
 
-        subsonicClient.getPlaylists().toRequestStatus {
-            playlist.map { playlist ->
-                playlist.toMediaItem() to subsonicClient.getPlaylist(playlist.id).toRequestStatus {
-                    entry.orEmpty().any { child -> child.id == audioId }
-                }.let { requestStatus ->
-                    (requestStatus as? Result.Success)?.data ?: false
-                }
+        subsonicClient.getPlaylists().map { playlists ->
+            playlists.playlist.map { playlist ->
+                playlist.toMediaItem() to subsonicClient.getPlaylist(playlist.id)
+                    .map { playlistWithSongs ->
+                        playlistWithSongs.entry.orEmpty().any { child -> child.id == audioId }
+                    }.let {
+                        it.getOrNull() ?: false
+                    }
             }
         }
     }
@@ -379,8 +378,8 @@ class SubsonicDataSource(
     override fun lyrics(audioUri: Uri) = suspend {
         val audioId = audioUri.lastPathSegment!!
 
-        subsonicClient.getLyricsBySongId(audioId).toRequestStatus {
-            toModel()
+        subsonicClient.getLyricsBySongId(audioId).map { lyricsList ->
+            lyricsList.toModel()
         }.let {
             when (it) {
                 is Result.Success -> it.data?.let { lyrics ->
@@ -394,20 +393,20 @@ class SubsonicDataSource(
 
     override suspend fun createPlaylist(name: String) = subsonicClient.createPlaylist(
         null, name, listOf()
-    ).toRequestStatus {
+    ).map { playlistWithSongs ->
         onPlaylistsChanged()
-        getPlaylistUri(id)
+        getPlaylistUri(playlistWithSongs.id)
     }
 
     override suspend fun renamePlaylist(
         playlistUri: Uri, name: String
-    ) = subsonicClient.updatePlaylist(playlistUri.lastPathSegment!!, name).toRequestStatus {
+    ) = subsonicClient.updatePlaylist(playlistUri.lastPathSegment!!, name).map {
         onPlaylistsChanged()
     }
 
     override suspend fun deletePlaylist(playlistUri: Uri) = subsonicClient.deletePlaylist(
         playlistUri.lastPathSegment!!.toInt()
-    ).toRequestStatus {
+    ).map {
         onPlaylistsChanged()
     }
 
@@ -415,7 +414,7 @@ class SubsonicDataSource(
         subsonicClient.updatePlaylist(
             playlistUri.lastPathSegment!!,
             songIdsToAdd = listOf(audioUri.lastPathSegment!!)
-        ).toRequestStatus {
+        ).map {
             onPlaylistsChanged()
         }
 
@@ -424,10 +423,10 @@ class SubsonicDataSource(
         audioUri: Uri
     ) = subsonicClient.getPlaylist(
         playlistUri.lastPathSegment!!
-    ).toRequestStatus {
+    ).map { playlistWithSongs ->
         val audioId = audioUri.lastPathSegment!!
 
-        val audioIndexes = entry.orEmpty().mapIndexedNotNull { index, child ->
+        val audioIndexes = playlistWithSongs.entry.orEmpty().mapIndexedNotNull { index, child ->
             index.takeIf { child.id == audioId }
         }
 
@@ -435,7 +434,7 @@ class SubsonicDataSource(
             subsonicClient.updatePlaylist(
                 playlistUri.lastPathSegment!!,
                 songIndexesToRemove = audioIndexes,
-            ).toRequestStatus {
+            ).map {
                 onPlaylistsChanged()
             }
         }
@@ -532,21 +531,6 @@ class SubsonicDataSource(
                 }
                 .build()
         }
-
-    private fun SubsonicError.Code.toRequestStatusType() = when (this) {
-        SubsonicError.Code.GENERIC_ERROR -> Error.IO
-        SubsonicError.Code.REQUIRED_PARAMETER_MISSING -> Error.IO
-        SubsonicError.Code.OUTDATED_CLIENT -> Error.IO
-        SubsonicError.Code.OUTDATED_SERVER -> Error.IO
-        SubsonicError.Code.WRONG_CREDENTIALS -> Error.INVALID_CREDENTIALS
-        SubsonicError.Code.TOKEN_AUTHENTICATION_NOT_SUPPORTED -> Error.INVALID_CREDENTIALS
-        SubsonicError.Code.AUTHENTICATION_MECHANISM_NOT_SUPPORTED -> Error.INVALID_CREDENTIALS
-        SubsonicError.Code.MULTIPLE_CONFLICTING_AUTHENTICATION_MECHANISMS -> Error.INVALID_CREDENTIALS
-        SubsonicError.Code.INVALID_API_KEY -> Error.INVALID_CREDENTIALS
-        SubsonicError.Code.USER_NOT_AUTHORIZED -> Error.INVALID_CREDENTIALS
-        SubsonicError.Code.SUBSONIC_PREMIUM_TRIAL_ENDED -> Error.INVALID_CREDENTIALS
-        SubsonicError.Code.NOT_FOUND -> Error.NOT_FOUND
-    }
 
     private fun getAlbumUri(albumId: String) = albumsUri.buildUpon()
         .appendPath(albumId)
