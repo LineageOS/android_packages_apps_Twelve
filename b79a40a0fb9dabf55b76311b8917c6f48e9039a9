@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b7351997_a84233ef",
+        "filename": "app/src/main/java/org/lineageos/twelve/database/dao/MediaStatsDao.kt",
+        "patchSetId": 1
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2025-03-03T18:14:35Z",
+      "side": 1,
+      "message": "Comment removed by: Luca Stefani; Reason: ...",
+      "range": {
+        "startLine": 37,
+        "startChar": 0,
+        "endLine": 39,
+        "endChar": 0
+      },
+      "revId": "b79a40a0fb9dabf55b76311b8917c6f48e9039a9",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
