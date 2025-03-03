@@ -19,6 +19,8 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.withContext
 import org.lineageos.twelve.models.FlowResult
 import org.lineageos.twelve.models.FlowResult.Companion.asFlowResult
+import org.lineageos.twelve.models.FlowResult.Companion.foldLatest
+import org.lineageos.twelve.models.Playlist
 
 class PlaylistViewModel(application: Application) : TwelveViewModel(application) {
     private val playlistUri = MutableStateFlow<Uri?>(null)
@@ -35,6 +37,18 @@ class PlaylistViewModel(application: Application) : TwelveViewModel(application)
             viewModelScope,
             SharingStarted.WhileSubscribed(),
             FlowResult.Loading()
+        )
+
+    val playlistMetadataCanBeEdited = playlist
+        .foldLatest(
+            onSuccess = { it.first.type == Playlist.Type.PLAYLIST },
+            onError = { _, _ -> false },
+        )
+        .flowOn(Dispatchers.IO)
+        .stateIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(),
+            false
         )
 
     fun loadPlaylist(playlistUri: Uri) {

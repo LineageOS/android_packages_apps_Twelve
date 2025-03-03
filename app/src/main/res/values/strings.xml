@@ -281,4 +281,7 @@
     <string name="lyrics">Lyrics</string>
     <string name="lyrics_not_available">Lyrics not available</string>
     <string name="follow_current_lyrics_line">Follow current line</string>
+
+    <!-- Favorites -->
+    <string name="favorites_playlist">Favorites</string>
 </resources>
