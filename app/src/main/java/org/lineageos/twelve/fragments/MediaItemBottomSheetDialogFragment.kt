@@ -24,7 +24,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.lineageos.twelve.R
-import org.lineageos.twelve.datasources.MediaError
 import org.lineageos.twelve.ext.getParcelable
 import org.lineageos.twelve.ext.getSerializable
 import org.lineageos.twelve.ext.getViewProperty
@@ -32,6 +31,7 @@ import org.lineageos.twelve.ext.navigateSafe
 import org.lineageos.twelve.models.Album
 import org.lineageos.twelve.models.Artist
 import org.lineageos.twelve.models.Audio
+import org.lineageos.twelve.models.Error
 import org.lineageos.twelve.models.Genre
 import org.lineageos.twelve.models.MediaType
 import org.lineageos.twelve.models.Playlist
@@ -246,7 +246,7 @@ class MediaItemBottomSheetDialogFragment : BottomSheetDialogFragment(
                             it.throwable
                         )
 
-                        if (it.error == MediaError.NOT_FOUND) {
+                        if (it.error == Error.NOT_FOUND) {
                             // Get out of here
                             findNavController().navigateUp()
                         }

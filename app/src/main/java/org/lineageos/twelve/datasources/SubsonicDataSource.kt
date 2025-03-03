@@ -21,13 +21,13 @@ import org.lineageos.twelve.datasources.subsonic.SubsonicClient
 import org.lineageos.twelve.datasources.subsonic.models.AlbumID3
 import org.lineageos.twelve.datasources.subsonic.models.ArtistID3
 import org.lineageos.twelve.datasources.subsonic.models.Child
-import org.lineageos.twelve.datasources.subsonic.models.Error
 import org.lineageos.twelve.models.ActivityTab
 import org.lineageos.twelve.models.Album
 import org.lineageos.twelve.models.Artist
 import org.lineageos.twelve.models.ArtistWorks
 import org.lineageos.twelve.models.Audio
 import org.lineageos.twelve.models.DataSourceInformation
+import org.lineageos.twelve.models.Error
 import org.lineageos.twelve.models.Genre
 import org.lineageos.twelve.models.GenreContent
 import org.lineageos.twelve.models.LocalizedString
@@ -43,6 +43,7 @@ import org.lineageos.twelve.models.SortingStrategy
 import org.lineageos.twelve.models.Thumbnail
 import org.lineageos.twelve.utils.toRequestStatus
 import org.lineageos.twelve.utils.toResult
+import org.lineageos.twelve.datasources.subsonic.models.Error as SubsonicError
 
 /**
  * Subsonic based data source.
@@ -193,7 +194,7 @@ class SubsonicDataSource(
             )
         }
 
-        RequestStatus.Success<_, MediaError>(
+        RequestStatus.Success<_, Error>(
             listOf(
                 mostPlayedAlbums,
                 randomAlbums,
@@ -336,7 +337,7 @@ class SubsonicDataSource(
         ).any { it != null }
 
         if (exists) {
-            RequestStatus.Success<_, MediaError>(
+            RequestStatus.Success<_, Error>(
                 Genre.Builder(genreUri).setName(genreName).build() to GenreContent(
                     appearsInAlbums.orEmpty(),
                     listOf(),
@@ -344,7 +345,7 @@ class SubsonicDataSource(
                 )
             )
         } else {
-            RequestStatus.Error(MediaError.NOT_FOUND)
+            RequestStatus.Error(Error.NOT_FOUND)
         }
     }.asFlow()
 
@@ -372,7 +373,7 @@ class SubsonicDataSource(
 
     override fun lastPlayedAudio() = lastPlayedGetter(lastPlayedKey())
         .flatMapLatest { uri ->
-            uri?.let(this::audio) ?: flowOf(RequestStatus.Error(MediaError.NOT_FOUND))
+            uri?.let(this::audio) ?: flowOf(RequestStatus.Error(Error.NOT_FOUND))
         }
 
     override fun lyrics(audioUri: Uri) = suspend {
@@ -384,8 +385,8 @@ class SubsonicDataSource(
             when (it) {
                 is RequestStatus.Loading -> RequestStatus.Loading(it.progress)
                 is RequestStatus.Success -> it.data?.let { lyrics ->
-                    RequestStatus.Success<_, MediaError>(lyrics)
-                } ?: RequestStatus.Error(MediaError.NOT_FOUND)
+                    RequestStatus.Success<_, Error>(lyrics)
+                } ?: RequestStatus.Error(Error.NOT_FOUND)
 
                 is RequestStatus.Error -> RequestStatus.Error(it.error, it.throwable)
             }
@@ -442,7 +443,7 @@ class SubsonicDataSource(
     }
 
     override suspend fun onAudioPlayed(audioUri: Uri) = lastPlayedSetter(lastPlayedKey(), audioUri)
-        .let { RequestStatus.Success<Unit, MediaError>(Unit) }
+        .let { RequestStatus.Success<Unit, Error>(Unit) }
 
     private fun AlbumID3.toMediaItem() = Album.Builder(getAlbumUri(id))
         .setThumbnail(
@@ -533,19 +534,19 @@ class SubsonicDataSource(
                 .build()
         }
 
-    private fun Error.Code.toRequestStatusType() = when (this) {
-        Error.Code.GENERIC_ERROR -> MediaError.IO
-        Error.Code.REQUIRED_PARAMETER_MISSING -> MediaError.IO
-        Error.Code.OUTDATED_CLIENT -> MediaError.IO
-        Error.Code.OUTDATED_SERVER -> MediaError.IO
-        Error.Code.WRONG_CREDENTIALS -> MediaError.INVALID_CREDENTIALS
-        Error.Code.TOKEN_AUTHENTICATION_NOT_SUPPORTED -> MediaError.INVALID_CREDENTIALS
-        Error.Code.AUTHENTICATION_MECHANISM_NOT_SUPPORTED -> MediaError.INVALID_CREDENTIALS
-        Error.Code.MULTIPLE_CONFLICTING_AUTHENTICATION_MECHANISMS -> MediaError.INVALID_CREDENTIALS
-        Error.Code.INVALID_API_KEY -> MediaError.INVALID_CREDENTIALS
-        Error.Code.USER_NOT_AUTHORIZED -> MediaError.INVALID_CREDENTIALS
-        Error.Code.SUBSONIC_PREMIUM_TRIAL_ENDED -> MediaError.INVALID_CREDENTIALS
-        Error.Code.NOT_FOUND -> MediaError.NOT_FOUND
+    private fun SubsonicError.Code.toRequestStatusType() = when (this) {
+        SubsonicError.Code.GENERIC_ERROR -> Error.IO
+        SubsonicError.Code.REQUIRED_PARAMETER_MISSING -> Error.IO
+        SubsonicError.Code.OUTDATED_CLIENT -> Error.IO
+        SubsonicError.Code.OUTDATED_SERVER -> Error.IO
+        SubsonicError.Code.WRONG_CREDENTIALS -> Error.INVALID_CREDENTIALS
+        SubsonicError.Code.TOKEN_AUTHENTICATION_NOT_SUPPORTED -> Error.INVALID_CREDENTIALS
+        SubsonicError.Code.AUTHENTICATION_MECHANISM_NOT_SUPPORTED -> Error.INVALID_CREDENTIALS
+        SubsonicError.Code.MULTIPLE_CONFLICTING_AUTHENTICATION_MECHANISMS -> Error.INVALID_CREDENTIALS
+        SubsonicError.Code.INVALID_API_KEY -> Error.INVALID_CREDENTIALS
+        SubsonicError.Code.USER_NOT_AUTHORIZED -> Error.INVALID_CREDENTIALS
+        SubsonicError.Code.SUBSONIC_PREMIUM_TRIAL_ENDED -> Error.INVALID_CREDENTIALS
+        SubsonicError.Code.NOT_FOUND -> Error.NOT_FOUND
     }
 
     private fun getAlbumUri(albumId: String) = albumsUri.buildUpon()

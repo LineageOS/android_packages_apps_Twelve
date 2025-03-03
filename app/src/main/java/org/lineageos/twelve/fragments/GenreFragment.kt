@@ -30,7 +30,6 @@ import com.google.android.material.progressindicator.LinearProgressIndicator
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.lineageos.twelve.R
-import org.lineageos.twelve.datasources.MediaError
 import org.lineageos.twelve.ext.getParcelable
 import org.lineageos.twelve.ext.getViewProperty
 import org.lineageos.twelve.ext.loadThumbnail
@@ -39,6 +38,7 @@ import org.lineageos.twelve.ext.setProgressCompat
 import org.lineageos.twelve.ext.updatePadding
 import org.lineageos.twelve.models.Album
 import org.lineageos.twelve.models.Audio
+import org.lineageos.twelve.models.Error
 import org.lineageos.twelve.models.Playlist
 import org.lineageos.twelve.models.RequestStatus
 import org.lineageos.twelve.ui.recyclerview.SimpleListAdapter
@@ -296,7 +296,7 @@ class GenreFragment : Fragment(R.layout.fragment_genre) {
                     nestedScrollView.isVisible = false
                     noElementsNestedScrollView.isVisible = true
 
-                    if (it.error == MediaError.NOT_FOUND) {
+                    if (it.error == Error.NOT_FOUND) {
                         // Get out of here
                         findNavController().navigateUp()
                     }

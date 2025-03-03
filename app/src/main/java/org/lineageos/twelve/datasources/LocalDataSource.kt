@@ -29,6 +29,7 @@ import org.lineageos.twelve.models.ArtistWorks
 import org.lineageos.twelve.models.Audio
 import org.lineageos.twelve.models.ColumnIndexCache
 import org.lineageos.twelve.models.DataSourceInformation
+import org.lineageos.twelve.models.Error
 import org.lineageos.twelve.models.Genre
 import org.lineageos.twelve.models.GenreContent
 import org.lineageos.twelve.models.LocalizedString
@@ -197,7 +198,7 @@ class LocalDataSource(
     }
 
     override fun status() = flowOf(
-        RequestStatus.Success<_, MediaError>(listOf<DataSourceInformation>())
+        RequestStatus.Success<_, Error>(listOf<DataSourceInformation>())
     )
 
     override suspend fun mediaTypeOf(mediaItemUri: Uri) = with(mediaItemUri.toString()) {
@@ -220,7 +221,7 @@ class LocalDataSource(
     ) { lastPlayed, mostPlayed, albums, artists, genres ->
         val now = LocalDateTime.now()
 
-        RequestStatus.Success<_, MediaError>(
+        RequestStatus.Success<_, Error>(
             listOf(
                 lastPlayed.map {
                     ActivityTab(
@@ -297,7 +298,7 @@ class LocalDataSource(
             ).toTypedArray(),
         )
     ).mapEachRow(mapAlbum).map {
-        RequestStatus.Success<_, MediaError>(it)
+        RequestStatus.Success<_, Error>(it)
     }
 
     override fun artists(sortingRule: SortingRule) = contentResolver.queryFlow(
@@ -320,7 +321,7 @@ class LocalDataSource(
             ).toTypedArray(),
         )
     ).mapEachRow(mapArtist).map {
-        RequestStatus.Success<_, MediaError>(it)
+        RequestStatus.Success<_, Error>(it)
     }
 
     override fun genres(sortingRule: SortingRule) = contentResolver.queryFlow(
@@ -343,12 +344,12 @@ class LocalDataSource(
             ).toTypedArray(),
         )
     ).mapEachRow(mapGenre).map {
-        RequestStatus.Success<_, MediaError>(it)
+        RequestStatus.Success<_, Error>(it)
     }
 
     override fun playlists(sortingRule: SortingRule) = database.getPlaylistDao().getAll()
         .mapLatest { playlists ->
-            RequestStatus.Success<_, MediaError>(playlists.map { it.toModel() })
+            RequestStatus.Success<_, Error>(playlists.map { it.toModel() })
         }
 
     override fun search(query: String) = combine(
@@ -394,7 +395,7 @@ class LocalDataSource(
         ).mapEachRow(mapGenre),
     ) { albums, artists, audios, genres ->
         albums + artists + audios + genres
-    }.map { RequestStatus.Success<_, MediaError>(it) }
+    }.map { RequestStatus.Success<_, Error>(it) }
 
     override fun audio(audioUri: Uri) = contentResolver.queryFlow(
         audiosUri,
@@ -409,8 +410,8 @@ class LocalDataSource(
         )
     ).mapEachRow(mapAudio).mapLatest { audios ->
         audios.firstOrNull()?.let {
-            RequestStatus.Success<_, MediaError>(it)
-        } ?: RequestStatus.Error(MediaError.NOT_FOUND)
+            RequestStatus.Success<_, Error>(it)
+        } ?: RequestStatus.Error(Error.NOT_FOUND)
     }
 
     override fun album(albumUri: Uri) = combine(
@@ -443,8 +444,8 @@ class LocalDataSource(
         ).mapEachRow(mapAudio)
     ) { albums, audios ->
         albums.firstOrNull()?.let { album ->
-            RequestStatus.Success<_, MediaError>(album to audios)
-        } ?: RequestStatus.Error(MediaError.NOT_FOUND)
+            RequestStatus.Success<_, Error>(album to audios)
+        } ?: RequestStatus.Error(Error.NOT_FOUND)
     }
 
     override fun artist(artistUri: Uri) = combine(
@@ -514,8 +515,8 @@ class LocalDataSource(
                 listOf(),
             )
 
-            RequestStatus.Success<_, MediaError>(artist to artistWorks)
-        } ?: RequestStatus.Error(MediaError.NOT_FOUND)
+            RequestStatus.Success<_, Error>(artist to artistWorks)
+        } ?: RequestStatus.Error(Error.NOT_FOUND)
     }
 
     override fun genre(genreUri: Uri) = ContentUris.parseId(genreUri).let { genreId ->
@@ -603,8 +604,8 @@ class LocalDataSource(
                     audios,
                 )
 
-                RequestStatus.Success<_, MediaError>(it to genreContent)
-            } ?: RequestStatus.Error(MediaError.NOT_FOUND)
+                RequestStatus.Success<_, Error>(it to genreContent)
+            } ?: RequestStatus.Error(Error.NOT_FOUND)
         }
     }
 
@@ -616,11 +617,11 @@ class LocalDataSource(
 
             audios(playlistWithItems.items.map(Item::audioUri))
                 .mapLatest { items ->
-                    RequestStatus.Success<_, MediaError>(playlist to items.filterNotNull())
+                    RequestStatus.Success<_, Error>(playlist to items.filterNotNull())
                 }
         } ?: flowOf(
             RequestStatus.Error(
-                MediaError.NOT_FOUND
+                Error.NOT_FOUND
             )
         )
     }
@@ -629,7 +630,7 @@ class LocalDataSource(
         database.getPlaylistWithItemsDao().getPlaylistsWithItemStatus(
             audioUri
         ).mapLatest { data ->
-            RequestStatus.Success<_, MediaError>(
+            RequestStatus.Success<_, Error>(
                 data.map {
                     it.playlist.toModel() to it.value
                 }
@@ -637,7 +638,7 @@ class LocalDataSource(
         }
 
     override fun lyrics(audioUri: Uri) = flowOf(
-        RequestStatus.Error<Lyrics, _>(MediaError.NOT_IMPLEMENTED)
+        RequestStatus.Error<Lyrics, _>(Error.NOT_IMPLEMENTED)
     )
 
     override fun lastPlayedAudio() = database.getLastPlayedDao()
@@ -662,7 +663,7 @@ class LocalDataSource(
         }
         .mapLatest { audios ->
             if (audios.isEmpty()) {
-                RequestStatus.Error<Audio, MediaError>(MediaError.NOT_FOUND)
+                RequestStatus.Error<Audio, Error>(Error.NOT_FOUND)
             } else {
                 RequestStatus.Success(audios.first())
             }
@@ -671,20 +672,20 @@ class LocalDataSource(
     override suspend fun createPlaylist(name: String) = database.getPlaylistDao().create(
         name
     ).let {
-        RequestStatus.Success<_, MediaError>(ContentUris.withAppendedId(playlistsBaseUri, it))
+        RequestStatus.Success<_, Error>(ContentUris.withAppendedId(playlistsBaseUri, it))
     }
 
     override suspend fun renamePlaylist(playlistUri: Uri, name: String) =
         database.getPlaylistDao().rename(
             ContentUris.parseId(playlistUri), name
         ).let {
-            RequestStatus.Success<_, MediaError>(Unit)
+            RequestStatus.Success<_, Error>(Unit)
         }
 
     override suspend fun deletePlaylist(playlistUri: Uri) = database.getPlaylistDao().delete(
         ContentUris.parseId(playlistUri)
     ).let {
-        RequestStatus.Success<_, MediaError>(Unit)
+        RequestStatus.Success<_, Error>(Unit)
     }
 
     override suspend fun addAudioToPlaylist(
@@ -694,7 +695,7 @@ class LocalDataSource(
         ContentUris.parseId(playlistUri),
         audioUri
     ).let {
-        RequestStatus.Success<_, MediaError>(Unit)
+        RequestStatus.Success<_, Error>(Unit)
     }
 
     override suspend fun removeAudioFromPlaylist(
@@ -704,12 +705,12 @@ class LocalDataSource(
         ContentUris.parseId(playlistUri),
         audioUri
     ).let {
-        RequestStatus.Success<_, MediaError>(Unit)
+        RequestStatus.Success<_, Error>(Unit)
     }
 
     override suspend fun onAudioPlayed(
         audioUri: Uri
-    ): RequestStatus<Unit, MediaError> {
+    ): RequestStatus<Unit, Error> {
         database.getLocalMediaStatsProviderDao().increasePlayCount(audioUri)
         database.getLastPlayedDao().set(LAST_PLAYED_KEY, audioUri)
         return RequestStatus.Success(Unit)
@@ -784,7 +785,7 @@ class LocalDataSource(
                 ).mapEachRow(mapAlbum)
             }
             .mapLatest {
-                RequestStatus.Success<List<Album>, MediaError>(it)
+                RequestStatus.Success<List<Album>, Error>(it)
             }
 
     private fun lastPlayedMediaItems() = lastPlayedAudio().flatMapLatest { rs ->
@@ -802,13 +803,13 @@ class LocalDataSource(
                         ).toTypedArray(),
                     )
                 ).mapEachRow(mapAlbum).mapLatest { albums ->
-                    RequestStatus.Success<List<MediaItem<*>>, MediaError>(
+                    RequestStatus.Success<List<MediaItem<*>>, Error>(
                         listOf(audio as MediaItem<*>) + albums,
                     )
                 }
             },
-            onLoading = { flowOf(RequestStatus.Error(MediaError.NOT_FOUND)) },
-            onError = { flowOf(RequestStatus.Error(MediaError.NOT_FOUND)) },
+            onLoading = { flowOf(RequestStatus.Error(Error.NOT_FOUND)) },
+            onError = { flowOf(RequestStatus.Error(Error.NOT_FOUND)) },
         )
     }
 

@@ -36,7 +36,6 @@ import org.lineageos.twelve.datasources.DummyDataSource
 import org.lineageos.twelve.datasources.JellyfinDataSource
 import org.lineageos.twelve.datasources.LocalDataSource
 import org.lineageos.twelve.datasources.MediaDataSource
-import org.lineageos.twelve.datasources.MediaError
 import org.lineageos.twelve.datasources.SubsonicDataSource
 import org.lineageos.twelve.ext.DEFAULT_PROVIDER_KEY
 import org.lineageos.twelve.ext.SPLIT_LOCAL_DEVICES_KEY
@@ -44,6 +43,7 @@ import org.lineageos.twelve.ext.defaultProvider
 import org.lineageos.twelve.ext.preferenceFlow
 import org.lineageos.twelve.ext.splitLocalDevices
 import org.lineageos.twelve.ext.storageVolumesFlow
+import org.lineageos.twelve.models.Error
 import org.lineageos.twelve.models.Provider
 import org.lineageos.twelve.models.ProviderArgument.Companion.requireArgument
 import org.lineageos.twelve.models.ProviderIdentifier
@@ -615,7 +615,7 @@ class MediaRepository(
     ) = getDataSource(providerIdentifier)?.createPlaylist(
         name
     ) ?: RequestStatus.Error(
-        MediaError.NOT_FOUND
+        Error.NOT_FOUND
     )
 
     /**
@@ -679,11 +679,11 @@ class MediaRepository(
      */
     private fun <T> withProviderDataSource(
         providerIdentifier: ProviderIdentifier,
-        predicate: MediaDataSource.() -> Flow<RequestStatus<T, MediaError>>
+        predicate: MediaDataSource.() -> Flow<RequestStatus<T, Error>>
     ) = allProvidersToDataSource.flatMapLatest {
         it.firstOrNull { (provider, _) ->
             providerIdentifier.type == provider.type && providerIdentifier.typeId == provider.typeId
-        }?.second?.predicate() ?: flowOf(RequestStatus.Error(MediaError.NOT_FOUND))
+        }?.second?.predicate() ?: flowOf(RequestStatus.Error(Error.NOT_FOUND))
     }
 
     /**
@@ -695,11 +695,11 @@ class MediaRepository(
      *   no [MediaDataSource] can handle the given URIs
      */
     private fun <T> withMediaItemsDataSourceFlow(
-        vararg uris: Uri, predicate: MediaDataSource.() -> Flow<RequestStatus<T, MediaError>>
+        vararg uris: Uri, predicate: MediaDataSource.() -> Flow<RequestStatus<T, Error>>
     ) = allProvidersToDataSource.flatMapLatest {
         it.firstOrNull { (_, dataSource) ->
             uris.all { uri -> dataSource.isMediaItemCompatible(uri) }
-        }?.second?.predicate() ?: flowOf(RequestStatus.Error(MediaError.NOT_FOUND))
+        }?.second?.predicate() ?: flowOf(RequestStatus.Error(Error.NOT_FOUND))
     }
 
     /**
@@ -711,10 +711,10 @@ class MediaRepository(
      *   error if no [MediaDataSource] can handle the given URIs
      */
     private suspend fun <T> withMediaItemsDataSource(
-        vararg uris: Uri, predicate: suspend MediaDataSource.() -> RequestStatus<T, MediaError>
+        vararg uris: Uri, predicate: suspend MediaDataSource.() -> RequestStatus<T, Error>
     ) = allProvidersToDataSource.value.firstOrNull { (_, dataSource) ->
         uris.all { uri -> dataSource.isMediaItemCompatible(uri) }
-    }?.second?.predicate() ?: RequestStatus.Error(MediaError.NOT_FOUND)
+    }?.second?.predicate() ?: RequestStatus.Error(Error.NOT_FOUND)
 
     private suspend fun MediaDataSource.isMediaItemCompatible(
         mediaItemUri: Uri

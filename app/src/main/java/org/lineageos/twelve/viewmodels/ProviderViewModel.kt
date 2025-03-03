@@ -19,7 +19,7 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.withContext
-import org.lineageos.twelve.datasources.MediaError
+import org.lineageos.twelve.models.Error
 import org.lineageos.twelve.models.ProviderIdentifier
 import org.lineageos.twelve.models.RequestStatus
 import org.lineageos.twelve.models.RequestStatus.Companion.fold
@@ -38,8 +38,8 @@ open class ProviderViewModel(application: Application) : TwelveViewModel(applica
             it?.let { providerIdentifier ->
                 mediaRepository.provider(providerIdentifier).mapLatest { maybeProvider ->
                     maybeProvider?.let { provider ->
-                        RequestStatus.Success<_, MediaError>(provider)
-                    } ?: RequestStatus.Error(MediaError.NOT_FOUND)
+                        RequestStatus.Success<_, Error>(provider)
+                    } ?: RequestStatus.Error(Error.NOT_FOUND)
                 }
             } ?: flowOf(RequestStatus.Loading())
         }

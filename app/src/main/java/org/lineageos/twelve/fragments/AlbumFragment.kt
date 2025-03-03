@@ -33,7 +33,6 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.lineageos.twelve.R
-import org.lineageos.twelve.datasources.MediaError
 import org.lineageos.twelve.ext.getParcelable
 import org.lineageos.twelve.ext.getViewProperty
 import org.lineageos.twelve.ext.loadThumbnail
@@ -41,6 +40,7 @@ import org.lineageos.twelve.ext.navigateSafe
 import org.lineageos.twelve.ext.setProgressCompat
 import org.lineageos.twelve.ext.updateMargin
 import org.lineageos.twelve.ext.updatePadding
+import org.lineageos.twelve.models.Error
 import org.lineageos.twelve.models.RequestStatus
 import org.lineageos.twelve.ui.recyclerview.SimpleListAdapter
 import org.lineageos.twelve.ui.recyclerview.UniqueItemDiffCallback
@@ -349,7 +349,7 @@ class AlbumFragment : Fragment(R.layout.fragment_album) {
                             toolbar.title = ""
                             albumTitleTextView.text = ""
 
-                            if (it.error == MediaError.NOT_FOUND) {
+                            if (it.error == Error.NOT_FOUND) {
                                 // Get out of here
                                 findNavController().navigateUp()
                             }

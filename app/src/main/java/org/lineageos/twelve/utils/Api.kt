@@ -20,8 +20,8 @@ import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
-import org.lineageos.twelve.datasources.MediaError
 import org.lineageos.twelve.ext.executeAsync
+import org.lineageos.twelve.models.Error
 import org.lineageos.twelve.models.RequestStatus
 import java.net.SocketTimeoutException
 import kotlin.reflect.KType
@@ -206,23 +206,23 @@ sealed interface MethodResult<T> {
 
 suspend fun <T, O> MethodResult<T>.toRequestStatus(
     resultGetter: suspend T.() -> O
-): RequestStatus<O, MediaError> = when (this) {
+): RequestStatus<O, Error> = when (this) {
     is MethodResult.Success -> RequestStatus.Success(result.resultGetter())
 
     is MethodResult.HttpError -> RequestStatus.Error(
         when (code) {
-            401 -> MediaError.AUTHENTICATION_REQUIRED
-            403 -> MediaError.INVALID_CREDENTIALS
-            404 -> MediaError.NOT_FOUND
-            else -> MediaError.IO
+            401 -> Error.AUTHENTICATION_REQUIRED
+            403 -> Error.INVALID_CREDENTIALS
+            404 -> Error.NOT_FOUND
+            else -> Error.IO
         },
         error
     )
 
-    is MethodResult.DeserializationError -> RequestStatus.Error(MediaError.DESERIALIZATION, error)
-    is MethodResult.CancellationError -> RequestStatus.Error(MediaError.CANCELLED, error)
-    is MethodResult.InvalidResponse -> RequestStatus.Error(MediaError.INVALID_RESPONSE, error)
-    is MethodResult.GenericError -> RequestStatus.Error(MediaError.IO, error)
+    is MethodResult.DeserializationError -> RequestStatus.Error(Error.DESERIALIZATION, error)
+    is MethodResult.CancellationError -> RequestStatus.Error(Error.CANCELLED, error)
+    is MethodResult.InvalidResponse -> RequestStatus.Error(Error.INVALID_RESPONSE, error)
+    is MethodResult.GenericError -> RequestStatus.Error(Error.IO, error)
 }
 
 suspend fun <T, O> MethodResult<T>.toResult(

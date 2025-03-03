@@ -13,6 +13,7 @@ import org.lineageos.twelve.models.Artist
 import org.lineageos.twelve.models.ArtistWorks
 import org.lineageos.twelve.models.Audio
 import org.lineageos.twelve.models.DataSourceInformation
+import org.lineageos.twelve.models.Error
 import org.lineageos.twelve.models.Genre
 import org.lineageos.twelve.models.GenreContent
 import org.lineageos.twelve.models.Lyrics
@@ -22,7 +23,7 @@ import org.lineageos.twelve.models.Playlist
 import org.lineageos.twelve.models.RequestStatus
 import org.lineageos.twelve.models.SortingRule
 
-typealias MediaRequestStatus<T> = RequestStatus<T, MediaError>
+typealias MediaRequestStatus<T> = RequestStatus<T, Error>
 
 /**
  * A data source for media.
@@ -116,7 +117,7 @@ interface MediaDataSource {
      * Get the lyrics of an audio.
      * @param audioUri The URI of the audio
      */
-    fun lyrics(audioUri: Uri): Flow<RequestStatus<Lyrics, MediaError>>
+    fun lyrics(audioUri: Uri): Flow<RequestStatus<Lyrics, Error>>
 
     /**
      * Create a new playlist. Note that the name shouldn't be considered unique if possible, but

@@ -35,7 +35,6 @@ import me.bogerchan.niervisualizer.renderer.columnar.ColumnarType2Renderer
 import me.bogerchan.niervisualizer.renderer.columnar.ColumnarType3Renderer
 import me.bogerchan.niervisualizer.renderer.columnar.ColumnarType4Renderer
 import me.bogerchan.niervisualizer.renderer.line.LineRenderer
-import org.lineageos.twelve.datasources.MediaError
 import org.lineageos.twelve.ext.applicationContext
 import org.lineageos.twelve.ext.availableCommandsFlow
 import org.lineageos.twelve.ext.isPlayingFlow
@@ -49,6 +48,7 @@ import org.lineageos.twelve.ext.repeatModeFlow
 import org.lineageos.twelve.ext.shuffleModeFlow
 import org.lineageos.twelve.ext.toThumbnail
 import org.lineageos.twelve.ext.tracksFlow
+import org.lineageos.twelve.models.Error
 import org.lineageos.twelve.models.PlaybackProgress
 import org.lineageos.twelve.models.PlaybackState
 import org.lineageos.twelve.models.RepeatMode
@@ -130,7 +130,7 @@ open class NowPlayingViewModel(application: Application) : TwelveViewModel(appli
         .flatMapLatest { mediaItemUri ->
             mediaItemUri?.let {
                 mediaRepository.audio(it)
-            } ?: flowOf(RequestStatus.Error(MediaError.NOT_FOUND))
+            } ?: flowOf(RequestStatus.Error(Error.NOT_FOUND))
         }
         .flowOn(Dispatchers.IO)
         .stateIn(
