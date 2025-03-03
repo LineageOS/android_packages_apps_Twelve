@@ -42,6 +42,7 @@ import org.lineageos.twelve.ext.updatePadding
 import org.lineageos.twelve.models.Audio
 import org.lineageos.twelve.models.Error
 import org.lineageos.twelve.models.FlowResult
+import org.lineageos.twelve.models.Playlist
 import org.lineageos.twelve.ui.dialogs.EditTextMaterialAlertDialogBuilder
 import org.lineageos.twelve.ui.recyclerview.SimpleListAdapter
 import org.lineageos.twelve.ui.recyclerview.UniqueItemDiffCallback
@@ -252,12 +253,23 @@ class PlaylistFragment : Fragment(R.layout.fragment_playlist) {
                 is FlowResult.Success -> {
                     val (playlist, audios) = it.data
 
-                    toolbar.title = playlist.name
-                    playlistNameTextView.text = playlist.name
+                    playlist.name?.also {
+                        toolbar.title = playlist.name
+                        playlistNameTextView.text = playlist.name
+                    } ?: when (playlist.type) {
+                        Playlist.Type.PLAYLIST -> R.string.playlist_unknown
+                        Playlist.Type.FAVORITES -> R.string.favorites_playlist
+                    }.also { stringResId ->
+                        toolbar.setTitle(stringResId)
+                        playlistNameTextView.setText(stringResId)
+                    }
 
                     thumbnailImageView.loadThumbnail(
                         playlist.thumbnail,
-                        placeholder = R.drawable.ic_playlist_play
+                        placeholder = when (playlist.type) {
+                            Playlist.Type.PLAYLIST -> R.drawable.ic_playlist_play
+                            Playlist.Type.FAVORITES -> R.drawable.ic_favorite
+                        }
                     )
 
                     val totalDurationMs = audios.sumOf { audio ->
