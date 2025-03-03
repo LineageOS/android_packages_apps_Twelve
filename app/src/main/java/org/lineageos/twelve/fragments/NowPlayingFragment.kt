@@ -46,6 +46,7 @@ import org.lineageos.twelve.ext.getViewProperty
 import org.lineageos.twelve.ext.loadThumbnail
 import org.lineageos.twelve.ext.navigateSafe
 import org.lineageos.twelve.ext.updatePadding
+import org.lineageos.twelve.models.FlowResult
 import org.lineageos.twelve.models.PlaybackState
 import org.lineageos.twelve.models.RepeatMode
 import org.lineageos.twelve.models.Result
@@ -78,6 +79,7 @@ class NowPlayingFragment : Fragment(R.layout.fragment_now_playing) {
     private val equalizerMaterialButton by getViewProperty<MaterialButton>(R.id.equalizerMaterialButton)
     private val fileTypeMaterialCardView by getViewProperty<MaterialCardView>(R.id.fileTypeMaterialCardView)
     private val fileTypeTextView by getViewProperty<TextView>(R.id.fileTypeTextView)
+    private val isFavoriteMaterialButton by getViewProperty<MaterialButton>(R.id.isFavoriteMaterialButton)
     private val linearProgressIndicator by getViewProperty<LinearProgressIndicator>(R.id.linearProgressIndicator)
     private val lyricsMaterialCardView by getViewProperty<MaterialCardView>(R.id.lyricsMaterialCardView)
     private val nestedScrollView by getViewProperty<NestedScrollView>(R.id.nestedScrollView)
@@ -266,6 +268,14 @@ class NowPlayingFragment : Fragment(R.layout.fragment_now_playing) {
             findNavController().navigateSafe(R.id.action_nowPlayingFragment_to_fragment_queue)
         }
 
+        isFavoriteMaterialButton.setOnClickListener {
+            lifecycleScope.launch {
+                isFavoriteMaterialButton.isEnabled = false
+                viewModel.toggleFavorites()
+                isFavoriteMaterialButton.isEnabled = true
+            }
+        }
+
         // Lyrics
         showLyricsMaterialButton.setOnClickListener {
             findNavController().navigateSafe(R.id.action_nowPlayingFragment_to_fragment_lyrics)
@@ -294,8 +304,41 @@ class NowPlayingFragment : Fragment(R.layout.fragment_now_playing) {
                 }
 
                 launch {
-                    // Collect audio for add or remove from playlists button
-                    viewModel.audio.collect()
+                    viewModel.audio.collectLatest {
+                        when (it) {
+                            is FlowResult.Loading -> {
+                                // Do nothing
+                            }
+
+                            is FlowResult.Success -> {
+                                val audio = it.data
+
+                                isFavoriteMaterialButton.isVisible = true
+                                isFavoriteMaterialButton.setIconResource(
+                                    when (audio.isFavorite) {
+                                        true -> R.drawable.ic_heart_filled
+                                        false -> R.drawable.ic_heart_unfilled
+                                    }
+                                )
+                                isFavoriteMaterialButton.tooltipText = getString(
+                                    when (audio.isFavorite) {
+                                        true -> R.string.remove_from_favorites
+                                        false -> R.string.add_to_favorites
+                                    }
+                                )
+                            }
+
+                            is FlowResult.Error -> {
+                                Log.e(
+                                    LOG_TAG,
+                                    "Error while loading audio, error: ${it.error}",
+                                    it.throwable
+                                )
+
+                                isFavoriteMaterialButton.isVisible = false
+                            }
+                        }
+                    }
                 }
 
                 launch {
