@@ -55,15 +55,14 @@ class AddOrRemoveFromPlaylistsFragment : Fragment(R.layout.fragment_add_or_remov
     private val toolbar by getViewProperty<MaterialToolbar>(R.id.toolbar)
 
     // Recyclerview
-    private val addNewPlaylistItem = Pair(Playlist.Builder(Uri.EMPTY).build(), false)
     private val adapter by lazy {
         object : SimpleListAdapter<Pair<Playlist, Boolean>, ListItem>(
             diffCallback,
             ::ListItem,
         ) {
             override fun ViewHolder.onBindView(item: Pair<Playlist, Boolean>) {
-                when (item === addNewPlaylistItem) {
-                    true -> {
+                when {
+                    (item.first === Playlist.NEW_PLAYLIST) -> {
                         view.setOnClickListener {
                             findNavController().navigateSafe(
                                 R.id.action_addOrRemoveFromPlaylistsFragment_to_fragment_create_playlist_dialog,
@@ -78,7 +77,26 @@ class AddOrRemoveFromPlaylistsFragment : Fragment(R.layout.fragment_add_or_remov
                         view.trailingIconImage = null
                     }
 
-                    false -> {
+                    item.first.isFavorite -> {
+                        view.setOnClickListener {
+                            viewLifecycleOwner.lifecycleScope.launch {
+                                fullscreenLoadingProgressBar.withProgress {
+                                    viewModel.setFavorite(!item.second)
+                                }
+                            }
+                        }
+
+                        view.setLeadingIconImage(R.drawable.ic_heart_filled)
+                        view.setHeadlineText(R.string.favorite_playlist)
+                        view.setTrailingIconImage(
+                            when (item.second) {
+                                true -> R.drawable.ic_check_circle
+                                false -> R.drawable.ic_circle
+                            }
+                        )
+                    }
+
+                    else -> {
                         view.setOnClickListener {
                             viewLifecycleOwner.lifecycleScope.launch {
                                 fullscreenLoadingProgressBar.withProgress {
@@ -159,18 +177,35 @@ class AddOrRemoveFromPlaylistsFragment : Fragment(R.layout.fragment_add_or_remov
                 is FlowResult.Success -> {
                     val isEmpty = it.data.isEmpty()
 
+                    val favorite =
+                        it.data.find { playlistWithAudio -> playlistWithAudio.first.isFavorite }
+                    val playlists =
+                        it.data.filter { playlistWithAudio -> !playlistWithAudio.first.isFavorite }
+
                     adapter.submitList(
-                        when (isEmpty) {
-                            true -> emptyList()
-                            false -> listOf(
-                                addNewPlaylistItem,
-                                *it.data.toTypedArray(),
-                            )
+                        buildList {
+                            when (isEmpty) {
+                                true -> {
+                                    if (favorite != null) {
+                                        add(Playlist.NEW_PLAYLIST to false)
+                                        add(favorite)
+                                    }
+                                }
+
+                                false -> {
+                                    add(Playlist.NEW_PLAYLIST to false)
+                                    if (favorite != null) {
+                                        add(favorite)
+                                    }
+                                    addAll(playlists)
+                                }
+                            }
                         }
                     )
 
-                    recyclerView.isVisible = !isEmpty
-                    noElementsLinearLayout.isVisible = isEmpty
+                    recyclerView.isVisible = !isEmpty || favorite != null
+                    noElementsLinearLayout.isVisible = isEmpty && favorite == null
+
                 }
 
                 is FlowResult.Error -> {
