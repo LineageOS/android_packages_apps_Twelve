@@ -46,6 +46,7 @@ import org.lineageos.twelve.ext.getViewProperty
 import org.lineageos.twelve.ext.loadThumbnail
 import org.lineageos.twelve.ext.navigateSafe
 import org.lineageos.twelve.ext.updatePadding
+import org.lineageos.twelve.models.Error
 import org.lineageos.twelve.models.MediaType
 import org.lineageos.twelve.models.PlaybackState
 import org.lineageos.twelve.models.RepeatMode
@@ -531,11 +532,19 @@ class NowPlayingFragment : Fragment(R.layout.fragment_now_playing) {
                             }
 
                             is Result.Error -> {
-                                Log.e(
-                                    LOG_TAG,
-                                    "Error while loading lyrics: ${it.error}",
-                                    it.throwable
-                                )
+                                when (it.error) {
+                                    Error.NOT_IMPLEMENTED -> {
+                                        // Do nothing
+                                    }
+
+                                    else -> {
+                                        Log.e(
+                                            LOG_TAG,
+                                            "Error while loading lyrics: ${it.error}",
+                                            it.throwable
+                                        )
+                                    }
+                                }
 
                                 lyricsMaterialCardView.isVisible = false
                             }
