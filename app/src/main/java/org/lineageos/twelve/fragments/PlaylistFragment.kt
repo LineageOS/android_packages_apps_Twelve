@@ -252,13 +252,23 @@ class PlaylistFragment : Fragment(R.layout.fragment_playlist) {
                 is FlowResult.Success -> {
                     val (playlist, audios) = it.data
 
-                    toolbar.title = playlist.name
-                    playlistNameTextView.text = playlist.name
+                    when (playlist.isFavorite) {
+                        true -> {
+                            toolbar.title = getString(R.string.favorite_playlist)
+                            playlistNameTextView.text =
+                                getString(R.string.favorite_playlist)
+                            thumbnailImageView.setImageResource(R.drawable.ic_heart_unfilled)
+                        }
 
-                    thumbnailImageView.loadThumbnail(
-                        playlist.thumbnail,
-                        placeholder = R.drawable.ic_playlist_play
-                    )
+                        false -> {
+                            toolbar.title = playlist.name
+                            playlistNameTextView.text = playlist.name
+                            thumbnailImageView.loadThumbnail(
+                                playlist.thumbnail,
+                                placeholder = R.drawable.ic_playlist_play
+                            )
+                        }
+                    }
 
                     val totalDurationMs = audios.sumOf { audio ->
                         audio.durationMs ?: 0L

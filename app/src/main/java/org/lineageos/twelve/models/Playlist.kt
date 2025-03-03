@@ -70,4 +70,8 @@ data class Playlist(
             isFavorite = isFavorite,
         )
     }
+
+    companion object {
+        val NEW_PLAYLIST = Builder(Uri.EMPTY).build()
+    }
 }
