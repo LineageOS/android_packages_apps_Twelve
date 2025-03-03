@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0023749a_c00327a6",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 25732
+      },
+      "writtenOn": "2025-03-03T19:33:35Z",
+      "side": 1,
+      "message": "Actually do we rather want to revert to the default RenderersFactory?",
+      "revId": "37a27023bb50c624ac80f292d4322adaa0c684df",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
