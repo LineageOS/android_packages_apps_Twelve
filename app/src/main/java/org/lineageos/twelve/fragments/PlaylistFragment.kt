@@ -41,6 +41,7 @@ import org.lineageos.twelve.ext.setProgressCompat
 import org.lineageos.twelve.ext.updateMargin
 import org.lineageos.twelve.ext.updatePadding
 import org.lineageos.twelve.models.Audio
+import org.lineageos.twelve.models.Playlist
 import org.lineageos.twelve.models.RequestStatus
 import org.lineageos.twelve.ui.dialogs.EditTextMaterialAlertDialogBuilder
 import org.lineageos.twelve.ui.recyclerview.SimpleListAdapter
@@ -121,6 +122,8 @@ class PlaylistFragment : Fragment(R.layout.fragment_playlist) {
     // Arguments
     private val playlistUri: Uri
         get() = requireArguments().getParcelable(ARG_PLAYLIST_URI, Uri::class)!!
+    private val isFavoritePlaylist: Boolean
+        get() = playlistUri == Playlist.FAVORITE_PLAYLIST.uri
 
     // Permissions
     private val permissionsChecker = PermissionsChecker(
@@ -212,18 +215,35 @@ class PlaylistFragment : Fragment(R.layout.fragment_playlist) {
         recyclerView.adapter = adapter
 
         playAllExtendedFloatingActionButton.setOnClickListener {
-            viewModel.playPlaylist()
+            if (isFavoritePlaylist) {
+                viewModel.playFavorites()
+            } else {
+                viewModel.playPlaylist()
+            }
 
             findNavController().navigateSafe(R.id.action_playlistFragment_to_fragment_now_playing)
         }
 
         shufflePlayExtendedFloatingActionButton.setOnClickListener {
-            viewModel.shufflePlayPlaylist()
+            if (isFavoritePlaylist) {
+                viewModel.shufflePlayFavorites()
+            } else {
+                viewModel.shufflePlayPlaylist()
+            }
 
             findNavController().navigateSafe(R.id.action_playlistFragment_to_fragment_now_playing)
         }
 
-        viewModel.loadPlaylist(playlistUri)
+        if (isFavoritePlaylist) {
+            toolbar.title = getString(R.string.favorite_playlist)
+            playlistNameTextView.text = getString(R.string.favorite_playlist)
+            thumbnailImageView.setImageResource(R.drawable.ic_heart_unfilled)
+            tracksInfoTextView.text = getString(R.string.favorite_playlist_info)
+
+            viewModel.loadFavorites()
+        } else {
+            viewModel.loadPlaylist(playlistUri)
+        }
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -314,6 +334,67 @@ class PlaylistFragment : Fragment(R.layout.fragment_playlist) {
                         // Get out of here
                         findNavController().navigateUp()
                     }
+                }
+            }
+        }
+
+        viewModel.favorites.collectLatest {
+            linearProgressIndicator.setProgressCompat(it, true)
+
+            when (it) {
+                is RequestStatus.Loading -> {
+                    // Do nothing
+                }
+
+                is RequestStatus.Success -> {
+                    val favorites = it.data
+
+                    val totalDurationMs = favorites.sumOf { audio ->
+                        audio.durationMs ?: 0L
+                    }
+                    val totalDurationMinutes = (totalDurationMs / 1000 / 60).toInt()
+
+                    val tracksCount = resources.getQuantityString(
+                        R.plurals.tracks_count,
+                        favorites.size,
+                        favorites.size
+                    )
+                    val tracksDuration = resources.getQuantityString(
+                        R.plurals.tracks_duration,
+                        totalDurationMinutes,
+                        totalDurationMinutes
+                    )
+                    tracksInfoTextView.text = getString(
+                        R.string.tracks_info,
+                        tracksCount, tracksDuration
+                    )
+
+                    adapter.submitList(favorites)
+
+                    val isEmpty = favorites.isEmpty()
+                    recyclerView.isVisible = !isEmpty
+                    noElementsNestedScrollView.isVisible = isEmpty
+                    when (isEmpty) {
+                        true -> {
+                            playAllExtendedFloatingActionButton.hide()
+                            shufflePlayExtendedFloatingActionButton.hide()
+                        }
+
+                        false -> {
+                            playAllExtendedFloatingActionButton.show()
+                            shufflePlayExtendedFloatingActionButton.show()
+                        }
+                    }
+                }
+
+                is RequestStatus.Error -> {
+                    Log.e(LOG_TAG, "Error loading favorites, error: ${it.error}")
+
+                    adapter.submitList(listOf())
+
+                    recyclerView.isVisible = false
+                    noElementsNestedScrollView.isVisible = true
+                    playAllExtendedFloatingActionButton.isVisible = false
                 }
             }
         }

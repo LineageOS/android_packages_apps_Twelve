@@ -7,13 +7,13 @@ package org.lineageos.twelve.viewmodels
 
 import android.app.Application
 import android.content.SharedPreferences
-import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.flow.merge
 import org.lineageos.twelve.ext.PLAYLISTS_SORTING_REVERSE_KEY
 import org.lineageos.twelve.ext.PLAYLISTS_SORTING_STRATEGY_KEY
 import org.lineageos.twelve.ext.playlistsSortingRule
@@ -34,11 +34,24 @@ class PlaylistsViewModel(application: Application) : TwelveViewModel(application
     val playlists = sortingRule
         .flatMapLatest { mediaRepository.playlists(it) }
         .flowOn(Dispatchers.IO)
-        .stateIn(
-            viewModelScope,
-            SharingStarted.WhileSubscribed(),
-            RequestStatus.Loading()
-        )
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val hasFavorites = mediaRepository.getFavorites()
+        .mapLatest {
+            when (it) {
+                is RequestStatus.Success -> it.data.isNotEmpty()
+
+                else -> false
+            }
+        }
+        .flowOn(Dispatchers.IO)
+
+    val playlistsWithHasFavorites = combine(
+        playlists,
+        hasFavorites
+    ) { playlists, hasFavorites ->
+        playlists to hasFavorites
+    }
 
     fun setSortingRule(sortingRule: SortingRule) {
         sharedPreferences.playlistsSortingRule = sortingRule

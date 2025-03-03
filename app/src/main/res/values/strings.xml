@@ -37,6 +37,9 @@
     <string name="create_playlist_suggestion">Create a new one?</string>
     <string name="create_playlist_confirm">Create</string>
 
+    <string name="favorite_playlist">Favorite</string>
+    <string name="favorite_playlist_info">Test</string>
+
     <!-- No elements -->
     <string name="no_activity">No activity</string>
     <string name="no_albums">No albums</string>

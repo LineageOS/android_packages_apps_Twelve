@@ -5,7 +5,6 @@
 
 package org.lineageos.twelve.fragments
 
-import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -53,14 +52,13 @@ class PlaylistsFragment : Fragment(R.layout.fragment_playlists) {
     private val sortingChip by getViewProperty<SortingChip>(R.id.sortingChip)
 
     // Recyclerview
-    private val addNewPlaylistItem = Playlist.Builder(Uri.EMPTY).build()
     private val adapter = object : SimpleListAdapter<Playlist, ListItem>(
         UniqueItemDiffCallback(),
         ::ListItem,
     ) {
         override fun ViewHolder.onBindView(item: Playlist) {
-            when (item === addNewPlaylistItem) {
-                true -> {
+            when {
+                (item === Playlist.NEW_PLAYLIST) -> {
                     view.setOnClickListener {
                         findNavController().navigateSafe(
                             R.id.action_mainFragment_to_fragment_create_playlist_dialog,
@@ -75,7 +73,20 @@ class PlaylistsFragment : Fragment(R.layout.fragment_playlists) {
                     view.setHeadlineText(R.string.create_playlist)
                 }
 
-                false -> {
+                (item === Playlist.FAVORITE_PLAYLIST) -> {
+                    view.setOnClickListener {
+                        findNavController().navigateSafe(
+                            R.id.action_mainFragment_to_fragment_playlist,
+                            PlaylistFragment.createBundle(Playlist.FAVORITE_PLAYLIST.uri)
+                        )
+                    }
+                    view.setOnLongClickListener(null)
+
+                    view.setLeadingIconImage(R.drawable.ic_heart_filled)
+                    view.setHeadlineText(R.string.favorite_playlist)
+                }
+
+                else -> {
                     view.setOnClickListener {
                         findNavController().navigateSafe(
                             R.id.action_mainFragment_to_fragment_playlist,
@@ -148,36 +159,53 @@ class PlaylistsFragment : Fragment(R.layout.fragment_playlists) {
     private suspend fun loadData() {
         coroutineScope {
             launch {
-                viewModel.playlists.collectLatest {
-                    linearProgressIndicator.setProgressCompat(it, true)
+                viewModel.playlistsWithHasFavorites.collectLatest {
+                    val (playlistsStatus, hasFavorites) = it
 
-                    when (it) {
+                    linearProgressIndicator.setProgressCompat(playlistsStatus, true)
+
+                    when (playlistsStatus) {
                         is RequestStatus.Loading -> {
                             // Do nothing
                         }
 
                         is RequestStatus.Success -> {
-                            val isEmpty = it.data.isEmpty()
+                            val isEmpty = playlistsStatus.data.isEmpty()
 
                             adapter.submitList(
-                                when (isEmpty) {
-                                    true -> emptyList()
-                                    false -> listOf(
-                                        addNewPlaylistItem,
-                                        *it.data.toTypedArray(),
-                                    )
+                                buildList {
+                                    if (hasFavorites) {
+                                        add(Playlist.FAVORITE_PLAYLIST)
+                                    }
+
+                                    when (isEmpty) {
+                                        true -> {
+                                            if (hasFavorites) {
+                                                add(Playlist.NEW_PLAYLIST)
+                                                add(Playlist.FAVORITE_PLAYLIST)
+                                            }
+                                        }
+
+                                        false -> {
+                                            add(Playlist.NEW_PLAYLIST)
+                                            if (hasFavorites) {
+                                                add(Playlist.FAVORITE_PLAYLIST)
+                                            }
+                                            addAll(playlistsStatus.data)
+                                        }
+                                    }
                                 }
                             )
 
-                            recyclerView.isVisible = !isEmpty
-                            noElementsLinearLayout.isVisible = isEmpty
+                            recyclerView.isVisible = !isEmpty || hasFavorites
+                            noElementsLinearLayout.isVisible = isEmpty && !hasFavorites
                         }
 
                         is RequestStatus.Error -> {
                             Log.e(
                                 LOG_TAG,
-                                "Failed to load playlists, error: ${it.error}",
-                                it.throwable
+                                "Failed to load playlists, error: ${playlistsStatus.error}",
+                                playlistsStatus.throwable
                             )
 
                             adapter.submitList(emptyList())
