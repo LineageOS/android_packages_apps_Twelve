@@ -36,6 +36,7 @@
     <string name="no_playlists_comma">No playlists,</string>
     <string name="create_playlist_suggestion">Create a new one?</string>
     <string name="create_playlist_confirm">Create</string>
+    <string name="favorite_playlist">Favorites</string>
 
     <!-- No elements -->
     <string name="no_activity">No activity</string>
