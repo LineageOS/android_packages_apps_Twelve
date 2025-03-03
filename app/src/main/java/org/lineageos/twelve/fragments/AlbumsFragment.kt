@@ -26,7 +26,7 @@ import org.lineageos.twelve.ext.getViewProperty
 import org.lineageos.twelve.ext.navigateSafe
 import org.lineageos.twelve.ext.setProgressCompat
 import org.lineageos.twelve.models.Album
-import org.lineageos.twelve.models.Result
+import org.lineageos.twelve.models.FlowResult
 import org.lineageos.twelve.models.SortingStrategy
 import org.lineageos.twelve.ui.recyclerview.DisplayAwareGridLayoutManager
 import org.lineageos.twelve.ui.recyclerview.SimpleListAdapter
@@ -124,11 +124,11 @@ class AlbumsFragment : Fragment(R.layout.fragment_albums) {
                     linearProgressIndicator.setProgressCompat(it)
 
                     when (it) {
-                        null -> {
+                        is FlowResult.Loading -> {
                             // Do nothing
                         }
 
-                        is Result.Success -> {
+                        is FlowResult.Success -> {
                             adapter.submitList(it.data)
 
                             val isEmpty = it.data.isEmpty()
@@ -136,7 +136,7 @@ class AlbumsFragment : Fragment(R.layout.fragment_albums) {
                             noElementsLinearLayout.isVisible = isEmpty
                         }
 
-                        is Result.Error -> {
+                        is FlowResult.Error -> {
                             Log.e(
                                 LOG_TAG,
                                 "Failed to load albums, error: ${it.error}",

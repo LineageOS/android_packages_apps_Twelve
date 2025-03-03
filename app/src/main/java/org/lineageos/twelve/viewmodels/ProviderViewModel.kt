@@ -12,7 +12,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
@@ -20,9 +19,11 @@ import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.withContext
 import org.lineageos.twelve.models.Error
+import org.lineageos.twelve.models.FlowResult
+import org.lineageos.twelve.models.FlowResult.Companion.asFlowResult
+import org.lineageos.twelve.models.FlowResult.Companion.flatMapLatestData
+import org.lineageos.twelve.models.FlowResult.Companion.foldLatest
 import org.lineageos.twelve.models.ProviderIdentifier
-import org.lineageos.twelve.models.Result
-import org.lineageos.twelve.models.Result.Companion.fold
 
 open class ProviderViewModel(application: Application) : TwelveViewModel(application) {
     private val _providerIdentifier = MutableStateFlow<ProviderIdentifier?>(null)
@@ -38,28 +39,27 @@ open class ProviderViewModel(application: Application) : TwelveViewModel(applica
             it?.let { providerIdentifier ->
                 mediaRepository.provider(providerIdentifier).mapLatest { maybeProvider ->
                     maybeProvider?.let { provider ->
-                        Result.Success<_, Error>(provider)
-                    } ?: Result.Error(Error.NOT_FOUND)
+                        FlowResult.Success<_, Error>(provider)
+                    } ?: FlowResult.Error(Error.NOT_FOUND)
                 }
-            } ?: flowOf(null)
+            } ?: flowOf(FlowResult.Loading())
         }
         .flowOn(Dispatchers.IO)
         .stateIn(
             viewModelScope,
             SharingStarted.WhileSubscribed(),
-            null
+            FlowResult.Loading()
         )
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     val canBeManaged = provider
-        .mapLatest {
-            when (it) {
-                null -> null
-                is Result.Success -> it.data.type.canBeManaged
-                is Result.Error -> false
-            }
-        }
-        .filterNotNull()
+        .foldLatest(
+            onSuccess = {
+                it.type.canBeManaged
+            },
+            onError = { _, _ ->
+                false
+            },
+        )
         .flowOn(Dispatchers.IO)
         .stateIn(
             viewModelScope,
@@ -67,26 +67,15 @@ open class ProviderViewModel(application: Application) : TwelveViewModel(applica
             false
         )
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     val status = provider
-        .flatMapLatest { provider ->
-            provider.fold(
-                onNull = {
-                    flowOf(null)
-                },
-                onSuccess = {
-                    mediaRepository.status(it)
-                },
-                onError = {
-                    flowOf(Result.Error(it))
-                }
-            )
+        .flatMapLatestData {
+            mediaRepository.status(it).asFlowResult()
         }
         .flowOn(Dispatchers.IO)
         .stateIn(
             viewModelScope,
             SharingStarted.WhileSubscribed(),
-            null
+            FlowResult.Loading()
         )
 
     fun setProviderIdentifier(providerIdentifier: ProviderIdentifier?) {

@@ -6,14 +6,14 @@
 package org.lineageos.twelve.ext
 
 import com.google.android.material.progressindicator.LinearProgressIndicator
-import org.lineageos.twelve.models.Result
+import org.lineageos.twelve.models.FlowResult
 
 /**
  * @see LinearProgressIndicator.setProgressCompat
  */
-fun <T, E> LinearProgressIndicator.setProgressCompat(status: Result<T, E>?) {
+fun <T, E> LinearProgressIndicator.setProgressCompat(status: FlowResult<T, E>) {
     when (status) {
-        null -> {
+        is FlowResult.Loading -> {
             if (!isIndeterminate) {
                 hide()
                 isIndeterminate = true

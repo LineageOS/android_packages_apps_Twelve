@@ -46,6 +46,7 @@ import org.lineageos.twelve.ext.updatePadding
 import org.lineageos.twelve.models.Album
 import org.lineageos.twelve.models.Artist
 import org.lineageos.twelve.models.Audio
+import org.lineageos.twelve.models.FlowResult
 import org.lineageos.twelve.models.Genre
 import org.lineageos.twelve.models.MediaItem
 import org.lineageos.twelve.models.Playlist
@@ -438,11 +439,11 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                         searchLinearProgressIndicator.setProgressCompat(it)
 
                         when (it) {
-                            null -> {
+                            is FlowResult.Loading -> {
                                 // Do nothing
                             }
 
-                            is Result.Success -> {
+                            is FlowResult.Success -> {
                                 searchAdapter.submitList(it.data)
 
                                 val isEmpty = it.data.isEmpty()
@@ -451,7 +452,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                                     isEmpty && searchView.editText.text.isNotEmpty()
                             }
 
-                            is Result.Error -> {
+                            is FlowResult.Error -> {
                                 Log.e(
                                     LOG_TAG,
                                     "Failed to load search results, error: ${it.error}",

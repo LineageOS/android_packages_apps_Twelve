@@ -25,8 +25,8 @@ import org.lineageos.twelve.R
 import org.lineageos.twelve.ext.getViewProperty
 import org.lineageos.twelve.ext.navigateSafe
 import org.lineageos.twelve.ext.setProgressCompat
+import org.lineageos.twelve.models.FlowResult
 import org.lineageos.twelve.models.Genre
-import org.lineageos.twelve.models.Result
 import org.lineageos.twelve.models.SortingStrategy
 import org.lineageos.twelve.ui.recyclerview.SimpleListAdapter
 import org.lineageos.twelve.ui.recyclerview.UniqueItemDiffCallback
@@ -125,11 +125,11 @@ class GenresFragment : Fragment(R.layout.fragment_genres) {
                     linearProgressIndicator.setProgressCompat(it)
 
                     when (it) {
-                        null -> {
+                        is FlowResult.Loading -> {
                             // Do nothing
                         }
 
-                        is Result.Success -> {
+                        is FlowResult.Success -> {
                             adapter.submitList(it.data)
 
                             val isEmpty = it.data.isEmpty()
@@ -137,7 +137,7 @@ class GenresFragment : Fragment(R.layout.fragment_genres) {
                             noElementsLinearLayout.isVisible = isEmpty
                         }
 
-                        is Result.Error -> {
+                        is FlowResult.Error -> {
                             Log.e(
                                 LOG_TAG,
                                 "Failed to load genres, error: ${it.error}",

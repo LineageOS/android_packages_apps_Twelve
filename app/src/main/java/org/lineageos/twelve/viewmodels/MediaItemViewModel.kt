@@ -22,8 +22,12 @@ import kotlinx.coroutines.withContext
 import org.lineageos.twelve.ext.resources
 import org.lineageos.twelve.models.Album
 import org.lineageos.twelve.models.Audio
+import org.lineageos.twelve.models.FlowResult
+import org.lineageos.twelve.models.FlowResult.Companion.asFlowResult
+import org.lineageos.twelve.models.FlowResult.Companion.foldLatest
+import org.lineageos.twelve.models.FlowResult.Companion.mapLatestDataOrNull
+import org.lineageos.twelve.models.FlowResult.Companion.mapLatestData
 import org.lineageos.twelve.models.MediaType
-import org.lineageos.twelve.models.Result
 import org.lineageos.twelve.models.Result.Companion.map
 
 class MediaItemViewModel(application: Application) : TwelveViewModel(application) {
@@ -53,48 +57,32 @@ class MediaItemViewModel(application: Application) : TwelveViewModel(application
         }
     }
         .flatMapLatest { it }
+        .asFlowResult()
         .flowOn(Dispatchers.IO)
         .stateIn(
             viewModelScope,
             started = SharingStarted.WhileSubscribed(),
-            initialValue = null,
+            initialValue = FlowResult.Loading(),
         )
 
-    @OptIn(ExperimentalCoroutinesApi::class)
-    private val rawMediaItem = data
-        .mapLatest {
-            when (it) {
-                is Result.Success -> it.data.first
-                else -> null
-            }
-        }
-        .flowOn(Dispatchers.IO)
-        .stateIn(
-            viewModelScope,
-            started = SharingStarted.WhileSubscribed(),
-            initialValue = null,
-        )
-
-    @OptIn(ExperimentalCoroutinesApi::class)
     val mediaItem = data
-        .mapLatest { data -> data.map { it.first } }
+        .mapLatestData { it.first }
         .flowOn(Dispatchers.IO)
         .stateIn(
             viewModelScope,
             started = SharingStarted.WhileSubscribed(),
-            initialValue = null,
+            initialValue = FlowResult.Loading(),
         )
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     val tracks = data
-        .mapLatest {
-            when (it) {
-                null -> null
-                is Result.Success -> it.data.second
-                is Result.Error -> listOf()
-            }
-        }
-        .filterNotNull()
+        .foldLatest(
+            onSuccess = {
+                it.second
+            },
+            onError = { _, _ ->
+                listOf()
+            },
+        )
         .flowOn(Dispatchers.IO)
         .stateIn(
             viewModelScope,
@@ -103,7 +91,8 @@ class MediaItemViewModel(application: Application) : TwelveViewModel(application
         )
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val albumUri = rawMediaItem
+    val albumUri = mediaItem
+        .mapLatestDataOrNull()
         .mapLatest {
             when (it) {
                 is Audio -> it.albumUri
@@ -118,7 +107,8 @@ class MediaItemViewModel(application: Application) : TwelveViewModel(application
         )
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val artistUri = rawMediaItem
+    val artistUri = mediaItem
+        .mapLatestDataOrNull()
         .mapLatest {
             when (it) {
                 is Audio -> it.artistUri
@@ -134,7 +124,8 @@ class MediaItemViewModel(application: Application) : TwelveViewModel(application
         )
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val genreUri = rawMediaItem
+    val genreUri = mediaItem
+        .mapLatestDataOrNull()
         .mapLatest {
             when (it) {
                 is Audio -> it.genreUri

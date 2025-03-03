@@ -17,6 +17,8 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
+import org.lineageos.twelve.models.FlowResult
+import org.lineageos.twelve.models.FlowResult.Companion.asFlowResult
 import org.lineageos.twelve.models.Result
 
 class SearchViewModel(application: Application) : TwelveViewModel(application) {
@@ -36,11 +38,12 @@ class SearchViewModel(application: Application) : TwelveViewModel(application) {
                 mediaRepository.search("%${it}%")
             } ?: flowOf(Result.Success(listOf()))
         }
+        .asFlowResult()
         .flowOn(Dispatchers.IO)
         .stateIn(
             viewModelScope,
             SharingStarted.WhileSubscribed(),
-            null
+            FlowResult.Loading()
         )
 
     fun setSearchQuery(query: String, immediate: Boolean = false) {

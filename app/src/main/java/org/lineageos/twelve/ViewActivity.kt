@@ -28,9 +28,9 @@ import com.google.android.material.slider.Slider
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.lineageos.twelve.ext.loadThumbnail
+import org.lineageos.twelve.models.FlowResult
 import org.lineageos.twelve.models.MediaType
 import org.lineageos.twelve.models.RepeatMode
-import org.lineageos.twelve.models.Result
 import org.lineageos.twelve.utils.TimestampFormatter
 import org.lineageos.twelve.viewmodels.IntentsViewModel
 import org.lineageos.twelve.viewmodels.LocalPlayerViewModel
@@ -174,11 +174,11 @@ class ViewActivity : AppCompatActivity(R.layout.activity_view) {
                 launch {
                     localPlayerViewModel.mediaArtwork.collectLatest {
                         when (it) {
-                            null -> {
+                            is FlowResult.Loading -> {
                                 // Do nothing
                             }
 
-                            is Result.Success -> {
+                            is FlowResult.Success -> {
                                 val thumbnail = it.data
 
                                 thumbnailImageView.loadThumbnail(
@@ -189,7 +189,7 @@ class ViewActivity : AppCompatActivity(R.layout.activity_view) {
                                 dummyThumbnailImageView.isVisible = false
                             }
 
-                            is Result.Error -> {
+                            is FlowResult.Error -> {
                                 Log.e(LOG_TAG, "Failed to load artwork")
                                 dummyThumbnailImageView.isVisible = true
                                 thumbnailImageView.isVisible = false
