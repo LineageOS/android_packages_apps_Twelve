@@ -77,6 +77,7 @@ class NowPlayingFragment : Fragment(R.layout.fragment_now_playing) {
     private val currentTimestampTextView by getViewProperty<TextView>(R.id.currentTimestampTextView)
     private val durationTimestampTextView by getViewProperty<TextView>(R.id.durationTimestampTextView)
     private val equalizerMaterialButton by getViewProperty<MaterialButton>(R.id.equalizerMaterialButton)
+    private val favoriteMaterialButton by getViewProperty<MaterialButton>(R.id.favoriteMaterialButton)
     private val fileTypeMaterialCardView by getViewProperty<MaterialCardView>(R.id.fileTypeMaterialCardView)
     private val fileTypeTextView by getViewProperty<TextView>(R.id.fileTypeTextView)
     private val linearProgressIndicator by getViewProperty<LinearProgressIndicator>(R.id.linearProgressIndicator)
@@ -537,6 +538,45 @@ class NowPlayingFragment : Fragment(R.layout.fragment_now_playing) {
                                 )
 
                                 lyricsMaterialCardView.isVisible = false
+                            }
+                        }
+                    }
+                }
+
+                launch {
+                    viewModel.favorite.collectLatest {
+                        when (it) {
+                            null -> {
+                                // Do nothing
+                            }
+
+                            is Result.Success -> {
+                                val isFavorite = it.data
+
+                                favoriteMaterialButton.setIconResource(
+                                    when (isFavorite) {
+                                        true -> R.drawable.ic_heart_filled
+                                        false -> R.drawable.ic_heart_unfilled
+                                    }
+                                )
+
+                                favoriteMaterialButton.setOnClickListener {
+                                    launch {
+                                        viewModel.setFavorite(!isFavorite)
+                                    }
+                                }
+
+                                favoriteMaterialButton.isVisible = true
+                            }
+
+                            is Result.Error -> {
+                                Log.e(
+                                    LOG_TAG,
+                                    "Error while getting favorite status: ${it.error}",
+                                    it.throwable
+                                )
+
+                                favoriteMaterialButton.isVisible = false
                             }
                         }
                     }
