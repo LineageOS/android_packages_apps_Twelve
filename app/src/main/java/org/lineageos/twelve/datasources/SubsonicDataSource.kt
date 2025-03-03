@@ -36,8 +36,8 @@ import org.lineageos.twelve.models.MediaType
 import org.lineageos.twelve.models.Playlist
 import org.lineageos.twelve.models.ProviderArgument
 import org.lineageos.twelve.models.ProviderArgument.Companion.requireArgument
-import org.lineageos.twelve.models.RequestStatus
-import org.lineageos.twelve.models.RequestStatus.Companion.map
+import org.lineageos.twelve.models.Result
+import org.lineageos.twelve.models.Result.Companion.map
 import org.lineageos.twelve.models.SortingRule
 import org.lineageos.twelve.models.SortingStrategy
 import org.lineageos.twelve.models.Thumbnail
@@ -194,13 +194,13 @@ class SubsonicDataSource(
             )
         }
 
-        RequestStatus.Success<_, Error>(
+        Result.Success<_, Error>(
             listOf(
                 mostPlayedAlbums,
                 randomAlbums,
                 randomSongs,
             ).mapNotNull {
-                (it as? RequestStatus.Success)?.data?.takeIf { activityTab ->
+                (it as? Result.Success)?.data?.takeIf { activityTab ->
                     activityTab.items.isNotEmpty()
                 }
             }
@@ -317,7 +317,7 @@ class SubsonicDataSource(
             album.map { it.toMediaItem() }
         }.let {
             when (it) {
-                is RequestStatus.Success -> it.data
+                is Result.Success -> it.data
                 else -> null
             }
         }
@@ -326,7 +326,7 @@ class SubsonicDataSource(
             song.map { it.toMediaItem() }
         }.let {
             when (it) {
-                is RequestStatus.Success -> it.data
+                is Result.Success -> it.data
                 else -> null
             }
         }
@@ -337,7 +337,7 @@ class SubsonicDataSource(
         ).any { it != null }
 
         if (exists) {
-            RequestStatus.Success<_, Error>(
+            Result.Success<_, Error>(
                 Genre.Builder(genreUri).setName(genreName).build() to GenreContent(
                     appearsInAlbums.orEmpty(),
                     listOf(),
@@ -345,7 +345,7 @@ class SubsonicDataSource(
                 )
             )
         } else {
-            RequestStatus.Error(Error.NOT_FOUND)
+            Result.Error(Error.NOT_FOUND)
         }
     }.asFlow()
 
@@ -365,7 +365,7 @@ class SubsonicDataSource(
                 playlist.toMediaItem() to subsonicClient.getPlaylist(playlist.id).toRequestStatus {
                     entry.orEmpty().any { child -> child.id == audioId }
                 }.let { requestStatus ->
-                    (requestStatus as? RequestStatus.Success)?.data ?: false
+                    (requestStatus as? Result.Success)?.data ?: false
                 }
             }
         }
@@ -373,7 +373,7 @@ class SubsonicDataSource(
 
     override fun lastPlayedAudio() = lastPlayedGetter(lastPlayedKey())
         .flatMapLatest { uri ->
-            uri?.let(this::audio) ?: flowOf(RequestStatus.Error(Error.NOT_FOUND))
+            uri?.let(this::audio) ?: flowOf(Result.Error(Error.NOT_FOUND))
         }
 
     override fun lyrics(audioUri: Uri) = suspend {
@@ -383,12 +383,12 @@ class SubsonicDataSource(
             toModel()
         }.let {
             when (it) {
-                is RequestStatus.Loading -> RequestStatus.Loading(it.progress)
-                is RequestStatus.Success -> it.data?.let { lyrics ->
-                    RequestStatus.Success<_, Error>(lyrics)
-                } ?: RequestStatus.Error(Error.NOT_FOUND)
+                is Result.Loading -> Result.Loading(it.progress)
+                is Result.Success -> it.data?.let { lyrics ->
+                    Result.Success<_, Error>(lyrics)
+                } ?: Result.Error(Error.NOT_FOUND)
 
-                is RequestStatus.Error -> RequestStatus.Error(it.error, it.throwable)
+                is Result.Error -> Result.Error(it.error, it.throwable)
             }
         }
     }.asFlow()
@@ -443,7 +443,7 @@ class SubsonicDataSource(
     }
 
     override suspend fun onAudioPlayed(audioUri: Uri) = lastPlayedSetter(lastPlayedKey(), audioUri)
-        .let { RequestStatus.Success<Unit, Error>(Unit) }
+        .let { Result.Success<Unit, Error>(Unit) }
 
     private fun AlbumID3.toMediaItem() = Album.Builder(getAlbumUri(id))
         .setThumbnail(

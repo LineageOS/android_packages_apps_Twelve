@@ -19,7 +19,7 @@ import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 import org.lineageos.twelve.ext.resources
 import org.lineageos.twelve.models.Audio
-import org.lineageos.twelve.models.RequestStatus
+import org.lineageos.twelve.models.Result
 import org.lineageos.twelve.models.UniqueItem
 import org.lineageos.twelve.utils.MimeUtils
 import kotlin.reflect.safeCast
@@ -37,22 +37,22 @@ class AlbumViewModel(application: Application) : TwelveViewModel(application) {
         .stateIn(
             viewModelScope,
             SharingStarted.WhileSubscribed(),
-            RequestStatus.Loading()
+            Result.Loading()
         )
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val tracks = album
         .mapLatest {
             when (it) {
-                is RequestStatus.Loading -> null
-                is RequestStatus.Success -> it.data.second.sortedWith(
+                is Result.Loading -> null
+                is Result.Success -> it.data.second.sortedWith(
                     compareBy(
                         { audio -> audio.discNumber ?: 0 },
                         Audio::trackNumber,
                     )
                 )
 
-                is RequestStatus.Error -> listOf()
+                is Result.Error -> listOf()
             }
         }
         .filterNotNull()
@@ -129,9 +129,9 @@ class AlbumViewModel(application: Application) : TwelveViewModel(application) {
         .filterNotNull()
         .mapLatest {
             when (it) {
-                is RequestStatus.Loading -> null
+                is Result.Loading -> null
 
-                is RequestStatus.Success -> {
+                is Result.Success -> {
                     it.data.second
                         .mapNotNull { audio -> audio.mimeType }
                         .distinct()
@@ -140,7 +140,7 @@ class AlbumViewModel(application: Application) : TwelveViewModel(application) {
                         .orEmpty()
                 }
 
-                is RequestStatus.Error -> listOf()
+                is Result.Error -> listOf()
             }
         }
         .filterNotNull()

@@ -16,7 +16,7 @@ import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.stateIn
-import org.lineageos.twelve.models.RequestStatus
+import org.lineageos.twelve.models.Result
 
 class GenreViewModel(application: Application) : TwelveViewModel(application) {
     private val genreUri = MutableStateFlow<Uri?>(null)
@@ -31,7 +31,7 @@ class GenreViewModel(application: Application) : TwelveViewModel(application) {
         .stateIn(
             viewModelScope,
             SharingStarted.WhileSubscribed(),
-            RequestStatus.Loading()
+            Result.Loading()
         )
 
     fun loadGenre(genreUri: Uri) {

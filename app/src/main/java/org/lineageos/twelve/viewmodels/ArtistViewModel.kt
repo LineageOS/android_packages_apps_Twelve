@@ -16,7 +16,7 @@ import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.stateIn
-import org.lineageos.twelve.models.RequestStatus
+import org.lineageos.twelve.models.Result
 
 class ArtistViewModel(application: Application) : TwelveViewModel(application) {
     private val artistUri = MutableStateFlow<Uri?>(null)
@@ -31,7 +31,7 @@ class ArtistViewModel(application: Application) : TwelveViewModel(application) {
         .stateIn(
             viewModelScope,
             SharingStarted.WhileSubscribed(),
-            RequestStatus.Loading()
+            Result.Loading()
         )
 
     fun loadAlbum(artistUri: Uri) {

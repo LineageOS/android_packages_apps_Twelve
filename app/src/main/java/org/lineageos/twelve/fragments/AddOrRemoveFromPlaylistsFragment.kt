@@ -31,7 +31,7 @@ import org.lineageos.twelve.ext.getViewProperty
 import org.lineageos.twelve.ext.navigateSafe
 import org.lineageos.twelve.ext.setProgressCompat
 import org.lineageos.twelve.models.Playlist
-import org.lineageos.twelve.models.RequestStatus
+import org.lineageos.twelve.models.Result
 import org.lineageos.twelve.ui.recyclerview.SimpleListAdapter
 import org.lineageos.twelve.ui.views.FullscreenLoadingProgressBar
 import org.lineageos.twelve.ui.views.ListItem
@@ -152,11 +152,11 @@ class AddOrRemoveFromPlaylistsFragment : Fragment(R.layout.fragment_add_or_remov
             linearProgressIndicator.setProgressCompat(it, true)
 
             when (it) {
-                is RequestStatus.Loading -> {
+                is Result.Loading -> {
                     // Do nothing
                 }
 
-                is RequestStatus.Success -> {
+                is Result.Success -> {
                     val isEmpty = it.data.isEmpty()
 
                     adapter.submitList(
@@ -173,7 +173,7 @@ class AddOrRemoveFromPlaylistsFragment : Fragment(R.layout.fragment_add_or_remov
                     noElementsLinearLayout.isVisible = isEmpty
                 }
 
-                is RequestStatus.Error -> {
+                is Result.Error -> {
                     Log.e(LOG_TAG, "Failed to load data, error: ${it.error}", it.throwable)
 
                     adapter.submitList(emptyList())

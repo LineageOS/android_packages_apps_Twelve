@@ -6,16 +6,16 @@
 package org.lineageos.twelve.ext
 
 import com.google.android.material.progressindicator.LinearProgressIndicator
-import org.lineageos.twelve.models.RequestStatus
+import org.lineageos.twelve.models.Result
 
 /**
  * @see LinearProgressIndicator.setProgressCompat
  */
 fun <T, E> LinearProgressIndicator.setProgressCompat(
-    status: RequestStatus<T, E>, animated: Boolean
+    status: Result<T, E>, animated: Boolean
 ) {
     when (status) {
-        is RequestStatus.Loading -> {
+        is Result.Loading -> {
             status.progress?.also {
                 setProgressCompat(it, animated)
             } ?: run {

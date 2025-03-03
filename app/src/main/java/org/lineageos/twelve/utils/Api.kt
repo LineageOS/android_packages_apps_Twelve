@@ -22,7 +22,7 @@ import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.lineageos.twelve.ext.executeAsync
 import org.lineageos.twelve.models.Error
-import org.lineageos.twelve.models.RequestStatus
+import org.lineageos.twelve.models.Result
 import java.net.SocketTimeoutException
 import kotlin.reflect.KType
 import kotlin.reflect.typeOf
@@ -206,10 +206,10 @@ sealed interface MethodResult<T> {
 
 suspend fun <T, O> MethodResult<T>.toRequestStatus(
     resultGetter: suspend T.() -> O
-): RequestStatus<O, Error> = when (this) {
-    is MethodResult.Success -> RequestStatus.Success(result.resultGetter())
+): Result<O, Error> = when (this) {
+    is MethodResult.Success -> Result.Success(result.resultGetter())
 
-    is MethodResult.HttpError -> RequestStatus.Error(
+    is MethodResult.HttpError -> Result.Error(
         when (code) {
             401 -> Error.AUTHENTICATION_REQUIRED
             403 -> Error.INVALID_CREDENTIALS
@@ -219,10 +219,10 @@ suspend fun <T, O> MethodResult<T>.toRequestStatus(
         error
     )
 
-    is MethodResult.DeserializationError -> RequestStatus.Error(Error.DESERIALIZATION, error)
-    is MethodResult.CancellationError -> RequestStatus.Error(Error.CANCELLED, error)
-    is MethodResult.InvalidResponse -> RequestStatus.Error(Error.INVALID_RESPONSE, error)
-    is MethodResult.GenericError -> RequestStatus.Error(Error.IO, error)
+    is MethodResult.DeserializationError -> Result.Error(Error.DESERIALIZATION, error)
+    is MethodResult.CancellationError -> Result.Error(Error.CANCELLED, error)
+    is MethodResult.InvalidResponse -> Result.Error(Error.INVALID_RESPONSE, error)
+    is MethodResult.GenericError -> Result.Error(Error.IO, error)
 }
 
 suspend fun <T, O> MethodResult<T>.toResult(

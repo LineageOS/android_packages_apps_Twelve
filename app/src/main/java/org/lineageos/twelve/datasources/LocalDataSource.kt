@@ -37,9 +37,9 @@ import org.lineageos.twelve.models.Lyrics
 import org.lineageos.twelve.models.MediaItem
 import org.lineageos.twelve.models.MediaType
 import org.lineageos.twelve.models.Playlist
-import org.lineageos.twelve.models.RequestStatus
-import org.lineageos.twelve.models.RequestStatus.Companion.fold
-import org.lineageos.twelve.models.RequestStatus.Companion.map
+import org.lineageos.twelve.models.Result
+import org.lineageos.twelve.models.Result.Companion.fold
+import org.lineageos.twelve.models.Result.Companion.map
 import org.lineageos.twelve.models.SortingRule
 import org.lineageos.twelve.models.SortingStrategy
 import org.lineageos.twelve.models.Thumbnail
@@ -198,7 +198,7 @@ class LocalDataSource(
     }
 
     override fun status() = flowOf(
-        RequestStatus.Success<_, Error>(listOf<DataSourceInformation>())
+        Result.Success<_, Error>(listOf<DataSourceInformation>())
     )
 
     override suspend fun mediaTypeOf(mediaItemUri: Uri) = with(mediaItemUri.toString()) {
@@ -221,7 +221,7 @@ class LocalDataSource(
     ) { lastPlayed, mostPlayed, albums, artists, genres ->
         val now = LocalDateTime.now()
 
-        RequestStatus.Success<_, Error>(
+        Result.Success<_, Error>(
             listOf(
                 lastPlayed.map {
                     ActivityTab(
@@ -269,7 +269,7 @@ class LocalDataSource(
                     )
                 },
             ).mapNotNull {
-                (it as? RequestStatus.Success)?.data?.takeIf { activityTab ->
+                (it as? Result.Success)?.data?.takeIf { activityTab ->
                     activityTab.items.isNotEmpty()
                 }
             }
@@ -298,7 +298,7 @@ class LocalDataSource(
             ).toTypedArray(),
         )
     ).mapEachRow(mapAlbum).map {
-        RequestStatus.Success<_, Error>(it)
+        Result.Success<_, Error>(it)
     }
 
     override fun artists(sortingRule: SortingRule) = contentResolver.queryFlow(
@@ -321,7 +321,7 @@ class LocalDataSource(
             ).toTypedArray(),
         )
     ).mapEachRow(mapArtist).map {
-        RequestStatus.Success<_, Error>(it)
+        Result.Success<_, Error>(it)
     }
 
     override fun genres(sortingRule: SortingRule) = contentResolver.queryFlow(
@@ -344,12 +344,12 @@ class LocalDataSource(
             ).toTypedArray(),
         )
     ).mapEachRow(mapGenre).map {
-        RequestStatus.Success<_, Error>(it)
+        Result.Success<_, Error>(it)
     }
 
     override fun playlists(sortingRule: SortingRule) = database.getPlaylistDao().getAll()
         .mapLatest { playlists ->
-            RequestStatus.Success<_, Error>(playlists.map { it.toModel() })
+            Result.Success<_, Error>(playlists.map { it.toModel() })
         }
 
     override fun search(query: String) = combine(
@@ -395,7 +395,7 @@ class LocalDataSource(
         ).mapEachRow(mapGenre),
     ) { albums, artists, audios, genres ->
         albums + artists + audios + genres
-    }.map { RequestStatus.Success<_, Error>(it) }
+    }.map { Result.Success<_, Error>(it) }
 
     override fun audio(audioUri: Uri) = contentResolver.queryFlow(
         audiosUri,
@@ -410,8 +410,8 @@ class LocalDataSource(
         )
     ).mapEachRow(mapAudio).mapLatest { audios ->
         audios.firstOrNull()?.let {
-            RequestStatus.Success<_, Error>(it)
-        } ?: RequestStatus.Error(Error.NOT_FOUND)
+            Result.Success<_, Error>(it)
+        } ?: Result.Error(Error.NOT_FOUND)
     }
 
     override fun album(albumUri: Uri) = combine(
@@ -444,8 +444,8 @@ class LocalDataSource(
         ).mapEachRow(mapAudio)
     ) { albums, audios ->
         albums.firstOrNull()?.let { album ->
-            RequestStatus.Success<_, Error>(album to audios)
-        } ?: RequestStatus.Error(Error.NOT_FOUND)
+            Result.Success<_, Error>(album to audios)
+        } ?: Result.Error(Error.NOT_FOUND)
     }
 
     override fun artist(artistUri: Uri) = combine(
@@ -515,8 +515,8 @@ class LocalDataSource(
                 listOf(),
             )
 
-            RequestStatus.Success<_, Error>(artist to artistWorks)
-        } ?: RequestStatus.Error(Error.NOT_FOUND)
+            Result.Success<_, Error>(artist to artistWorks)
+        } ?: Result.Error(Error.NOT_FOUND)
     }
 
     override fun genre(genreUri: Uri) = ContentUris.parseId(genreUri).let { genreId ->
@@ -604,8 +604,8 @@ class LocalDataSource(
                     audios,
                 )
 
-                RequestStatus.Success<_, Error>(it to genreContent)
-            } ?: RequestStatus.Error(Error.NOT_FOUND)
+                Result.Success<_, Error>(it to genreContent)
+            } ?: Result.Error(Error.NOT_FOUND)
         }
     }
 
@@ -617,10 +617,10 @@ class LocalDataSource(
 
             audios(playlistWithItems.items.map(Item::audioUri))
                 .mapLatest { items ->
-                    RequestStatus.Success<_, Error>(playlist to items.filterNotNull())
+                    Result.Success<_, Error>(playlist to items.filterNotNull())
                 }
         } ?: flowOf(
-            RequestStatus.Error(
+            Result.Error(
                 Error.NOT_FOUND
             )
         )
@@ -630,7 +630,7 @@ class LocalDataSource(
         database.getPlaylistWithItemsDao().getPlaylistsWithItemStatus(
             audioUri
         ).mapLatest { data ->
-            RequestStatus.Success<_, Error>(
+            Result.Success<_, Error>(
                 data.map {
                     it.playlist.toModel() to it.value
                 }
@@ -638,7 +638,7 @@ class LocalDataSource(
         }
 
     override fun lyrics(audioUri: Uri) = flowOf(
-        RequestStatus.Error<Lyrics, _>(Error.NOT_IMPLEMENTED)
+        Result.Error<Lyrics, _>(Error.NOT_IMPLEMENTED)
     )
 
     override fun lastPlayedAudio() = database.getLastPlayedDao()
@@ -663,29 +663,29 @@ class LocalDataSource(
         }
         .mapLatest { audios ->
             if (audios.isEmpty()) {
-                RequestStatus.Error<Audio, Error>(Error.NOT_FOUND)
+                Result.Error<Audio, Error>(Error.NOT_FOUND)
             } else {
-                RequestStatus.Success(audios.first())
+                Result.Success(audios.first())
             }
         }
 
     override suspend fun createPlaylist(name: String) = database.getPlaylistDao().create(
         name
     ).let {
-        RequestStatus.Success<_, Error>(ContentUris.withAppendedId(playlistsBaseUri, it))
+        Result.Success<_, Error>(ContentUris.withAppendedId(playlistsBaseUri, it))
     }
 
     override suspend fun renamePlaylist(playlistUri: Uri, name: String) =
         database.getPlaylistDao().rename(
             ContentUris.parseId(playlistUri), name
         ).let {
-            RequestStatus.Success<_, Error>(Unit)
+            Result.Success<_, Error>(Unit)
         }
 
     override suspend fun deletePlaylist(playlistUri: Uri) = database.getPlaylistDao().delete(
         ContentUris.parseId(playlistUri)
     ).let {
-        RequestStatus.Success<_, Error>(Unit)
+        Result.Success<_, Error>(Unit)
     }
 
     override suspend fun addAudioToPlaylist(
@@ -695,7 +695,7 @@ class LocalDataSource(
         ContentUris.parseId(playlistUri),
         audioUri
     ).let {
-        RequestStatus.Success<_, Error>(Unit)
+        Result.Success<_, Error>(Unit)
     }
 
     override suspend fun removeAudioFromPlaylist(
@@ -705,15 +705,15 @@ class LocalDataSource(
         ContentUris.parseId(playlistUri),
         audioUri
     ).let {
-        RequestStatus.Success<_, Error>(Unit)
+        Result.Success<_, Error>(Unit)
     }
 
     override suspend fun onAudioPlayed(
         audioUri: Uri
-    ): RequestStatus<Unit, Error> {
+    ): Result<Unit, Error> {
         database.getLocalMediaStatsProviderDao().increasePlayCount(audioUri)
         database.getLastPlayedDao().set(LAST_PLAYED_KEY, audioUri)
-        return RequestStatus.Success(Unit)
+        return Result.Success(Unit)
     }
 
     fun audios() = contentResolver.queryFlow(
@@ -785,7 +785,7 @@ class LocalDataSource(
                 ).mapEachRow(mapAlbum)
             }
             .mapLatest {
-                RequestStatus.Success<List<Album>, Error>(it)
+                Result.Success<List<Album>, Error>(it)
             }
 
     private fun lastPlayedMediaItems() = lastPlayedAudio().flatMapLatest { rs ->
@@ -803,13 +803,13 @@ class LocalDataSource(
                         ).toTypedArray(),
                     )
                 ).mapEachRow(mapAlbum).mapLatest { albums ->
-                    RequestStatus.Success<List<MediaItem<*>>, Error>(
+                    Result.Success<List<MediaItem<*>>, Error>(
                         listOf(audio as MediaItem<*>) + albums,
                     )
                 }
             },
-            onLoading = { flowOf(RequestStatus.Error(Error.NOT_FOUND)) },
-            onError = { flowOf(RequestStatus.Error(Error.NOT_FOUND)) },
+            onLoading = { flowOf(Result.Error(Error.NOT_FOUND)) },
+            onError = { flowOf(Result.Error(Error.NOT_FOUND)) },
         )
     }
 

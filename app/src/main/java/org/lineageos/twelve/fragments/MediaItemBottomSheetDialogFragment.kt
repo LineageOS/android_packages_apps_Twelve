@@ -35,7 +35,7 @@ import org.lineageos.twelve.models.Error
 import org.lineageos.twelve.models.Genre
 import org.lineageos.twelve.models.MediaType
 import org.lineageos.twelve.models.Playlist
-import org.lineageos.twelve.models.RequestStatus
+import org.lineageos.twelve.models.Result
 import org.lineageos.twelve.ui.views.FullscreenLoadingProgressBar
 import org.lineageos.twelve.ui.views.ListItem
 import org.lineageos.twelve.utils.PermissionsChecker
@@ -178,11 +178,11 @@ class MediaItemBottomSheetDialogFragment : BottomSheetDialogFragment(
         launch {
             viewModel.mediaItem.collectLatest {
                 when (it) {
-                    is RequestStatus.Loading -> {
+                    is Result.Loading -> {
                         // Do nothing
                     }
 
-                    is RequestStatus.Success -> {
+                    is Result.Success -> {
                         val mediaItem = it.data
 
                         titleTextView.text = when (mediaItem) {
@@ -239,7 +239,7 @@ class MediaItemBottomSheetDialogFragment : BottomSheetDialogFragment(
                         }
                     }
 
-                    is RequestStatus.Error -> {
+                    is Result.Error -> {
                         Log.e(
                             LOG_TAG,
                             "Failed to load media item, error: ${it.error}",

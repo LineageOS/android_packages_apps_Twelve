@@ -30,7 +30,7 @@ import kotlinx.coroutines.launch
 import org.lineageos.twelve.ext.loadThumbnail
 import org.lineageos.twelve.models.MediaType
 import org.lineageos.twelve.models.RepeatMode
-import org.lineageos.twelve.models.RequestStatus
+import org.lineageos.twelve.models.Result
 import org.lineageos.twelve.utils.TimestampFormatter
 import org.lineageos.twelve.viewmodels.IntentsViewModel
 import org.lineageos.twelve.viewmodels.LocalPlayerViewModel
@@ -174,11 +174,11 @@ class ViewActivity : AppCompatActivity(R.layout.activity_view) {
                 launch {
                     localPlayerViewModel.mediaArtwork.collectLatest {
                         when (it) {
-                            is RequestStatus.Loading -> {
+                            is Result.Loading -> {
                                 // Do nothing
                             }
 
-                            is RequestStatus.Success -> {
+                            is Result.Success -> {
                                 it.data?.let { thumbnail ->
                                     thumbnailImageView.loadThumbnail(
                                         thumbnail,
@@ -192,7 +192,7 @@ class ViewActivity : AppCompatActivity(R.layout.activity_view) {
                                 }
                             }
 
-                            is RequestStatus.Error -> {
+                            is Result.Error -> {
                                 Log.e(LOG_TAG, "Failed to load artwork")
                                 dummyThumbnailImageView.isVisible = true
                                 thumbnailImageView.isVisible = false

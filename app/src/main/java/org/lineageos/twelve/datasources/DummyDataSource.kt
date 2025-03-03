@@ -19,7 +19,7 @@ import org.lineageos.twelve.models.GenreContent
 import org.lineageos.twelve.models.Lyrics
 import org.lineageos.twelve.models.MediaItem
 import org.lineageos.twelve.models.Playlist
-import org.lineageos.twelve.models.RequestStatus
+import org.lineageos.twelve.models.Result
 import org.lineageos.twelve.models.SortingRule
 
 /**
@@ -29,85 +29,85 @@ import org.lineageos.twelve.models.SortingRule
  */
 object DummyDataSource : MediaDataSource {
     override fun status() = flowOf(
-        RequestStatus.Success<_, Error>(listOf<DataSourceInformation>())
+        Result.Success<_, Error>(listOf<DataSourceInformation>())
     )
 
     override suspend fun mediaTypeOf(mediaItemUri: Uri) = null
 
     override fun activity() = flowOf(
-        RequestStatus.Success<_, Error>(listOf<ActivityTab>())
+        Result.Success<_, Error>(listOf<ActivityTab>())
     )
 
     override fun albums(sortingRule: SortingRule) = flowOf(
-        RequestStatus.Success<_, Error>(listOf<Album>())
+        Result.Success<_, Error>(listOf<Album>())
     )
 
     override fun artists(sortingRule: SortingRule) = flowOf(
-        RequestStatus.Success<_, Error>(listOf<Artist>())
+        Result.Success<_, Error>(listOf<Artist>())
     )
 
     override fun genres(sortingRule: SortingRule) = flowOf(
-        RequestStatus.Success<_, Error>(listOf<Genre>())
+        Result.Success<_, Error>(listOf<Genre>())
     )
 
     override fun playlists(sortingRule: SortingRule) = flowOf(
-        RequestStatus.Success<_, Error>(listOf<Playlist>())
+        Result.Success<_, Error>(listOf<Playlist>())
     )
 
     override fun search(query: String) = flowOf(
-        RequestStatus.Success<_, Error>(listOf<MediaItem<*>>())
+        Result.Success<_, Error>(listOf<MediaItem<*>>())
     )
 
     override fun audio(audioUri: Uri) = flowOf(
-        RequestStatus.Error<Audio, _>(Error.NOT_FOUND)
+        Result.Error<Audio, _>(Error.NOT_FOUND)
     )
 
     override fun album(albumUri: Uri) = flowOf(
-        RequestStatus.Error<Pair<Album, List<Audio>>, _>(Error.NOT_FOUND)
+        Result.Error<Pair<Album, List<Audio>>, _>(Error.NOT_FOUND)
     )
 
     override fun artist(artistUri: Uri) = flowOf(
-        RequestStatus.Error<Pair<Artist, ArtistWorks>, _>(Error.NOT_FOUND)
+        Result.Error<Pair<Artist, ArtistWorks>, _>(Error.NOT_FOUND)
     )
 
     override fun genre(genreUri: Uri) = flowOf(
-        RequestStatus.Error<Pair<Genre, GenreContent>, _>(Error.NOT_FOUND)
+        Result.Error<Pair<Genre, GenreContent>, _>(Error.NOT_FOUND)
     )
 
     override fun playlist(playlistUri: Uri) = flowOf(
-        RequestStatus.Error<Pair<Playlist, List<Audio>>, _>(Error.NOT_FOUND)
+        Result.Error<Pair<Playlist, List<Audio>>, _>(Error.NOT_FOUND)
     )
 
     override fun audioPlaylistsStatus(audioUri: Uri) = flowOf(
-        RequestStatus.Error<List<Pair<Playlist, Boolean>>, _>(Error.NOT_FOUND)
+        Result.Error<List<Pair<Playlist, Boolean>>, _>(Error.NOT_FOUND)
     )
 
     override fun lastPlayedAudio() = flowOf(
-        RequestStatus.Error<Audio, _>(Error.NOT_FOUND)
+        Result.Error<Audio, _>(Error.NOT_FOUND)
     )
 
     override fun lyrics(audioUri: Uri) = flowOf(
-        RequestStatus.Error<Lyrics, _>(Error.NOT_FOUND)
+        Result.Error<Lyrics, _>(Error.NOT_FOUND)
     )
 
     override suspend fun createPlaylist(name: String) =
-        RequestStatus.Error<Uri, _>(Error.NOT_IMPLEMENTED)
+        Result.Error<Uri, _>(Error.NOT_IMPLEMENTED)
 
     override suspend fun renamePlaylist(playlistUri: Uri, name: String) =
-        RequestStatus.Error<Unit, _>(Error.NOT_IMPLEMENTED)
+        Result.Error<Unit, _>(Error.NOT_IMPLEMENTED)
 
     override suspend fun deletePlaylist(playlistUri: Uri) =
-        RequestStatus.Error<Unit, _>(Error.NOT_IMPLEMENTED)
+        Result.Error<Unit, _>(Error.NOT_IMPLEMENTED)
 
     override suspend fun addAudioToPlaylist(
         playlistUri: Uri,
         audioUri: Uri
-    ) = RequestStatus.Error<Unit, _>(Error.NOT_IMPLEMENTED)
+    ) = Result.Error<Unit, _>(Error.NOT_IMPLEMENTED)
 
     override suspend fun removeAudioFromPlaylist(
         playlistUri: Uri,
         audioUri: Uri
-    ) = RequestStatus.Error<Unit, _>(Error.NOT_IMPLEMENTED)
+    ) = Result.Error<Unit, _>(Error.NOT_IMPLEMENTED)
 
-    override suspend fun onAudioPlayed(audioUri: Uri) = RequestStatus.Success<_, Error>(Unit)
+    override suspend fun onAudioPlayed(audioUri: Uri) = Result.Success<_, Error>(Unit)
 }

@@ -37,9 +37,9 @@ import org.lineageos.twelve.models.MediaType
 import org.lineageos.twelve.models.Playlist
 import org.lineageos.twelve.models.ProviderArgument
 import org.lineageos.twelve.models.ProviderArgument.Companion.requireArgument
-import org.lineageos.twelve.models.RequestStatus
-import org.lineageos.twelve.models.RequestStatus.Companion.fold
-import org.lineageos.twelve.models.RequestStatus.Companion.map
+import org.lineageos.twelve.models.Result
+import org.lineageos.twelve.models.Result.Companion.fold
+import org.lineageos.twelve.models.Result.Companion.map
 import org.lineageos.twelve.models.SortingRule
 import org.lineageos.twelve.models.SortingStrategy
 import org.lineageos.twelve.models.Thumbnail
@@ -268,7 +268,7 @@ class JellyfinDataSource(
 
     override fun lastPlayedAudio() = lastPlayedGetter(lastPlayedKey())
         .flatMapLatest { uri ->
-            uri?.let(this::audio) ?: flowOf(RequestStatus.Error(Error.NOT_FOUND))
+            uri?.let(this::audio) ?: flowOf(Result.Error(Error.NOT_FOUND))
         }
 
     override fun lyrics(audioUri: Uri) = suspend {
@@ -277,12 +277,12 @@ class JellyfinDataSource(
             toModel()
         }.let {
             when (it) {
-                is RequestStatus.Loading -> RequestStatus.Loading(it.progress)
-                is RequestStatus.Success -> it.data?.let { lyrics ->
-                    RequestStatus.Success<_, Error>(lyrics)
-                } ?: RequestStatus.Error(Error.NOT_FOUND)
+                is Result.Loading -> Result.Loading(it.progress)
+                is Result.Success -> it.data?.let { lyrics ->
+                    Result.Success<_, Error>(lyrics)
+                } ?: Result.Error(Error.NOT_FOUND)
 
-                is RequestStatus.Error -> RequestStatus.Error(it.error, it.throwable)
+                is Result.Error -> Result.Error(it.error, it.throwable)
             }
         }
     }.asFlow()
@@ -301,7 +301,7 @@ class JellyfinDataSource(
                 onPlaylistsChanged()
             }
 
-    override suspend fun deletePlaylist(playlistUri: Uri) = RequestStatus.Error<Unit, _>(
+    override suspend fun deletePlaylist(playlistUri: Uri) = Result.Error<Unit, _>(
         Error.NOT_IMPLEMENTED
     )
 
@@ -336,7 +336,7 @@ class JellyfinDataSource(
             audioUri
         }.let {
             lastPlayedSetter(lastPlayedKey(), it)
-                .let { RequestStatus.Success<Unit, Error>(Unit) }
+                .let { Result.Success<Unit, Error>(Unit) }
         }
 
     private fun Item.toMediaItemAlbum() = Album.Builder(getAlbumUri(id.toString()))
@@ -446,7 +446,7 @@ class JellyfinDataSource(
                     client.getAlbum(albumId).toRequestStatus { toMediaItemAlbum() }
                 }.asFlow().mapLatest { albumRs ->
                     val audioAsMediaItemList = listOf(audio as MediaItem<*>)
-                    RequestStatus.Success<List<MediaItem<*>>, Error>(
+                    Result.Success<List<MediaItem<*>>, Error>(
                         albumRs.fold(
                             onSuccess = { album -> audioAsMediaItemList + album },
                             onLoading = { audioAsMediaItemList },
@@ -455,8 +455,8 @@ class JellyfinDataSource(
                     )
                 }
             },
-            onLoading = { flowOf(RequestStatus.Error(Error.NOT_FOUND)) },
-            onError = { flowOf(RequestStatus.Error(Error.NOT_FOUND)) },
+            onLoading = { flowOf(Result.Error(Error.NOT_FOUND)) },
+            onError = { flowOf(Result.Error(Error.NOT_FOUND)) },
         )
     }
 

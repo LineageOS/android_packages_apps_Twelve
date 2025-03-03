@@ -52,8 +52,8 @@ import org.lineageos.twelve.models.Error
 import org.lineageos.twelve.models.PlaybackProgress
 import org.lineageos.twelve.models.PlaybackState
 import org.lineageos.twelve.models.RepeatMode
-import org.lineageos.twelve.models.RequestStatus
-import org.lineageos.twelve.models.RequestStatus.Companion.map
+import org.lineageos.twelve.models.Result
+import org.lineageos.twelve.models.Result.Companion.map
 import org.lineageos.twelve.services.PlaybackService
 import org.lineageos.twelve.services.PlaybackService.CustomCommand.Companion.sendCustomCommand
 import org.lineageos.twelve.utils.MimeUtils
@@ -130,13 +130,13 @@ open class NowPlayingViewModel(application: Application) : TwelveViewModel(appli
         .flatMapLatest { mediaItemUri ->
             mediaItemUri?.let {
                 mediaRepository.audio(it)
-            } ?: flowOf(RequestStatus.Error(Error.NOT_FOUND))
+            } ?: flowOf(Result.Error(Error.NOT_FOUND))
         }
         .flowOn(Dispatchers.IO)
         .stateIn(
             viewModelScope,
             started = SharingStarted.WhileSubscribed(),
-            initialValue = RequestStatus.Loading()
+            initialValue = Result.Loading()
         )
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -194,15 +194,15 @@ open class NowPlayingViewModel(application: Application) : TwelveViewModel(appli
         playbackState,
     ) { mediaMetadata, playbackState ->
         when (playbackState) {
-            PlaybackState.BUFFERING -> RequestStatus.Loading()
-            else -> RequestStatus.Success<_, Nothing>(mediaMetadata.toThumbnail(applicationContext))
+            PlaybackState.BUFFERING -> Result.Loading()
+            else -> Result.Success<_, Nothing>(mediaMetadata.toThumbnail(applicationContext))
         }
     }
         .flowOn(Dispatchers.IO)
         .stateIn(
             viewModelScope,
             started = SharingStarted.WhileSubscribed(),
-            initialValue = RequestStatus.Loading()
+            initialValue = Result.Loading()
         )
 
     @androidx.annotation.OptIn(UnstableApi::class)
@@ -342,13 +342,13 @@ open class NowPlayingViewModel(application: Application) : TwelveViewModel(appli
         .flatMapLatest { mediaItemUri ->
             mediaItemUri?.let {
                 mediaRepository.lyrics(it)
-            } ?: flowOf(RequestStatus.Loading())
+            } ?: flowOf(Result.Loading())
         }
         .flowOn(Dispatchers.IO)
         .stateIn(
             viewModelScope,
             started = SharingStarted.WhileSubscribed(),
-            initialValue = RequestStatus.Loading()
+            initialValue = Result.Loading()
         )
 
     val lyricsLines = combine(
@@ -386,7 +386,7 @@ open class NowPlayingViewModel(application: Application) : TwelveViewModel(appli
         .stateIn(
             viewModelScope,
             started = SharingStarted.WhileSubscribed(),
-            initialValue = RequestStatus.Loading()
+            initialValue = Result.Loading()
         )
 
     fun togglePlayPause() {

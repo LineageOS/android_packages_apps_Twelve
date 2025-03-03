@@ -49,7 +49,7 @@ import org.lineageos.twelve.ext.updatePadding
 import org.lineageos.twelve.models.MediaType
 import org.lineageos.twelve.models.PlaybackState
 import org.lineageos.twelve.models.RepeatMode
-import org.lineageos.twelve.models.RequestStatus
+import org.lineageos.twelve.models.Result
 import org.lineageos.twelve.ui.visualizer.VisualizerNVDataSource
 import org.lineageos.twelve.utils.PermissionsChecker
 import org.lineageos.twelve.utils.PermissionsUtils
@@ -235,7 +235,7 @@ class NowPlayingFragment : Fragment(R.layout.fragment_now_playing) {
 
         audioInformationMaterialButton.setOnClickListener {
             when (val value = viewModel.audio.value) {
-                is RequestStatus.Success -> {
+                is Result.Success -> {
                     val audio = value.data
                     findNavController().navigateSafe(
                         R.id.action_nowPlayingFragment_to_fragment_media_item_bottom_sheet_dialog,
@@ -333,18 +333,18 @@ class NowPlayingFragment : Fragment(R.layout.fragment_now_playing) {
                 launch {
                     viewModel.mediaArtwork.collectLatest {
                         when (it) {
-                            is RequestStatus.Loading -> {
+                            is Result.Loading -> {
                                 // Do nothing
                             }
 
-                            is RequestStatus.Success -> {
+                            is Result.Success -> {
                                 albumArtImageView.loadThumbnail(
                                     it.data,
                                     placeholder = R.drawable.ic_music_note,
                                 )
                             }
 
-                            is RequestStatus.Error -> throw Exception(
+                            is Result.Error -> throw Exception(
                                 "Error while getting media artwork"
                             )
                         }
@@ -505,11 +505,11 @@ class NowPlayingFragment : Fragment(R.layout.fragment_now_playing) {
                 launch {
                     viewModel.lyricsLines.collectLatest {
                         when (it) {
-                            is RequestStatus.Loading -> {
+                            is Result.Loading -> {
                                 // Do nothing
                             }
 
-                            is RequestStatus.Success -> {
+                            is Result.Success -> {
                                 val (lyrics, currentIndex) = it.data
 
                                 val index = currentIndex ?: 0
@@ -525,7 +525,7 @@ class NowPlayingFragment : Fragment(R.layout.fragment_now_playing) {
                                 lyricsMaterialCardView.isVisible = true
                             }
 
-                            is RequestStatus.Error -> {
+                            is Result.Error -> {
                                 Log.e(
                                     LOG_TAG,
                                     "Error while loading lyrics: ${it.error}",

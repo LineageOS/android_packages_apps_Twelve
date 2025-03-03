@@ -23,8 +23,8 @@ import org.lineageos.twelve.ext.resources
 import org.lineageos.twelve.models.Album
 import org.lineageos.twelve.models.Audio
 import org.lineageos.twelve.models.MediaType
-import org.lineageos.twelve.models.RequestStatus
-import org.lineageos.twelve.models.RequestStatus.Companion.map
+import org.lineageos.twelve.models.Result
+import org.lineageos.twelve.models.Result.Companion.map
 
 class MediaItemViewModel(application: Application) : TwelveViewModel(application) {
     private val uri = MutableStateFlow<Uri?>(null)
@@ -57,14 +57,14 @@ class MediaItemViewModel(application: Application) : TwelveViewModel(application
         .stateIn(
             viewModelScope,
             started = SharingStarted.WhileSubscribed(),
-            initialValue = RequestStatus.Loading(),
+            initialValue = Result.Loading(),
         )
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private val rawMediaItem = data
         .mapLatest {
             when (it) {
-                is RequestStatus.Success -> it.data.first
+                is Result.Success -> it.data.first
                 else -> null
             }
         }
@@ -82,16 +82,16 @@ class MediaItemViewModel(application: Application) : TwelveViewModel(application
         .stateIn(
             viewModelScope,
             started = SharingStarted.WhileSubscribed(),
-            initialValue = RequestStatus.Loading(),
+            initialValue = Result.Loading(),
         )
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val tracks = data
         .mapLatest {
             when (it) {
-                is RequestStatus.Loading -> null
-                is RequestStatus.Success -> it.data.second
-                is RequestStatus.Error -> listOf()
+                is Result.Loading -> null
+                is Result.Success -> it.data.second
+                is Result.Error -> listOf()
             }
         }
         .filterNotNull()

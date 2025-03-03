@@ -17,7 +17,7 @@ import kotlinx.coroutines.withContext
 import org.lineageos.twelve.models.Error
 import org.lineageos.twelve.models.Provider
 import org.lineageos.twelve.models.ProviderIdentifier
-import org.lineageos.twelve.models.RequestStatus
+import org.lineageos.twelve.models.Result
 
 class CreatePlaylistViewModel(application: Application) : TwelveViewModel(application) {
     private val providerIdentifier = MutableStateFlow<ProviderIdentifier?>(null)
@@ -61,5 +61,5 @@ class CreatePlaylistViewModel(application: Application) : TwelveViewModel(applic
         withContext(Dispatchers.IO) {
             mediaRepository.createPlaylist(it, playlistName.value)
         }
-    } ?: RequestStatus.Error(Error.IO)
+    } ?: Result.Error(Error.IO)
 }

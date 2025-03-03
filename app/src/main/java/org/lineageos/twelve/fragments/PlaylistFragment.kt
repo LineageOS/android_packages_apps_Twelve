@@ -41,7 +41,7 @@ import org.lineageos.twelve.ext.updateMargin
 import org.lineageos.twelve.ext.updatePadding
 import org.lineageos.twelve.models.Audio
 import org.lineageos.twelve.models.Error
-import org.lineageos.twelve.models.RequestStatus
+import org.lineageos.twelve.models.Result
 import org.lineageos.twelve.ui.dialogs.EditTextMaterialAlertDialogBuilder
 import org.lineageos.twelve.ui.recyclerview.SimpleListAdapter
 import org.lineageos.twelve.ui.recyclerview.UniqueItemDiffCallback
@@ -245,11 +245,11 @@ class PlaylistFragment : Fragment(R.layout.fragment_playlist) {
             linearProgressIndicator.setProgressCompat(it, true)
 
             when (it) {
-                is RequestStatus.Loading -> {
+                is Result.Loading -> {
                     // Do nothing
                 }
 
-                is RequestStatus.Success -> {
+                is Result.Success -> {
                     val (playlist, audios) = it.data
 
                     toolbar.title = playlist.name
@@ -298,7 +298,7 @@ class PlaylistFragment : Fragment(R.layout.fragment_playlist) {
                     }
                 }
 
-                is RequestStatus.Error -> {
+                is Result.Error -> {
                     Log.e(LOG_TAG, "Error loading playlist, error: ${it.error}")
 
                     toolbar.title = ""

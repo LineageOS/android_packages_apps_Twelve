@@ -40,7 +40,7 @@ import org.lineageos.twelve.models.Album
 import org.lineageos.twelve.models.Audio
 import org.lineageos.twelve.models.Error
 import org.lineageos.twelve.models.Playlist
-import org.lineageos.twelve.models.RequestStatus
+import org.lineageos.twelve.models.Result
 import org.lineageos.twelve.ui.recyclerview.SimpleListAdapter
 import org.lineageos.twelve.ui.recyclerview.UniqueItemDiffCallback
 import org.lineageos.twelve.ui.views.HorizontalMediaItemView
@@ -241,11 +241,11 @@ class GenreFragment : Fragment(R.layout.fragment_genre) {
             linearProgressIndicator.setProgressCompat(it, true)
 
             when (it) {
-                is RequestStatus.Loading -> {
+                is Result.Loading -> {
                     // Do nothing
                 }
 
-                is RequestStatus.Success -> {
+                is Result.Success -> {
                     val (genre, genreContent) = it.data
 
                     genre.name?.also { genreName ->
@@ -283,7 +283,7 @@ class GenreFragment : Fragment(R.layout.fragment_genre) {
                     noElementsNestedScrollView.isVisible = isEmpty
                 }
 
-                is RequestStatus.Error -> {
+                is Result.Error -> {
                     Log.e(LOG_TAG, "Error loading genre, error: ${it.error}")
 
                     toolbar.title = ""

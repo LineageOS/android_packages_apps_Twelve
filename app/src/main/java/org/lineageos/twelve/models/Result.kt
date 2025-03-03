@@ -6,9 +6,9 @@
 package org.lineageos.twelve.models
 
 /**
- * Request status for flows.
+ * Result status. This is very similar to Arrow's `Either<A, B>`
  */
-sealed class RequestStatus<T, E> {
+sealed class Result<T, E> {
     /**
      * Result is not ready yet.
      *
@@ -16,29 +16,29 @@ sealed class RequestStatus<T, E> {
      */
     class Loading<T, E>(
         @androidx.annotation.IntRange(from = 0, to = 100) val progress: Int? = null
-    ) : RequestStatus<T, E>()
+    ) : Result<T, E>()
 
     /**
      * The result is ready.
      *
      * @param data The obtained data
      */
-    class Success<T, E>(val data: T) : RequestStatus<T, E>()
+    class Success<T, E>(val data: T) : Result<T, E>()
 
     /**
      * The request failed.
      *
      * @param error The error
      */
-    class Error<T, E>(val error: E, val throwable: Throwable? = null) : RequestStatus<T, E>()
+    class Error<T, E>(val error: E, val throwable: Throwable? = null) : Result<T, E>()
 
     companion object {
         /**
          * Map the result to another type.
          */
-        fun <T, E, R> RequestStatus<T, E>.map(
+        fun <T, E, R> Result<T, E>.map(
             mapping: (T) -> R
-        ): RequestStatus<R, E> = when (this) {
+        ): Result<R, E> = when (this) {
             is Loading -> Loading(progress)
             is Success -> Success(mapping(data))
             is Error -> Error(error, throwable)
@@ -47,7 +47,7 @@ sealed class RequestStatus<T, E> {
         /**
          * Fold the request status.
          */
-        fun <T, E, R> RequestStatus<T, E>.fold(
+        fun <T, E, R> Result<T, E>.fold(
             onLoading: (Int?) -> R,
             onSuccess: (T) -> R,
             onError: (E) -> R,

@@ -17,7 +17,7 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.withContext
-import org.lineageos.twelve.models.RequestStatus
+import org.lineageos.twelve.models.Result
 
 class PlaylistViewModel(application: Application) : TwelveViewModel(application) {
     private val playlistUri = MutableStateFlow<Uri?>(null)
@@ -32,7 +32,7 @@ class PlaylistViewModel(application: Application) : TwelveViewModel(application)
         .stateIn(
             viewModelScope,
             SharingStarted.WhileSubscribed(),
-            RequestStatus.Loading()
+            Result.Loading()
         )
 
     fun loadPlaylist(playlistUri: Uri) {
@@ -56,7 +56,7 @@ class PlaylistViewModel(application: Application) : TwelveViewModel(application)
     }
 
     fun playPlaylist(position: Int = 0) {
-        (playlist.value as? RequestStatus.Success)?.data?.second?.takeUnless {
+        (playlist.value as? Result.Success)?.data?.second?.takeUnless {
             it.isEmpty()
         }?.let {
             playAudio(it, position)
@@ -64,7 +64,7 @@ class PlaylistViewModel(application: Application) : TwelveViewModel(application)
     }
 
     fun shufflePlayPlaylist() {
-        (playlist.value as? RequestStatus.Success)?.data?.second?.takeUnless {
+        (playlist.value as? Result.Success)?.data?.second?.takeUnless {
             it.isEmpty()
         }?.let {
             playAudio(it.shuffled(), 0)

@@ -49,7 +49,7 @@ import org.lineageos.twelve.models.Audio
 import org.lineageos.twelve.models.Genre
 import org.lineageos.twelve.models.MediaItem
 import org.lineageos.twelve.models.Playlist
-import org.lineageos.twelve.models.RequestStatus
+import org.lineageos.twelve.models.Result
 import org.lineageos.twelve.models.areContentsTheSame
 import org.lineageos.twelve.models.areItemsTheSame
 import org.lineageos.twelve.ui.recyclerview.SimpleListAdapter
@@ -414,15 +414,15 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                 launch {
                     viewModel.mediaArtwork.collectLatest {
                         when (it) {
-                            is RequestStatus.Loading -> {
+                            is Result.Loading -> {
                                 // Do nothing
                             }
 
-                            is RequestStatus.Success -> {
+                            is Result.Success -> {
                                 nowPlayingBar.updateMediaArtwork(it.data)
                             }
 
-                            is RequestStatus.Error -> throw Exception(
+                            is Result.Error -> throw Exception(
                                 "Error while getting media artwork"
                             )
                         }
@@ -434,11 +434,11 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                         searchLinearProgressIndicator.setProgressCompat(it, true)
 
                         when (it) {
-                            is RequestStatus.Loading -> {
+                            is Result.Loading -> {
                                 // Do nothing
                             }
 
-                            is RequestStatus.Success -> {
+                            is Result.Success -> {
                                 searchAdapter.submitList(it.data)
 
                                 val isEmpty = it.data.isEmpty()
@@ -447,7 +447,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                                     isEmpty && searchView.editText.text.isNotEmpty()
                             }
 
-                            is RequestStatus.Error -> {
+                            is Result.Error -> {
                                 Log.e(
                                     LOG_TAG,
                                     "Failed to load search results, error: ${it.error}",

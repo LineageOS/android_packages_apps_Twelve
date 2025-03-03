@@ -20,10 +20,10 @@ import org.lineageos.twelve.models.Lyrics
 import org.lineageos.twelve.models.MediaItem
 import org.lineageos.twelve.models.MediaType
 import org.lineageos.twelve.models.Playlist
-import org.lineageos.twelve.models.RequestStatus
+import org.lineageos.twelve.models.Result
 import org.lineageos.twelve.models.SortingRule
 
-typealias MediaRequestStatus<T> = RequestStatus<T, Error>
+typealias MediaRequestStatus<T> = Result<T, Error>
 
 /**
  * A data source for media.
@@ -32,8 +32,8 @@ interface MediaDataSource {
     /**
      * Get the current status of the data source.
      *
-     * @return [RequestStatus.Success] with a list of [DataSourceInformation] if everything is fine,
-     *   else [RequestStatus.Error]
+     * @return [Result.Success] with a list of [DataSourceInformation] if everything is fine,
+     *   else [Result.Error]
      */
     fun status(): Flow<MediaRequestStatus<List<DataSourceInformation>>>
 
@@ -109,7 +109,7 @@ interface MediaDataSource {
 
     /**
      * Get the URI of the last played audio, if any.
-     * @return [RequestStatus.Success] with the URI if there's one, [RequestStatus.Error] otherwise
+     * @return [Result.Success] with the URI if there's one, [Result.Error] otherwise
      */
     fun lastPlayedAudio(): Flow<MediaRequestStatus<Audio>>
 
@@ -117,13 +117,13 @@ interface MediaDataSource {
      * Get the lyrics of an audio.
      * @param audioUri The URI of the audio
      */
-    fun lyrics(audioUri: Uri): Flow<RequestStatus<Lyrics, Error>>
+    fun lyrics(audioUri: Uri): Flow<Result<Lyrics, Error>>
 
     /**
      * Create a new playlist. Note that the name shouldn't be considered unique if possible, but
      * this may vary per data source.
      * @param name The name of the playlist
-     * @return A [RequestStatus] with the [Uri] of the new playlist if succeeded, an error otherwise
+     * @return A [Result] with the [Uri] of the new playlist if succeeded, an error otherwise
      */
     suspend fun createPlaylist(name: String): MediaRequestStatus<Uri>
 
@@ -131,14 +131,14 @@ interface MediaDataSource {
      * Rename a playlist.
      * @param playlistUri The URI of the playlist
      * @param name The new name of the playlist
-     * @return [RequestStatus.Success] if success, [RequestStatus.Error] with an error otherwise
+     * @return [Result.Success] if success, [Result.Error] with an error otherwise
      */
     suspend fun renamePlaylist(playlistUri: Uri, name: String): MediaRequestStatus<Unit>
 
     /**
      * Delete a playlist.
      * @param playlistUri The URI of the playlist
-     * @return [RequestStatus.Success] if success, [RequestStatus.Error] with an error otherwise
+     * @return [Result.Success] if success, [Result.Error] with an error otherwise
      */
     suspend fun deletePlaylist(playlistUri: Uri): MediaRequestStatus<Unit>
 
@@ -146,7 +146,7 @@ interface MediaDataSource {
      * Add an audio to a playlist.
      * @param playlistUri The URI of the playlist
      * @param audioUri The URI of the audio
-     * @return [RequestStatus.Success] if success, [RequestStatus.Error] with an error otherwise
+     * @return [Result.Success] if success, [Result.Error] with an error otherwise
      */
     suspend fun addAudioToPlaylist(playlistUri: Uri, audioUri: Uri): MediaRequestStatus<Unit>
 
@@ -154,14 +154,14 @@ interface MediaDataSource {
      * Remove an audio from a playlist.
      * @param playlistUri The URI of the playlist
      * @param audioUri The URI of the audio
-     * @return [RequestStatus.Success] if success, [RequestStatus.Error] with an error otherwise
+     * @return [Result.Success] if success, [Result.Error] with an error otherwise
      */
     suspend fun removeAudioFromPlaylist(playlistUri: Uri, audioUri: Uri): MediaRequestStatus<Unit>
 
     /**
      * Notify the source about an audio item being played.
      * @param audioUri The URI of the audio
-     * @return [RequestStatus.Success] if success, [RequestStatus.Error] with an error otherwise
+     * @return [Result.Success] if success, [Result.Error] with an error otherwise
      */
     suspend fun onAudioPlayed(audioUri: Uri): MediaRequestStatus<Unit>
 }

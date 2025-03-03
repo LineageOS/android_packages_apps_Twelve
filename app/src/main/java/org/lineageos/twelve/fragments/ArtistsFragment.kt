@@ -26,7 +26,7 @@ import org.lineageos.twelve.ext.getViewProperty
 import org.lineageos.twelve.ext.navigateSafe
 import org.lineageos.twelve.ext.setProgressCompat
 import org.lineageos.twelve.models.Artist
-import org.lineageos.twelve.models.RequestStatus
+import org.lineageos.twelve.models.Result
 import org.lineageos.twelve.models.SortingStrategy
 import org.lineageos.twelve.ui.recyclerview.SimpleListAdapter
 import org.lineageos.twelve.ui.recyclerview.UniqueItemDiffCallback
@@ -126,11 +126,11 @@ class ArtistsFragment : Fragment(R.layout.fragment_artists) {
                     linearProgressIndicator.setProgressCompat(it, true)
 
                     when (it) {
-                        is RequestStatus.Loading -> {
+                        is Result.Loading -> {
                             // Do nothing
                         }
 
-                        is RequestStatus.Success -> {
+                        is Result.Success -> {
                             adapter.submitList(it.data)
 
                             val isEmpty = it.data.isEmpty()
@@ -138,7 +138,7 @@ class ArtistsFragment : Fragment(R.layout.fragment_artists) {
                             noElementsLinearLayout.isVisible = isEmpty
                         }
 
-                        is RequestStatus.Error -> {
+                        is Result.Error -> {
                             Log.e(
                                 LOG_TAG,
                                 "Failed to load artists, error: ${it.error}",
