@@ -109,4 +109,13 @@ object DummyDataSource : MediaDataSource {
     ) = RequestStatus.Error<Unit, _>(MediaError.NOT_IMPLEMENTED)
 
     override suspend fun onAudioPlayed(audioUri: Uri) = RequestStatus.Success<_, MediaError>(Unit)
+
+    override fun isFavorite(audioUri: Uri) =
+        flowOf(RequestStatus.Error<Boolean, _>(MediaError.NOT_IMPLEMENTED))
+
+    override suspend fun setFavorite(audioUri: Uri, isFavorite: Boolean) =
+        RequestStatus.Error<Unit, _>(MediaError.NOT_IMPLEMENTED)
+
+    override fun getFavorites() =
+        flowOf(RequestStatus.Error<List<Audio>, _>(MediaError.NOT_IMPLEMENTED))
 }

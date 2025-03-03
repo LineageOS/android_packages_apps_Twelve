@@ -338,6 +338,17 @@ class JellyfinDataSource(
                 .let { RequestStatus.Success<Unit, MediaError>(Unit) }
         }
 
+    override fun isFavorite(audioUri: Uri): Flow<MediaRequestStatus<Boolean>> = flowOf(
+        RequestStatus.Error(MediaError.NOT_IMPLEMENTED)
+    )
+
+    override suspend fun setFavorite(audioUri: Uri, isFavorite: Boolean) =
+        RequestStatus.Error<Unit, _>(MediaError.NOT_IMPLEMENTED)
+
+    override fun getFavorites(): Flow<MediaRequestStatus<List<Audio>>> = flowOf(
+        RequestStatus.Error(MediaError.NOT_IMPLEMENTED)
+    )
+
     private fun Item.toMediaItemAlbum() = Album.Builder(getAlbumUri(id.toString()))
         .setThumbnail(
             Thumbnail.Builder()
