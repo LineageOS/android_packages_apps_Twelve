@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2024 The LineageOS Project
+ * SPDX-FileCopyrightText: 2024-2025 The LineageOS Project
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -8,6 +8,7 @@ package org.lineageos.twelve.database.dao
 import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Transaction
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 @Suppress("FunctionName")
@@ -39,4 +40,18 @@ interface PlaylistItemCrossRefDao {
      */
     @Query("DELETE FROM PlaylistItemCrossRef WHERE playlist_id = :playlistId AND item_id = :itemId")
     suspend fun _removeItemFromPlaylist(playlistId: Long, itemId: Long)
+
+    /**
+     * Check if an item is in the favorites playlist.
+     */
+    @Query(
+        """
+        SELECT EXISTS(
+            SELECT 1 FROM PlaylistItemCrossRef
+            WHERE playlist_id = (SELECT playlist_id FROM Playlist WHERE favorite = 1)
+            AND item_id = :itemId
+        )
+    """
+    )
+    fun _isItemInFavorites(itemId: Long?): Flow<Boolean>
 }

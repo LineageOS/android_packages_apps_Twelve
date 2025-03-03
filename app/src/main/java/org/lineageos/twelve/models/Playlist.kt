@@ -16,11 +16,13 @@ import org.lineageos.twelve.ext.toByteArray
  * A user-defined playlist.
  *
  * @param name The name of the playlist
+ * @param isFavorite Whether the playlist is the favorite playlist
  */
 data class Playlist(
     override val uri: Uri,
     override val thumbnail: Thumbnail?,
     val name: String?,
+    val isFavorite: Boolean = false,
 ) : MediaItem<Playlist> {
     override val mediaType = MediaType.PLAYLIST
 
@@ -28,6 +30,7 @@ data class Playlist(
         this, other,
         Playlist::thumbnail,
         Playlist::name,
+        Playlist::isFavorite,
     ) == 0
 
     override fun toMedia3MediaItem(resources: Resources) = buildMediaItem(
@@ -44,6 +47,7 @@ data class Playlist(
 
     class Builder(uri: Uri) : MediaItem.Builder<Builder, Playlist>(uri) {
         private var name: String? = null
+        private var isFavorite = false
 
         /**
          * @see Playlist.name
@@ -52,10 +56,18 @@ data class Playlist(
             this.name = name
         }
 
+        /**
+         * @see Playlist.isFavorite
+         */
+        fun setIsFavorite(isFavorite: Boolean) = this.also {
+            this.isFavorite = isFavorite
+        }
+
         override fun build() = Playlist(
             uri = uri,
             thumbnail = thumbnail,
             name = name,
+            isFavorite = isFavorite,
         )
     }
 }
