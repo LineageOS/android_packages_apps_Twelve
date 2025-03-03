@@ -136,7 +136,7 @@ open class NowPlayingViewModel(application: Application) : TwelveViewModel(appli
         .stateIn(
             viewModelScope,
             started = SharingStarted.WhileSubscribed(),
-            initialValue = Result.Loading()
+            initialValue = null
         )
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -194,15 +194,17 @@ open class NowPlayingViewModel(application: Application) : TwelveViewModel(appli
         playbackState,
     ) { mediaMetadata, playbackState ->
         when (playbackState) {
-            PlaybackState.BUFFERING -> Result.Loading()
-            else -> Result.Success<_, Nothing>(mediaMetadata.toThumbnail(applicationContext))
+            PlaybackState.BUFFERING -> null
+            else -> mediaMetadata.toThumbnail(applicationContext)?.let {
+                Result.Success(it)
+            } ?: Result.Error(Error.NOT_FOUND)
         }
     }
         .flowOn(Dispatchers.IO)
         .stateIn(
             viewModelScope,
             started = SharingStarted.WhileSubscribed(),
-            initialValue = Result.Loading()
+            initialValue = null
         )
 
     @androidx.annotation.OptIn(UnstableApi::class)
@@ -342,13 +344,13 @@ open class NowPlayingViewModel(application: Application) : TwelveViewModel(appli
         .flatMapLatest { mediaItemUri ->
             mediaItemUri?.let {
                 mediaRepository.lyrics(it)
-            } ?: flowOf(Result.Loading())
+            } ?: flowOf(null)
         }
         .flowOn(Dispatchers.IO)
         .stateIn(
             viewModelScope,
             started = SharingStarted.WhileSubscribed(),
-            initialValue = Result.Loading()
+            initialValue = null
         )
 
     val lyricsLines = combine(
@@ -386,7 +388,7 @@ open class NowPlayingViewModel(application: Application) : TwelveViewModel(appli
         .stateIn(
             viewModelScope,
             started = SharingStarted.WhileSubscribed(),
-            initialValue = Result.Loading()
+            initialValue = null
         )
 
     fun togglePlayPause() {

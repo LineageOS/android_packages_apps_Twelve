@@ -149,10 +149,10 @@ class AddOrRemoveFromPlaylistsFragment : Fragment(R.layout.fragment_add_or_remov
 
     private suspend fun loadData() {
         viewModel.playlistToHasAudio.collect {
-            linearProgressIndicator.setProgressCompat(it, true)
+            linearProgressIndicator.setProgressCompat(it)
 
             when (it) {
-                is Result.Loading -> {
+                null -> {
                     // Do nothing
                 }
 

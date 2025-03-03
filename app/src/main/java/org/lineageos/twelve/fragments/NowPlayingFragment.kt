@@ -333,7 +333,7 @@ class NowPlayingFragment : Fragment(R.layout.fragment_now_playing) {
                 launch {
                     viewModel.mediaArtwork.collectLatest {
                         when (it) {
-                            is Result.Loading -> {
+                            null -> {
                                 // Do nothing
                             }
 
@@ -344,9 +344,13 @@ class NowPlayingFragment : Fragment(R.layout.fragment_now_playing) {
                                 )
                             }
 
-                            is Result.Error -> throw Exception(
-                                "Error while getting media artwork"
-                            )
+                            is Result.Error -> {
+                                Log.e(
+                                    LOG_TAG,
+                                    "Error while getting media artwork: ${it.error}",
+                                    it.throwable
+                                )
+                            }
                         }
                     }
                 }
@@ -505,7 +509,7 @@ class NowPlayingFragment : Fragment(R.layout.fragment_now_playing) {
                 launch {
                     viewModel.lyricsLines.collectLatest {
                         when (it) {
-                            is Result.Loading -> {
+                            null -> {
                                 // Do nothing
                             }
 

@@ -10,15 +10,6 @@ package org.lineageos.twelve.models
  */
 sealed class Result<T, E> {
     /**
-     * Result is not ready yet.
-     *
-     * @param progress An optional percentage of the request progress
-     */
-    class Loading<T, E>(
-        @androidx.annotation.IntRange(from = 0, to = 100) val progress: Int? = null
-    ) : Result<T, E>()
-
-    /**
      * The result is ready.
      *
      * @param data The obtained data
@@ -39,22 +30,36 @@ sealed class Result<T, E> {
         fun <T, E, R> Result<T, E>.map(
             mapping: (T) -> R
         ): Result<R, E> = when (this) {
-            is Loading -> Loading(progress)
             is Success -> Success(mapping(data))
             is Error -> Error(error, throwable)
         }
 
         /**
+         * Map the result to another type.
+         */
+        @JvmName("mapNullable")
+        fun <T, E, R> Result<T, E>?.map(
+            mapping: (T) -> R
+        ): Result<R, E>? = this?.map(mapping)
+
+        /**
          * Fold the request status.
          */
         fun <T, E, R> Result<T, E>.fold(
-            onLoading: (Int?) -> R,
             onSuccess: (T) -> R,
             onError: (E) -> R,
         ): R = when (this) {
-            is Loading -> onLoading(progress)
             is Success -> onSuccess(data)
             is Error -> onError(error)
         }
+
+        /**
+         * Fold the request status.
+         */
+        fun <T, E, R> Result<T, E>?.fold(
+            onNull: () -> R,
+            onSuccess: (T) -> R,
+            onError: (E) -> R,
+        ): R = this?.fold(onSuccess, onError) ?: onNull()
     }
 }

@@ -57,7 +57,7 @@ class MediaItemViewModel(application: Application) : TwelveViewModel(application
         .stateIn(
             viewModelScope,
             started = SharingStarted.WhileSubscribed(),
-            initialValue = Result.Loading(),
+            initialValue = null,
         )
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -82,14 +82,14 @@ class MediaItemViewModel(application: Application) : TwelveViewModel(application
         .stateIn(
             viewModelScope,
             started = SharingStarted.WhileSubscribed(),
-            initialValue = Result.Loading(),
+            initialValue = null,
         )
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val tracks = data
         .mapLatest {
             when (it) {
-                is Result.Loading -> null
+                null -> null
                 is Result.Success -> it.data.second
                 is Result.Error -> listOf()
             }

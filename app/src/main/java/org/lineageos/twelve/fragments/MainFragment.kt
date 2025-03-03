@@ -414,7 +414,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                 launch {
                     viewModel.mediaArtwork.collectLatest {
                         when (it) {
-                            is Result.Loading -> {
+                            null -> {
                                 // Do nothing
                             }
 
@@ -422,19 +422,23 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                                 nowPlayingBar.updateMediaArtwork(it.data)
                             }
 
-                            is Result.Error -> throw Exception(
-                                "Error while getting media artwork"
-                            )
+                            is Result.Error -> {
+                                Log.e(
+                                    LOG_TAG,
+                                    "Error while getting media artwork: ${it.error}",
+                                    it.throwable
+                                )
+                            }
                         }
                     }
                 }
 
                 launch {
                     searchViewModel.searchResults.collectLatest {
-                        searchLinearProgressIndicator.setProgressCompat(it, true)
+                        searchLinearProgressIndicator.setProgressCompat(it)
 
                         when (it) {
-                            is Result.Loading -> {
+                            null -> {
                                 // Do nothing
                             }
 

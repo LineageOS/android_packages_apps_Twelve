@@ -277,7 +277,6 @@ class JellyfinDataSource(
             toModel()
         }.let {
             when (it) {
-                is Result.Loading -> Result.Loading(it.progress)
                 is Result.Success -> it.data?.let { lyrics ->
                     Result.Success<_, Error>(lyrics)
                 } ?: Result.Error(Error.NOT_FOUND)
@@ -449,13 +448,11 @@ class JellyfinDataSource(
                     Result.Success<List<MediaItem<*>>, Error>(
                         albumRs.fold(
                             onSuccess = { album -> audioAsMediaItemList + album },
-                            onLoading = { audioAsMediaItemList },
                             onError = { audioAsMediaItemList },
                         )
                     )
                 }
             },
-            onLoading = { flowOf(Result.Error(Error.NOT_FOUND)) },
             onError = { flowOf(Result.Error(Error.NOT_FOUND)) },
         )
     }

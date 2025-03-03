@@ -225,7 +225,7 @@ class ManageProviderFragment : Fragment(R.layout.fragment_manage_provider) {
                 launch {
                     viewModel.provider.collectLatest {
                         when (it) {
-                            is Result.Loading -> {
+                            null -> {
                                 // Do nothing
                             }
 

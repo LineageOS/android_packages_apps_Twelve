@@ -21,7 +21,6 @@ import org.lineageos.twelve.R
 import org.lineageos.twelve.ext.getViewProperty
 import org.lineageos.twelve.ext.navigateSafe
 import org.lineageos.twelve.models.Provider
-import org.lineageos.twelve.models.Result
 import org.lineageos.twelve.ui.recyclerview.SimpleListAdapter
 import org.lineageos.twelve.ui.recyclerview.UniqueItemDiffCallback
 import org.lineageos.twelve.ui.views.ListItem
@@ -86,20 +85,8 @@ class ProviderSelectorDialogFragment : MaterialDialogFragment(
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.providers.collect {
-                    when (it) {
-                        is Result.Loading -> {
-                            // Do nothing
-                        }
-
-                        is Result.Success -> {
-                            adapter.submitList(it.data)
-                        }
-
-                        is Result.Error -> throw Exception(
-                            "Error while loading providers"
-                        )
-                    }
+                viewModel.providers.collect { providers ->
+                    adapter.submitList(providers)
                 }
             }
         }

@@ -41,20 +41,20 @@ open class ProviderViewModel(application: Application) : TwelveViewModel(applica
                         Result.Success<_, Error>(provider)
                     } ?: Result.Error(Error.NOT_FOUND)
                 }
-            } ?: flowOf(Result.Loading())
+            } ?: flowOf(null)
         }
         .flowOn(Dispatchers.IO)
         .stateIn(
             viewModelScope,
             SharingStarted.WhileSubscribed(),
-            Result.Loading()
+            null
         )
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val canBeManaged = provider
         .mapLatest {
             when (it) {
-                is Result.Loading -> null
+                null -> null
                 is Result.Success -> it.data.type.canBeManaged
                 is Result.Error -> false
             }
@@ -71,8 +71,8 @@ open class ProviderViewModel(application: Application) : TwelveViewModel(applica
     val status = provider
         .flatMapLatest { provider ->
             provider.fold(
-                onLoading = {
-                    flowOf(Result.Loading(it))
+                onNull = {
+                    flowOf(null)
                 },
                 onSuccess = {
                     mediaRepository.status(it)
@@ -86,7 +86,7 @@ open class ProviderViewModel(application: Application) : TwelveViewModel(applica
         .stateIn(
             viewModelScope,
             SharingStarted.WhileSubscribed(),
-            Result.Loading()
+            null
         )
 
     fun setProviderIdentifier(providerIdentifier: ProviderIdentifier?) {

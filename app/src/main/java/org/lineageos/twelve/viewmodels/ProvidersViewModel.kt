@@ -7,25 +7,12 @@ package org.lineageos.twelve.viewmodels
 
 import android.app.Application
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 import org.lineageos.twelve.models.Provider
-import org.lineageos.twelve.models.Result
 
 open class ProvidersViewModel(application: Application) : TwelveViewModel(application) {
-    @OptIn(ExperimentalCoroutinesApi::class)
     val providers = mediaRepository.allVisibleProviders
-        .mapLatest { Result.Success<_, Nothing>(it) }
-        .flowOn(Dispatchers.IO)
-        .stateIn(
-            viewModelScope,
-            SharingStarted.WhileSubscribed(),
-            Result.Loading()
-        )
 
     val navigationProvider = mediaRepository.navigationProvider
         .stateIn(
