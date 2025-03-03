@@ -17,6 +17,8 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.withContext
+import org.lineageos.twelve.models.FlowResult
+import org.lineageos.twelve.models.FlowResult.Companion.asFlowResult
 
 class AddOrRemoveFromPlaylistsViewModel(application: Application) : TwelveViewModel(application) {
     private val audioUri = MutableStateFlow<Uri?>(null)
@@ -27,11 +29,12 @@ class AddOrRemoveFromPlaylistsViewModel(application: Application) : TwelveViewMo
         .flatMapLatest {
             mediaRepository.audio(it)
         }
+        .asFlowResult()
         .flowOn(Dispatchers.IO)
         .stateIn(
             viewModelScope,
             SharingStarted.WhileSubscribed(),
-            null
+            FlowResult.Loading()
         )
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -40,11 +43,12 @@ class AddOrRemoveFromPlaylistsViewModel(application: Application) : TwelveViewMo
         .flatMapLatest {
             mediaRepository.audioPlaylistsStatus(it)
         }
+        .asFlowResult()
         .flowOn(Dispatchers.IO)
         .stateIn(
             viewModelScope,
             SharingStarted.WhileSubscribed(),
-            null
+            FlowResult.Loading()
         )
 
     @OptIn(ExperimentalCoroutinesApi::class)

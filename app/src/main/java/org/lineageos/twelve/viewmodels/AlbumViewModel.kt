@@ -19,7 +19,9 @@ import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 import org.lineageos.twelve.ext.resources
 import org.lineageos.twelve.models.Audio
-import org.lineageos.twelve.models.Result
+import org.lineageos.twelve.models.FlowResult
+import org.lineageos.twelve.models.FlowResult.Companion.asFlowResult
+import org.lineageos.twelve.models.FlowResult.Companion.foldLatest
 import org.lineageos.twelve.models.UniqueItem
 import org.lineageos.twelve.utils.MimeUtils
 import kotlin.reflect.safeCast
@@ -33,29 +35,28 @@ class AlbumViewModel(application: Application) : TwelveViewModel(application) {
         .flatMapLatest {
             mediaRepository.album(it)
         }
+        .asFlowResult()
         .flowOn(Dispatchers.IO)
         .stateIn(
             viewModelScope,
             SharingStarted.WhileSubscribed(),
-            null
+            FlowResult.Loading()
         )
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     val tracks = album
-        .mapLatest {
-            when (it) {
-                null -> null
-                is Result.Success -> it.data.second.sortedWith(
+        .foldLatest(
+            onSuccess = {
+                it.second.sortedWith(
                     compareBy(
                         { audio -> audio.discNumber ?: 0 },
                         Audio::trackNumber,
                     )
                 )
-
-                is Result.Error -> listOf()
-            }
-        }
-        .filterNotNull()
+            },
+            onError = { _, _ ->
+                listOf()
+            },
+        )
         .flowOn(Dispatchers.IO)
         .stateIn(
             viewModelScope,
@@ -124,23 +125,20 @@ class AlbumViewModel(application: Application) : TwelveViewModel(application) {
             listOf()
         )
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     val albumFileTypes = album
-        .filterNotNull()
-        .mapLatest {
-            when (it) {
-                is Result.Success -> {
-                    it.data.second
-                        .mapNotNull { audio -> audio.mimeType }
-                        .distinct()
-                        .takeIf { mimeTypes -> mimeTypes.size <= 2 }
-                        ?.mapNotNull { mimeType -> MimeUtils.mimeTypeToDisplayName(mimeType) }
-                        .orEmpty()
-                }
-
-                is Result.Error -> listOf()
-            }
-        }
+        .foldLatest(
+            onSuccess = {
+                it.second
+                    .mapNotNull { audio -> audio.mimeType }
+                    .distinct()
+                    .takeIf { mimeTypes -> mimeTypes.size <= 2 }
+                    ?.mapNotNull { mimeType -> MimeUtils.mimeTypeToDisplayName(mimeType) }
+                    .orEmpty()
+            },
+            onError = { _, _ ->
+                listOf()
+            },
+        )
         .flowOn(Dispatchers.IO)
         .stateIn(
             viewModelScope,

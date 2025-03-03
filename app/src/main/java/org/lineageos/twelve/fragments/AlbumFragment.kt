@@ -41,7 +41,7 @@ import org.lineageos.twelve.ext.setProgressCompat
 import org.lineageos.twelve.ext.updateMargin
 import org.lineageos.twelve.ext.updatePadding
 import org.lineageos.twelve.models.Error
-import org.lineageos.twelve.models.Result
+import org.lineageos.twelve.models.FlowResult
 import org.lineageos.twelve.ui.recyclerview.SimpleListAdapter
 import org.lineageos.twelve.ui.recyclerview.UniqueItemDiffCallback
 import org.lineageos.twelve.ui.views.ListItem
@@ -283,11 +283,11 @@ class AlbumFragment : Fragment(R.layout.fragment_album) {
                     linearProgressIndicator.setProgressCompat(it)
 
                     when (it) {
-                        null -> {
+                        is FlowResult.Loading -> {
                             // Do nothing
                         }
 
-                        is Result.Success -> {
+                        is FlowResult.Success -> {
                             val (album, audios) = it.data
 
                             album.title?.also { albumTitle ->
@@ -343,7 +343,7 @@ class AlbumFragment : Fragment(R.layout.fragment_album) {
                             )
                         }
 
-                        is Result.Error -> {
+                        is FlowResult.Error -> {
                             Log.e(LOG_TAG, "Error loading album, error: ${it.error}")
 
                             toolbar.title = ""

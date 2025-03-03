@@ -38,8 +38,8 @@ import org.lineageos.twelve.ext.setProgressCompat
 import org.lineageos.twelve.ext.updatePadding
 import org.lineageos.twelve.models.Album
 import org.lineageos.twelve.models.Error
+import org.lineageos.twelve.models.FlowResult
 import org.lineageos.twelve.models.Playlist
-import org.lineageos.twelve.models.Result
 import org.lineageos.twelve.ui.recyclerview.SimpleListAdapter
 import org.lineageos.twelve.ui.recyclerview.UniqueItemDiffCallback
 import org.lineageos.twelve.ui.views.HorizontalMediaItemView
@@ -216,11 +216,11 @@ class ArtistFragment : Fragment(R.layout.fragment_artist) {
             linearProgressIndicator.setProgressCompat(it)
 
             when (it) {
-                null -> {
+                is FlowResult.Loading -> {
                     // Do nothing
                 }
 
-                is Result.Success -> {
+                is FlowResult.Success -> {
                     val (artist, artistWorks) = it.data
 
                     artist.name?.also { artistName ->
@@ -258,7 +258,7 @@ class ArtistFragment : Fragment(R.layout.fragment_artist) {
                     noElementsNestedScrollView.isVisible = isEmpty
                 }
 
-                is Result.Error -> {
+                is FlowResult.Error -> {
                     Log.e(LOG_TAG, "Error loading artist, error: ${it.error}")
 
                     toolbar.title = ""
