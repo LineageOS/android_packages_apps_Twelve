@@ -164,4 +164,17 @@ interface MediaDataSource {
      * @return [Result.Success] if success, [Result.Error] with an error otherwise
      */
     suspend fun onAudioPlayed(audioUri: Uri): MediaRequestStatus<Unit>
+
+    /**
+     * Get the favorite status of an audio.
+     * @param audioUri The URI of the audio
+     */
+    fun isFavorite(audioUri: Uri): Flow<MediaRequestStatus<Boolean>>
+
+    /**
+     * Notify the source about an audio item being marked as favorite.
+     * @param audioUri The URI of the audio
+     * @return [Result.Success] if success, [Result.Error] with an error otherwise
+     */
+    suspend fun setFavorite(audioUri: Uri, isFavorite: Boolean): MediaRequestStatus<Unit>
 }

@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2024 The LineageOS Project
+ * SPDX-FileCopyrightText: 2024-2025 The LineageOS Project
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -28,6 +28,15 @@ abstract class PlaylistWithItemsDao(database: TwelveDatabase) {
     }
 
     /**
+     * Add an item to the favorites playlist.
+     */
+    @Transaction
+    open suspend fun addItemToFavorites(itemUri: Uri) {
+        val favoritesId = playlistDao._getFavoritePlaylistId()
+        _addItemToPlaylist(favoritesId, itemDao.getOrInsert(itemUri).id)
+    }
+
+    /**
      * Remove an item from a playlist (deletes the cross-reference) and delete the item if it's the
      * last association or if the user never listened to it.
      */
@@ -40,6 +49,15 @@ abstract class PlaylistWithItemsDao(database: TwelveDatabase) {
             // Check if the item is orphan
             itemDao._deleteIfOrphan(id)
         }
+    }
+
+    /**
+     * Remove an item from the favorites playlist.
+     */
+    @Transaction
+    open suspend fun removeItemFromFavorites(itemUri: Uri) {
+        val favoritesId = playlistDao._getFavoritePlaylistId()
+        removeItemFromPlaylist(favoritesId, itemUri)
     }
 
     /**
@@ -70,5 +88,15 @@ abstract class PlaylistWithItemsDao(database: TwelveDatabase) {
         playlistItemCrossRefDao._removeItemFromPlaylist(playlistId, itemId)
         playlistDao._decreaseTrackCount(playlistId)
         playlistDao._updateLastModified(playlistId)
+    }
+
+    /**
+     * Query if an item is associated with the favorite playlist.
+     */
+    @OptIn(ExperimentalCoroutinesApi::class)
+    fun isItemInFavorite(audioUri: Uri) = itemDao._getIdFlowByUri(
+        audioUri
+    ).flatMapLatest {
+        playlistItemCrossRefDao._isItemInFavorites(it)
     }
 }
