@@ -27,6 +27,7 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.withContext
 import me.bogerchan.niervisualizer.renderer.IRenderer
 import me.bogerchan.niervisualizer.renderer.circle.CircleBarRenderer
 import me.bogerchan.niervisualizer.renderer.circle.CircleRenderer
@@ -435,5 +436,13 @@ open class NowPlayingViewModel(application: Application) : TwelveViewModel(appli
 
     fun nextVisualizerType() {
         _currentVisualizerType.value = _currentVisualizerType.value.next()
+    }
+
+    suspend fun toggleFavorites() {
+        audio.value.getOrNull()?.let {
+            withContext(Dispatchers.IO) {
+                mediaRepository.setFavorite(it.uri, !it.isFavorite)
+            }
+        }
     }
 }
