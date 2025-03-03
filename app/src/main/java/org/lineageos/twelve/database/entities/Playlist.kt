@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2024 The LineageOS Project
+ * SPDX-FileCopyrightText: 2024-2025 The LineageOS Project
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -15,4 +15,5 @@ data class Playlist(
     @ColumnInfo(name = "name") val name: String,
     @ColumnInfo(name = "last_modified") val lastModified: Long,
     @ColumnInfo(name = "track_count", defaultValue = "0") val trackCount: Long,
+    @ColumnInfo(name = "favorite", defaultValue = "FALSE") val favorite: Boolean = false
 )
