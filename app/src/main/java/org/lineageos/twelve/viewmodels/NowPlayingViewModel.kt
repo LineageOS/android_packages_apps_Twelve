@@ -25,7 +25,6 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.mapLatest
-import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.flow.stateIn
 import me.bogerchan.niervisualizer.renderer.IRenderer
 import me.bogerchan.niervisualizer.renderer.circle.CircleBarRenderer
@@ -120,9 +119,10 @@ open class NowPlayingViewModel(application: Application) : TwelveViewModel(appli
             }
         }
         .flowOn(Dispatchers.IO)
-        .shareIn(
+        .stateIn(
             viewModelScope,
             started = SharingStarted.WhileSubscribed(),
+            initialValue = null
         )
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -390,6 +390,26 @@ open class NowPlayingViewModel(application: Application) : TwelveViewModel(appli
             started = SharingStarted.WhileSubscribed(),
             initialValue = null
         )
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val favorite = mediaItemUri
+        .flatMapLatest { mediaItemUri ->
+            mediaItemUri?.let {
+                mediaRepository.isFavorite(it)
+            } ?: flowOf(null)
+        }
+        .flowOn(Dispatchers.IO)
+        .stateIn(
+            viewModelScope,
+            started = SharingStarted.WhileSubscribed(),
+            initialValue = null
+        )
+
+    suspend fun setFavorite(favorite: Boolean) {
+        mediaItemUri.value?.let { mediaItemUri ->
+            mediaRepository.setFavorite(mediaItemUri, favorite)
+        }
+    }
 
     fun togglePlayPause() {
         mediaController.value?.let {
