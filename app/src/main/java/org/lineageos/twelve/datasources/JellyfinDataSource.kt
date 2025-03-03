@@ -337,6 +337,11 @@ class JellyfinDataSource(
                 .let { Result.Success<Unit, Error>(Unit) }
         }
 
+    override suspend fun setFavorite(
+        audioUri: Uri,
+        isFavorite: Boolean
+    ) = Result.Error<Unit, _>(Error.NOT_IMPLEMENTED)
+
     private fun Item.toMediaItemAlbum() = Album.Builder(getAlbumUri(id.toString()))
         .setThumbnail(
             Thumbnail.Builder()

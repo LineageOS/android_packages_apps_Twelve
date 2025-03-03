@@ -110,4 +110,9 @@ object DummyDataSource : MediaDataSource {
     ) = Result.Error<Unit, _>(Error.NOT_IMPLEMENTED)
 
     override suspend fun onAudioPlayed(audioUri: Uri) = Result.Success<_, Error>(Unit)
+
+    override suspend fun setFavorite(
+        audioUri: Uri,
+        isFavorite: Boolean
+    ) = Result.Error<Unit, _>(Error.NOT_IMPLEMENTED)
 }
