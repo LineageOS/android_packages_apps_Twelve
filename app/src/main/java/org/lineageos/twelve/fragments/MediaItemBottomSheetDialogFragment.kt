@@ -187,7 +187,12 @@ class MediaItemBottomSheetDialogFragment : BottomSheetDialogFragment(
                             is Artist -> mediaItem.name ?: getString(R.string.artist_unknown)
                             is Audio -> mediaItem.title
                             is Genre -> mediaItem.name ?: getString(R.string.genre_unknown)
-                            is Playlist -> mediaItem.name
+                            is Playlist -> mediaItem.name ?: getString(
+                                when (mediaItem.type) {
+                                    Playlist.Type.PLAYLIST -> R.string.playlist_unknown
+                                    Playlist.Type.FAVORITES -> R.string.favorites_playlist
+                                }
+                            )
                         }
                         artistNameTextView.text = when (mediaItem) {
                             is Album -> mediaItem.artistName
@@ -209,7 +214,10 @@ class MediaItemBottomSheetDialogFragment : BottomSheetDialogFragment(
                                 is Artist -> R.drawable.ic_person
                                 is Audio -> R.drawable.ic_music_note
                                 is Genre -> R.drawable.ic_genres
-                                is Playlist -> R.drawable.ic_playlist_play
+                                is Playlist -> when (mediaItem.type) {
+                                    Playlist.Type.PLAYLIST -> R.drawable.ic_playlist_play
+                                    Playlist.Type.FAVORITES -> R.drawable.ic_favorite
+                                }
                             }
                         )
 
