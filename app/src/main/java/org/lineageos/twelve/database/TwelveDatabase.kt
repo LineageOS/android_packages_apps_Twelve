@@ -11,6 +11,8 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
 import org.lineageos.twelve.database.converters.UriConverter
 import org.lineageos.twelve.database.dao.ItemDao
 import org.lineageos.twelve.database.dao.JellyfinProviderDao
@@ -52,7 +54,7 @@ import org.lineageos.twelve.database.entities.SubsonicProvider
         /* Local Media Stats */
         LocalMediaStats::class,
     ],
-    version = 5,
+    version = 6,
     autoMigrations = [
         AutoMigration(from = 1, to = 2),
         AutoMigration(from = 2, to = 3),
@@ -77,6 +79,42 @@ abstract class TwelveDatabase : RoomDatabase() {
             context.applicationContext,
             TwelveDatabase::class.java,
             "twelve_database",
-        ).build()
+        )
+            .addMigrations(MIGRATION_5_6)
+            .addCallback(favouritePlaylistCallback)
+            .build()
+
+        private val MIGRATION_5_6 = object : Migration(5, 6) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                // Add the favorite column to the Playlist table, defaulting to false
+                db.execSQL(
+                    """
+                    ALTER TABLE Playlist ADD COLUMN `favorite` INTEGER NOT NULL DEFAULT FALSE
+                    """
+                )
+
+                // Create the default favorite playlist
+                db.execSQL(
+                    """
+                    INSERT INTO Playlist (name, last_modified, track_count, favorite)
+                    VALUES ('Favorite Playlist', 0, 0, TRUE)
+                    """
+                )
+            }
+        }
+
+        private val favouritePlaylistCallback = object : Callback() {
+            override fun onCreate(db: SupportSQLiteDatabase) {
+                super.onCreate(db)
+
+                // Create the default favorite playlist
+                db.execSQL(
+                    """
+                    INSERT INTO Playlist (name, last_modified, track_count, favorite)
+                    VALUES ('Favorite Playlist', 0, 0, TRUE)
+                    """
+                )
+            }
+        }
     }
 }
