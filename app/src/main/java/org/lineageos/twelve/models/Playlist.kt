@@ -58,4 +58,11 @@ data class Playlist(
             name = name,
         )
     }
+
+    companion object {
+        val FAVORITE_URI: Uri = Uri.parse("lineageos-twelve://playlist/favorite")
+
+        val NEW_PLAYLIST = Builder(Uri.EMPTY).build()
+        val FAVORITE_PLAYLIST = Builder(FAVORITE_URI).build()
+    }
 }

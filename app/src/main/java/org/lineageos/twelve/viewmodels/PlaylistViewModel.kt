@@ -12,6 +12,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOn
@@ -21,6 +22,7 @@ import org.lineageos.twelve.models.RequestStatus
 
 class PlaylistViewModel(application: Application) : TwelveViewModel(application) {
     private val playlistUri = MutableStateFlow<Uri?>(null)
+    private val isFavoritePlaylist = MutableStateFlow(false)
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val playlist = playlistUri
@@ -37,6 +39,23 @@ class PlaylistViewModel(application: Application) : TwelveViewModel(application)
 
     fun loadPlaylist(playlistUri: Uri) {
         this.playlistUri.value = playlistUri
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val favorites = isFavoritePlaylist
+        .filter { it }
+        .flatMapLatest {
+            mediaRepository.getFavorites()
+        }
+        .flowOn(Dispatchers.IO)
+        .stateIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(),
+            RequestStatus.Loading()
+        )
+
+    fun loadFavorites() {
+        isFavoritePlaylist.value = true
     }
 
     suspend fun renamePlaylist(name: String) {
@@ -65,6 +84,22 @@ class PlaylistViewModel(application: Application) : TwelveViewModel(application)
 
     fun shufflePlayPlaylist() {
         (playlist.value as? RequestStatus.Success)?.data?.second?.takeUnless {
+            it.isEmpty()
+        }?.let {
+            playAudio(it.shuffled(), 0)
+        }
+    }
+
+    fun playFavorites(position: Int = 0) {
+        (favorites.value as? RequestStatus.Success)?.data?.takeUnless {
+            it.isEmpty()
+        }?.let {
+            playAudio(it, position)
+        }
+    }
+
+    fun shufflePlayFavorites() {
+        (favorites.value as? RequestStatus.Success)?.data?.takeUnless {
             it.isEmpty()
         }?.let {
             playAudio(it.shuffled(), 0)
