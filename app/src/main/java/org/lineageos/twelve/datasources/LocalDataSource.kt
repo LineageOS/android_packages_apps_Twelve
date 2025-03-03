@@ -715,6 +715,20 @@ class LocalDataSource(
         return RequestStatus.Success(Unit)
     }
 
+    override fun isFavorite(audioUri: Uri) =
+        database.getPlaylistWithItemsDao().isItemInFavorite(audioUri)
+            .mapLatest { isFavorite ->
+                RequestStatus.Success<_, MediaError>(isFavorite)
+            }
+
+    override suspend fun setFavorite(audioUri: Uri, isFavorite: Boolean) =
+        when (isFavorite) {
+            true -> database.getPlaylistWithItemsDao().addItemToFavorites(audioUri)
+            false -> database.getPlaylistWithItemsDao().removeItemFromFavorites(audioUri)
+        }.let {
+            RequestStatus.Success<_, MediaError>(Unit)
+        }
+
     fun audios() = contentResolver.queryFlow(
         audiosUri,
         audiosProjection
@@ -883,6 +897,7 @@ class LocalDataSource(
         private fun org.lineageos.twelve.database.entities.Playlist.toModel() =
             Playlist.Builder(ContentUris.withAppendedId(playlistsBaseUri, id))
                 .setName(name)
+                .setIsFavorite(isFavorite = favorite)
                 .build()
     }
 }

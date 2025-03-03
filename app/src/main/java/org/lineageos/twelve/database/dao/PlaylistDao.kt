@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2024 The LineageOS Project
+ * SPDX-FileCopyrightText: 2024-2025 The LineageOS Project
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -85,4 +85,10 @@ interface PlaylistDao {
      */
     @Query("UPDATE Playlist SET track_count = track_count - 1 WHERE playlist_id = :playlistId")
     suspend fun _decreaseTrackCount(playlistId: Long)
+
+    /**
+     * Get favorite playlist ID.
+     */
+    @Query("SELECT playlist_id FROM Playlist WHERE favorite = 1")
+    suspend fun _getFavoritePlaylistId(): Long
 }

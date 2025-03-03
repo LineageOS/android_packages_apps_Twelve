@@ -658,6 +658,21 @@ class MediaRepository(
         }
 
     /**
+     * @see MediaDataSource.isFavorite
+     */
+    fun isFavorite(
+        audioUri: Uri
+    ) = navigationDataSource.flatMapLatest { it.isFavorite(audioUri) }
+
+    /**
+     * @see MediaDataSource.setFavorite
+     */
+    suspend fun setFavorite(audioUri: Uri, isFavorite: Boolean) =
+        withMediaItemsDataSource(audioUri) {
+            setFavorite(audioUri, isFavorite)
+        }
+
+    /**
      * Get the [MediaDataSource] associated with the given [Provider].
      *
      * @param providerIdentifier The [ProviderIdentifier]
