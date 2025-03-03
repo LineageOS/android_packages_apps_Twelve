@@ -808,7 +808,6 @@ class LocalDataSource(
                     )
                 }
             },
-            onLoading = { flowOf(Result.Error(Error.NOT_FOUND)) },
             onError = { flowOf(Result.Error(Error.NOT_FOUND)) },
         )
     }

@@ -40,7 +40,7 @@ class SearchViewModel(application: Application) : TwelveViewModel(application) {
         .stateIn(
             viewModelScope,
             SharingStarted.WhileSubscribed(),
-            Result.Loading()
+            null
         )
 
     fun setSearchQuery(query: String, immediate: Boolean = false) {

@@ -346,14 +346,12 @@ class MediaRepositoryTree(
 
         /**
          * Converts a flow of [Result] to a one-shot result of [T].
-         * On loading, returns null.
          * On success, returns the data.
          * On error, logs the exception and returns null.
          */
         private suspend fun <T, E> Flow<Result<T, E>>.toOneShotResult() =
             mapNotNull { status ->
                 when (status) {
-                    is Result.Loading -> null
                     is Result.Success -> status.data
                     is Result.Error -> {
                         Log.e(LOG_TAG, "Failed to get data", status.throwable)

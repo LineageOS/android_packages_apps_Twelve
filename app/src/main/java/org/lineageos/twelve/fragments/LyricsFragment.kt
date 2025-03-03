@@ -165,7 +165,7 @@ class LyricsFragment : Fragment(R.layout.fragment_lyrics) {
         launch {
             viewModel.lyricsLines.collectLatest {
                 when (it) {
-                    is Result.Loading -> {
+                    null -> {
                         // Do nothing
                     }
 

@@ -123,10 +123,10 @@ class ArtistsFragment : Fragment(R.layout.fragment_artists) {
         coroutineScope {
             launch {
                 viewModel.artists.collectLatest {
-                    linearProgressIndicator.setProgressCompat(it, true)
+                    linearProgressIndicator.setProgressCompat(it)
 
                     when (it) {
-                        is Result.Loading -> {
+                        null -> {
                             // Do nothing
                         }
 

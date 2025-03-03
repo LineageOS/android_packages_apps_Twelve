@@ -174,22 +174,19 @@ class ViewActivity : AppCompatActivity(R.layout.activity_view) {
                 launch {
                     localPlayerViewModel.mediaArtwork.collectLatest {
                         when (it) {
-                            is Result.Loading -> {
+                            null -> {
                                 // Do nothing
                             }
 
                             is Result.Success -> {
-                                it.data?.let { thumbnail ->
-                                    thumbnailImageView.loadThumbnail(
-                                        thumbnail,
-                                        placeholder = R.drawable.ic_music_note,
-                                    )
-                                    thumbnailImageView.isVisible = true
-                                    dummyThumbnailImageView.isVisible = false
-                                } ?: run {
-                                    thumbnailImageView.isVisible = false
-                                    dummyThumbnailImageView.isVisible = true
-                                }
+                                val thumbnail = it.data
+
+                                thumbnailImageView.loadThumbnail(
+                                    thumbnail,
+                                    placeholder = R.drawable.ic_music_note,
+                                )
+                                thumbnailImageView.isVisible = true
+                                dummyThumbnailImageView.isVisible = false
                             }
 
                             is Result.Error -> {

@@ -11,7 +11,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.stateIn
-import org.lineageos.twelve.models.Result
 
 class ActivityViewModel(application: Application) : TwelveViewModel(application) {
     val activity = mediaRepository.activity()
@@ -19,6 +18,6 @@ class ActivityViewModel(application: Application) : TwelveViewModel(application)
         .stateIn(
             viewModelScope,
             SharingStarted.WhileSubscribed(),
-            Result.Loading(),
+            null,
         )
 }

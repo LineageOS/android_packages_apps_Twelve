@@ -121,10 +121,10 @@ class AlbumsFragment : Fragment(R.layout.fragment_albums) {
         coroutineScope {
             launch {
                 viewModel.albums.collectLatest {
-                    linearProgressIndicator.setProgressCompat(it, true)
+                    linearProgressIndicator.setProgressCompat(it)
 
                     when (it) {
-                        is Result.Loading -> {
+                        null -> {
                             // Do nothing
                         }
 

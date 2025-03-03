@@ -178,7 +178,7 @@ class MediaItemBottomSheetDialogFragment : BottomSheetDialogFragment(
         launch {
             viewModel.mediaItem.collectLatest {
                 when (it) {
-                    is Result.Loading -> {
+                    null -> {
                         // Do nothing
                     }
 

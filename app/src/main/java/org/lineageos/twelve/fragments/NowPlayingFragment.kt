@@ -333,7 +333,7 @@ class NowPlayingFragment : Fragment(R.layout.fragment_now_playing) {
                 launch {
                     viewModel.mediaArtwork.collectLatest {
                         when (it) {
-                            is Result.Loading -> {
+                            null -> {
                                 // Do nothing
                             }
 
@@ -505,7 +505,7 @@ class NowPlayingFragment : Fragment(R.layout.fragment_now_playing) {
                 launch {
                     viewModel.lyricsLines.collectLatest {
                         when (it) {
-                            is Result.Loading -> {
+                            null -> {
                                 // Do nothing
                             }
 
