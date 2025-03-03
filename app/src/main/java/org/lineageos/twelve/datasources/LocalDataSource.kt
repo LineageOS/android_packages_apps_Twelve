@@ -716,6 +716,11 @@ class LocalDataSource(
         return Result.Success(Unit)
     }
 
+    override suspend fun setFavorite(
+        audioUri: Uri,
+        isFavorite: Boolean
+    ) = Result.Error<Unit, _>(Error.NOT_IMPLEMENTED)
+
     fun audios() = contentResolver.queryFlow(
         audiosUri,
         audiosProjection

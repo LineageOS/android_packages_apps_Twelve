@@ -658,6 +658,14 @@ class MediaRepository(
         }
 
     /**
+     * @see MediaDataSource.setFavorite
+     */
+    suspend fun setFavorite(audioUri: Uri, favorite: Boolean) =
+        withMediaItemsDataSource(audioUri) {
+            setFavorite(audioUri, favorite)
+        }
+
+    /**
      * Get the [MediaDataSource] associated with the given [Provider].
      *
      * @param providerIdentifier The [ProviderIdentifier]
