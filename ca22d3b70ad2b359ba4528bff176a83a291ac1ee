@@ -70,6 +70,24 @@
       "parentUuid": "3b51c440_923fa833",
       "revId": "ca22d3b70ad2b359ba4528bff176a83a291ac1ee",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "65bb3b0d_f128762f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 25732
+      },
+      "writtenOn": "2025-03-03T21:44:52Z",
+      "side": 1,
+      "message": "Done in a follow-up commit",
+      "parentUuid": "23dc1769_8ddb2bc0",
+      "revId": "ca22d3b70ad2b359ba4528bff176a83a291ac1ee",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
