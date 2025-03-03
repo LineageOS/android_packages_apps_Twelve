@@ -21,14 +21,11 @@
     <string name="library_fragment_menu_genres">Zhanri</string>
     <string name="library_fragment_menu_playlists">Lista e këngëve</string>
     <string name="create_playlist">Krijo listë të re për luajtje</string>
-    <string name="no_playlists_comma">S\'ka listë për luajtje </string>
-    <string name="create_playlist_suggestion">Krijo një të re?</string>
     <string name="create_playlist_confirm">Krijo</string>
     <string name="no_activity">S\'ka aktivitetet</string>
     <string name="no_albums">Nuk ka albume.</string>
     <string name="no_artists">Nuk ka artistë.</string>
     <string name="no_genres">Nuk ka asnjë zhanre.</string>
-    <string name="no_playlists">Nuk ka asnjë list</string>
     <string name="no_audios">Nuk ka asnjë audio</string>
     <string name="no_results">Nuk ka resultate.</string>
     <string name="album_unknown">Album i panjohur</string>

@@ -21,14 +21,11 @@
     <string name="library_fragment_menu_genres">Műfajok</string>
     <string name="library_fragment_menu_playlists">Lejátszólisták</string>
     <string name="create_playlist">Új lejátszólista létrehozása</string>
-    <string name="no_playlists_comma">Nincs lejátszólista,</string>
-    <string name="create_playlist_suggestion">Létrehoz egy újat?</string>
     <string name="create_playlist_confirm">Létrehozás</string>
     <string name="no_activity">Ne történjen semmi</string>
     <string name="no_albums">Nincsenek albumok</string>
     <string name="no_artists">Nincsenek előadók</string>
     <string name="no_genres">Nincsenek műfajok</string>
-    <string name="no_playlists">Nincsenek lejátszólisták</string>
     <string name="no_audios">Nincsenek audiófájlok</string>
     <string name="no_results">Nincsenek találatok</string>
     <string name="album_unknown">Ismeretlen lemez</string>

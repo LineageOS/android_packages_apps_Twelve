@@ -21,14 +21,11 @@
     <string name="library_fragment_menu_genres">பாணிகள்</string>
     <string name="library_fragment_menu_playlists">இசைப்பட்டியல்கள்</string>
     <string name="create_playlist">புதிய இசைப்பட்டியலை உருவாக்குக</string>
-    <string name="no_playlists_comma">இசைப்பட்டியல்கள் இல்லை,</string>
-    <string name="create_playlist_suggestion">புதியதை உருவாக்கவா?</string>
     <string name="create_playlist_confirm">உருவாக்குக</string>
     <string name="no_activity">செயற்பாடு இல்லை</string>
     <string name="no_albums">தொகுப்புகள் இல்லை</string>
     <string name="no_artists">கலைஞர் இலர்</string>
     <string name="no_genres">பாணிகள் இல்லை</string>
-    <string name="no_playlists">இசைப்பட்டியல்கள் இல்லை</string>
     <string name="no_audios">ஒலிகள் இல்லை</string>
     <string name="no_results">முடிவுகள் இல்லை</string>
     <string name="album_unknown">அறியாத் தொகுப்பு</string>

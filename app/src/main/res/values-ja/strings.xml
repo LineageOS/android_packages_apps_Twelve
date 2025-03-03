@@ -21,14 +21,11 @@
     <string name="library_fragment_menu_genres">ジャンル</string>
     <string name="library_fragment_menu_playlists">プレイリスト</string>
     <string name="create_playlist">新規プレイリストを作成</string>
-    <string name="no_playlists_comma">プレイリストがありません。</string>
-    <string name="create_playlist_suggestion">新規作成する</string>
     <string name="create_playlist_confirm">作成</string>
     <string name="no_activity">アクティビティなし</string>
     <string name="no_albums">アルバムなし</string>
     <string name="no_artists">アーティストなし</string>
     <string name="no_genres">ジャンルなし</string>
-    <string name="no_playlists">プレイリストなし</string>
     <string name="no_audios">オーディオなし</string>
     <string name="no_results">検索結果なし</string>
     <string name="album_unknown">不明なアルバム</string>

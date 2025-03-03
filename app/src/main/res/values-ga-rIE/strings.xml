@@ -21,14 +21,11 @@
     <string name="library_fragment_menu_genres">Seánraí</string>
     <string name="library_fragment_menu_playlists">Seinmliostaí</string>
     <string name="create_playlist">Cruthaigh seinmliosta nua</string>
-    <string name="no_playlists_comma">Gan seinmliostaí,</string>
-    <string name="create_playlist_suggestion">Cruthaigh ceann nua?</string>
     <string name="create_playlist_confirm">Cruthaigh</string>
     <string name="no_activity">Gan aon ghníomhaíocht</string>
     <string name="no_albums">Gan albam</string>
     <string name="no_artists">Gan ealaíontóirí</string>
     <string name="no_genres">Gan seánraí</string>
-    <string name="no_playlists">Gan seinmliostaí</string>
     <string name="no_audios">Uimh fuaime</string>
     <string name="no_results">Gan torthaí</string>
     <string name="album_unknown">Albam anaithnid</string>

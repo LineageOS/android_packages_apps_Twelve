@@ -21,14 +21,11 @@
     <string name="library_fragment_menu_genres">Genuri</string>
     <string name="library_fragment_menu_playlists">Playlist-uri</string>
     <string name="create_playlist">Creează un playlist nou</string>
-    <string name="no_playlists_comma">Niciun playlist,</string>
-    <string name="create_playlist_suggestion">Creați unul nou?</string>
     <string name="create_playlist_confirm">Creează</string>
     <string name="no_activity">Nicio activitate</string>
     <string name="no_albums">Niciun album</string>
     <string name="no_artists">Niciun artist</string>
     <string name="no_genres">Niciun gen</string>
-    <string name="no_playlists">Niciun playlist</string>
     <string name="no_audios">Niciun audio</string>
     <string name="no_results">Niciun rezultat</string>
     <string name="album_unknown">Album necunoscut</string>

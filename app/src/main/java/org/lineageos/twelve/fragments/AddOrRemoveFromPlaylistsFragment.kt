@@ -9,10 +9,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.widget.Button
-import android.widget.LinearLayout
 import androidx.core.os.bundleOf
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -47,10 +44,8 @@ class AddOrRemoveFromPlaylistsFragment : Fragment(R.layout.fragment_add_or_remov
     private val viewModel by viewModels<AddOrRemoveFromPlaylistsViewModel>()
 
     // Views
-    private val createNewPlaylistButton by getViewProperty<Button>(R.id.createNewPlaylistButton)
     private val fullscreenLoadingProgressBar by getViewProperty<FullscreenLoadingProgressBar>(R.id.fullscreenLoadingProgressBar)
     private val linearProgressIndicator by getViewProperty<LinearProgressIndicator>(R.id.linearProgressIndicator)
-    private val noElementsLinearLayout by getViewProperty<LinearLayout>(R.id.noElementsLinearLayout)
     private val recyclerView by getViewProperty<RecyclerView>(R.id.recyclerView)
     private val toolbar by getViewProperty<MaterialToolbar>(R.id.toolbar)
 
@@ -140,15 +135,6 @@ class AddOrRemoveFromPlaylistsFragment : Fragment(R.layout.fragment_add_or_remov
 
         recyclerView.adapter = adapter
 
-        createNewPlaylistButton.setOnClickListener {
-            findNavController().navigateSafe(
-                R.id.action_addOrRemoveFromPlaylistsFragment_to_fragment_create_playlist_dialog,
-                CreatePlaylistDialogFragment.createBundle(
-                    providerIdentifier = viewModel.providerOfAudio.value,
-                )
-            )
-        }
-
         viewModel.loadAudio(audioUri)
 
         viewLifecycleOwner.lifecycleScope.launch {
@@ -176,46 +162,24 @@ class AddOrRemoveFromPlaylistsFragment : Fragment(R.layout.fragment_add_or_remov
                 }
 
                 is FlowResult.Success -> {
-                    val isEmpty = it.data.isEmpty()
-
                     val favorite =
                         it.data.find { playlistWithAudio -> playlistWithAudio.first.isFavorite }
+                            ?: run {
+                                Log.e(LOG_TAG, "Failed to find favorite playlist")
+                                return@collect
+                            }
                     val playlists =
                         it.data.filter { playlistWithAudio -> !playlistWithAudio.first.isFavorite }
 
                     adapter.submitList(
-                        buildList {
-                            when (isEmpty) {
-                                true -> {
-                                    if (favorite != null) {
-                                        add(Playlist.NEW_PLAYLIST to false)
-                                        add(favorite)
-                                    }
-                                }
-
-                                false -> {
-                                    add(Playlist.NEW_PLAYLIST to false)
-                                    if (favorite != null) {
-                                        add(favorite)
-                                    }
-                                    addAll(playlists)
-                                }
-                            }
-                        }
+                        listOf(Playlist.NEW_PLAYLIST to false, favorite) + playlists
                     )
-
-                    recyclerView.isVisible = !isEmpty || favorite != null
-                    noElementsLinearLayout.isVisible = isEmpty && favorite == null
-
                 }
 
                 is FlowResult.Error -> {
                     Log.e(LOG_TAG, "Failed to load data, error: ${it.error}", it.throwable)
 
                     adapter.submitList(emptyList())
-
-                    recyclerView.isVisible = false
-                    noElementsLinearLayout.isVisible = true
                 }
             }
         }

@@ -21,14 +21,11 @@
     <string name="library_fragment_menu_genres">Generi</string>
     <string name="library_fragment_menu_playlists">Playlist</string>
     <string name="create_playlist">Crea nuova playlist</string>
-    <string name="no_playlists_comma">Nessuna playlist,</string>
-    <string name="create_playlist_suggestion">Crearne una nuova?</string>
     <string name="create_playlist_confirm">Crea</string>
     <string name="no_activity">Nessuna attività</string>
     <string name="no_albums">Nessun album</string>
     <string name="no_artists">Nessun artista</string>
     <string name="no_genres">Nessun genere</string>
-    <string name="no_playlists">Nessuna playlist</string>
     <string name="no_audios">Nessun audio</string>
     <string name="no_results">Nessun risultato</string>
     <string name="album_unknown">Album sconosciuto</string>

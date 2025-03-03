@@ -20,14 +20,11 @@
     <string name="library_fragment_menu_genres">Жанры</string>
     <string name="library_fragment_menu_playlists">Плейлисты</string>
     <string name="create_playlist">Создать новый плейлист</string>
-    <string name="no_playlists_comma">Нет плейлистов, </string>
-    <string name="create_playlist_suggestion">Создать новый? </string>
     <string name="create_playlist_confirm">Создать</string>
     <string name="no_activity">Нет действий</string>
     <string name="no_albums">Нет альбомов</string>
     <string name="no_artists">Нет исполнителей</string>
     <string name="no_genres">Нет жанров</string>
-    <string name="no_playlists">Нет плейлистов</string>
     <string name="no_audios">Нет аудиозаписей</string>
     <string name="no_results">Результатов нет</string>
     <string name="album_unknown">Неизвестный альбом</string>

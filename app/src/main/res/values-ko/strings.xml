@@ -21,14 +21,11 @@
     <string name="library_fragment_menu_genres">장르</string>
     <string name="library_fragment_menu_playlists">재생 목록</string>
     <string name="create_playlist">새 재생 목록 만들기</string>
-    <string name="no_playlists_comma">재생 목록이 없습니다.</string>
-    <string name="create_playlist_suggestion">새로 만드시겠습니까?</string>
     <string name="create_playlist_confirm">만들기</string>
     <string name="no_activity">액티비티 없음</string>
     <string name="no_albums">앨범 없음</string>
     <string name="no_artists">아티스트 없음</string>
     <string name="no_genres">장르 없음</string>
-    <string name="no_playlists">재생 목록 없음</string>
     <string name="no_audios">오디오 없음</string>
     <string name="no_results">결과 없음</string>
     <string name="album_unknown">알 수 없는 앨범</string>
