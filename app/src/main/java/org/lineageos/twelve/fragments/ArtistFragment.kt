@@ -213,10 +213,10 @@ class ArtistFragment : Fragment(R.layout.fragment_artist) {
 
     private suspend fun loadData() {
         viewModel.artist.collectLatest {
-            linearProgressIndicator.setProgressCompat(it, true)
+            linearProgressIndicator.setProgressCompat(it)
 
             when (it) {
-                is Result.Loading -> {
+                null -> {
                     // Do nothing
                 }
 

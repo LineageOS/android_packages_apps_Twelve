@@ -84,7 +84,7 @@ class ProviderInformationBottomSheetDialogFragment : BottomSheetDialogFragment(
 
         manageProviderMaterialButton.setOnClickListener {
             viewModel.provider.value.fold(
-                onLoading = {},
+                onNull = {},
                 onSuccess = {
                     findNavController().navigateSafe(
                         R.id.action_providerInformationBottomSheetDialogFragment_to_fragment_manage_provider,
@@ -122,7 +122,7 @@ class ProviderInformationBottomSheetDialogFragment : BottomSheetDialogFragment(
         launch {
             viewModel.provider.collectLatest {
                 when (it) {
-                    is Result.Loading -> {
+                    null -> {
                         // Do nothing
                     }
 
@@ -154,7 +154,7 @@ class ProviderInformationBottomSheetDialogFragment : BottomSheetDialogFragment(
         launch {
             viewModel.status.collectLatest {
                 when (it) {
-                    is Result.Loading -> {
+                    null -> {
                         // Do nothing
                     }
 

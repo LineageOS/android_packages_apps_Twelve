@@ -37,14 +37,14 @@ class AlbumViewModel(application: Application) : TwelveViewModel(application) {
         .stateIn(
             viewModelScope,
             SharingStarted.WhileSubscribed(),
-            Result.Loading()
+            null
         )
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val tracks = album
         .mapLatest {
             when (it) {
-                is Result.Loading -> null
+                null -> null
                 is Result.Success -> it.data.second.sortedWith(
                     compareBy(
                         { audio -> audio.discNumber ?: 0 },
@@ -129,8 +129,6 @@ class AlbumViewModel(application: Application) : TwelveViewModel(application) {
         .filterNotNull()
         .mapLatest {
             when (it) {
-                is Result.Loading -> null
-
                 is Result.Success -> {
                     it.data.second
                         .mapNotNull { audio -> audio.mimeType }
@@ -143,7 +141,6 @@ class AlbumViewModel(application: Application) : TwelveViewModel(application) {
                 is Result.Error -> listOf()
             }
         }
-        .filterNotNull()
         .flowOn(Dispatchers.IO)
         .stateIn(
             viewModelScope,

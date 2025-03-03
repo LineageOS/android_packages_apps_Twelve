@@ -383,7 +383,6 @@ class SubsonicDataSource(
             toModel()
         }.let {
             when (it) {
-                is Result.Loading -> Result.Loading(it.progress)
                 is Result.Success -> it.data?.let { lyrics ->
                     Result.Success<_, Error>(lyrics)
                 } ?: Result.Error(Error.NOT_FOUND)

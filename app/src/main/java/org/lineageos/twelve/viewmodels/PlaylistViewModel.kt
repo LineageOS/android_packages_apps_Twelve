@@ -32,7 +32,7 @@ class PlaylistViewModel(application: Application) : TwelveViewModel(application)
         .stateIn(
             viewModelScope,
             SharingStarted.WhileSubscribed(),
-            Result.Loading()
+            null
         )
 
     fun loadPlaylist(playlistUri: Uri) {

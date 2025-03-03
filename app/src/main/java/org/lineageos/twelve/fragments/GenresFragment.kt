@@ -122,10 +122,10 @@ class GenresFragment : Fragment(R.layout.fragment_genres) {
         coroutineScope {
             launch {
                 viewModel.genres.collectLatest {
-                    linearProgressIndicator.setProgressCompat(it, true)
+                    linearProgressIndicator.setProgressCompat(it)
 
                     when (it) {
-                        is Result.Loading -> {
+                        null -> {
                             // Do nothing
                         }
 

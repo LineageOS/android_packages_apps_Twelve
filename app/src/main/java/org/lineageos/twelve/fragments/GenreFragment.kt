@@ -238,10 +238,10 @@ class GenreFragment : Fragment(R.layout.fragment_genre) {
 
     private suspend fun loadData() {
         viewModel.genre.collectLatest {
-            linearProgressIndicator.setProgressCompat(it, true)
+            linearProgressIndicator.setProgressCompat(it)
 
             when (it) {
-                is Result.Loading -> {
+                null -> {
                     // Do nothing
                 }
 

@@ -414,7 +414,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                 launch {
                     viewModel.mediaArtwork.collectLatest {
                         when (it) {
-                            is Result.Loading -> {
+                            null -> {
                                 // Do nothing
                             }
 
@@ -431,10 +431,10 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
                 launch {
                     searchViewModel.searchResults.collectLatest {
-                        searchLinearProgressIndicator.setProgressCompat(it, true)
+                        searchLinearProgressIndicator.setProgressCompat(it)
 
                         when (it) {
-                            is Result.Loading -> {
+                            null -> {
                                 // Do nothing
                             }
 

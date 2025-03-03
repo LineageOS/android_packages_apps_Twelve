@@ -18,7 +18,6 @@ import org.lineageos.twelve.ext.ALBUMS_SORTING_REVERSE_KEY
 import org.lineageos.twelve.ext.ALBUMS_SORTING_STRATEGY_KEY
 import org.lineageos.twelve.ext.albumsSortingRule
 import org.lineageos.twelve.ext.preferenceFlow
-import org.lineageos.twelve.models.Result
 import org.lineageos.twelve.models.SortingRule
 
 class AlbumsViewModel(application: Application) : TwelveViewModel(application) {
@@ -35,7 +34,7 @@ class AlbumsViewModel(application: Application) : TwelveViewModel(application) {
         .stateIn(
             viewModelScope,
             SharingStarted.WhileSubscribed(),
-            Result.Loading()
+            null
         )
 
     fun setSortingRule(sortingRule: SortingRule) {

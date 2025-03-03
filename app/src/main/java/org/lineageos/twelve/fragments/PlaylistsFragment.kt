@@ -149,10 +149,10 @@ class PlaylistsFragment : Fragment(R.layout.fragment_playlists) {
         coroutineScope {
             launch {
                 viewModel.playlists.collectLatest {
-                    linearProgressIndicator.setProgressCompat(it, true)
+                    linearProgressIndicator.setProgressCompat(it)
 
                     when (it) {
-                        is Result.Loading -> {
+                        null -> {
                             // Do nothing
                         }
 

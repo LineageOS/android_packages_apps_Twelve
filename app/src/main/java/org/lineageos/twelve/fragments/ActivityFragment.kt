@@ -124,10 +124,10 @@ class ActivityFragment : Fragment(R.layout.fragment_activity) {
 
     private suspend fun loadData() {
         viewModel.activity.collectLatest {
-            linearProgressIndicator.setProgressCompat(it, true)
+            linearProgressIndicator.setProgressCompat(it)
 
             when (it) {
-                is Result.Loading -> {
+                null -> {
                     // Do nothing
                 }
 
