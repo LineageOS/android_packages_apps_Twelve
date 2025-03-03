@@ -73,20 +73,10 @@ abstract class TwelveDatabase : RoomDatabase() {
     abstract fun getSubsonicProviderDao(): SubsonicProviderDao
 
     companion object {
-        @Volatile
-        private var INSTANCE: TwelveDatabase? = null
-
-        // Singleton to get the instance of the database
-        fun getInstance(context: Context): TwelveDatabase {
-            return INSTANCE ?: synchronized(this) {
-                val instance = Room.databaseBuilder(
-                    context.applicationContext,
-                    TwelveDatabase::class.java,
-                    "twelve_database",
-                ).build()
-                INSTANCE = instance
-                instance
-            }
-        }
+        fun get(context: Context) = Room.databaseBuilder(
+            context.applicationContext,
+            TwelveDatabase::class.java,
+            "twelve_database",
+        ).build()
     }
 }
