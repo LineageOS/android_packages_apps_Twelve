@@ -630,9 +630,9 @@ class LocalDataSource(
             audioUri
         ).mapLatest { data ->
             RequestStatus.Success<_, MediaError>(
-                data.map {
-                    it.playlist.toModel() to it.value
-                }
+                data
+                    .filter { !it.playlist.favorite }
+                    .map { it.playlist.toModel() to it.value }
             )
         }
 
