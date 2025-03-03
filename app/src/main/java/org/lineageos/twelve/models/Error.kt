@@ -53,4 +53,9 @@ enum class Error {
      * The server returned an invalid response.
      */
     INVALID_RESPONSE,
+
+    /**
+     * The request timed out.
+     */
+    TIMEOUT,
 }
