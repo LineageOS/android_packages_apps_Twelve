@@ -46,7 +46,12 @@ data class Playlist(
     ) == 0
 
     override fun toMedia3MediaItem(resources: Resources) = buildMediaItem(
-        title = name ?: resources.getString(R.string.playlist_unknown),
+        title = name ?: resources.getString(
+            when (type) {
+                Type.PLAYLIST -> R.string.playlist_unknown
+                Type.FAVORITES -> R.string.favorites_playlist
+            }
+        ),
         mediaId = uri.toString(),
         isPlayable = false,
         isBrowsable = true,
