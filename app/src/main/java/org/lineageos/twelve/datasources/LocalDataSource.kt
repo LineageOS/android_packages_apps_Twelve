@@ -715,6 +715,26 @@ class LocalDataSource(
         return RequestStatus.Success(Unit)
     }
 
+    override fun isFavorite(audioUri: Uri) =
+        database.getLocalMediaStatsProviderDao().isFavorite(audioUri)
+            .mapLatest {
+                RequestStatus.Success<_, MediaError>(it)
+            }
+
+    override suspend fun setFavorite(audioUri: Uri, isFavorite: Boolean) =
+        database.getLocalMediaStatsProviderDao().setFavorite(audioUri, isFavorite)
+            .let {
+                RequestStatus.Success<_, MediaError>(Unit)
+            }
+
+    override fun getFavorites() = database.getLocalMediaStatsProviderDao().getFavorites()
+        .flatMapLatest { favourites ->
+            audios(favourites.map { it.mediaUri })
+        }
+        .mapLatest {
+            RequestStatus.Success<_, MediaError>(it.filterNotNull())
+        }
+
     fun audios() = contentResolver.queryFlow(
         audiosUri,
         audiosProjection

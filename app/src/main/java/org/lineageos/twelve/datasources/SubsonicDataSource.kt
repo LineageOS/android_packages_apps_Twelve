@@ -444,6 +444,17 @@ class SubsonicDataSource(
     override suspend fun onAudioPlayed(audioUri: Uri) = lastPlayedSetter(lastPlayedKey(), audioUri)
         .let { RequestStatus.Success<Unit, MediaError>(Unit) }
 
+    override fun isFavorite(audioUri: Uri): Flow<MediaRequestStatus<Boolean>> = flowOf(
+        RequestStatus.Error(MediaError.NOT_IMPLEMENTED)
+    )
+
+    override suspend fun setFavorite(audioUri: Uri, isFavorite: Boolean) =
+        RequestStatus.Error<Unit, _>(MediaError.NOT_IMPLEMENTED)
+
+    override fun getFavorites(): Flow<MediaRequestStatus<List<Audio>>> = flowOf(
+        RequestStatus.Error(MediaError.NOT_IMPLEMENTED)
+    )
+
     private fun AlbumID3.toMediaItem() = Album.Builder(getAlbumUri(id))
         .setThumbnail(
             Thumbnail.Builder()
