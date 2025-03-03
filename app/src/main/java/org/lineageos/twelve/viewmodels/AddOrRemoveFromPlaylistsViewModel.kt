@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.withContext
@@ -79,6 +80,12 @@ class AddOrRemoveFromPlaylistsViewModel(application: Application) : TwelveViewMo
             withContext(Dispatchers.IO) {
                 mediaRepository.removeAudioFromPlaylist(playlistUri, it)
             }
+        }
+    }
+
+    suspend fun setFavorite(favorite: Boolean) {
+        audioUri.value?.let {
+            mediaRepository.setFavorite(it, favorite)
         }
     }
 
