@@ -443,6 +443,11 @@ class SubsonicDataSource(
     override suspend fun onAudioPlayed(audioUri: Uri) = lastPlayedSetter(lastPlayedKey(), audioUri)
         .let { Result.Success<Unit, Error>(Unit) }
 
+    override suspend fun setFavorite(
+        audioUri: Uri,
+        isFavorite: Boolean
+    ) = Result.Error<Unit, _>(Error.NOT_IMPLEMENTED)
+
     private fun AlbumID3.toMediaItem() = Album.Builder(getAlbumUri(id))
         .setThumbnail(
             Thumbnail.Builder()
