@@ -7,11 +7,13 @@ package org.lineageos.twelve.datasources
 
 import android.content.ContentResolver
 import android.content.ContentUris
+import android.database.Cursor
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
 import androidx.core.os.bundleOf
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
@@ -123,77 +125,6 @@ class LocalDataSource(
 
         Genre.Builder(uri)
             .setName(name)
-            .build()
-    }
-
-    private val mapAudio = { columnIndexCache: ColumnIndexCache ->
-        val audioId = columnIndexCache.getLong(MediaStore.Audio.AudioColumns._ID)
-        val mimeType = columnIndexCache.getString(MediaStore.Audio.AudioColumns.MIME_TYPE)
-        val title = columnIndexCache.getString(MediaStore.Audio.AudioColumns.TITLE)
-        val isMusic = columnIndexCache.getBoolean(MediaStore.Audio.AudioColumns.IS_MUSIC)
-        val isPodcast = columnIndexCache.getBoolean(MediaStore.Audio.AudioColumns.IS_PODCAST)
-        val isAudiobook = columnIndexCache.getBoolean(MediaStore.Audio.AudioColumns.IS_AUDIOBOOK)
-        val duration = columnIndexCache.getLong(MediaStore.Audio.AudioColumns.DURATION)
-        val artistId = columnIndexCache.getLong(MediaStore.Audio.AudioColumns.ARTIST_ID)
-        val artist = columnIndexCache.getString(MediaStore.Audio.AudioColumns.ARTIST)
-        val albumId = columnIndexCache.getLong(MediaStore.Audio.AudioColumns.ALBUM_ID)
-        val album = columnIndexCache.getString(MediaStore.Audio.AudioColumns.ALBUM)
-        val track = columnIndexCache.getInt(MediaStore.Audio.AudioColumns.TRACK)
-        val genreId = columnIndexCache.getLong(MediaStore.Audio.AudioColumns.GENRE_ID)
-        val genre = columnIndexCache.getStringOrNull(MediaStore.Audio.AudioColumns.GENRE)
-        val year = columnIndexCache.getInt(MediaStore.Audio.AudioColumns.YEAR)
-
-        val isRecording = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            columnIndexCache.getBoolean(MediaStore.Audio.AudioColumns.IS_RECORDING)
-        } else {
-            false
-        }
-
-        val uri = ContentUris.withAppendedId(audiosUri, audioId)
-        val artistUri = ContentUris.withAppendedId(artistsUri, artistId)
-        val albumUri = ContentUris.withAppendedId(albumsUri, albumId)
-        val genreUri = ContentUris.withAppendedId(genresUri, genreId)
-
-        val audioType = when {
-            isMusic -> Audio.Type.MUSIC
-            isPodcast -> Audio.Type.PODCAST
-            isAudiobook -> Audio.Type.AUDIOBOOK
-            isRecording -> Audio.Type.RECORDING
-            else -> Audio.Type.MUSIC
-        }
-
-        val (discNumber, discTrack) = track.takeUnless { it == 0 }?.let {
-            when (track > 1000) {
-                true -> track / 1000 to track % 1000
-                false -> null to track
-            }
-        } ?: (null to null)
-
-        val albumArtUri = uri.buildUpon()
-            .appendPath(AUDIO_ALBUMART)
-            .build()
-
-        val thumbnail = Thumbnail.Builder()
-            .setUri(albumArtUri)
-            .setType(Thumbnail.Type.FRONT_COVER)
-            .build()
-
-        Audio.Builder(uri)
-            .setThumbnail(thumbnail)
-            .setPlaybackUri(uri)
-            .setMimeType(mimeType)
-            .setTitle(title)
-            .setType(audioType)
-            .setDurationMs(duration)
-            .setArtistUri(artistUri)
-            .setArtistName(artist.takeIf { it != MediaStore.UNKNOWN_STRING })
-            .setAlbumUri(albumUri)
-            .setAlbumTitle(album.takeIf { it != MediaStore.UNKNOWN_STRING })
-            .setDiscNumber(discNumber)
-            .setTrackNumber(discTrack)
-            .setGenreUri(genreUri)
-            .setGenreName(genre)
-            .setYear(year.takeIf { it != 0 })
             .build()
     }
 
@@ -349,7 +280,13 @@ class LocalDataSource(
 
     override fun playlists(sortingRule: SortingRule) = database.getPlaylistDao().getAll()
         .mapLatest { playlists ->
-            Result.Success<_, Error>(playlists.map { it.toModel() })
+            Result.Success<_, Error>(
+                buildList {
+                    add(favoritesPlaylist)
+
+                    playlists.forEach { add(it.toModel()) }
+                }
+            )
         }
 
     override fun search(query: String) = combine(
@@ -382,7 +319,7 @@ class LocalDataSource(
                 },
                 ContentResolver.QUERY_ARG_SQL_SELECTION_ARGS to arrayOf(query),
             )
-        ).mapEachRow(mapAudio),
+        ).mapEachAudio(),
         contentResolver.queryFlow(
             genresUri,
             genresProjection,
@@ -408,7 +345,7 @@ class LocalDataSource(
                 ContentUris.parseId(audioUri).toString(),
             ),
         )
-    ).mapEachRow(mapAudio).mapLatest { audios ->
+    ).mapEachAudio().mapLatest { audios ->
         audios.firstOrNull()?.let {
             Result.Success<_, Error>(it)
         } ?: Result.Error(Error.NOT_FOUND)
@@ -441,7 +378,7 @@ class LocalDataSource(
                     MediaStore.Audio.AudioColumns.TRACK,
                 )
             )
-        ).mapEachRow(mapAudio)
+        ).mapEachAudio()
     ) { albums, audios ->
         albums.firstOrNull()?.let { album ->
             Result.Success<_, Error>(album to audios)
@@ -590,7 +527,7 @@ class LocalDataSource(
                         *genreSelectionArgs,
                     ),
                 )
-            ).mapEachRow(mapAudio)
+            ).mapEachAudio()
         ) { genres, appearsInAlbums, audios ->
             val genre = genres.firstOrNull() ?: when (genreId) {
                 0L -> Genre.Builder(genreUri).build()
@@ -609,33 +546,42 @@ class LocalDataSource(
         }
     }
 
-    override fun playlist(playlistUri: Uri) = database.getPlaylistDao().getPlaylistWithItems(
-        ContentUris.parseId(playlistUri)
-    ).flatMapLatest { data ->
-        data?.let { playlistWithItems ->
-            val playlist = playlistWithItems.playlist.toModel()
-
-            audios(playlistWithItems.items.map(Item::audioUri))
+    override fun playlist(playlistUri: Uri) = when {
+        playlistUri == favoritesUri -> database.getFavoriteDao().getAll().flatMapLatest {
+            audios(it.map(Item::audioUri))
                 .mapLatest { items ->
-                    Result.Success<_, Error>(playlist to items.filterNotNull())
+                    Result.Success<_, Error>(favoritesPlaylist to items.filterNotNull())
                 }
-        } ?: flowOf(
-            Result.Error(
-                Error.NOT_FOUND
-            )
-        )
+        }
+
+        else -> database.getPlaylistDao().getPlaylistWithItems(
+            ContentUris.parseId(playlistUri)
+        ).flatMapLatest { data ->
+            data?.let { playlistWithItems ->
+                val playlist = playlistWithItems.playlist.toModel()
+
+                audios(playlistWithItems.items.map(Item::audioUri))
+                    .mapLatest { items ->
+                        Result.Success(playlist to items.filterNotNull())
+                    }
+            } ?: flowOf(Result.Error(Error.NOT_FOUND))
+        }
     }
 
-    override fun audioPlaylistsStatus(audioUri: Uri) =
-        database.getPlaylistWithItemsDao().getPlaylistsWithItemStatus(
-            audioUri
-        ).mapLatest { data ->
-            Result.Success<_, Error>(
-                data.map {
-                    it.playlist.toModel() to it.value
+    override fun audioPlaylistsStatus(audioUri: Uri) = combine(
+        database.getFavoriteDao().containsFlow(audioUri),
+        database.getPlaylistWithItemsDao().getPlaylistsWithItemStatus(audioUri),
+    ) { isFavorite, playlistsWithItemStatus ->
+        Result.Success<_, Error>(
+            buildList {
+                add(favoritesPlaylist to isFavorite)
+
+                playlistsWithItemStatus.forEach {
+                    add(it.playlist.toModel() to it.value)
                 }
-            )
-        }
+            }
+        )
+    }
 
     override fun lyrics(audioUri: Uri) = flowOf(
         Result.Error<Lyrics, _>(Error.NOT_IMPLEMENTED)
@@ -658,7 +604,7 @@ class LocalDataSource(
                             ContentUris.parseId(uri).toString()
                         ).toTypedArray(),
                     ),
-                ).mapEachRow(mapAudio)
+                ).mapEachAudio()
             }
         }
         .mapLatest { audios ->
@@ -675,37 +621,44 @@ class LocalDataSource(
         Result.Success<_, Error>(ContentUris.withAppendedId(playlistsBaseUri, it))
     }
 
-    override suspend fun renamePlaylist(playlistUri: Uri, name: String) =
-        database.getPlaylistDao().rename(
-            ContentUris.parseId(playlistUri), name
-        ).let {
+    override suspend fun renamePlaylist(playlistUri: Uri, name: String) = when {
+        playlistUri == favoritesUri -> Result.Error(Error.IO)
+        else -> database.getPlaylistDao().rename(ContentUris.parseId(playlistUri), name).let {
             Result.Success<_, Error>(Unit)
         }
+    }
 
-    override suspend fun deletePlaylist(playlistUri: Uri) = database.getPlaylistDao().delete(
-        ContentUris.parseId(playlistUri)
-    ).let {
-        Result.Success<_, Error>(Unit)
+    override suspend fun deletePlaylist(playlistUri: Uri) = when {
+        playlistUri == favoritesUri -> Result.Error(Error.IO)
+        else -> database.getPlaylistDao().delete(ContentUris.parseId(playlistUri)).let {
+            Result.Success<_, Error>(Unit)
+        }
     }
 
     override suspend fun addAudioToPlaylist(
         playlistUri: Uri,
         audioUri: Uri,
-    ) = database.getPlaylistWithItemsDao().addItemToPlaylist(
-        ContentUris.parseId(playlistUri),
-        audioUri
-    ).let {
-        Result.Success<_, Error>(Unit)
+    ) = when {
+        playlistUri == favoritesUri -> setFavorite(audioUri, true)
+        else -> database.getPlaylistWithItemsDao().addItemToPlaylist(
+            ContentUris.parseId(playlistUri),
+            audioUri
+        ).let {
+            Result.Success(Unit)
+        }
     }
 
     override suspend fun removeAudioFromPlaylist(
         playlistUri: Uri,
         audioUri: Uri,
-    ) = database.getPlaylistWithItemsDao().removeItemFromPlaylist(
-        ContentUris.parseId(playlistUri),
-        audioUri
-    ).let {
-        Result.Success<_, Error>(Unit)
+    ) = when {
+        playlistUri == favoritesUri -> setFavorite(audioUri, false)
+        else -> database.getPlaylistWithItemsDao().removeItemFromPlaylist(
+            ContentUris.parseId(playlistUri),
+            audioUri
+        ).let {
+            Result.Success(Unit)
+        }
     }
 
     override suspend fun onAudioPlayed(
@@ -719,12 +672,17 @@ class LocalDataSource(
     override suspend fun setFavorite(
         audioUri: Uri,
         isFavorite: Boolean
-    ) = Result.Error<Unit, _>(Error.NOT_IMPLEMENTED)
+    ) = when (isFavorite) {
+        true -> database.getFavoriteDao().add(audioUri)
+        false -> database.getFavoriteDao().remove(audioUri)
+    }.let {
+        Result.Success<_, Error>(Unit)
+    }
 
     fun audios() = contentResolver.queryFlow(
         audiosUri,
         audiosProjection
-    ).mapEachRow(mapAudio)
+    ).mapEachAudio()
 
     /**
      * Given a list of audio URIs, return a list of [Audio], where null if the audio hasn't been
@@ -744,7 +702,7 @@ class LocalDataSource(
             }.toTypedArray(),
         )
     )
-        .mapEachRow(mapAudio)
+        .mapEachAudio()
         .mapLatest { audios ->
             audioUris.map { audioUri ->
                 audios.firstOrNull { it.uri == audioUri }
@@ -817,6 +775,87 @@ class LocalDataSource(
         )
     }
 
+    private fun Flow<Cursor?>.mapEachAudio() = mapEachRow { columnIndexCache ->
+        val audioId = columnIndexCache.getLong(MediaStore.Audio.AudioColumns._ID)
+        val mimeType = columnIndexCache.getString(MediaStore.Audio.AudioColumns.MIME_TYPE)
+        val title = columnIndexCache.getString(MediaStore.Audio.AudioColumns.TITLE)
+        val isMusic = columnIndexCache.getBoolean(MediaStore.Audio.AudioColumns.IS_MUSIC)
+        val isPodcast = columnIndexCache.getBoolean(MediaStore.Audio.AudioColumns.IS_PODCAST)
+        val isAudiobook = columnIndexCache.getBoolean(MediaStore.Audio.AudioColumns.IS_AUDIOBOOK)
+        val duration = columnIndexCache.getLong(MediaStore.Audio.AudioColumns.DURATION)
+        val artistId = columnIndexCache.getLong(MediaStore.Audio.AudioColumns.ARTIST_ID)
+        val artist = columnIndexCache.getString(MediaStore.Audio.AudioColumns.ARTIST)
+        val albumId = columnIndexCache.getLong(MediaStore.Audio.AudioColumns.ALBUM_ID)
+        val album = columnIndexCache.getString(MediaStore.Audio.AudioColumns.ALBUM)
+        val track = columnIndexCache.getInt(MediaStore.Audio.AudioColumns.TRACK)
+        val genreId = columnIndexCache.getLong(MediaStore.Audio.AudioColumns.GENRE_ID)
+        val genre = columnIndexCache.getStringOrNull(MediaStore.Audio.AudioColumns.GENRE)
+        val year = columnIndexCache.getInt(MediaStore.Audio.AudioColumns.YEAR)
+
+        val isRecording = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            columnIndexCache.getBoolean(MediaStore.Audio.AudioColumns.IS_RECORDING)
+        } else {
+            false
+        }
+
+        val uri = ContentUris.withAppendedId(audiosUri, audioId)
+        val artistUri = ContentUris.withAppendedId(artistsUri, artistId)
+        val albumUri = ContentUris.withAppendedId(albumsUri, albumId)
+        val genreUri = ContentUris.withAppendedId(genresUri, genreId)
+
+        val audioType = when {
+            isMusic -> Audio.Type.MUSIC
+            isPodcast -> Audio.Type.PODCAST
+            isAudiobook -> Audio.Type.AUDIOBOOK
+            isRecording -> Audio.Type.RECORDING
+            else -> Audio.Type.MUSIC
+        }
+
+        val (discNumber, discTrack) = track.takeUnless { it == 0 }?.let {
+            when (track > 1000) {
+                true -> track / 1000 to track % 1000
+                false -> null to track
+            }
+        } ?: (null to null)
+
+        val albumArtUri = uri.buildUpon()
+            .appendPath(AUDIO_ALBUMART)
+            .build()
+
+        val thumbnail = Thumbnail.Builder()
+            .setUri(albumArtUri)
+            .setType(Thumbnail.Type.FRONT_COVER)
+            .build()
+
+        Audio.Builder(uri)
+            .setThumbnail(thumbnail)
+            .setPlaybackUri(uri)
+            .setMimeType(mimeType)
+            .setTitle(title)
+            .setType(audioType)
+            .setDurationMs(duration)
+            .setArtistUri(artistUri)
+            .setArtistName(artist.takeIf { it != MediaStore.UNKNOWN_STRING })
+            .setAlbumUri(albumUri)
+            .setAlbumTitle(album.takeIf { it != MediaStore.UNKNOWN_STRING })
+            .setDiscNumber(discNumber)
+            .setTrackNumber(discTrack)
+            .setGenreUri(genreUri)
+            .setGenreName(genre)
+            .setYear(year.takeIf { it != 0 })
+            .build()
+    }
+        .flatMapLatest {
+            combine(
+                it.map { audio ->
+                    database.getFavoriteDao().containsFlow(audio.uri)
+                        .mapLatest { isFavorite ->
+                            audio.copy(isFavorite = isFavorite)
+                        }
+                }
+            ) { audios -> audios.toList() }
+        }
+
     companion object {
         // packages/providers/MediaProvider/src/com/android/providers/media/LocalUriMatcher.java
         private const val AUDIO_ALBUMART = "albumart"
@@ -878,11 +917,25 @@ class LocalDataSource(
         private const val PLAYLISTS_AUTHORITY = "playlists"
 
         /**
+         * Dummy database favorites authority.
+         */
+        private const val FAVORITES_AUTHORITY = "favorites"
+
+        /**
          * Dummy internal database playlists [Uri].
          */
         private val playlistsBaseUri = Uri.Builder()
             .scheme(DATABASE_SCHEME)
             .authority(PLAYLISTS_AUTHORITY)
+            .build()
+
+        private val favoritesUri = Uri.Builder()
+            .scheme(DATABASE_SCHEME)
+            .authority(FAVORITES_AUTHORITY)
+            .build()
+
+        private val favoritesPlaylist = Playlist.Builder(favoritesUri)
+            .setType(Playlist.Type.FAVORITES)
             .build()
 
         private fun org.lineageos.twelve.database.entities.Playlist.toModel() =
