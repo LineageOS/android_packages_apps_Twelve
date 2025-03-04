@@ -8,8 +8,8 @@ package org.lineageos.twelve.ext
 import android.database.Cursor
 import org.lineageos.twelve.models.ColumnIndexCache
 
-fun <T> Cursor?.mapEachRow(
-    mapping: (ColumnIndexCache) -> T,
+suspend inline fun <T> Cursor?.mapEachRow(
+    crossinline mapping: suspend (ColumnIndexCache) -> T,
 ) = this?.use { cursor ->
     if (!cursor.moveToFirst()) {
         return@use emptyList<T>()
