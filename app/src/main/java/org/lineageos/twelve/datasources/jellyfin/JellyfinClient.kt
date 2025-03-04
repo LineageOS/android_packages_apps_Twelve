@@ -106,6 +106,15 @@ class JellyfinClient(
         ),
     ).execute(api).mapToError()
 
+    suspend fun getFavorites() = ApiRequest.get<QueryResult>(
+        listOf("Items"),
+        queryParameters = listOf(
+            "Filters" to "IsFavorite",
+            "IncludeItemTypes" to "Audio",
+            "Recursive" to true,
+        ),
+    ).execute(api).mapToError()
+
     suspend fun getAlbum(id: UUID) = getItem(id)
 
     suspend fun getArtist(id: UUID) = getItem(id)
@@ -233,6 +242,20 @@ class JellyfinClient(
             "System",
             "Info",
             "Public",
+        ),
+    ).execute(api).mapToError()
+
+    suspend fun addToFavorites(id: UUID) = ApiRequest.post<Any, Unit>(
+        listOf(
+            "UserFavoriteItems",
+            id.toString(),
+        ),
+    ).execute(api).mapToError()
+
+    suspend fun removeFromFavorites(id: UUID) = ApiRequest.delete<Unit>(
+        listOf(
+            "UserFavoriteItems",
+            id.toString(),
         ),
     ).execute(api).mapToError()
 
