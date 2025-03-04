@@ -118,6 +118,16 @@ class MediaItemViewModel(application: Application) : TwelveViewModel(application
             initialValue = false,
         )
 
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val canToggleFavorite = mediaType
+        .mapLatest { it == MediaType.AUDIO }
+        .flowOn(Dispatchers.IO)
+        .stateIn(
+            viewModelScope,
+            started = SharingStarted.WhileSubscribed(),
+            initialValue = false,
+        )
+
     val canRemoveFromPlaylist = combine(
         mediaType,
         playlistUri,
@@ -246,6 +256,16 @@ class MediaItemViewModel(application: Application) : TwelveViewModel(application
                 if (mediaItemCount == audios.count()) {
                     play()
                 }
+            }
+        }
+    }
+
+    suspend fun toggleFavorites() {
+        mediaItem.value.getOrNull()?.let {
+            val audio = it as? Audio ?: return@let
+
+            withContext(Dispatchers.IO) {
+                mediaRepository.setFavorite(audio.uri, !audio.isFavorite)
             }
         }
     }
