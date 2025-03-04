@@ -169,6 +169,16 @@ class MediaItemViewModel(application: Application) : TwelveViewModel(application
         }
     }
 
+    suspend fun toggleFavorites() {
+        mediaItem.value.getOrNull()?.let {
+            val audio = it as? Audio ?: return@let
+
+            withContext(Dispatchers.IO) {
+                mediaRepository.setFavorite(audio.uri, !audio.isFavorite)
+            }
+        }
+    }
+
     suspend fun removeAudioFromPlaylist(playlistUri: Uri) {
         uri.value?.takeIf { mediaType.value == MediaType.AUDIO }?.let {
             withContext(Dispatchers.IO) {
