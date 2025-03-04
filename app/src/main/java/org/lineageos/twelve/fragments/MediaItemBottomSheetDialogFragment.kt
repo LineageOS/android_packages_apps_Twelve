@@ -52,6 +52,7 @@ class MediaItemBottomSheetDialogFragment : BottomSheetDialogFragment(
     private val viewModel by viewModels<MediaItemViewModel>()
 
     // Views
+    private val addOrRemoveFromFavoritesListItem by getViewProperty<ListItem>(R.id.addOrRemoveFromFavoritesListItem)
     private val addOrRemoveFromPlaylistsListItem by getViewProperty<ListItem>(R.id.addOrRemoveFromPlaylistsListItem)
     private val addToQueueListItem by getViewProperty<ListItem>(R.id.addToQueueListItem)
     private val artistNameTextView by getViewProperty<TextView>(R.id.artistNameTextView)
@@ -112,6 +113,15 @@ class MediaItemBottomSheetDialogFragment : BottomSheetDialogFragment(
                 viewModel.playNext(*tracks.toTypedArray())
 
                 findNavController().navigateUp()
+            }
+        }
+
+        addOrRemoveFromFavoritesListItem.isVisible = mediaType == MediaType.AUDIO
+        addOrRemoveFromFavoritesListItem.setOnClickListener {
+            viewLifecycleOwner.lifecycleScope.launch {
+                fullscreenLoadingProgressBar.withProgress {
+                    viewModel.toggleFavorites()
+                }
             }
         }
 
@@ -244,6 +254,25 @@ class MediaItemBottomSheetDialogFragment : BottomSheetDialogFragment(
                         } ?: run {
                             placeholderImageView.isVisible = true
                             thumbnailImageView.isVisible = false
+                        }
+
+                        when (mediaItem) {
+                            is Audio -> {
+                                addOrRemoveFromFavoritesListItem.setHeadlineText(
+                                    when (mediaItem.isFavorite) {
+                                        true -> R.string.remove_from_favorites
+                                        false -> R.string.add_to_favorites
+                                    }
+                                )
+                                addOrRemoveFromFavoritesListItem.setLeadingIconImage(
+                                    when (mediaItem.isFavorite) {
+                                        true -> R.drawable.ic_heart_filled
+                                        false -> R.drawable.ic_heart_unfilled
+                                    }
+                                )
+                            }
+
+                            else -> {}
                         }
                     }
 
