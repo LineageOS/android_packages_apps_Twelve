@@ -272,9 +272,9 @@ class NowPlayingFragment : Fragment(R.layout.fragment_now_playing) {
 
         isFavoriteMaterialButton.setOnClickListener {
             lifecycleScope.launch {
-                isFavoriteMaterialButton.isClickable = false
+                isFavoriteMaterialButton.isEnabled = false
                 viewModel.toggleFavorites()
-                isFavoriteMaterialButton.isClickable = true
+                isFavoriteMaterialButton.isEnabled = true
             }
         }
 
