@@ -11,6 +11,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.mapLatest
@@ -80,10 +81,22 @@ class SubsonicDataSource(
         .appendPath(PLAYLISTS_PATH)
         .build()
 
+    private val favoritesUri = dataSourceBaseUri.buildUpon()
+        .appendPath(FAVORITES_PATH)
+        .build()
+    private val favoritesPlaylist = Playlist.Builder(favoritesUri)
+        .setType(Playlist.Type.FAVORITES)
+        .build()
+
     /**
      * This flow is used to signal a change in the playlists.
      */
     private val _playlistsChanged = MutableStateFlow(Any())
+
+    /**
+     * This flow is used to signal a change in the favorites.
+     */
+    private val _favoritesChanged = MutableStateFlow(Any())
 
     override fun status() = suspend {
         val ping = subsonicClient.ping()
@@ -151,6 +164,7 @@ class SubsonicDataSource(
             startsWith(audiosUri.toString()) -> MediaType.AUDIO
             startsWith(genresUri.toString()) -> MediaType.GENRE
             startsWith(playlistsUri.toString()) -> MediaType.PLAYLIST
+            mediaItemUri == favoritesUri -> MediaType.PLAYLIST
             else -> null
         }
     }
@@ -251,24 +265,30 @@ class SubsonicDataSource(
 
     override fun playlists(sortingRule: SortingRule) = _playlistsChanged.mapLatest {
         subsonicClient.getPlaylists().map { playlists ->
-            playlists.playlist.maybeSortedBy(
-                sortingRule.reverse,
-                when (sortingRule.strategy) {
-                    SortingStrategy.CREATION_DATE -> { playlist ->
-                        playlist.created
-                    }
+            buildList {
+                add(favoritesPlaylist)
 
-                    SortingStrategy.MODIFICATION_DATE -> { playlist ->
-                        playlist.changed
-                    }
+                playlists.playlist.maybeSortedBy(
+                    sortingRule.reverse,
+                    when (sortingRule.strategy) {
+                        SortingStrategy.CREATION_DATE -> { playlist ->
+                            playlist.created
+                        }
 
-                    SortingStrategy.NAME -> { playlist ->
-                        playlist.name
-                    }
+                        SortingStrategy.MODIFICATION_DATE -> { playlist ->
+                            playlist.changed
+                        }
 
-                    else -> null
+                        SortingStrategy.NAME -> { playlist ->
+                            playlist.name
+                        }
+
+                        else -> null
+                    }
+                ).forEach {
+                    add(it.toMediaItem())
                 }
-            ).map { it.toMediaItem() }
+            }
         }
     }
 
@@ -280,11 +300,11 @@ class SubsonicDataSource(
         }
     }.asFlow()
 
-    override fun audio(audioUri: Uri) = suspend {
+    override fun audio(audioUri: Uri) = _favoritesChanged.mapLatest {
         subsonicClient.getSong(audioUri.lastPathSegment!!).map { child ->
             child.toMediaItem()
         }
-    }.asFlow()
+    }
 
     override fun album(albumUri: Uri) = suspend {
         subsonicClient.getAlbum(albumUri.lastPathSegment!!).map { albumWithSongsID3 ->
@@ -347,25 +367,48 @@ class SubsonicDataSource(
         }
     }.asFlow()
 
-    override fun playlist(playlistUri: Uri) = _playlistsChanged.mapLatest {
-        subsonicClient.getPlaylist(playlistUri.lastPathSegment!!).map { playlistWithSongs ->
-            playlistWithSongs.toPlaylist().toMediaItem() to playlistWithSongs.entry.orEmpty().map {
-                it.toMediaItem()
+    override fun playlist(playlistUri: Uri) = when {
+        playlistUri == favoritesUri -> _favoritesChanged.mapLatest {
+            subsonicClient.getStarred2().map {
+                favoritesPlaylist to it.song.orEmpty().map { child ->
+                    child.toMediaItem()
+                }
+            }
+        }
+
+        else -> _playlistsChanged.mapLatest {
+            subsonicClient.getPlaylist(playlistUri.lastPathSegment!!).map {
+                it.toPlaylist().toMediaItem() to it.entry.orEmpty().map { child ->
+                    child.toMediaItem()
+                }
             }
         }
     }
 
-    override fun audioPlaylistsStatus(audioUri: Uri) = _playlistsChanged.mapLatest {
-        val audioId = audioUri.lastPathSegment!!
+    override fun audioPlaylistsStatus(audioUri: Uri) = audioUri.lastPathSegment!!.let { audioId ->
+        combine(
+            _favoritesChanged.mapLatest { _ ->
+                val starred = subsonicClient.getSong(audioId).getOrNull()?.starred != null
+                favoritesPlaylist to starred
+            },
+            _playlistsChanged.mapLatest { _ ->
+                subsonicClient.getPlaylists().map { playlists ->
+                    playlists.playlist.map { playlist ->
+                        val inPlaylist = subsonicClient.getPlaylist(playlist.id).map {
+                            it.entry.orEmpty().any { child -> child.id == audioId }
+                        }
 
-        subsonicClient.getPlaylists().map { playlists ->
-            playlists.playlist.map { playlist ->
-                playlist.toMediaItem() to subsonicClient.getPlaylist(playlist.id)
-                    .map { playlistWithSongs ->
-                        playlistWithSongs.entry.orEmpty().any { child -> child.id == audioId }
-                    }.let {
-                        it.getOrNull() ?: false
+                        playlist.toMediaItem() to (inPlaylist.getOrNull() ?: false)
                     }
+                }
+            },
+        ) { favoriteToAudio, playlistToAudio ->
+            playlistToAudio.map { playlists ->
+                buildList {
+                    add(favoriteToAudio)
+
+                    addAll(playlists)
+                }
             }
         }
     }
@@ -400,42 +443,53 @@ class SubsonicDataSource(
 
     override suspend fun renamePlaylist(
         playlistUri: Uri, name: String
-    ) = subsonicClient.updatePlaylist(playlistUri.lastPathSegment!!, name).map {
-        onPlaylistsChanged()
+    ) = when {
+        playlistUri == favoritesUri -> Result.Error(Error.IO)
+        else -> subsonicClient.updatePlaylist(playlistUri.lastPathSegment!!, name).map {
+            onPlaylistsChanged()
+        }
     }
 
-    override suspend fun deletePlaylist(playlistUri: Uri) = subsonicClient.deletePlaylist(
-        playlistUri.lastPathSegment!!
-    ).map {
-        onPlaylistsChanged()
+    override suspend fun deletePlaylist(playlistUri: Uri) = when {
+        playlistUri == favoritesUri -> Result.Error(Error.IO)
+        else -> subsonicClient.deletePlaylist(
+            playlistUri.lastPathSegment!!
+        ).map {
+            onPlaylistsChanged()
+        }
     }
 
-    override suspend fun addAudioToPlaylist(playlistUri: Uri, audioUri: Uri) =
-        subsonicClient.updatePlaylist(
+    override suspend fun addAudioToPlaylist(playlistUri: Uri, audioUri: Uri) = when {
+        playlistUri == favoritesUri -> setFavorite(audioUri, true)
+        else -> subsonicClient.updatePlaylist(
             playlistUri.lastPathSegment!!,
             songIdsToAdd = listOf(audioUri.lastPathSegment!!)
         ).map {
             onPlaylistsChanged()
         }
+    }
 
     override suspend fun removeAudioFromPlaylist(
         playlistUri: Uri,
         audioUri: Uri
-    ) = subsonicClient.getPlaylist(
-        playlistUri.lastPathSegment!!
-    ).map { playlistWithSongs ->
-        val audioId = audioUri.lastPathSegment!!
+    ) = when {
+        playlistUri == favoritesUri -> setFavorite(audioUri, false)
+        else -> subsonicClient.getPlaylist(
+            playlistUri.lastPathSegment!!
+        ).map { playlistWithSongs ->
+            val audioId = audioUri.lastPathSegment!!
 
-        val audioIndexes = playlistWithSongs.entry.orEmpty().mapIndexedNotNull { index, child ->
-            index.takeIf { child.id == audioId }
-        }
+            val audioIndexes = playlistWithSongs.entry.orEmpty().mapIndexedNotNull { index, child ->
+                index.takeIf { child.id == audioId }
+            }
 
-        if (audioIndexes.isNotEmpty()) {
-            subsonicClient.updatePlaylist(
-                playlistUri.lastPathSegment!!,
-                songIndexesToRemove = audioIndexes,
-            ).map {
-                onPlaylistsChanged()
+            if (audioIndexes.isNotEmpty()) {
+                subsonicClient.updatePlaylist(
+                    playlistUri.lastPathSegment!!,
+                    songIndexesToRemove = audioIndexes,
+                ).map {
+                    onPlaylistsChanged()
+                }
             }
         }
     }
@@ -446,7 +500,12 @@ class SubsonicDataSource(
     override suspend fun setFavorite(
         audioUri: Uri,
         isFavorite: Boolean
-    ) = Result.Error<Unit, _>(Error.NOT_IMPLEMENTED)
+    ) = when (isFavorite) {
+        true -> subsonicClient.star(ids = listOf(audioUri.lastPathSegment!!))
+        false -> subsonicClient.unstar(ids = listOf(audioUri.lastPathSegment!!))
+    }.map {
+        onFavoritesChanged()
+    }
 
     private fun AlbumID3.toMediaItem() = Album.Builder(getAlbumUri(id))
         .setThumbnail(
@@ -494,6 +553,7 @@ class SubsonicDataSource(
         .setGenreUri(genre?.let { getGenreUri(it) })
         .setGenreName(genre)
         .setYear(year)
+        .setIsFavorite(starred != null)
         .build()
 
     private fun org.lineageos.twelve.datasources.subsonic.models.Genre.toMediaItem() =
@@ -561,6 +621,10 @@ class SubsonicDataSource(
         _playlistsChanged.value = Any()
     }
 
+    private fun onFavoritesChanged() {
+        _favoritesChanged.value = Any()
+    }
+
     /**
      * Apply [List.asReversed] if [condition] is true.
      * Reminder that [List.asReversed] returns a new list view, thus being O(1).
@@ -592,6 +656,8 @@ class SubsonicDataSource(
         private const val AUDIOS_PATH = "audio"
         private const val GENRES_PATH = "genres"
         private const val PLAYLISTS_PATH = "playlists"
+
+        private const val FAVORITES_PATH = "favorites"
 
         val ARG_SERVER = ProviderArgument(
             "server",
