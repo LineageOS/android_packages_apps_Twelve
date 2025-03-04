@@ -12,6 +12,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.mapLatest
@@ -88,10 +89,22 @@ class JellyfinDataSource(
         .appendPath(PLAYLISTS_PATH)
         .build()
 
+    private val favoritesUri = dataSourceBaseUri.buildUpon()
+        .appendPath(FAVORITES_PATH)
+        .build()
+    private val favoritesPlaylist = Playlist.Builder(favoritesUri)
+        .setType(Playlist.Type.FAVORITES)
+        .build()
+
     /**
      * This flow is used to signal a change in the playlists.
      */
     private val _playlistsChanged = MutableStateFlow(Any())
+
+    /**
+     * This flow is used to signal a change in the favorites.
+     */
+    private val _favoritesChanged = MutableStateFlow(Any())
 
     override fun status() = suspend {
         client.getSystemInfo().map { systemInfo ->
@@ -173,7 +186,11 @@ class JellyfinDataSource(
 
     override fun playlists(sortingRule: SortingRule) = _playlistsChanged.mapLatest {
         client.getPlaylists(sortingRule).map { queryResult ->
-            queryResult.items.map { it.toMediaItemPlaylist() }
+            buildList {
+                add(favoritesPlaylist)
+
+                queryResult.items.forEach { add(it.toMediaItemPlaylist()) }
+            }
         }
     }
 
@@ -243,24 +260,50 @@ class JellyfinDataSource(
         }
     }.asFlow()
 
-    override fun playlist(playlistUri: Uri) = _playlistsChanged.mapLatest {
-        val id = UUID.fromString(playlistUri.lastPathSegment!!)
-        client.getPlaylist(id).map { item ->
-            item.toMediaItemPlaylist() to client.getPlaylistTracks(id).map { queryResult ->
-                queryResult.items.map { it.toMediaItemAudio() }
-            }.getOrNull().orEmpty()
+    override fun playlist(playlistUri: Uri) = when {
+        playlistUri == favoritesUri -> _favoritesChanged.mapLatest {
+            client.getFavorites().map { queryResult ->
+                favoritesPlaylist to queryResult.items.map { it.toMediaItemAudio() }
+            }
+        }
+
+        else -> _playlistsChanged.mapLatest {
+            val id = UUID.fromString(playlistUri.lastPathSegment!!)
+            client.getPlaylist(id).map { item ->
+                item.toMediaItemPlaylist() to client.getPlaylistTracks(id).map { queryResult ->
+                    queryResult.items.map { it.toMediaItemAudio() }
+                }.getOrNull().orEmpty()
+            }
         }
     }
 
-    override fun audioPlaylistsStatus(audioUri: Uri) = _playlistsChanged.mapLatest {
-        val audioId = UUID.fromString(audioUri.lastPathSegment!!)
-        val sortingRule = SortingRule(SortingStrategy.NAME)
+    override fun audioPlaylistsStatus(
+        audioUri: Uri
+    ) = UUID.fromString(audioUri.lastPathSegment!!).let { audioId ->
+        combine(
+            _favoritesChanged.mapLatest {
+                favoritesPlaylist to (client.getAudio(audioId).getOrNull()?.isFavorite == true)
+            },
+            _playlistsChanged.mapLatest {
+                val sortingRule = SortingRule(SortingStrategy.NAME)
 
-        client.getPlaylists(sortingRule).map { queryResult ->
-            queryResult.items.map { playlist ->
-                val playlistItems =
-                    client.getPlaylistItemIds(playlist.id).map { it.itemIds }.getOrNull().orEmpty()
-                playlist.toMediaItemPlaylist() to (audioId in playlistItems)
+                client.getPlaylists(sortingRule).map { queryResult ->
+                    queryResult.items.map { playlist ->
+                        val playlistItems = client.getPlaylistItemIds(playlist.id).map {
+                            it.itemIds
+                        }.getOrNull().orEmpty()
+
+                        playlist.toMediaItemPlaylist() to (audioId in playlistItems)
+                    }
+                }
+            },
+        ) { favoriteToAudio, playlistToAudio ->
+            playlistToAudio.map { playlists ->
+                buildList {
+                    add(favoriteToAudio)
+
+                    addAll(playlists)
+                }
             }
         }
     }
@@ -293,33 +336,39 @@ class JellyfinDataSource(
         }
     }
 
-    override suspend fun renamePlaylist(playlistUri: Uri, name: String) =
-        client.renamePlaylist(UUID.fromString(playlistUri.lastPathSegment!!), name)
-            .map {
-                onPlaylistsChanged()
-            }
-
-    override suspend fun deletePlaylist(playlistUri: Uri) = Result.Error<Unit, _>(
-        Error.NOT_IMPLEMENTED
-    )
-
-    override suspend fun addAudioToPlaylist(
-        playlistUri: Uri, audioUri: Uri
-    ) = run {
-        val playlistId = UUID.fromString(playlistUri.lastPathSegment!!)
-        val audioId = UUID.fromString(audioUri.lastPathSegment!!)
-        client.addItemToPlaylist(playlistId, audioId).map {
+    override suspend fun renamePlaylist(playlistUri: Uri, name: String) = when {
+        playlistUri == favoritesUri -> Result.Error(Error.IO)
+        else -> client.renamePlaylist(
+            UUID.fromString(playlistUri.lastPathSegment!!), name
+        ).map {
             onPlaylistsChanged()
         }
     }
 
-    override suspend fun removeAudioFromPlaylist(
-        playlistUri: Uri, audioUri: Uri
-    ) = run {
-        val playlistId = UUID.fromString(playlistUri.lastPathSegment!!)
-        val audioId = UUID.fromString(audioUri.lastPathSegment!!)
-        client.removeItemFromPlaylist(playlistId, audioId).map {
-            onPlaylistsChanged()
+    override suspend fun deletePlaylist(playlistUri: Uri) = when {
+        playlistUri == favoritesUri -> Result.Error(Error.IO)
+        else -> Result.Error<Unit, _>(Error.NOT_IMPLEMENTED)
+    }
+
+    override suspend fun addAudioToPlaylist(playlistUri: Uri, audioUri: Uri) = when {
+        playlistUri == favoritesUri -> setFavorite(audioUri, true)
+        else -> {
+            val playlistId = UUID.fromString(playlistUri.lastPathSegment!!)
+            val audioId = UUID.fromString(audioUri.lastPathSegment!!)
+            client.addItemToPlaylist(playlistId, audioId).map {
+                onPlaylistsChanged()
+            }
+        }
+    }
+
+    override suspend fun removeAudioFromPlaylist(playlistUri: Uri, audioUri: Uri) = when {
+        playlistUri == favoritesUri -> setFavorite(audioUri, false)
+        else -> {
+            val playlistId = UUID.fromString(playlistUri.lastPathSegment!!)
+            val audioId = UUID.fromString(audioUri.lastPathSegment!!)
+            client.removeItemFromPlaylist(playlistId, audioId).map {
+                onPlaylistsChanged()
+            }
         }
     }
 
@@ -340,7 +389,10 @@ class JellyfinDataSource(
     override suspend fun setFavorite(
         audioUri: Uri,
         isFavorite: Boolean
-    ) = Result.Error<Unit, _>(Error.NOT_IMPLEMENTED)
+    ) = when (isFavorite) {
+        true -> client.addToFavorites(UUID.fromString(audioUri.lastPathSegment!!))
+        false -> client.removeFromFavorites(UUID.fromString(audioUri.lastPathSegment!!))
+    }
 
     private fun Item.toMediaItemAlbum() = Album.Builder(getAlbumUri(id.toString()))
         .setThumbnail(
@@ -378,6 +430,7 @@ class JellyfinDataSource(
         .setGenreUri(getGenreUri(id.toString()))
         .setGenreName(genres?.firstOrNull())
         .setYear(productionYear)
+        .setIsFavorite(isFavorite == true)
         .build()
 
     private fun Item.toMediaItemGenre() = Genre.Builder(getGenreUri(id.toString()))
@@ -467,6 +520,8 @@ class JellyfinDataSource(
         private const val AUDIOS_PATH = "audio"
         private const val GENRES_PATH = "genres"
         private const val PLAYLISTS_PATH = "playlists"
+
+        private const val FAVORITES_PATH = "favorites"
 
         val ARG_SERVER = ProviderArgument(
             "server",
