@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "330970c3_7e88f849",
+        "filename": "app/src/main/java/org/lineageos/twelve/datasources/LocalDataSource.kt",
+        "patchSetId": 6
+      },
+      "lineNbr": 93,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2025-03-04T14:14:05Z",
+      "side": 1,
+      "message": "can be dropped",
+      "range": {
+        "startLine": 93,
+        "startChar": 0,
+        "endLine": 93,
+        "endChar": 62
+      },
+      "revId": "0d6ad60bcba764037bf7644ccba9491797a8f38f",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e8a8a57e_ab98bbf1",
+        "filename": "app/src/main/java/org/lineageos/twelve/datasources/LocalDataSource.kt",
+        "patchSetId": 6
+      },
+      "lineNbr": 938,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2025-03-04T14:14:05Z",
+      "side": 1,
+      "message": "why not extend playlistsBaseUri \n```suggestion\n        private val favoritesUri \u003d playlistsBaseUri\n            .buildUpon()\n            .appendPath(\"favorites\")\n            .build()\n```",
+      "range": {
+        "startLine": 935,
+        "startChar": 0,
+        "endLine": 938,
+        "endChar": 20
+      },
+      "revId": "0d6ad60bcba764037bf7644ccba9491797a8f38f",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
