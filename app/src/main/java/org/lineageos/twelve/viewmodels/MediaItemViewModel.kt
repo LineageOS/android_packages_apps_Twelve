@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
@@ -23,12 +24,15 @@ import kotlinx.coroutines.withContext
 import org.lineageos.twelve.ext.resources
 import org.lineageos.twelve.models.Album
 import org.lineageos.twelve.models.Audio
+import org.lineageos.twelve.models.Error
 import org.lineageos.twelve.models.FlowResult
 import org.lineageos.twelve.models.FlowResult.Companion.asFlowResult
 import org.lineageos.twelve.models.FlowResult.Companion.foldLatest
 import org.lineageos.twelve.models.FlowResult.Companion.mapLatestData
 import org.lineageos.twelve.models.FlowResult.Companion.mapLatestDataOrNull
 import org.lineageos.twelve.models.MediaType
+import org.lineageos.twelve.models.Playlist
+import org.lineageos.twelve.models.Result
 import org.lineageos.twelve.models.Result.Companion.map
 
 class MediaItemViewModel(application: Application) : TwelveViewModel(application) {
@@ -107,6 +111,21 @@ class MediaItemViewModel(application: Application) : TwelveViewModel(application
             initialValue = listOf(),
         )
 
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private val playlist = playlistUri
+        .flatMapLatest { playlistUri ->
+            playlistUri?.let {
+                mediaRepository.playlist(it)
+            } ?: flowOf(Result.Error(Error.NOT_FOUND))
+        }
+        .asFlowResult()
+        .flowOn(Dispatchers.IO)
+        .stateIn(
+            viewModelScope,
+            started = SharingStarted.WhileSubscribed(),
+            initialValue = FlowResult.Loading(),
+        )
+
     val showQueueButtons = combine(
         tracks,
         fromNowPlaying
@@ -118,10 +137,19 @@ class MediaItemViewModel(application: Application) : TwelveViewModel(application
             initialValue = false,
         )
 
-    val canRemoveFromPlaylist = combine(
-        mediaType,
-        playlistUri,
-    ) { mediaType, playlistUri -> mediaType == MediaType.AUDIO && playlistUri != null }
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val canToggleFavorite = mediaType
+        .mapLatest { it == MediaType.AUDIO }
+        .flowOn(Dispatchers.IO)
+        .stateIn(
+            viewModelScope,
+            started = SharingStarted.WhileSubscribed(),
+            initialValue = false,
+        )
+
+    val canRemoveFromPlaylist = combine(mediaType, playlist) { mediaType, playlist ->
+        mediaType == MediaType.AUDIO && playlist.getOrNull()?.first?.type == Playlist.Type.PLAYLIST
+    }
         .flowOn(Dispatchers.IO)
         .stateIn(
             viewModelScope,
@@ -246,6 +274,16 @@ class MediaItemViewModel(application: Application) : TwelveViewModel(application
                 if (mediaItemCount == audios.count()) {
                     play()
                 }
+            }
+        }
+    }
+
+    suspend fun toggleFavorites() {
+        mediaItem.value.getOrNull()?.let {
+            val audio = it as? Audio ?: return@let
+
+            withContext(Dispatchers.IO) {
+                mediaRepository.setFavorite(audio.uri, !audio.isFavorite)
             }
         }
     }

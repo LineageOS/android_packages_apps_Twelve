@@ -50,6 +50,7 @@ class MediaItemBottomSheetDialogFragment : BottomSheetDialogFragment(
     private val viewModel by viewModels<MediaItemViewModel>()
 
     // Views
+    private val addOrRemoveFromFavoritesListItem by getViewProperty<ListItem>(R.id.addOrRemoveFromFavoritesListItem)
     private val addOrRemoveFromPlaylistsListItem by getViewProperty<ListItem>(R.id.addOrRemoveFromPlaylistsListItem)
     private val addToQueueListItem by getViewProperty<ListItem>(R.id.addToQueueListItem)
     private val artistNameTextView by getViewProperty<TextView>(R.id.artistNameTextView)
@@ -114,6 +115,14 @@ class MediaItemBottomSheetDialogFragment : BottomSheetDialogFragment(
             viewModel.playNext()
 
             findNavController().navigateUp()
+        }
+
+        addOrRemoveFromFavoritesListItem.setOnClickListener {
+            viewLifecycleOwner.lifecycleScope.launch {
+                fullscreenLoadingProgressBar.withProgress {
+                    viewModel.toggleFavorites()
+                }
+            }
         }
 
         removeFromPlaylistListItem.setOnClickListener {
@@ -242,6 +251,25 @@ class MediaItemBottomSheetDialogFragment : BottomSheetDialogFragment(
                             placeholderImageView.isVisible = true
                             thumbnailImageView.isVisible = false
                         }
+
+                        when (mediaItem) {
+                            is Audio -> {
+                                addOrRemoveFromFavoritesListItem.setHeadlineText(
+                                    when (mediaItem.isFavorite) {
+                                        true -> R.string.remove_from_favorites
+                                        false -> R.string.add_to_favorites
+                                    }
+                                )
+                                addOrRemoveFromFavoritesListItem.setLeadingIconImage(
+                                    when (mediaItem.isFavorite) {
+                                        true -> R.drawable.ic_heart_filled
+                                        false -> R.drawable.ic_heart_unfilled
+                                    }
+                                )
+                            }
+
+                            else -> {}
+                        }
                     }
 
                     is FlowResult.Error -> {
@@ -265,6 +293,12 @@ class MediaItemBottomSheetDialogFragment : BottomSheetDialogFragment(
                 playNowListItem.isVisible = showQueueButtons
                 addToQueueListItem.isVisible = showQueueButtons
                 playNextListItem.isVisible = showQueueButtons
+            }
+        }
+
+        launch {
+            viewModel.canToggleFavorite.collectLatest { canToggleFavorite ->
+                addOrRemoveFromFavoritesListItem.isVisible = canToggleFavorite
             }
         }
 
