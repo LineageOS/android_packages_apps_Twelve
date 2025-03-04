@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "01dd82d4_5d849a3e",
+        "filename": "app/src/main/java/org/lineageos/twelve/fragments/NowPlayingFragment.kt",
+        "patchSetId": 8
+      },
+      "lineNbr": 346,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2025-03-04T13:46:54Z",
+      "side": 1,
+      "message": "no need",
+      "range": {
+        "startLine": 341,
+        "startChar": 0,
+        "endLine": 346,
+        "endChar": 33
+      },
+      "revId": "1b5f38a1e351e44f77d65cabceccbd668d254639",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
