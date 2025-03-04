@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "96f85423_50cf9e4b",
+        "filename": "app/src/main/java/org/lineageos/twelve/database/entities/Favorite.kt",
+        "patchSetId": 2
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2025-03-04T13:48:30Z",
+      "side": 1,
+      "message": "should convert lastPlayed to Instant in another CL",
+      "range": {
+        "startLine": 31,
+        "startChar": 48,
+        "endLine": 31,
+        "endChar": 55
+      },
+      "revId": "841beebc0a7fe90ab5aa8956d0ab0b5303eeb39b",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
