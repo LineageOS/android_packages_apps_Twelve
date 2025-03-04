@@ -24,6 +24,30 @@
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "d881fcf0_72a80989",
+        "filename": "app/src/main/java/org/lineageos/twelve/fragments/AddOrRemoveFromPlaylistsFragment.kt",
+        "patchSetId": 2
+      },
+      "lineNbr": 106,
+      "author": {
+        "id": 25732
+      },
+      "writtenOn": "2025-03-04T21:53:39Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c2a4427b_a1dfbdfc",
+      "range": {
+        "startLine": 99,
+        "startChar": 0,
+        "endLine": 106,
+        "endChar": 25
+      },
+      "revId": "97bd6bd86aca662bf4f6a0fd69254e79ba57f106",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "be707f9c_97d25d65",
@@ -37,6 +61,30 @@
       "writtenOn": "2025-03-04T20:26:17Z",
       "side": 1,
       "message": "```suggestion\n                        when {\n                            playlist.name !\u003d null -\u003e {\n                                toolbar.title \u003d playlist.name\n                                playlistNameTextView.text \u003d playlist.name\n                            }\n                            playlist.type \u003d\u003d Playlist.Type.PLAYLIST -\u003e {\n                                toolbar.setTitle(R.string.playlist_unknown)\n                                playlistNameTextView.setText(R.string.playlist_unknown)\n                            }\n                            playlist.type \u003d\u003d Playlist.Type.FAVORITES -\u003e {\n                                toolbar.setTitle(R.string.favorites_playlist)\n                                playlistNameTextView.setText(R.string.favorites_playlist)\n                            }\n                        }```",
+      "range": {
+        "startLine": 260,
+        "startChar": 0,
+        "endLine": 270,
+        "endChar": 25
+      },
+      "revId": "97bd6bd86aca662bf4f6a0fd69254e79ba57f106",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "db899ea3_2e5f0eab",
+        "filename": "app/src/main/java/org/lineageos/twelve/fragments/PlaylistFragment.kt",
+        "patchSetId": 2
+      },
+      "lineNbr": 270,
+      "author": {
+        "id": 25732
+      },
+      "writtenOn": "2025-03-04T21:53:39Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "be707f9c_97d25d65",
       "range": {
         "startLine": 260,
         "startChar": 0,
@@ -64,6 +112,24 @@
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "cb88150d_68096a00",
+        "filename": "app/src/main/java/org/lineageos/twelve/fragments/PlaylistsFragment.kt",
+        "patchSetId": 2
+      },
+      "lineNbr": 99,
+      "author": {
+        "id": 25732
+      },
+      "writtenOn": "2025-03-04T21:53:39Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a80522c6_ac77d427",
+      "revId": "97bd6bd86aca662bf4f6a0fd69254e79ba57f106",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "91684169_610aa839",
@@ -77,6 +143,24 @@
       "writtenOn": "2025-03-04T20:26:17Z",
       "side": 1,
       "message": "ditto",
+      "revId": "97bd6bd86aca662bf4f6a0fd69254e79ba57f106",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ecb2cd25_edf0c172",
+        "filename": "app/src/main/java/org/lineageos/twelve/ui/views/BaseMediaItemView.kt",
+        "patchSetId": 2
+      },
+      "lineNbr": 119,
+      "author": {
+        "id": 25732
+      },
+      "writtenOn": "2025-03-04T21:53:39Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "91684169_610aa839",
       "revId": "97bd6bd86aca662bf4f6a0fd69254e79ba57f106",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
