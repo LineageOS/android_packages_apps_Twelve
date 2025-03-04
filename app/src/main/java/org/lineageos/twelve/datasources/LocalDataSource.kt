@@ -90,6 +90,7 @@ class LocalDataSource(
             startsWith(genresUri.toString()) -> MediaType.GENRE
             startsWith(audiosUri.toString()) -> MediaType.AUDIO
             startsWith(playlistsBaseUri.toString()) -> MediaType.PLAYLIST
+            mediaItemUri == favoritesUri -> MediaType.PLAYLIST
             else -> null
         }
     }
@@ -231,7 +232,13 @@ class LocalDataSource(
 
     override fun playlists(sortingRule: SortingRule) = database.getPlaylistDao().getAll()
         .mapLatest { playlists ->
-            Result.Success<_, Error>(playlists.map { it.toModel() })
+            Result.Success<_, Error>(
+                buildList {
+                    add(favoritesPlaylist)
+
+                    playlists.forEach { add(it.toModel()) }
+                }
+            )
         }
 
     override fun search(query: String) = combine(
@@ -491,33 +498,42 @@ class LocalDataSource(
         }
     }
 
-    override fun playlist(playlistUri: Uri) = database.getPlaylistDao().getPlaylistWithItems(
-        ContentUris.parseId(playlistUri)
-    ).flatMapLatest { data ->
-        data?.let { playlistWithItems ->
-            val playlist = playlistWithItems.playlist.toModel()
-
-            audios(playlistWithItems.items.map(Item::audioUri))
+    override fun playlist(playlistUri: Uri) = when {
+        playlistUri == favoritesUri -> database.getFavoriteDao().getAll().flatMapLatest {
+            audios(it.map(Item::audioUri))
                 .mapLatest { items ->
-                    Result.Success<_, Error>(playlist to items.filterNotNull())
+                    Result.Success<_, Error>(favoritesPlaylist to items.filterNotNull())
                 }
-        } ?: flowOf(
-            Result.Error(
-                Error.NOT_FOUND
-            )
-        )
+        }
+
+        else -> database.getPlaylistDao().getPlaylistWithItems(
+            ContentUris.parseId(playlistUri)
+        ).flatMapLatest { data ->
+            data?.let { playlistWithItems ->
+                val playlist = playlistWithItems.playlist.toModel()
+
+                audios(playlistWithItems.items.map(Item::audioUri))
+                    .mapLatest { items ->
+                        Result.Success(playlist to items.filterNotNull())
+                    }
+            } ?: flowOf(Result.Error(Error.NOT_FOUND))
+        }
     }
 
-    override fun audioPlaylistsStatus(audioUri: Uri) =
-        database.getPlaylistWithItemsDao().getPlaylistsWithItemStatus(
-            audioUri
-        ).mapLatest { data ->
-            Result.Success<_, Error>(
-                data.map {
-                    it.playlist.toModel() to it.value
+    override fun audioPlaylistsStatus(audioUri: Uri) = combine(
+        database.getFavoriteDao().containsFlow(audioUri),
+        database.getPlaylistWithItemsDao().getPlaylistsWithItemStatus(audioUri),
+    ) { isFavorite, playlistsWithItemStatus ->
+        Result.Success<_, Error>(
+            buildList {
+                add(favoritesPlaylist to isFavorite)
+
+                playlistsWithItemStatus.forEach {
+                    add(it.playlist.toModel() to it.value)
                 }
-            )
-        }
+            }
+        )
+    }
 
     override fun lyrics(audioUri: Uri) = flowOf(
         Result.Error<Lyrics, _>(Error.NOT_IMPLEMENTED)
@@ -557,37 +573,44 @@ class LocalDataSource(
         Result.Success<_, Error>(ContentUris.withAppendedId(playlistsBaseUri, it))
     }
 
-    override suspend fun renamePlaylist(playlistUri: Uri, name: String) =
-        database.getPlaylistDao().rename(
-            ContentUris.parseId(playlistUri), name
-        ).let {
+    override suspend fun renamePlaylist(playlistUri: Uri, name: String) = when {
+        playlistUri == favoritesUri -> Result.Error(Error.IO)
+        else -> database.getPlaylistDao().rename(ContentUris.parseId(playlistUri), name).let {
             Result.Success<_, Error>(Unit)
         }
+    }
 
-    override suspend fun deletePlaylist(playlistUri: Uri) = database.getPlaylistDao().delete(
-        ContentUris.parseId(playlistUri)
-    ).let {
-        Result.Success<_, Error>(Unit)
+    override suspend fun deletePlaylist(playlistUri: Uri) = when {
+        playlistUri == favoritesUri -> Result.Error(Error.IO)
+        else -> database.getPlaylistDao().delete(ContentUris.parseId(playlistUri)).let {
+            Result.Success<_, Error>(Unit)
+        }
     }
 
     override suspend fun addAudioToPlaylist(
         playlistUri: Uri,
         audioUri: Uri,
-    ) = database.getPlaylistWithItemsDao().addItemToPlaylist(
-        ContentUris.parseId(playlistUri),
-        audioUri
-    ).let {
-        Result.Success<_, Error>(Unit)
+    ) = when {
+        playlistUri == favoritesUri -> setFavorite(audioUri, true)
+        else -> database.getPlaylistWithItemsDao().addItemToPlaylist(
+            ContentUris.parseId(playlistUri),
+            audioUri
+        ).let {
+            Result.Success(Unit)
+        }
     }
 
     override suspend fun removeAudioFromPlaylist(
         playlistUri: Uri,
         audioUri: Uri,
-    ) = database.getPlaylistWithItemsDao().removeItemFromPlaylist(
-        ContentUris.parseId(playlistUri),
-        audioUri
-    ).let {
-        Result.Success<_, Error>(Unit)
+    ) = when {
+        playlistUri == favoritesUri -> setFavorite(audioUri, false)
+        else -> database.getPlaylistWithItemsDao().removeItemFromPlaylist(
+            ContentUris.parseId(playlistUri),
+            audioUri
+        ).let {
+            Result.Success(Unit)
+        }
     }
 
     override suspend fun onAudioPlayed(
@@ -601,7 +624,12 @@ class LocalDataSource(
     override suspend fun setFavorite(
         audioUri: Uri,
         isFavorite: Boolean
-    ) = Result.Error<Unit, _>(Error.NOT_IMPLEMENTED)
+    ) = when (isFavorite) {
+        true -> database.getFavoriteDao().add(audioUri)
+        false -> database.getFavoriteDao().remove(audioUri)
+    }.let {
+        Result.Success<_, Error>(Unit)
+    }
 
     fun audios() = contentResolver.queryFlow(
         audiosUri,
@@ -805,6 +833,19 @@ class LocalDataSource(
             .setGenreName(genre)
             .setYear(year.takeIf { it != 0 })
             .build()
+    }.flatMapLatest { audios ->
+        when (audios.isNotEmpty()) {
+            true -> combine(
+                audios.map { audio ->
+                    database.getFavoriteDao().containsFlow(audio.uri)
+                        .mapLatest { isFavorite ->
+                            audio.copy(isFavorite = isFavorite)
+                        }
+                }
+            ) { it.toList() }
+
+            false -> flowOf(listOf())
+        }
     }
 
     private fun Flow<Cursor?>.mapEachRowToGenre() = mapEachRow { columnIndexCache ->
@@ -879,11 +920,25 @@ class LocalDataSource(
         private const val PLAYLISTS_AUTHORITY = "playlists"
 
         /**
+         * Dummy database favorites authority.
+         */
+        private const val FAVORITES_AUTHORITY = "favorites"
+
+        /**
          * Dummy internal database playlists [Uri].
          */
         private val playlistsBaseUri = Uri.Builder()
             .scheme(DATABASE_SCHEME)
             .authority(PLAYLISTS_AUTHORITY)
+            .build()
+
+        private val favoritesUri = Uri.Builder()
+            .scheme(DATABASE_SCHEME)
+            .authority(FAVORITES_AUTHORITY)
+            .build()
+
+        private val favoritesPlaylist = Playlist.Builder(favoritesUri)
+            .setType(Playlist.Type.FAVORITES)
             .build()
 
         private fun org.lineageos.twelve.database.entities.Playlist.toModel() =
