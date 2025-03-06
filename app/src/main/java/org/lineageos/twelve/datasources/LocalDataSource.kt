@@ -21,7 +21,6 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapLatest
 import org.lineageos.twelve.R
 import org.lineageos.twelve.database.TwelveDatabase
-import org.lineageos.twelve.database.entities.Item
 import org.lineageos.twelve.ext.mapEachRow
 import org.lineageos.twelve.ext.queryFlow
 import org.lineageos.twelve.models.ActivityTab
@@ -488,7 +487,7 @@ class LocalDataSource(
 
     override fun playlist(playlistUri: Uri) = when {
         playlistUri == favoritesUri -> database.getFavoriteDao().getAll().flatMapLatest {
-            audios(it.map(Item::audioUri))
+            audios(it)
                 .mapLatest { items ->
                     Result.Success<_, Error>(favoritesPlaylist to items.filterNotNull())
                 }
@@ -500,7 +499,7 @@ class LocalDataSource(
             data?.let { playlistWithItems ->
                 val playlist = playlistWithItems.playlist.toModel()
 
-                audios(playlistWithItems.items.map(Item::audioUri))
+                audios(playlistWithItems.items)
                     .mapLatest { items ->
                         Result.Success(playlist to items.filterNotNull())
                     }
