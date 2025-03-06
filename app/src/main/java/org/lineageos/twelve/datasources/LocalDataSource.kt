@@ -35,11 +35,9 @@ import org.lineageos.twelve.models.Genre
 import org.lineageos.twelve.models.GenreContent
 import org.lineageos.twelve.models.LocalizedString
 import org.lineageos.twelve.models.Lyrics
-import org.lineageos.twelve.models.MediaItem
 import org.lineageos.twelve.models.MediaType
 import org.lineageos.twelve.models.Playlist
 import org.lineageos.twelve.models.Result
-import org.lineageos.twelve.models.Result.Companion.fold
 import org.lineageos.twelve.models.Result.Companion.map
 import org.lineageos.twelve.models.SortingRule
 import org.lineageos.twelve.models.SortingStrategy
@@ -96,25 +94,15 @@ class LocalDataSource(
     }
 
     override fun activity() = combine(
-        lastPlayedMediaItems(),
         mostPlayedAlbums(),
         albums(SortingRule(SortingStrategy.NAME)),
         artists(SortingRule(SortingStrategy.NAME)),
         genres(SortingRule(SortingStrategy.NAME)),
-    ) { lastPlayed, mostPlayed, albums, artists, genres ->
+    ) { mostPlayed, albums, artists, genres ->
         val now = LocalDateTime.now()
 
         Result.Success<_, Error>(
             listOf(
-                lastPlayed.map {
-                    ActivityTab(
-                        "last_played",
-                        LocalizedString.StringResIdLocalizedString(
-                            R.string.activity_last_played,
-                        ),
-                        it,
-                    )
-                },
                 mostPlayed.map {
                     ActivityTab(
                         "most_played_albums",
@@ -539,34 +527,6 @@ class LocalDataSource(
         Result.Error<Lyrics, _>(Error.NOT_IMPLEMENTED)
     )
 
-    override fun lastPlayedAudio() = database.getLastPlayedDao()
-        .get(LAST_PLAYED_KEY)
-        .flatMapLatest { uri ->
-            if (uri == null) {
-                flowOf(listOf())
-            } else {
-                contentResolver.queryFlow(
-                    audiosUri,
-                    audiosProjection,
-                    bundleOf(
-                        ContentResolver.QUERY_ARG_SQL_SELECTION to query {
-                            MediaStore.Audio.AudioColumns._ID eq Query.ARG
-                        },
-                        ContentResolver.QUERY_ARG_SQL_SELECTION_ARGS to listOf(
-                            ContentUris.parseId(uri).toString()
-                        ).toTypedArray(),
-                    ),
-                ).mapEachRowToAudio()
-            }
-        }
-        .mapLatest { audios ->
-            if (audios.isEmpty()) {
-                Result.Error<Audio, Error>(Error.NOT_FOUND)
-            } else {
-                Result.Success(audios.first())
-            }
-        }
-
     override suspend fun createPlaylist(name: String) = database.getPlaylistDao().create(
         name
     ).let {
@@ -617,7 +577,6 @@ class LocalDataSource(
         audioUri: Uri
     ): Result<Unit, Error> {
         database.getLocalMediaStatsProviderDao().increasePlayCount(audioUri)
-        database.getLastPlayedDao().set(LAST_PLAYED_KEY, audioUri)
         return Result.Success(Unit)
     }
 
@@ -702,30 +661,6 @@ class LocalDataSource(
             .mapLatest {
                 Result.Success<List<Album>, Error>(it)
             }
-
-    private fun lastPlayedMediaItems() = lastPlayedAudio().flatMapLatest { rs ->
-        rs.fold(
-            onSuccess = { audio ->
-                contentResolver.queryFlow(
-                    albumsUri,
-                    albumsProjection,
-                    bundleOf(
-                        ContentResolver.QUERY_ARG_SQL_SELECTION to query {
-                            MediaStore.Audio.AlbumColumns.ALBUM_ID eq Query.ARG
-                        },
-                        ContentResolver.QUERY_ARG_SQL_SELECTION_ARGS to listOf(
-                            ContentUris.parseId(audio.albumUri!!).toString()
-                        ).toTypedArray(),
-                    )
-                ).mapEachRowToAlbum().mapLatest { albums ->
-                    Result.Success<List<MediaItem<*>>, Error>(
-                        listOf(audio as MediaItem<*>) + albums,
-                    )
-                }
-            },
-            onError = { flowOf(Result.Error(Error.NOT_FOUND)) },
-        )
-    }
 
     private fun Flow<Cursor?>.mapEachRowToAlbum() = mapEachRow { columnIndexCache ->
         val albumId = columnIndexCache.getLong(MediaStore.Audio.AudioColumns._ID)
@@ -862,8 +797,6 @@ class LocalDataSource(
     companion object {
         // packages/providers/MediaProvider/src/com/android/providers/media/LocalUriMatcher.java
         private const val AUDIO_ALBUMART = "albumart"
-
-        private const val LAST_PLAYED_KEY = "local"
 
         private val albumsProjection = arrayOf(
             MediaStore.Audio.AudioColumns._ID,
