@@ -7,23 +7,31 @@ package org.lineageos.twelve.database.entities
 import android.net.Uri
 import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
 
 /**
  * Database entity for local media stats
  *
- * @param mediaUri The media URI
+ * @param itemId The [Item] unique ID
  * @param playCount The number of times the media has been played
- * @param favorite Whether the media is a favorite
  */
 @Entity(
     indices = [
-        Index(value = ["play_count"]),
+        Index(value = ["item_id"], unique = true),
     ],
+    foreignKeys = [
+        ForeignKey(
+            entity = Item::class,
+            parentColumns = ["item_id"],
+            childColumns = ["item_id"],
+            onDelete = ForeignKey.RESTRICT,
+            onUpdate = ForeignKey.CASCADE,
+        ),
+    ]
 )
 data class LocalMediaStats(
-    @PrimaryKey @ColumnInfo(name = "media_uri") val mediaUri: Uri,
+    @PrimaryKey @ColumnInfo(name = "item_id") val itemId: Long,
     @ColumnInfo(name = "play_count", defaultValue = "1") val playCount: Long,
-    @ColumnInfo(name = "favorite", defaultValue = "false") val favorite: Boolean,
 )

@@ -36,9 +36,6 @@ abstract class PlaylistWithItemsDao(database: TwelveDatabase) {
         // The item may not exist, in which case we have to do nothing
         itemDao._getIdByUri(itemUri)?.let { id ->
             _removeItemFromPlaylist(playlistId, id)
-
-            // Check if the item is orphan
-            itemDao._deleteIfOrphan(id)
         }
     }
 
@@ -58,8 +55,6 @@ abstract class PlaylistWithItemsDao(database: TwelveDatabase) {
      */
     open suspend fun _addItemToPlaylist(playlistId: Long, itemId: Long) {
         playlistItemCrossRefDao._addItemToPlaylist(playlistId, itemId)
-        playlistDao._increaseTrackCount(playlistId)
-        playlistDao._updateLastModified(playlistId)
     }
 
     /**
@@ -68,7 +63,5 @@ abstract class PlaylistWithItemsDao(database: TwelveDatabase) {
      */
     open suspend fun _removeItemFromPlaylist(playlistId: Long, itemId: Long) {
         playlistItemCrossRefDao._removeItemFromPlaylist(playlistId, itemId)
-        playlistDao._decreaseTrackCount(playlistId)
-        playlistDao._updateLastModified(playlistId)
     }
 }

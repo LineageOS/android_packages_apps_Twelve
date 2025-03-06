@@ -19,8 +19,8 @@ interface PlaylistDao {
     /**
      * Create a new playlist.
      */
-    @Query("INSERT INTO Playlist (name, last_modified) VALUES (:name, :lastModified)")
-    suspend fun create(name: String, lastModified: Long = System.currentTimeMillis()): Long
+    @Query("INSERT INTO Playlist (name, created_at) VALUES (:name, :createdAt)")
+    suspend fun create(name: String, createdAt: Long = System.currentTimeMillis()): Long
 
     /**
      * Rename a playlist.
@@ -64,25 +64,4 @@ interface PlaylistDao {
         """
     )
     fun _getPlaylistsWithItemStatus(itemId: Long?): Flow<List<PlaylistWithBoolean>>
-
-    /**
-     * Update the last modified timestamp of a playlist.
-     */
-    @Query("UPDATE Playlist SET last_modified = :lastModified WHERE playlist_id = :playlistId")
-    suspend fun _updateLastModified(
-        playlistId: Long,
-        lastModified: Long = System.currentTimeMillis(),
-    )
-
-    /**
-     * Increase the track count of a playlist.
-     */
-    @Query("UPDATE Playlist SET track_count = track_count + 1 WHERE playlist_id = :playlistId")
-    suspend fun _increaseTrackCount(playlistId: Long)
-
-    /**
-     * Decrease the track count of a playlist.
-     */
-    @Query("UPDATE Playlist SET track_count = track_count - 1 WHERE playlist_id = :playlistId")
-    suspend fun _decreaseTrackCount(playlistId: Long)
 }

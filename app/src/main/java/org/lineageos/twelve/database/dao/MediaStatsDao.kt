@@ -33,12 +33,6 @@ interface MediaStatsDao {
     suspend fun increasePlayCount(mediaUri: Uri)
 
     /**
-     * Set favorite status of an entry.
-     */
-    @Query("INSERT OR REPLACE INTO LocalMediaStats (media_uri, favorite) VALUES (:mediaUri, :isFavorite)")
-    suspend fun setFavorite(mediaUri: Uri, isFavorite: Boolean)
-
-    /**
      * Fetch all entries.
      */
     @Query("SELECT * FROM LocalMediaStats")
@@ -49,10 +43,4 @@ interface MediaStatsDao {
      */
     @Query("SELECT * FROM LocalMediaStats ORDER BY play_count DESC LIMIT :limit")
     fun getAllByPlayCount(limit: Int): Flow<List<LocalMediaStats>>
-
-    /**
-     * Fetch whether the given entry is marked as favorite.
-     */
-    @Query("SELECT favorite FROM LocalMediaStats WHERE media_uri = :mediaUri")
-    fun isFavorite(mediaUri: Uri): Flow<Boolean>
 }

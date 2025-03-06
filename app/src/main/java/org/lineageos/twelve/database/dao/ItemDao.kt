@@ -52,19 +52,4 @@ interface ItemDao {
      */
     @Query("SELECT item_id FROM Item WHERE audio_uri = :audioUri")
     fun _getIdFlowByUri(audioUri: Uri): Flow<Long?>
-
-    /**
-     * Delete the item if:
-     * - It has no associations with a playlist
-     * - The user never listened to it
-     */
-    @Query(
-        """
-            DELETE FROM Item
-            WHERE item_id = :itemId
-                AND (SELECT COUNT(*) FROM PlaylistItemCrossRef WHERE item_id = :itemId) = 0
-                AND count = 0
-        """
-    )
-    suspend fun _deleteIfOrphan(itemId: Long)
 }

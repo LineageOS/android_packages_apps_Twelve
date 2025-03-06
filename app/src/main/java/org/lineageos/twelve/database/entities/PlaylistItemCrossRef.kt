@@ -20,6 +20,7 @@ import androidx.room.Index
 @Entity(
     primaryKeys = ["playlist_id", "item_id"],
     indices = [
+        Index(value = ["playlist_id"]),
         Index(value = ["item_id"]),
     ],
     foreignKeys = [
@@ -34,7 +35,7 @@ import androidx.room.Index
             entity = Item::class,
             parentColumns = ["item_id"],
             childColumns = ["item_id"],
-            onDelete = ForeignKey.CASCADE,
+            onDelete = ForeignKey.RESTRICT,
             onUpdate = ForeignKey.CASCADE,
         ),
     ]

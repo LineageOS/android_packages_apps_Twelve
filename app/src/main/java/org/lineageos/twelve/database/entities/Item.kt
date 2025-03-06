@@ -16,7 +16,6 @@ import androidx.room.PrimaryKey
  *
  * @param id The unique item ID
  * @param audioUri The [Uri] of this item
- * @param count The play count of this item
  */
 @Entity(
     indices = [
@@ -26,5 +25,4 @@ import androidx.room.PrimaryKey
 data class Item(
     @PrimaryKey(autoGenerate = true) @ColumnInfo(name = "item_id") val id: Long,
     @ColumnInfo(name = "audio_uri") val audioUri: Uri,
-    @ColumnInfo(name = "count", defaultValue = "0") val count: Long = 0,
 )
