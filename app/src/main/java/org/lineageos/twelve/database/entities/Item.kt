@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2024 The LineageOS Project
+ * SPDX-FileCopyrightText: 2024-2025 The LineageOS Project
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -11,6 +11,13 @@ import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
 
+/**
+ * A general purpose item representing an audio file.
+ *
+ * @param id The unique item ID
+ * @param audioUri The [Uri] of this item
+ * @param count The play count of this item
+ */
 @Entity(
     indices = [
         Index(value = ["audio_uri"], unique = true),

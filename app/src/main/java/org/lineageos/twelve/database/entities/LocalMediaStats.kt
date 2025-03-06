@@ -10,6 +10,13 @@ import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
 
+/**
+ * Database entity for local media stats
+ *
+ * @param mediaUri The media URI
+ * @param playCount The number of times the media has been played
+ * @param favorite Whether the media is a favorite
+ */
 @Entity(
     indices = [
         Index(value = ["play_count"]),

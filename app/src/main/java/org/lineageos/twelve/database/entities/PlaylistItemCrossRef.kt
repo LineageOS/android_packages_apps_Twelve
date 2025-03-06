@@ -10,6 +10,13 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 
+/**
+ * A many-to-many table to store playlists' songs.
+ *
+ * @param playlistId The id of the playlist
+ * @param itemId The id of the item
+ * @param lastModified The last time the item was modified
+ */
 @Entity(
     primaryKeys = ["playlist_id", "item_id"],
     indices = [

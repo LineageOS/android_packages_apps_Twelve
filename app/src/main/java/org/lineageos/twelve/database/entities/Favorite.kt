@@ -12,6 +12,12 @@ import androidx.room.Index
 import androidx.room.PrimaryKey
 import java.time.Instant
 
+/**
+ * A table representing the favorite user items.
+ *
+ * @param itemId The [Item] unique ID
+ * @param addedAt The date and time of when this item was added to the favorites
+ */
 @Entity(
     indices = [
         Index(value = ["item_id"], unique = true),
