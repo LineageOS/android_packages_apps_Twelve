@@ -15,10 +15,11 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import androidx.room.migration.AutoMigrationSpec
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
 import org.lineageos.twelve.database.converters.InstantConverter
 import org.lineageos.twelve.database.converters.UriConverter
 import org.lineageos.twelve.database.dao.FavoriteDao
-import org.lineageos.twelve.database.dao.ItemDao
 import org.lineageos.twelve.database.dao.JellyfinProviderDao
 import org.lineageos.twelve.database.dao.MediaStatsDao
 import org.lineageos.twelve.database.dao.PlaylistDao
@@ -27,7 +28,6 @@ import org.lineageos.twelve.database.dao.PlaylistWithItemsDao
 import org.lineageos.twelve.database.dao.ResumptionPlaylistDao
 import org.lineageos.twelve.database.dao.SubsonicProviderDao
 import org.lineageos.twelve.database.entities.Favorite
-import org.lineageos.twelve.database.entities.Item
 import org.lineageos.twelve.database.entities.JellyfinProvider
 import org.lineageos.twelve.database.entities.LocalMediaStats
 import org.lineageos.twelve.database.entities.Playlist
@@ -43,7 +43,6 @@ import org.lineageos.twelve.database.entities.SubsonicProvider
 
         /* Playlist */
         Playlist::class,
-        Item::class,
         PlaylistItemCrossRef::class,
 
         /* Resumption */
@@ -57,7 +56,7 @@ import org.lineageos.twelve.database.entities.SubsonicProvider
         /* Local Media Stats */
         LocalMediaStats::class,
     ],
-    version = 7,
+    version = 8,
     autoMigrations = [
         AutoMigration(from = 1, to = 2),
         AutoMigration(from = 2, to = 3),
@@ -65,6 +64,7 @@ import org.lineageos.twelve.database.entities.SubsonicProvider
         AutoMigration(from = 4, to = 5),
         AutoMigration(from = 5, to = 6),
         AutoMigration(from = 6, to = 7, spec = TwelveDatabase.Companion.MigrationSpec6To7::class),
+        // 7 to 8 is done manually
     ],
 )
 @TypeConverters(
@@ -73,7 +73,6 @@ import org.lineageos.twelve.database.entities.SubsonicProvider
 )
 abstract class TwelveDatabase : RoomDatabase() {
     abstract fun getFavoriteDao(): FavoriteDao
-    abstract fun getItemDao(): ItemDao
     abstract fun getJellyfinProviderDao(): JellyfinProviderDao
     abstract fun getLocalMediaStatsProviderDao(): MediaStatsDao
     abstract fun getPlaylistDao(): PlaylistDao
@@ -116,10 +115,137 @@ abstract class TwelveDatabase : RoomDatabase() {
         )
         class MigrationSpec6To7 : AutoMigrationSpec
 
+        object Migration7To8 : Migration(7, 8) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                // Favorite: Start
+                // Create temp table (copy paste query from JSON, reorder entries to match
+                // auto-generated migration)
+                db.execSQL(
+                    """
+                        CREATE TABLE IF NOT EXISTS `Favorite_temp`
+                        (
+                            `added_at` TEXT NOT NULL,
+                            `audio_uri` TEXT NOT NULL DEFAULT '',
+                            PRIMARY KEY(`audio_uri`)
+                        )
+                    """.trimIndent()
+                )
+                // Migrate data
+                db.execSQL(
+                    """
+                        INSERT INTO Favorite_temp (audio_uri, added_at)
+                        SELECT audio_uri, added_at FROM Favorite
+                            INNER JOIN Item ON Item.item_id = Favorite.item_id
+                    """.trimIndent()
+                )
+                // Delete old indexes
+                db.execSQL(
+                    """
+                        DROP INDEX IF EXISTS `index_Favorite_item_id`
+                    """.trimIndent()
+                )
+                // Delete old table and rename new table
+                db.execSQL(
+                    """
+                        DROP TABLE IF EXISTS `Favorite`
+                    """.trimIndent()
+                )
+                db.execSQL(
+                    """
+                        ALTER TABLE `Favorite_temp`
+                        RENAME TO `Favorite`
+                    """.trimIndent()
+                )
+                // Create indexes
+                db.execSQL(
+                    """
+                        CREATE UNIQUE INDEX IF NOT EXISTS `index_Favorite_audio_uri`
+                        ON `Favorite` (`audio_uri`)
+                    """.trimIndent()
+                )
+                // Favorite: End
+
+                // PlaylistItemCrossRef: Start
+                // Create temp table (copy paste query from JSON, reorder entries to match
+                // auto-generated migration)
+                db.execSQL(
+                    """
+                        CREATE TABLE IF NOT EXISTS `PlaylistItemCrossRef_temp`
+                        (
+                            `last_modified` INTEGER NOT NULL,
+                            `playlist_id` INTEGER NOT NULL,
+                            `audio_uri` TEXT NOT NULL DEFAULT '',
+                            PRIMARY KEY(`playlist_id`, `audio_uri`),
+                            FOREIGN KEY(`playlist_id`) REFERENCES `Playlist`(`playlist_id`)
+                                ON UPDATE CASCADE
+                                ON DELETE CASCADE
+                        )
+                    """.trimIndent()
+                )
+                // Migrate data
+                db.execSQL(
+                    """
+                        INSERT INTO PlaylistItemCrossRef_temp (playlist_id, audio_uri, last_modified)
+                        SELECT playlist_id, audio_uri, last_modified FROM PlaylistItemCrossRef
+                            INNER JOIN Item ON Item.item_id = PlaylistItemCrossRef.item_id
+                    """.trimIndent()
+                )
+                // Delete old indexes
+                db.execSQL(
+                    """
+                        DROP INDEX IF EXISTS `index_PlaylistItemCrossRef_item_id`
+                    """.trimIndent()
+                )
+                // Delete old table and rename new table
+                db.execSQL(
+                    """
+                        DROP TABLE IF EXISTS `PlaylistItemCrossRef`
+                    """.trimIndent()
+                )
+                db.execSQL(
+                    """
+                        ALTER TABLE `PlaylistItemCrossRef_temp`
+                        RENAME TO `PlaylistItemCrossRef`
+                    """.trimIndent()
+                )
+                // Create indexes
+                db.execSQL(
+                    """
+                        CREATE INDEX IF NOT EXISTS `index_PlaylistItemCrossRef_playlist_id`
+                        ON `PlaylistItemCrossRef` (`playlist_id`)
+                    """.trimIndent()
+                )
+                db.execSQL(
+                    """
+                        CREATE INDEX IF NOT EXISTS `index_PlaylistItemCrossRef_audio_uri`
+                        ON `PlaylistItemCrossRef` (`audio_uri`)
+                    """.trimIndent()
+                )
+                // PlaylistItemCrossRef: End
+
+                // Item: Start
+                // Delete the index
+                db.execSQL(
+                    """
+                        DROP INDEX IF EXISTS `index_Item_item_id`
+                    """.trimIndent()
+                )
+                // Delete the table
+                db.execSQL(
+                    """
+                        DROP TABLE IF EXISTS `Item`
+                    """.trimIndent()
+                )
+                // Item: End
+            }
+        }
+
         fun get(context: Context) = Room.databaseBuilder(
             context.applicationContext,
             TwelveDatabase::class.java,
             "twelve_database",
-        ).build()
+        )
+            .addMigrations(Migration7To8)
+            .build()
     }
 }
