@@ -5,6 +5,7 @@
 
 package org.lineageos.twelve.database.dao
 
+import android.net.Uri
 import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Transaction
@@ -56,12 +57,12 @@ interface PlaylistDao {
     @Query(
         """
             SELECT Playlist.*,
-                   (CASE WHEN PlaylistItemCrossRef.item_id IS NOT NULL THEN 1 ELSE 0 END) AS value
+                   (CASE WHEN PlaylistItemCrossRef.audio_uri IS NOT NULL THEN 1 ELSE 0 END) AS value
             FROM Playlist
             LEFT JOIN PlaylistItemCrossRef ON
                     Playlist.playlist_id = PlaylistItemCrossRef.playlist_id
-                    AND PlaylistItemCrossRef.item_id = :itemId
+                    AND PlaylistItemCrossRef.audio_uri = :audioUri
         """
     )
-    fun _getPlaylistsWithItemStatus(itemId: Long?): Flow<List<PlaylistWithBoolean>>
+    fun _getPlaylistsWithItemStatus(audioUri: Uri): Flow<List<PlaylistWithBoolean>>
 }
