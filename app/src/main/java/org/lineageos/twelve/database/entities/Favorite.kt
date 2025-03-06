@@ -27,7 +27,7 @@ import java.time.Instant
             entity = Item::class,
             parentColumns = ["item_id"],
             childColumns = ["item_id"],
-            onDelete = ForeignKey.CASCADE,
+            onDelete = ForeignKey.RESTRICT,
             onUpdate = ForeignKey.CASCADE,
         ),
     ]
