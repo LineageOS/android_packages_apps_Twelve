@@ -107,6 +107,8 @@ class AlbumFragment : Fragment(R.layout.fragment_album) {
                     }
 
                     is AlbumViewModel.AlbumContent.AudioItem -> {
+                        view.isEnabled = false
+
                         view.setOnClickListener {
                             viewModel.playAlbum(item.audio)
 
