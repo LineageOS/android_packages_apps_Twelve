@@ -47,7 +47,7 @@
         android:hyphenationFrequency="normal"
         android:maxLines="1"
         android:textAppearance="?attr/textAppearanceLabelMedium"
-        android:textColor="?attr/colorOnSurface"
+        android:textColor="@color/list_item_primary"
         android:visibility="gone"
         tools:text="Headline"
         tools:visibility="visible" />
@@ -60,7 +60,7 @@
         android:hyphenationFrequency="normal"
         android:maxLines="1"
         android:textAppearance="?attr/textAppearanceLabelMedium"
-        android:textColor="?attr/colorOnSurfaceVariant"
+        android:textColor="@color/list_item_secondary"
         android:visibility="gone"
         tools:text="Subhead"
         tools:visibility="visible" />
@@ -73,7 +73,7 @@
         android:hyphenationFrequency="normal"
         android:maxLines="1"
         android:textAppearance="?attr/textAppearanceLabelMedium"
-        android:textColor="?attr/colorOnSurfaceVariant"
+        android:textColor="@color/list_item_secondary"
         android:visibility="gone"
         tools:text="Supporting"
         tools:visibility="visible" />
