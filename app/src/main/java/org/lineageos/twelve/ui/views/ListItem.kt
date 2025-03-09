@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2023-2024 The LineageOS Project
+ * SPDX-FileCopyrightText: 2023-2025 The LineageOS Project
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -7,7 +7,6 @@ package org.lineageos.twelve.ui.views
 
 import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.Icon
 import android.net.Uri
@@ -103,8 +102,14 @@ class ListItem @JvmOverloads constructor(
             leadingViewContainerFrameLayout.updateVisibility(value)
         }
 
+    var isDimmed: Boolean
+        get() = !headlineTextView.isEnabled
+        set(value) = setViewsProperty(View::setEnabled, !value)
+
     init {
-        setCardBackgroundColor(Color.TRANSPARENT)
+        setCardBackgroundColor(
+            resources.getColorStateList(R.color.list_item_background, context.theme)
+        )
         cardElevation = 0f
         radius = 0f
         strokeWidth = 0
@@ -131,10 +136,23 @@ class ListItem @JvmOverloads constructor(
                     setTrailingView(it)
                 }
                 trailingViewIsVisible = getBoolean(R.styleable.ListItem_trailingViewIsVisible, true)
+                isDimmed = getBoolean(R.styleable.ListItem_isDimmed, false)
             } finally {
                 recycle()
             }
         }
+    }
+
+    override fun setEnabled(enabled: Boolean) {
+        super.setEnabled(enabled)
+
+        setViewsProperty(View::setEnabled, enabled)
+    }
+
+    override fun setSelected(selected: Boolean) {
+        super.setSelected(selected)
+
+        setViewsProperty(View::setSelected, selected)
     }
 
     fun setHeadlineText(@StringRes resId: Int) = headlineTextView.setTextAndUpdateVisibility(resId)
@@ -176,6 +194,18 @@ class ListItem @JvmOverloads constructor(
 
     fun setTrailingView(@LayoutRes resId: Int) =
         trailingViewContainerFrameLayout.setChildAndUpdateVisibility(resId)
+
+    private inline fun <T> setViewsProperty(
+        setter: View.(T) -> Unit,
+        value: T,
+    ) {
+        headlineTextView.setter(value)
+        leadingIconImageView.setter(value)
+        leadingTextView.setter(value)
+        supportingTextView.setter(value)
+        trailingIconImageView.setter(value)
+        trailingSupportingTextView.setter(value)
+    }
 
     // FrameLayout utils
 
