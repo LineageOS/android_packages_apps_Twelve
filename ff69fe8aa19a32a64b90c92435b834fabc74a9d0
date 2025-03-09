@@ -33,6 +33,24 @@
       "message": "this is needed in case the removed item is at index 0 and we wanted index 0!\nJust remove it",
       "revId": "ff69fe8aa19a32a64b90c92435b834fabc74a9d0",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f07386de_8dbd6f27",
+        "filename": "app/src/main/java/org/lineageos/twelve/services/PlaybackService.kt",
+        "patchSetId": 1
+      },
+      "lineNbr": 578,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2025-03-09T18:23:34Z",
+      "side": 1,
+      "message": "Actually no, I don\u0027t remember the logic properly lol",
+      "parentUuid": "9d6d2915_807f07db",
+      "revId": "ff69fe8aa19a32a64b90c92435b834fabc74a9d0",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
