@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2023-2024 The LineageOS Project
+ * SPDX-FileCopyrightText: 2023-2025 The LineageOS Project
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -7,7 +7,6 @@ package org.lineageos.twelve.ui.views
 
 import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.Icon
 import android.net.Uri
@@ -104,7 +103,9 @@ class ListItem @JvmOverloads constructor(
         }
 
     init {
-        setCardBackgroundColor(Color.TRANSPARENT)
+        setCardBackgroundColor(
+            context.resources.getColorStateList(R.color.list_item_background, context.theme)
+        )
         cardElevation = 0f
         radius = 0f
         strokeWidth = 0
@@ -135,6 +136,18 @@ class ListItem @JvmOverloads constructor(
                 recycle()
             }
         }
+    }
+
+    override fun setEnabled(enabled: Boolean) {
+        super.setEnabled(enabled)
+
+        setViewsProperty(enabled, View::setEnabled)
+    }
+
+    override fun setSelected(selected: Boolean) {
+        super.setSelected(selected)
+
+        setViewsProperty(selected, View::setSelected)
     }
 
     fun setHeadlineText(@StringRes resId: Int) = headlineTextView.setTextAndUpdateVisibility(resId)
@@ -176,6 +189,18 @@ class ListItem @JvmOverloads constructor(
 
     fun setTrailingView(@LayoutRes resId: Int) =
         trailingViewContainerFrameLayout.setChildAndUpdateVisibility(resId)
+
+    private inline fun <T> setViewsProperty(
+        value: T,
+        setter: View.(T) -> Unit
+    ) {
+        headlineTextView.setter(value)
+        leadingIconImageView.setter(value)
+        leadingTextView.setter(value)
+        supportingTextView.setter(value)
+        trailingIconImageView.setter(value)
+        trailingSupportingTextView.setter(value)
+    }
 
     // FrameLayout utils
 
