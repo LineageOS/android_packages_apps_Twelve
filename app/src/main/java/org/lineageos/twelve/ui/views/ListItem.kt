@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2023-2024 The LineageOS Project
+ * SPDX-FileCopyrightText: 2023-2025 The LineageOS Project
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -104,7 +104,9 @@ class ListItem @JvmOverloads constructor(
         }
 
     init {
-        setCardBackgroundColor(Color.TRANSPARENT)
+        setCardBackgroundColor(
+            context.resources.getColorStateList(R.color.list_item_background, context.theme)
+        )
         cardElevation = 0f
         radius = 0f
         strokeWidth = 0
@@ -135,6 +137,32 @@ class ListItem @JvmOverloads constructor(
                 recycle()
             }
         }
+    }
+
+    override fun setEnabled(enabled: Boolean) {
+        super.setEnabled(enabled)
+
+        headlineTextView.isEnabled = enabled
+        leadingIconImageView.isEnabled = enabled
+        leadingTextView.isEnabled = enabled
+        leadingView?.isEnabled = enabled
+        supportingTextView.isEnabled = enabled
+        trailingIconImageView.isEnabled = enabled
+        trailingSupportingTextView.isEnabled = enabled
+        trailingView?.isEnabled = enabled
+    }
+
+    override fun setSelected(selected: Boolean) {
+        super.setSelected(selected)
+
+        headlineTextView.isSelected = selected
+        leadingIconImageView.isSelected = selected
+        leadingTextView.isSelected = selected
+        leadingView?.isSelected = selected
+        supportingTextView.isSelected = selected
+        trailingIconImageView.isSelected = selected
+        trailingSupportingTextView.isSelected = selected
+        trailingView?.isSelected = selected
     }
 
     fun setHeadlineText(@StringRes resId: Int) = headlineTextView.setTextAndUpdateVisibility(resId)
