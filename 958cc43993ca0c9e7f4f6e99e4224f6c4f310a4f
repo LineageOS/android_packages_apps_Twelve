@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3e9837bc_fba0097a",
+        "filename": "app/src/main/java/org/lineageos/twelve/ui/widgets/NowPlayingAppWidgetProvider.kt",
+        "patchSetId": 1
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2025-03-09T18:32:02Z",
+      "side": 1,
+      "message": "why don\u0027t we send a custom command? we won\u0027t need to override on custom command",
+      "revId": "958cc43993ca0c9e7f4f6e99e4224f6c4f310a4f",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
