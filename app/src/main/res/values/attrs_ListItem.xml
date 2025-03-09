@@ -10,6 +10,11 @@
         <attr name="leadingText" format="string" />
         <attr name="leadingViewIsVisible" format="boolean" />
         <attr name="leadingViewLayout" format="reference" />
+        <attr name="state" format="enum">
+            <enum name="enabled" value="0" />
+            <enum name="disabled" value="1" />
+            <enum name="highlighted" value="2" />
+        </attr>
         <attr name="supportingText" format="string" />
         <attr name="trailingIconImage" format="reference" />
         <attr name="trailingSupportingText" format="string" />
