@@ -37,14 +37,17 @@ import androidx.media3.session.SessionCommand
 import androidx.media3.session.SessionError
 import androidx.media3.session.SessionResult
 import androidx.preference.PreferenceManager
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.guava.await
 import kotlinx.coroutines.guava.future
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.lineageos.twelve.MainActivity
 import org.lineageos.twelve.R
 import org.lineageos.twelve.TwelveApplication
 import org.lineageos.twelve.ext.enableFloatOutput
 import org.lineageos.twelve.ext.enableOffload
+import org.lineageos.twelve.ext.mapAsync
 import org.lineageos.twelve.ext.next
 import org.lineageos.twelve.ext.setOffloadEnabled
 import org.lineageos.twelve.ext.skipSilence
@@ -541,8 +544,10 @@ class PlaybackService : MediaLibraryService(), LifecycleOwner {
         var startIndex = resumptionPlaylist.startIndex
         var startPositionMs = resumptionPlaylist.startPositionMs
 
-        val mediaItems = resumptionPlaylist.mediaItemIds.mapIndexed { index, itemId ->
-            when (val mediaItem = mediaRepositoryTree.getItem(itemId)) {
+        val mediaItems = resumptionPlaylist.mediaItemIds.mapAsync { itemId ->
+            mediaRepositoryTree.getItem(itemId)
+        }.withIndex().mapNotNull { (index, mediaItem) ->
+            when (mediaItem) {
                 null -> {
                     if (index == resumptionPlaylist.startIndex) {
                         // The playback position is now invalid
@@ -561,7 +566,7 @@ class PlaybackService : MediaLibraryService(), LifecycleOwner {
 
                 else -> mediaItem
             }
-        }.filterNotNull()
+        }
 
         return if (mediaItems.isEmpty()) {
             // No valid media items found, clear the resumption playlist
@@ -569,9 +574,6 @@ class PlaybackService : MediaLibraryService(), LifecycleOwner {
 
             MediaSession.MediaItemsWithStartPosition(emptyList(), 0, 0)
         } else {
-            // Shouldn't be needed, but just to be sure
-            startIndex = startIndex.coerceIn(mediaItems.indices)
-
             MediaSession.MediaItemsWithStartPosition(
                 mediaItems,
                 startIndex,
@@ -589,7 +591,9 @@ class PlaybackService : MediaLibraryService(), LifecycleOwner {
             return
         }
 
-        val resumptionPlaylist = getResumptionPlaylist()
+        val resumptionPlaylist = withContext(Dispatchers.IO) {
+            getResumptionPlaylist()
+        }
         if (resumptionPlaylist.mediaItems.isEmpty()) {
             Log.e(LOG_TAG, "No resumption playlist items found")
             return
