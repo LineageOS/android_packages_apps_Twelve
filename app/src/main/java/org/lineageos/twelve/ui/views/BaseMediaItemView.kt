@@ -8,6 +8,7 @@ package org.lineageos.twelve.ui.views
 import android.content.Context
 import android.graphics.Color
 import android.util.AttributeSet
+import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.AttrRes
@@ -63,6 +64,18 @@ abstract class BaseMediaItemView @JvmOverloads constructor(
         strokeWidth = 0
 
         inflate(context, layoutResId, this)
+    }
+
+    override fun setEnabled(enabled: Boolean) {
+        super.setEnabled(enabled)
+
+        setViewsProperty(enabled, View::setEnabled)
+    }
+
+    override fun setSelected(selected: Boolean) {
+        super.setSelected(selected)
+
+        setViewsProperty(selected, View::setSelected)
     }
 
     final override fun setCardBackgroundColor(color: Int) {
@@ -160,6 +173,16 @@ abstract class BaseMediaItemView @JvmOverloads constructor(
 
     private fun setSupportingText(@StringRes resId: Int) =
         supportingTextView.setTextAndUpdateVisibility(resId)
+
+    private inline fun <T> setViewsProperty(
+        value: T,
+        setter: View.(T) -> Unit
+    ) {
+        headlineTextView.setter(value)
+        placeholderImageView.setter(value)
+        subheadTextView.setter(value)
+        supportingTextView.setter(value)
+    }
 
     // TextView utils
 
