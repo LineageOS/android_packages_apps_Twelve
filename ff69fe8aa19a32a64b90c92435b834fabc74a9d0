@@ -69,6 +69,24 @@
       "parentUuid": "9d6d2915_807f07db",
       "revId": "ff69fe8aa19a32a64b90c92435b834fabc74a9d0",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a6cc5ffb_60af6c08",
+        "filename": "app/src/main/java/org/lineageos/twelve/services/PlaybackService.kt",
+        "patchSetId": 1
+      },
+      "lineNbr": 578,
+      "author": {
+        "id": 25732
+      },
+      "writtenOn": "2025-03-09T18:30:56Z",
+      "side": 1,
+      "message": "`.indices` is a range, so this just checks if it\u0027s between 0 and size - 1, this is useful only when the original index was already wrong for whatever reason, hopefully it never happens ofc",
+      "parentUuid": "f07386de_8dbd6f27",
+      "revId": "ff69fe8aa19a32a64b90c92435b834fabc74a9d0",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
