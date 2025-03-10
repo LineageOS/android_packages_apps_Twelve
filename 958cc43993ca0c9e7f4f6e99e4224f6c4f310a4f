@@ -16,6 +16,24 @@
       "message": "why don\u0027t we send a custom command? we won\u0027t need to override on custom command",
       "revId": "958cc43993ca0c9e7f4f6e99e4224f6c4f310a4f",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1c2c70a5_c9832094",
+        "filename": "app/src/main/java/org/lineageos/twelve/ui/widgets/NowPlayingAppWidgetProvider.kt",
+        "patchSetId": 1
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 25732
+      },
+      "writtenOn": "2025-03-10T17:18:30Z",
+      "side": 1,
+      "message": "Custom commands are only reserved for notification service and legacy controller (aka Android Auto) :(",
+      "parentUuid": "3e9837bc_fba0097a",
+      "revId": "958cc43993ca0c9e7f4f6e99e4224f6c4f310a4f",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
