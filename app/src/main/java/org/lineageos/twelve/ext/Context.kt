@@ -7,6 +7,8 @@ package org.lineageos.twelve.ext
 
 import android.content.Context
 import android.content.pm.PackageManager
+import android.content.res.Resources
+import androidx.annotation.AttrRes
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
 import kotlinx.coroutines.flow.map
@@ -32,3 +34,8 @@ fun Context.permissionsFlow(lifecycle: Lifecycle, permissions: Array<String>) =
         .map {
             permissionsStatus(permissions)
         }
+
+/**
+ * @see [Resources.Theme.getAttributeDimension]
+ */
+fun Context.getAttributeDimension(@AttrRes attribute: Int) = theme.getAttributeDimension(attribute)

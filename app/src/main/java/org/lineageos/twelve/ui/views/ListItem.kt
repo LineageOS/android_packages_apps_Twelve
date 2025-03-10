@@ -23,6 +23,7 @@ import androidx.annotation.StringRes
 import androidx.core.view.isVisible
 import com.google.android.material.card.MaterialCardView
 import org.lineageos.twelve.R
+import org.lineageos.twelve.ext.px
 
 /**
  * A poor man's Material Design 3 ListItem implementation.
@@ -153,6 +154,13 @@ class ListItem @JvmOverloads constructor(
         super.setSelected(selected)
 
         setViewsProperty(View::setSelected, selected)
+
+        radius = when (selected) {
+            false -> resources.getDimension(
+                resources.
+            )
+            true ->
+        }
     }
 
     fun setHeadlineText(@StringRes resId: Int) = headlineTextView.setTextAndUpdateVisibility(resId)
