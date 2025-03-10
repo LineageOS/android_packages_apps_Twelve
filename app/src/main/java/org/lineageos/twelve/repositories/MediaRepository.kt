@@ -30,6 +30,7 @@ import org.lineageos.twelve.datasources.FileDataSource
 import org.lineageos.twelve.datasources.JellyfinDataSource
 import org.lineageos.twelve.datasources.MediaDataSource
 import org.lineageos.twelve.datasources.MediaStoreDataSource
+import org.lineageos.twelve.datasources.SoundCloudDataSource
 import org.lineageos.twelve.datasources.SubsonicDataSource
 import org.lineageos.twelve.ext.DEFAULT_PROVIDER_KEY
 import org.lineageos.twelve.ext.defaultProvider
@@ -99,6 +100,15 @@ class MediaRepository(
     )
 
     /**
+     * SoundCloud data source.
+     */
+    private val soundCloudDataSource = SoundCloudDataSource(
+        scope,
+        providersRepository,
+        cache,
+    )
+
+    /**
      * File data source.
      */
     private val fileDataSource = FileDataSource(
@@ -111,6 +121,7 @@ class MediaRepository(
             mediaStoreDataSource,
             subsonicDataSource,
             jellyfinDataSource,
+            soundCloudDataSource,
             fileDataSource,
         )
     ).asStateFlow()
@@ -351,6 +362,7 @@ class MediaRepository(
         ProviderType.MEDIASTORE -> mediaStoreDataSource
         ProviderType.SUBSONIC -> subsonicDataSource
         ProviderType.JELLYFIN -> jellyfinDataSource
+        ProviderType.SOUNDCLOUD -> soundCloudDataSource
     }
 
     /**
