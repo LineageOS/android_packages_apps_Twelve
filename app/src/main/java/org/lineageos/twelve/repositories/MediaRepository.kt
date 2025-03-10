@@ -36,6 +36,7 @@ import org.lineageos.twelve.datasources.DummyDataSource
 import org.lineageos.twelve.datasources.JellyfinDataSource
 import org.lineageos.twelve.datasources.LocalDataSource
 import org.lineageos.twelve.datasources.MediaDataSource
+import org.lineageos.twelve.datasources.SoundCloudDataSource
 import org.lineageos.twelve.datasources.SubsonicDataSource
 import org.lineageos.twelve.ext.DEFAULT_PROVIDER_KEY
 import org.lineageos.twelve.ext.SPLIT_LOCAL_DEVICES_KEY
@@ -144,6 +145,11 @@ class MediaRepository(
     private val cache = Cache(context.cacheDir, 50 * 1024 * 1024)
 
     /**
+     * SoundCloud singleton.
+     */
+    private val soundCloudDataSource = SoundCloudDataSource(Bundle.EMPTY, cache)
+
+    /**
      * All the providers. This is our single point of truth for the providers.
      */
     private val allProvidersToDataSource = combine(
@@ -193,7 +199,17 @@ class MediaRepository(
                     cache
                 )
             }
-        }
+        },
+        flowOf(
+            listOf(
+                Provider(
+                    ProviderType.SOUNDCLOUD,
+                    0,
+                    "Default",
+                    true,
+                ) to soundCloudDataSource
+            )
+        ),
     ) { providers -> providers.toList().flatten() }
         .flowOn(Dispatchers.IO)
         .stateIn(
@@ -364,6 +380,8 @@ class MediaRepository(
                 )
             }
         }
+
+        ProviderType.SOUNDCLOUD -> TODO()
     }
 
     /**
@@ -406,6 +424,8 @@ class MediaRepository(
 
             providerType to typeId
         }
+
+        ProviderType.SOUNDCLOUD -> TODO()
     }
 
     /**
@@ -454,6 +474,8 @@ class MediaRepository(
                     password
                 )
             }
+
+            ProviderType.SOUNDCLOUD -> TODO()
         }
     }
 
@@ -473,6 +495,8 @@ class MediaRepository(
             ProviderType.JELLYFIN -> database.getJellyfinProviderDao().delete(
                 providerIdentifier.typeId
             )
+
+            ProviderType.SOUNDCLOUD -> TODO()
         }
     }
 
