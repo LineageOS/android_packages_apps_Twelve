@@ -27,12 +27,14 @@ import kotlinx.coroutines.flow.shareIn
 import org.lineageos.twelve.database.TwelveDatabase
 import org.lineageos.twelve.datasources.JellyfinDataSource
 import org.lineageos.twelve.datasources.MediaStoreDataSource
+import org.lineageos.twelve.datasources.SoundCloudDataSource
 import org.lineageos.twelve.datasources.SubsonicDataSource
 import org.lineageos.twelve.ext.SPLIT_LOCAL_DEVICES_KEY
 import org.lineageos.twelve.ext.preferenceFlow
 import org.lineageos.twelve.ext.splitLocalDevices
 import org.lineageos.twelve.ext.storageVolumesFlow
 import org.lineageos.twelve.models.Provider
+import org.lineageos.twelve.models.ProviderArgument.Companion.getArgument
 import org.lineageos.twelve.models.ProviderArgument.Companion.requireArgument
 import org.lineageos.twelve.models.ProviderIdentifier
 import org.lineageos.twelve.models.ProviderType
@@ -131,11 +133,27 @@ class ProvidersRepository(
             }
         }
 
+    // SoundCloud
+    private val soundCloudProviders = database.getSoundCloudProviderDao().getAll()
+        .mapLatest {
+            it.map { provider ->
+                Provider(
+                    ProviderType.SOUNDCLOUD,
+                    provider.id,
+                    provider.name,
+                ) to bundleOf(
+                    SoundCloudDataSource.ARG_CLIENT_ID.key to provider.clientId,
+                    SoundCloudDataSource.ARG_OAUTH_TOKEN.key to provider.oAuthToken,
+                )
+            }
+        }
+
     // All providers
     val allProvidersToArguments = combine(
         mediaStoreProviders,
         subsonicProviders,
         jellyfinProviders,
+        soundCloudProviders,
     ) { it ->
         buildList {
             it.forEach {
@@ -222,6 +240,17 @@ class ProvidersRepository(
 
             providerType to typeId
         }
+
+        ProviderType.SOUNDCLOUD -> {
+            val clientId = arguments.requireArgument(SoundCloudDataSource.ARG_CLIENT_ID)
+            val oAuthToken = arguments.getArgument(SoundCloudDataSource.ARG_OAUTH_TOKEN)
+
+            val typeId = database.getSoundCloudProviderDao().create(
+                name, clientId, oAuthToken
+            )
+
+            providerType to typeId
+        }
     }
 
     /**
@@ -270,6 +299,18 @@ class ProvidersRepository(
                     password
                 )
             }
+
+            ProviderType.SOUNDCLOUD -> {
+                val clientId = arguments.requireArgument(SoundCloudDataSource.ARG_CLIENT_ID)
+                val oAuthToken = arguments.getArgument(SoundCloudDataSource.ARG_OAUTH_TOKEN)
+
+                database.getSoundCloudProviderDao().update(
+                    providerIdentifier.typeId,
+                    name,
+                    clientId,
+                    oAuthToken,
+                )
+            }
         }
     }
 
@@ -287,6 +328,10 @@ class ProvidersRepository(
             )
 
             ProviderType.JELLYFIN -> database.getJellyfinProviderDao().delete(
+                providerIdentifier.typeId
+            )
+
+            ProviderType.SOUNDCLOUD -> database.getSoundCloudProviderDao().delete(
                 providerIdentifier.typeId
             )
         }
