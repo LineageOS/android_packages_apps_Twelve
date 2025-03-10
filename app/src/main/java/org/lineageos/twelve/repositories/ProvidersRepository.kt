@@ -26,12 +26,14 @@ import kotlinx.coroutines.flow.shareIn
 import org.lineageos.twelve.database.TwelveDatabase
 import org.lineageos.twelve.datasources.JellyfinDataSource
 import org.lineageos.twelve.datasources.LocalDataSource
+import org.lineageos.twelve.datasources.SoundCloudDataSource
 import org.lineageos.twelve.datasources.SubsonicDataSource
 import org.lineageos.twelve.ext.SPLIT_LOCAL_DEVICES_KEY
 import org.lineageos.twelve.ext.preferenceFlow
 import org.lineageos.twelve.ext.splitLocalDevices
 import org.lineageos.twelve.ext.storageVolumesFlow
 import org.lineageos.twelve.models.Provider
+import org.lineageos.twelve.models.ProviderArgument.Companion.getArgument
 import org.lineageos.twelve.models.ProviderArgument.Companion.requireArgument
 import org.lineageos.twelve.models.ProviderIdentifier
 import org.lineageos.twelve.models.ProviderType
@@ -218,6 +220,17 @@ class ProvidersRepository(
 
             providerType to typeId
         }
+
+        ProviderType.SOUNDCLOUD -> {
+            val clientId = arguments.requireArgument(SoundCloudDataSource.ARG_CLIENT_ID)
+            val oAuthToken = arguments.getArgument(SoundCloudDataSource.ARG_OAUTH_TOKEN)
+
+            val typeId = database.getSoundCloudProviderDao().create(
+                name, clientId, oAuthToken
+            )
+
+            providerType to typeId
+        }
     }
 
     /**
@@ -266,6 +279,18 @@ class ProvidersRepository(
                     password
                 )
             }
+
+            ProviderType.SOUNDCLOUD -> {
+                val clientId = arguments.requireArgument(SoundCloudDataSource.ARG_CLIENT_ID)
+                val oAuthToken = arguments.getArgument(SoundCloudDataSource.ARG_OAUTH_TOKEN)
+
+                database.getSoundCloudProviderDao().update(
+                    providerIdentifier.typeId,
+                    name,
+                    clientId,
+                    oAuthToken,
+                )
+            }
         }
     }
 
@@ -283,6 +308,10 @@ class ProvidersRepository(
             )
 
             ProviderType.JELLYFIN -> database.getJellyfinProviderDao().delete(
+                providerIdentifier.typeId
+            )
+
+            ProviderType.SOUNDCLOUD -> database.getSoundCloudProviderDao().delete(
                 providerIdentifier.typeId
             )
         }
