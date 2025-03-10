@@ -29,6 +29,7 @@ import org.lineageos.twelve.database.TwelveDatabase
 import org.lineageos.twelve.datasources.JellyfinDataSource
 import org.lineageos.twelve.datasources.LocalDataSource
 import org.lineageos.twelve.datasources.MediaDataSource
+import org.lineageos.twelve.datasources.SoundCloudDataSource
 import org.lineageos.twelve.datasources.SubsonicDataSource
 import org.lineageos.twelve.ext.DEFAULT_PROVIDER_KEY
 import org.lineageos.twelve.ext.defaultProvider
@@ -97,11 +98,21 @@ class MediaRepository(
         cache,
     )
 
+    /**
+     * SoundCloud data source.
+     */
+    private val soundCloudDataSource = SoundCloudDataSource(
+        scope,
+        providersRepository,
+        cache,
+    )
+
     private val allDataSources = MutableStateFlow(
         listOf(
             localDataSource,
             subsonicDataSource,
             jellyfinDataSource,
+            soundCloudDataSource,
         )
     ).asStateFlow()
 
@@ -341,6 +352,7 @@ class MediaRepository(
         ProviderType.LOCAL -> localDataSource
         ProviderType.SUBSONIC -> subsonicDataSource
         ProviderType.JELLYFIN -> jellyfinDataSource
+        ProviderType.SOUNDCLOUD -> soundCloudDataSource
     }
 
     /**
