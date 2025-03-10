@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "be2913e6_1560f844",
+        "filename": "app/src/main/java/org/lineageos/twelve/database/TwelveDatabase.kt",
+        "patchSetId": 2
+      },
+      "lineNbr": 133,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2025-03-10T19:37:50Z",
+      "side": 1,
+      "message": "hmm I\u0027d rather move this into Migration7To8, without checking docs I wouldn\u0027t know if both are run, in which order, etc",
+      "range": {
+        "startLine": 133,
+        "startChar": 0,
+        "endLine": 133,
+        "endChar": 51
+      },
+      "revId": "079909809c3722c358dd3ebb4738fd38b28decea",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
