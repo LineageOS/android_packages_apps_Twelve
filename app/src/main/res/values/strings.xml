@@ -128,8 +128,11 @@
     <string name="provider_type_local">Local</string>
     <string name="provider_type_subsonic" translatable="false">Subsonic / OpenSubsonic / Navidrome</string>
     <string name="provider_type_jellyfin" translatable="false">Jellyfin</string>
+    <string name="provider_type_soundcloud" translatable="false">SoundCloud</string>
 
     <!-- Provider arguments -->
+    <string name="provider_argument_client_id">Client ID</string>
+    <string name="provider_argument_oauth_token">OAuth token</string>
     <string name="provider_argument_server">Server</string>
     <string name="provider_argument_username">Username</string>
     <string name="provider_argument_password">Password</string>
@@ -270,6 +273,16 @@
     <string name="jellyfin_version">Version</string>
     <string name="jellyfin_product_name">Product name</string>
     <string name="jellyfin_operating_system">Operating system</string>
+
+    <!-- Data source information - SoundCloud -->
+    <string name="soundcloud_username">Username</string>
+    <string name="soundcloud_full_name">Full name</string>
+    <string name="soundcloud_primary_email">Primary email</string>
+    <string name="soundcloud_primary_email_confirmed">Primary email confirmed</string>
+    <string name="soundcloud_city">City</string>
+    <string name="soundcloud_date_of_birth">Date of birth</string>
+    <string name="soundcloud_date_of_birth_format" translatable="false">%1$d/%2$02d</string>
+    <string name="soundcloud_downloads_disabled">Downloads disabled</string>
 
     <!-- Create playlist fragment -->
     <string name="playlist_name">Name</string>
