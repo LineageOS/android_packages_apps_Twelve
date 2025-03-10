@@ -71,5 +71,19 @@ enum class ProviderType(
             JellyfinDataSource.ARG_PASSWORD,
         ),
         true,
+    ),
+
+    /**
+     * SoundCloud provider.
+     *
+     * [Home page](https://soundcloud.com)
+     */
+    SOUNDCLOUD(
+        R.string.provider_type_soundcloud,
+        R.drawable.ic_warning,
+        listOf(
+
+        ),
+        true,
     )
 }
