@@ -10,6 +10,7 @@ import androidx.annotation.StringRes
 import org.lineageos.twelve.R
 import org.lineageos.twelve.datasources.JellyfinDataSource
 import org.lineageos.twelve.datasources.MediaDataSource
+import org.lineageos.twelve.datasources.SoundCloudDataSource
 import org.lineageos.twelve.datasources.SubsonicDataSource
 
 /**
@@ -69,6 +70,20 @@ enum class ProviderType(
             JellyfinDataSource.ARG_SERVER,
             JellyfinDataSource.ARG_USERNAME,
             JellyfinDataSource.ARG_PASSWORD,
+        ),
+        true,
+    ),
+
+    /**
+     * SoundCloud provider.
+     *
+     * [Home page](https://soundcloud.com)
+     */
+    SOUNDCLOUD(
+        R.string.provider_type_soundcloud,
+        R.drawable.ic_cloud,
+        listOf(
+            SoundCloudDataSource.ARG_CLIENT_ID,
         ),
         true,
     )
