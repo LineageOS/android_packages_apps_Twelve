@@ -36,6 +36,7 @@ import org.lineageos.twelve.datasources.DummyDataSource
 import org.lineageos.twelve.datasources.JellyfinDataSource
 import org.lineageos.twelve.datasources.LocalDataSource
 import org.lineageos.twelve.datasources.MediaDataSource
+import org.lineageos.twelve.datasources.SoundCloudDataSource
 import org.lineageos.twelve.datasources.SubsonicDataSource
 import org.lineageos.twelve.ext.DEFAULT_PROVIDER_KEY
 import org.lineageos.twelve.ext.SPLIT_LOCAL_DEVICES_KEY
@@ -45,6 +46,7 @@ import org.lineageos.twelve.ext.splitLocalDevices
 import org.lineageos.twelve.ext.storageVolumesFlow
 import org.lineageos.twelve.models.Error
 import org.lineageos.twelve.models.Provider
+import org.lineageos.twelve.models.ProviderArgument.Companion.getArgument
 import org.lineageos.twelve.models.ProviderArgument.Companion.requireArgument
 import org.lineageos.twelve.models.ProviderIdentifier
 import org.lineageos.twelve.models.ProviderType
@@ -193,7 +195,25 @@ class MediaRepository(
                     cache
                 )
             }
-        }
+        },
+        database.getSoundCloudProviderDao().getAll().mapLatest { soundCloudProviders ->
+            soundCloudProviders.map {
+                val arguments = bundleOf(
+                    SoundCloudDataSource.ARG_CLIENT_ID.key to it.clientId,
+                    SoundCloudDataSource.ARG_OAUTH_TOKEN.key to it.oAuthToken,
+                )
+
+                Provider(
+                    ProviderType.SOUNDCLOUD,
+                    it.id,
+                    it.name,
+                    true,
+                ) to SoundCloudDataSource(
+                    arguments,
+                    cache
+                )
+            }
+        },
     ) { providers -> providers.toList().flatten() }
         .flowOn(Dispatchers.IO)
         .stateIn(
@@ -364,6 +384,17 @@ class MediaRepository(
                 )
             }
         }
+
+        ProviderType.SOUNDCLOUD -> database.getSoundCloudProviderDao().getById(
+            providerIdentifier.typeId
+        ).mapLatest { soundCloudProvider ->
+            soundCloudProvider?.let {
+                bundleOf(
+                    SoundCloudDataSource.ARG_CLIENT_ID.key to it.clientId,
+                    SoundCloudDataSource.ARG_OAUTH_TOKEN.key to it.oAuthToken,
+                )
+            }
+        }
     }
 
     /**
@@ -402,6 +433,17 @@ class MediaRepository(
 
             val typeId = database.getJellyfinProviderDao().create(
                 name, server, username, password
+            )
+
+            providerType to typeId
+        }
+
+        ProviderType.SOUNDCLOUD -> {
+            val clientId = arguments.requireArgument(SoundCloudDataSource.ARG_CLIENT_ID)
+            val oAuthToken = arguments.getArgument(SoundCloudDataSource.ARG_OAUTH_TOKEN)
+
+            val typeId = database.getSoundCloudProviderDao().create(
+                name, clientId, oAuthToken
             )
 
             providerType to typeId
@@ -454,6 +496,18 @@ class MediaRepository(
                     password
                 )
             }
+
+            ProviderType.SOUNDCLOUD -> {
+                val clientId = arguments.requireArgument(SoundCloudDataSource.ARG_CLIENT_ID)
+                val oAuthToken = arguments.getArgument(SoundCloudDataSource.ARG_OAUTH_TOKEN)
+
+                database.getSoundCloudProviderDao().update(
+                    providerIdentifier.typeId,
+                    name,
+                    clientId,
+                    oAuthToken,
+                )
+            }
         }
     }
 
@@ -471,6 +525,10 @@ class MediaRepository(
             )
 
             ProviderType.JELLYFIN -> database.getJellyfinProviderDao().delete(
+                providerIdentifier.typeId
+            )
+
+            ProviderType.SOUNDCLOUD -> database.getSoundCloudProviderDao().delete(
                 providerIdentifier.typeId
             )
         }
