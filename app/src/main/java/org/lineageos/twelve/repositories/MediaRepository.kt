@@ -36,6 +36,7 @@ import org.lineageos.twelve.datasources.DummyDataSource
 import org.lineageos.twelve.datasources.JellyfinDataSource
 import org.lineageos.twelve.datasources.LocalDataSource
 import org.lineageos.twelve.datasources.MediaDataSource
+import org.lineageos.twelve.datasources.SoundCloudDataSource
 import org.lineageos.twelve.datasources.SubsonicDataSource
 import org.lineageos.twelve.ext.DEFAULT_PROVIDER_KEY
 import org.lineageos.twelve.ext.SPLIT_LOCAL_DEVICES_KEY
@@ -193,7 +194,22 @@ class MediaRepository(
                     cache
                 )
             }
-        }
+        },
+        flowOf(
+            listOf(
+                Provider(
+                    ProviderType.SOUNDCLOUD,
+                    0,
+                    "Default",
+                    true,
+                ) to SoundCloudDataSource(
+                    bundleOf(
+                        SoundCloudDataSource.ARG_CLIENT_ID.key to "",
+                    ),
+                    cache
+                )
+            )
+        ),
     ) { providers -> providers.toList().flatten() }
         .flowOn(Dispatchers.IO)
         .stateIn(
@@ -364,6 +380,8 @@ class MediaRepository(
                 )
             }
         }
+
+        ProviderType.SOUNDCLOUD -> TODO()
     }
 
     /**
@@ -406,6 +424,8 @@ class MediaRepository(
 
             providerType to typeId
         }
+
+        ProviderType.SOUNDCLOUD -> TODO()
     }
 
     /**
@@ -454,6 +474,8 @@ class MediaRepository(
                     password
                 )
             }
+
+            ProviderType.SOUNDCLOUD -> TODO()
         }
     }
 
@@ -473,6 +495,8 @@ class MediaRepository(
             ProviderType.JELLYFIN -> database.getJellyfinProviderDao().delete(
                 providerIdentifier.typeId
             )
+
+            ProviderType.SOUNDCLOUD -> TODO()
         }
     }
 
