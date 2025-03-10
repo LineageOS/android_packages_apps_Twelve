@@ -22,6 +22,30 @@
       },
       "revId": "079909809c3722c358dd3ebb4738fd38b28decea",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f6545d2a_0c5bf701",
+        "filename": "app/src/main/java/org/lineageos/twelve/database/TwelveDatabase.kt",
+        "patchSetId": 2
+      },
+      "lineNbr": 133,
+      "author": {
+        "id": 25732
+      },
+      "writtenOn": "2025-03-10T21:33:19Z",
+      "side": 1,
+      "message": "When both manual and auto migrations exists, only the manual one is ran\n\nRoom still requres us to add an auto migration one to let it know what happened to renamed or deleted stuff, and manual migration won\u0027t accept those annotations",
+      "parentUuid": "be2913e6_1560f844",
+      "range": {
+        "startLine": 133,
+        "startChar": 0,
+        "endLine": 133,
+        "endChar": 51
+      },
+      "revId": "079909809c3722c358dd3ebb4738fd38b28decea",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
