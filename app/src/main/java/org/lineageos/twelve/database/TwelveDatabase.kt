@@ -26,6 +26,7 @@ import org.lineageos.twelve.database.dao.PlaylistDao
 import org.lineageos.twelve.database.dao.PlaylistItemCrossRefDao
 import org.lineageos.twelve.database.dao.PlaylistWithItemsDao
 import org.lineageos.twelve.database.dao.ResumptionPlaylistDao
+import org.lineageos.twelve.database.dao.SoundCloudProviderDao
 import org.lineageos.twelve.database.dao.SubsonicProviderDao
 import org.lineageos.twelve.database.entities.Favorite
 import org.lineageos.twelve.database.entities.JellyfinProvider
@@ -34,6 +35,7 @@ import org.lineageos.twelve.database.entities.Playlist
 import org.lineageos.twelve.database.entities.PlaylistItemCrossRef
 import org.lineageos.twelve.database.entities.ResumptionItem
 import org.lineageos.twelve.database.entities.ResumptionPlaylist
+import org.lineageos.twelve.database.entities.SoundCloudProvider
 import org.lineageos.twelve.database.entities.SubsonicProvider
 
 @Database(
@@ -51,12 +53,13 @@ import org.lineageos.twelve.database.entities.SubsonicProvider
 
         /* Providers */
         JellyfinProvider::class,
+        SoundCloudProvider::class,
         SubsonicProvider::class,
 
         /* Local Media Stats */
         LocalMediaStats::class,
     ],
-    version = 8,
+    version = 9,
     autoMigrations = [
         AutoMigration(from = 1, to = 2),
         AutoMigration(from = 2, to = 3),
@@ -65,6 +68,7 @@ import org.lineageos.twelve.database.entities.SubsonicProvider
         AutoMigration(from = 5, to = 6),
         AutoMigration(from = 6, to = 7, spec = TwelveDatabase.Companion.MigrationSpec6To7::class),
         // 7 to 8 is done manually
+        AutoMigration(from = 8, to = 9),
     ],
 )
 @TypeConverters(
@@ -79,6 +83,7 @@ abstract class TwelveDatabase : RoomDatabase() {
     abstract fun getPlaylistItemCrossRefDao(): PlaylistItemCrossRefDao
     abstract fun getPlaylistWithItemsDao(): PlaylistWithItemsDao
     abstract fun getResumptionPlaylistDao(): ResumptionPlaylistDao
+    abstract fun getSoundCloudProviderDao(): SoundCloudProviderDao
     abstract fun getSubsonicProviderDao(): SubsonicProviderDao
 
     companion object {
