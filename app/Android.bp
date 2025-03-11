@@ -47,6 +47,8 @@ android_app {
         "androidx-constraintlayout_constraintlayout",
         "androidx.core_core-ktx",
         "androidx.fragment_fragment-ktx",
+        "Twelve_androidx.graphics_graphics-shapes",
+        "Twelve_androidx.graphics_graphics-shapes-android",
         "androidx.lifecycle_lifecycle-runtime",
         "androidx.lifecycle_lifecycle-runtime-ktx",
         "androidx.lifecycle_lifecycle-service",
