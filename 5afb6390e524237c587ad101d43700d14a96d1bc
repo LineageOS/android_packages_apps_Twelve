@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4518d25a_9806355f",
+        "filename": "app/Android.bp",
+        "patchSetId": 1
+      },
+      "lineNbr": 68,
+      "author": {
+        "id": 31604
+      },
+      "writtenOn": "2025-03-11T17:25:24Z",
+      "side": 1,
+      "message": "This shouldn\u0027t have been commented out, sorry.\n```suggestion\n        \"Twelve_com.google.android.material_material\",\n```",
+      "revId": "5afb6390e524237c587ad101d43700d14a96d1bc",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
