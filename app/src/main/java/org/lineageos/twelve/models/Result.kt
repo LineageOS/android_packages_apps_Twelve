@@ -27,7 +27,7 @@ sealed class Result<T, E> {
         /**
          * Get the data if the result is [Success], null otherwise.
          */
-        fun <T : Any, E> Result<T, E>.getOrNull() = when (this) {
+        fun <T, E> Result<T, E>.getOrNull() = when (this) {
             is Success -> data
             is Error -> null
         }
