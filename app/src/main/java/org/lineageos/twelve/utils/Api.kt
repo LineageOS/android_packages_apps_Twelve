@@ -102,6 +102,30 @@ class PostRequestInterface<D, T>(
 }
 
 /**
+ * PUT request implementation.
+ *
+ * @param D The data type
+ * @param T The return type
+ */
+class PutRequestInterface<D, T>(
+    private val path: List<String>,
+    override val type: KType,
+    private val data: D?,
+    private val queryParameters: List<Pair<String, Any?>> = emptyList(),
+    private val emptyResponse: () -> T
+) : BaseRequest(), ApiRequestInterface<T> {
+    override suspend fun execute(api: Api): MethodResult<T> {
+        val url = api.buildUrl(path, queryParameters)
+        val body = encodeRequestBody(api, data)
+        val request = Request.Builder()
+            .url(url)
+            .put(body)
+            .build()
+        return api.executeRequest(request, type, emptyResponse)
+    }
+}
+
+/**
  * DELETE request implementation.
  *
  * @param T The return type
@@ -223,6 +247,13 @@ object ApiRequest {
         queryParameters: List<Pair<String, Any?>> = emptyList(),
         noinline emptyResponse: () -> T = { Unit as T }
     ) = PostRequestInterface(path, typeOf<T>(), data, queryParameters, emptyResponse)
+
+    inline fun <reified D, reified T> put(
+        path: List<String>,
+        data: D? = null,
+        queryParameters: List<Pair<String, Any?>> = emptyList(),
+        noinline emptyResponse: () -> T = { Unit as T }
+    ) = PutRequestInterface(path, typeOf<T>(), data, queryParameters, emptyResponse)
 
     inline fun <reified T> delete(
         path: List<String>,
