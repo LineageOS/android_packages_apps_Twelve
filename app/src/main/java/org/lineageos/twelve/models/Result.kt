@@ -43,14 +43,6 @@ sealed class Result<T, E> {
         }
 
         /**
-         * Map the result to another type.
-         */
-        @JvmName("mapNullable")
-        inline fun <T, E, R> Result<T, E>?.map(
-            mapping: (T) -> R
-        ): Result<R, E>? = this?.map(mapping)
-
-        /**
          * Fold the request status.
          */
         inline fun <T, E, R> Result<T, E>.fold(
@@ -60,14 +52,5 @@ sealed class Result<T, E> {
             is Success -> onSuccess(data)
             is Error -> onError(error)
         }
-
-        /**
-         * Fold the request status.
-         */
-        inline fun <T, E, R> Result<T, E>?.fold(
-            onNull: () -> R,
-            onSuccess: (T) -> R,
-            onError: (E) -> R,
-        ): R = this?.fold(onSuccess, onError) ?: onNull()
     }
 }
