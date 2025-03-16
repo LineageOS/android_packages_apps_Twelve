@@ -12,15 +12,17 @@ import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
 import androidx.core.os.bundleOf
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapLatest
 import org.lineageos.twelve.R
 import org.lineageos.twelve.database.TwelveDatabase
+import org.lineageos.twelve.datasources.local.MediaStoreAudioUri
+import org.lineageos.twelve.ext.isRelativeTo
 import org.lineageos.twelve.ext.mapEachRow
 import org.lineageos.twelve.ext.queryFlow
 import org.lineageos.twelve.models.ActivityTab
@@ -36,7 +38,12 @@ import org.lineageos.twelve.models.LocalizedString
 import org.lineageos.twelve.models.Lyrics
 import org.lineageos.twelve.models.MediaType
 import org.lineageos.twelve.models.Playlist
+import org.lineageos.twelve.models.ProviderArgument
+import org.lineageos.twelve.models.ProviderArgument.Companion.requireArgument
+import org.lineageos.twelve.models.ProviderIdentifier
+import org.lineageos.twelve.models.ProviderType
 import org.lineageos.twelve.models.Result
+import org.lineageos.twelve.models.Result.Companion.getOrNull
 import org.lineageos.twelve.models.Result.Companion.map
 import org.lineageos.twelve.models.SortingRule
 import org.lineageos.twelve.models.SortingStrategy
@@ -49,175 +56,264 @@ import org.lineageos.twelve.query.`is`
 import org.lineageos.twelve.query.like
 import org.lineageos.twelve.query.neq
 import org.lineageos.twelve.query.query
+import org.lineageos.twelve.repositories.ProvidersRepository
 import java.time.LocalDateTime
 import kotlin.random.Random
 
 /**
  * [MediaStore.Audio] backed data source.
- *
- * @param contentResolver The [ContentResolver]
- * @param volumeName The volume name
- * @param database The app's database
  */
 @OptIn(ExperimentalCoroutinesApi::class)
 class LocalDataSource(
     private val contentResolver: ContentResolver,
-    private val volumeName: String,
-    private val database: TwelveDatabase
+    coroutineScope: CoroutineScope,
+    providersRepository: ProvidersRepository,
+    private val database: TwelveDatabase,
 ) : MediaDataSource {
-    private val albumsUri = MediaStore.Audio.Albums.getContentUri(volumeName)
-    private val artistsUri = MediaStore.Audio.Artists.getContentUri(volumeName)
-    private val genresUri = MediaStore.Audio.Genres.getContentUri(volumeName)
-    private val audiosUri = MediaStore.Audio.Media.getContentUri(volumeName)
+    private inner class LocalInstance(
+        private val volumeName: String,
+    ) : ProvidersManager.Instance {
+        val albumsUri by lazy { getAlbumsUri(volumeName) }
+        val artistsUri by lazy { getArtistsUri(volumeName) }
+        val audiosUri by lazy { getAudiosUri(volumeName) }
+        val genresUri by lazy { getGenresUri(volumeName) }
 
-    private val albumsArtUri = MediaStore.AUTHORITY_URI.buildUpon()
-        .appendPath(volumeName)
-        .appendPath("audio")
-        .appendPath(AUDIO_ALBUMART)
-        .build()
+        override suspend fun isMediaItemCompatible(
+            mediaItemUri: Uri
+        ) = MediaStoreAudioUri.from(mediaItemUri)?.let {
+            volumeName == it.volumeName
+        } ?: listOf(
+            playlistsBaseUri,
+            favoritesUri,
+        ).any { mediaItemUri.isRelativeTo(it) }
 
-    override fun status() = flowOf(
+        fun mostPlayedAlbums(nTopTracks: Int = 100) =
+            database.getLocalMediaStatsProviderDao()
+                .getAllByPlayCount(nTopTracks)
+                .mapLatest { stats -> stats.map { it.audioUri } }
+                .flatMapLatest { uris ->
+                    contentResolver.queryFlow(
+                        audiosUri,
+                        arrayOf(MediaStore.Audio.AlbumColumns.ALBUM_ID),
+                        bundleOf(
+                            ContentResolver.QUERY_ARG_SQL_SELECTION to query {
+                                MediaStore.Audio.AudioColumns._ID `in` List(uris.size) {
+                                    Query.ARG
+                                }
+                            },
+                            ContentResolver.QUERY_ARG_SQL_SELECTION_ARGS to uris.map {
+                                ContentUris.parseId(it).toString()
+                            }.toTypedArray(),
+                        )
+                    )
+                }
+                .mapEachRow { it.getLong(MediaStore.Audio.AlbumColumns.ALBUM_ID) }
+                .mapLatest { it.distinct() }
+                .flatMapLatest { uris ->
+                    contentResolver.queryFlow(
+                        albumsUri,
+                        albumsProjection,
+                        bundleOf(
+                            ContentResolver.QUERY_ARG_SQL_SELECTION to query {
+                                MediaStore.Audio.AlbumColumns.ALBUM_ID `in` List(uris.size) {
+                                    Query.ARG
+                                }
+                            },
+                            ContentResolver.QUERY_ARG_SQL_SELECTION_ARGS to uris.map {
+                                it.toString()
+                            }.toTypedArray(),
+                        )
+                    ).mapEachRowToAlbum()
+                }
+                .mapLatest {
+                    Result.Success<List<Album>, Error>(it)
+                }
+
+        fun Flow<Cursor?>.mapEachRowToAlbum() = mapEachRowToAlbum(volumeName)
+        fun Flow<Cursor?>.mapEachRowToArtist() = mapEachRowToArtist(volumeName)
+        fun Flow<Cursor?>.mapEachRowToAudio() = mapEachRowToAudio(volumeName)
+        fun Flow<Cursor?>.mapEachRowToGenre() = mapEachRowToGenre(volumeName)
+    }
+
+    private val providersManager = ProvidersManager(
+        coroutineScope,
+        providersRepository,
+        ProviderType.LOCAL,
+    ) { _, arguments ->
+        val volumeName = arguments.requireArgument(ARG_VOLUME_NAME)
+
+        LocalInstance(volumeName)
+    }
+
+    override fun status(providerIdentifier: ProviderIdentifier) = flowOf(
         Result.Success<_, Error>(listOf<DataSourceInformation>())
     )
 
-    override suspend fun mediaTypeOf(mediaItemUri: Uri) = with(mediaItemUri.toString()) {
-        when {
-            startsWith(albumsUri.toString()) -> MediaType.ALBUM
-            startsWith(artistsUri.toString()) -> MediaType.ARTIST
-            startsWith(genresUri.toString()) -> MediaType.GENRE
-            startsWith(audiosUri.toString()) -> MediaType.AUDIO
-            startsWith(playlistsBaseUri.toString()) -> MediaType.PLAYLIST
-            mediaItemUri == favoritesUri -> MediaType.PLAYLIST
-            else -> null
+    override suspend fun mediaTypeOf(
+        mediaItemUri: Uri,
+    ) = MediaStoreAudioUri.from(mediaItemUri)?.let {
+        when (it.type) {
+            MediaStoreAudioUri.Type.ALBUMS -> MediaType.ALBUM
+            MediaStoreAudioUri.Type.ARTISTS -> MediaType.ARTIST
+            MediaStoreAudioUri.Type.GENRES -> MediaType.GENRE
+            MediaStoreAudioUri.Type.MEDIA -> MediaType.AUDIO
+        }
+    } ?: when {
+        mediaItemUri.isRelativeTo(playlistsBaseUri) -> MediaType.PLAYLIST
+        mediaItemUri == favoritesUri -> MediaType.PLAYLIST
+        else -> null
+    }
+
+    override fun providerOf(mediaItemUri: Uri) = providersManager.providerOf(mediaItemUri)
+
+    override fun activity(
+        providerIdentifier: ProviderIdentifier,
+    ) = providersManager.flatMapWithInstanceOf(providerIdentifier) {
+        combine(
+            mostPlayedAlbums(),
+            albums(providerIdentifier, SortingRule(SortingStrategy.NAME)),
+            artists(providerIdentifier, SortingRule(SortingStrategy.NAME)),
+            genres(providerIdentifier, SortingRule(SortingStrategy.NAME)),
+        ) { mostPlayed, albums, artists, genres ->
+            val now = LocalDateTime.now()
+
+            Result.Success(
+                listOf(
+                    mostPlayed.map {
+                        ActivityTab(
+                            "most_played_albums",
+                            LocalizedString.StringResIdLocalizedString(
+                                R.string.activity_most_played_albums
+                            ),
+                            it,
+                        )
+                    },
+                    albums.map {
+                        ActivityTab(
+                            "random_albums",
+                            LocalizedString.StringResIdLocalizedString(
+                                R.string.activity_random_albums
+                            ),
+                            it.shuffled(Random(now.dayOfYear)),
+                        )
+                    },
+                    artists.map {
+                        ActivityTab(
+                            "random_artists",
+                            LocalizedString.StringResIdLocalizedString(
+                                R.string.activity_random_artists
+                            ),
+                            it.shuffled(Random(now.dayOfYear)),
+                        )
+                    },
+                    genres.map {
+                        ActivityTab(
+                            "random_genres",
+                            LocalizedString.StringResIdLocalizedString(
+                                R.string.activity_random_genres
+                            ),
+                            it.shuffled(Random(now.dayOfYear)),
+                        )
+                    },
+                ).mapNotNull {
+                    it.getOrNull()?.takeIf { activityTab ->
+                        activityTab.items.isNotEmpty()
+                    }
+                }
+            )
         }
     }
 
-    override fun activity() = combine(
-        mostPlayedAlbums(),
-        albums(SortingRule(SortingStrategy.NAME)),
-        artists(SortingRule(SortingStrategy.NAME)),
-        genres(SortingRule(SortingStrategy.NAME)),
-    ) { mostPlayed, albums, artists, genres ->
-        val now = LocalDateTime.now()
-
-        Result.Success<_, Error>(
-            listOf(
-                mostPlayed.map {
-                    ActivityTab(
-                        "most_played_albums",
-                        LocalizedString.StringResIdLocalizedString(
-                            R.string.activity_most_played_albums
-                        ),
-                        it,
-                    )
-                },
-                albums.map {
-                    ActivityTab(
-                        "random_albums",
-                        LocalizedString.StringResIdLocalizedString(
-                            R.string.activity_random_albums
-                        ),
-                        it.shuffled(Random(now.dayOfYear)),
-                    )
-                },
-                artists.map {
-                    ActivityTab(
-                        "random_artists",
-                        LocalizedString.StringResIdLocalizedString(
-                            R.string.activity_random_artists
-                        ),
-                        it.shuffled(Random(now.dayOfYear)),
-                    )
-                },
-                genres.map {
-                    ActivityTab(
-                        "random_genres",
-                        LocalizedString.StringResIdLocalizedString(
-                            R.string.activity_random_genres
-                        ),
-                        it.shuffled(Random(now.dayOfYear)),
-                    )
-                },
-            ).mapNotNull {
-                (it as? Result.Success)?.data?.takeIf { activityTab ->
-                    activityTab.items.isNotEmpty()
-                }
-            }
-        )
+    override fun albums(
+        providerIdentifier: ProviderIdentifier,
+        sortingRule: SortingRule,
+    ) = providersManager.flatMapWithInstanceOf(providerIdentifier) {
+        contentResolver.queryFlow(
+            albumsUri,
+            albumsProjection,
+            bundleOf(
+                ContentResolver.QUERY_ARG_SORT_COLUMNS to listOfNotNull(
+                    when (sortingRule.strategy) {
+                        SortingStrategy.ARTIST_NAME -> MediaStore.Audio.AlbumColumns.ARTIST
+                        SortingStrategy.CREATION_DATE -> MediaStore.Audio.AlbumColumns.LAST_YEAR
+                        SortingStrategy.NAME -> MediaStore.Audio.AlbumColumns.ALBUM
+                        else -> null
+                    }?.let { column ->
+                        when (sortingRule.reverse) {
+                            true -> "$column DESC"
+                            false -> column
+                        }
+                    },
+                    MediaStore.Audio.AlbumColumns.ALBUM.takeIf {
+                        sortingRule.strategy != SortingStrategy.NAME
+                    },
+                ).toTypedArray(),
+            )
+        ).mapEachRowToAlbum().mapLatest {
+            Result.Success(it)
+        }
     }
 
-    override fun albums(sortingRule: SortingRule) = contentResolver.queryFlow(
-        albumsUri,
-        albumsProjection,
-        bundleOf(
-            ContentResolver.QUERY_ARG_SORT_COLUMNS to listOfNotNull(
-                when (sortingRule.strategy) {
-                    SortingStrategy.ARTIST_NAME -> MediaStore.Audio.AlbumColumns.ARTIST
-                    SortingStrategy.CREATION_DATE -> MediaStore.Audio.AlbumColumns.LAST_YEAR
-                    SortingStrategy.NAME -> MediaStore.Audio.AlbumColumns.ALBUM
-                    else -> null
-                }?.let { column ->
-                    when (sortingRule.reverse) {
-                        true -> "$column DESC"
-                        false -> column
-                    }
-                },
-                MediaStore.Audio.AlbumColumns.ALBUM.takeIf {
-                    sortingRule.strategy != SortingStrategy.NAME
-                },
-            ).toTypedArray(),
-        )
-    ).mapEachRowToAlbum().map {
-        Result.Success<_, Error>(it)
+    override fun artists(
+        providerIdentifier: ProviderIdentifier,
+        sortingRule: SortingRule,
+    ) = providersManager.flatMapWithInstanceOf(providerIdentifier) {
+        contentResolver.queryFlow(
+            artistsUri,
+            artistsProjection,
+            bundleOf(
+                ContentResolver.QUERY_ARG_SORT_COLUMNS to listOfNotNull(
+                    when (sortingRule.strategy) {
+                        SortingStrategy.NAME -> MediaStore.Audio.ArtistColumns.ARTIST
+                        else -> null
+                    }?.let { column ->
+                        when (sortingRule.reverse) {
+                            true -> "$column DESC"
+                            false -> column
+                        }
+                    },
+                    MediaStore.Audio.ArtistColumns.ARTIST.takeIf {
+                        sortingRule.strategy != SortingStrategy.NAME
+                    },
+                ).toTypedArray(),
+            )
+        ).mapEachRowToArtist().mapLatest {
+            Result.Success(it)
+        }
     }
 
-    override fun artists(sortingRule: SortingRule) = contentResolver.queryFlow(
-        artistsUri,
-        artistsProjection,
-        bundleOf(
-            ContentResolver.QUERY_ARG_SORT_COLUMNS to listOfNotNull(
-                when (sortingRule.strategy) {
-                    SortingStrategy.NAME -> MediaStore.Audio.ArtistColumns.ARTIST
-                    else -> null
-                }?.let { column ->
-                    when (sortingRule.reverse) {
-                        true -> "$column DESC"
-                        false -> column
-                    }
-                },
-                MediaStore.Audio.ArtistColumns.ARTIST.takeIf {
-                    sortingRule.strategy != SortingStrategy.NAME
-                },
-            ).toTypedArray(),
-        )
-    ).mapEachRowToArtist().map {
-        Result.Success<_, Error>(it)
+    override fun genres(
+        providerIdentifier: ProviderIdentifier,
+        sortingRule: SortingRule,
+    ) = providersManager.flatMapWithInstanceOf(providerIdentifier) {
+        contentResolver.queryFlow(
+            genresUri,
+            genresProjection,
+            bundleOf(
+                ContentResolver.QUERY_ARG_SORT_COLUMNS to listOfNotNull(
+                    when (sortingRule.strategy) {
+                        SortingStrategy.NAME -> MediaStore.Audio.GenresColumns.NAME
+                        else -> null
+                    }?.let { column ->
+                        when (sortingRule.reverse) {
+                            true -> "$column DESC"
+                            false -> column
+                        }
+                    },
+                    MediaStore.Audio.GenresColumns.NAME.takeIf {
+                        sortingRule.strategy != SortingStrategy.NAME
+                    },
+                ).toTypedArray(),
+            )
+        ).mapEachRowToGenre().mapLatest {
+            Result.Success(it)
+        }
     }
 
-    override fun genres(sortingRule: SortingRule) = contentResolver.queryFlow(
-        genresUri,
-        genresProjection,
-        bundleOf(
-            ContentResolver.QUERY_ARG_SORT_COLUMNS to listOfNotNull(
-                when (sortingRule.strategy) {
-                    SortingStrategy.NAME -> MediaStore.Audio.GenresColumns.NAME
-                    else -> null
-                }?.let { column ->
-                    when (sortingRule.reverse) {
-                        true -> "$column DESC"
-                        false -> column
-                    }
-                },
-                MediaStore.Audio.GenresColumns.NAME.takeIf {
-                    sortingRule.strategy != SortingStrategy.NAME
-                },
-            ).toTypedArray(),
-        )
-    ).mapEachRowToGenre().map {
-        Result.Success<_, Error>(it)
-    }
-
-    override fun playlists(sortingRule: SortingRule) = database.getPlaylistDao().getAll()
+    override fun playlists(
+        providerIdentifier: ProviderIdentifier,
+        sortingRule: SortingRule,
+    ) = database.getPlaylistDao().getAll()
         .mapLatest { playlists ->
             Result.Success<_, Error>(
                 buildList {
@@ -228,269 +324,283 @@ class LocalDataSource(
             )
         }
 
-    override fun search(query: String) = combine(
-        contentResolver.queryFlow(
-            albumsUri,
-            albumsProjection,
-            bundleOf(
-                ContentResolver.QUERY_ARG_SQL_SELECTION to query {
-                    MediaStore.Audio.AlbumColumns.ALBUM like Query.ARG
-                },
-                ContentResolver.QUERY_ARG_SQL_SELECTION_ARGS to arrayOf(query),
-            )
-        ).mapEachRowToAlbum(),
-        contentResolver.queryFlow(
-            artistsUri,
-            artistsProjection,
-            bundleOf(
-                ContentResolver.QUERY_ARG_SQL_SELECTION to query {
-                    MediaStore.Audio.ArtistColumns.ARTIST like Query.ARG
-                },
-                ContentResolver.QUERY_ARG_SQL_SELECTION_ARGS to arrayOf(query),
-            )
-        ).mapEachRowToArtist(),
-        contentResolver.queryFlow(
-            audiosUri,
-            audiosProjection,
-            bundleOf(
-                ContentResolver.QUERY_ARG_SQL_SELECTION to query {
-                    MediaStore.Audio.AudioColumns.TITLE like Query.ARG
-                },
-                ContentResolver.QUERY_ARG_SQL_SELECTION_ARGS to arrayOf(query),
-            )
-        ).mapEachRowToAudio(),
-        contentResolver.queryFlow(
-            genresUri,
-            genresProjection,
-            bundleOf(
-                ContentResolver.QUERY_ARG_SQL_SELECTION to query {
-                    MediaStore.Audio.GenresColumns.NAME like Query.ARG
-                },
-                ContentResolver.QUERY_ARG_SQL_SELECTION_ARGS to arrayOf(query),
-            )
-        ).mapEachRowToGenre(),
-    ) { albums, artists, audios, genres ->
-        albums + artists + audios + genres
-    }.map { Result.Success<_, Error>(it) }
-
-    override fun audio(audioUri: Uri) = contentResolver.queryFlow(
-        audiosUri,
-        audiosProjection,
-        bundleOf(
-            ContentResolver.QUERY_ARG_SQL_SELECTION to query {
-                MediaStore.Audio.AudioColumns._ID eq Query.ARG
-            },
-            ContentResolver.QUERY_ARG_SQL_SELECTION_ARGS to arrayOf(
-                ContentUris.parseId(audioUri).toString(),
-            ),
-        )
-    ).mapEachRowToAudio().mapLatest { audios ->
-        audios.firstOrNull()?.let {
-            Result.Success<_, Error>(it)
-        } ?: Result.Error(Error.NOT_FOUND)
-    }
-
-    override fun album(albumUri: Uri) = combine(
-        contentResolver.queryFlow(
-            albumsUri,
-            albumsProjection,
-            bundleOf(
-                ContentResolver.QUERY_ARG_SQL_SELECTION to query {
-                    MediaStore.Audio.AudioColumns._ID eq Query.ARG
-                },
-                ContentResolver.QUERY_ARG_SQL_SELECTION_ARGS to arrayOf(
-                    ContentUris.parseId(albumUri).toString(),
-                ),
-            )
-        ).mapEachRowToAlbum(),
-        contentResolver.queryFlow(
-            audiosUri,
-            audiosProjection,
-            bundleOf(
-                ContentResolver.QUERY_ARG_SQL_SELECTION to query {
-                    MediaStore.Audio.AudioColumns.ALBUM_ID eq Query.ARG
-                },
-                ContentResolver.QUERY_ARG_SQL_SELECTION_ARGS to arrayOf(
-                    ContentUris.parseId(albumUri).toString(),
-                ),
-                ContentResolver.QUERY_ARG_SORT_COLUMNS to arrayOf(
-                    MediaStore.Audio.AudioColumns.TRACK,
-                )
-            )
-        ).mapEachRowToAudio()
-    ) { albums, audios ->
-        albums.firstOrNull()?.let { album ->
-            Result.Success<_, Error>(album to audios)
-        } ?: Result.Error(Error.NOT_FOUND)
-    }
-
-    override fun artist(artistUri: Uri) = combine(
-        contentResolver.queryFlow(
-            artistsUri,
-            artistsProjection,
-            bundleOf(
-                ContentResolver.QUERY_ARG_SQL_SELECTION to query {
-                    MediaStore.Audio.AudioColumns._ID eq Query.ARG
-                },
-                ContentResolver.QUERY_ARG_SQL_SELECTION_ARGS to arrayOf(
-                    ContentUris.parseId(artistUri).toString(),
-                ),
-            )
-        ).mapEachRowToArtist(),
-        contentResolver.queryFlow(
-            albumsUri,
-            albumsProjection,
-            bundleOf(
-                ContentResolver.QUERY_ARG_SQL_SELECTION to query {
-                    MediaStore.Audio.AlbumColumns.ARTIST_ID eq Query.ARG
-                },
-                ContentResolver.QUERY_ARG_SQL_SELECTION_ARGS to arrayOf(
-                    ContentUris.parseId(artistUri).toString(),
-                ),
-            )
-        ).mapEachRowToAlbum(),
-        contentResolver.queryFlow(
-            audiosUri,
-            audioAlbumIdsProjection,
-            bundleOf(
-                ContentResolver.QUERY_ARG_SQL_SELECTION to query {
-                    MediaStore.Audio.AudioColumns.ARTIST_ID eq Query.ARG
-                },
-                ContentResolver.QUERY_ARG_SQL_SELECTION_ARGS to arrayOf(
-                    ContentUris.parseId(artistUri).toString(),
-                ),
-                ContentResolver.QUERY_ARG_SQL_GROUP_BY to MediaStore.Audio.AudioColumns.ALBUM_ID,
-            )
-        ).mapEachRow {
-            it.getLong(MediaStore.Audio.AudioColumns.ALBUM_ID)
-        }.flatMapLatest { albumIds ->
+    override fun search(
+        providerIdentifier: ProviderIdentifier,
+        query: String,
+    ) = providersManager.flatMapWithInstanceOf(providerIdentifier) {
+        combine(
             contentResolver.queryFlow(
                 albumsUri,
                 albumsProjection,
                 bundleOf(
                     ContentResolver.QUERY_ARG_SQL_SELECTION to query {
-                        (MediaStore.Audio.AudioColumns.ARTIST_ID neq Query.ARG) and
-                                (MediaStore.Audio.AudioColumns._ID `in` List(albumIds.size) {
-                                    Query.ARG
-                                })
+                        MediaStore.Audio.AlbumColumns.ALBUM like Query.ARG
                     },
-                    ContentResolver.QUERY_ARG_SQL_SELECTION_ARGS to arrayOf(
-                        ContentUris.parseId(artistUri).toString(),
-                        *albumIds
-                            .map { it.toString() }
-                            .toTypedArray(),
-                    ),
+                    ContentResolver.QUERY_ARG_SQL_SELECTION_ARGS to arrayOf(query),
                 )
-            ).mapEachRowToAlbum()
-        }
-    ) { artists, albums, appearsInAlbum ->
-        artists.firstOrNull()?.let { artist ->
-            val artistWorks = ArtistWorks(
-                albums,
-                appearsInAlbum,
-                listOf(),
-            )
-
-            Result.Success<_, Error>(artist to artistWorks)
-        } ?: Result.Error(Error.NOT_FOUND)
-    }
-
-    override fun genre(genreUri: Uri) = ContentUris.parseId(genreUri).let { genreId ->
-        val (genreSelection, genreSelectionArgs) = when (genreId) {
-            0L -> (MediaStore.Audio.AudioColumns.GENRE_ID `is` Query.NULL) to arrayOf()
-
-            else -> (MediaStore.Audio.AudioColumns.GENRE_ID eq Query.ARG) to
-                    arrayOf(genreId.toString())
-        }
-
-        combine(
+            ).mapEachRowToAlbum(),
             contentResolver.queryFlow(
-                genresUri,
-                genresProjection,
+                artistsUri,
+                artistsProjection,
                 bundleOf(
                     ContentResolver.QUERY_ARG_SQL_SELECTION to query {
-                        when (genreId) {
-                            0L -> MediaStore.Audio.AudioColumns._ID `is` Query.NULL
-                            else -> MediaStore.Audio.AudioColumns._ID eq Query.ARG
-                        }
+                        MediaStore.Audio.ArtistColumns.ARTIST like Query.ARG
                     },
-                    ContentResolver.QUERY_ARG_SQL_SELECTION_ARGS to arrayOf(
-                        *when (genreId) {
-                            0L -> arrayOf()
-                            else -> arrayOf(genreId.toString())
-                        }
-                    ),
+                    ContentResolver.QUERY_ARG_SQL_SELECTION_ARGS to arrayOf(query),
                 )
-            ).mapEachRowToGenre(),
-            contentResolver.queryFlow(
-                audiosUri,
-                audioAlbumIdsProjection,
-                bundleOf(
-                    ContentResolver.QUERY_ARG_SQL_SELECTION to query {
-                        genreSelection
-                    },
-                    ContentResolver.QUERY_ARG_SQL_SELECTION_ARGS to arrayOf(
-                        *genreSelectionArgs,
-                    ),
-                    ContentResolver.QUERY_ARG_SQL_GROUP_BY to
-                            MediaStore.Audio.AudioColumns.ALBUM_ID,
-                )
-            ).mapEachRow {
-                it.getLong(MediaStore.Audio.AudioColumns.ALBUM_ID)
-            }.flatMapLatest { albumIds ->
-                contentResolver.queryFlow(
-                    albumsUri,
-                    albumsProjection,
-                    bundleOf(
-                        ContentResolver.QUERY_ARG_SQL_SELECTION to query {
-                            MediaStore.Audio.AudioColumns._ID `in` List(albumIds.size) {
-                                Query.ARG
-                            }
-                        },
-                        ContentResolver.QUERY_ARG_SQL_SELECTION_ARGS to arrayOf(
-                            *albumIds
-                                .map { it.toString() }
-                                .toTypedArray(),
-                        ),
-                    )
-                ).mapEachRowToAlbum()
-            },
+            ).mapEachRowToArtist(),
             contentResolver.queryFlow(
                 audiosUri,
                 audiosProjection,
                 bundleOf(
                     ContentResolver.QUERY_ARG_SQL_SELECTION to query {
-                        genreSelection
+                        MediaStore.Audio.AudioColumns.TITLE like Query.ARG
+                    },
+                    ContentResolver.QUERY_ARG_SQL_SELECTION_ARGS to arrayOf(query),
+                )
+            ).mapEachRowToAudio(),
+            contentResolver.queryFlow(
+                genresUri,
+                genresProjection,
+                bundleOf(
+                    ContentResolver.QUERY_ARG_SQL_SELECTION to query {
+                        MediaStore.Audio.GenresColumns.NAME like Query.ARG
+                    },
+                    ContentResolver.QUERY_ARG_SQL_SELECTION_ARGS to arrayOf(query),
+                )
+            ).mapEachRowToGenre(),
+        ) { albums, artists, audios, genres ->
+            albums + artists + audios + genres
+        }.mapLatest { Result.Success(it) }
+    }
+
+    override fun audio(
+        audioUri: Uri
+    ) = withVolumeName(audioUri) { volumeName ->
+        contentResolver.queryFlow(
+            getAudiosUri(volumeName),
+            audiosProjection,
+            bundleOf(
+                ContentResolver.QUERY_ARG_SQL_SELECTION to query {
+                    MediaStore.Audio.AudioColumns._ID eq Query.ARG
+                },
+                ContentResolver.QUERY_ARG_SQL_SELECTION_ARGS to arrayOf(
+                    ContentUris.parseId(audioUri).toString(),
+                ),
+            )
+        ).mapEachRowToAudio(volumeName).mapLatest { audios ->
+            audios.firstOrNull()?.let {
+                Result.Success(it)
+            } ?: Result.Error(Error.NOT_FOUND)
+        }
+    }
+
+    override fun album(albumUri: Uri) = withVolumeName(albumUri) { volumeName ->
+        combine(
+            contentResolver.queryFlow(
+                getAlbumsUri(volumeName),
+                albumsProjection,
+                bundleOf(
+                    ContentResolver.QUERY_ARG_SQL_SELECTION to query {
+                        MediaStore.Audio.AudioColumns._ID eq Query.ARG
                     },
                     ContentResolver.QUERY_ARG_SQL_SELECTION_ARGS to arrayOf(
-                        *genreSelectionArgs,
+                        ContentUris.parseId(albumUri).toString(),
                     ),
                 )
-            ).mapEachRowToAudio()
-        ) { genres, appearsInAlbums, audios ->
-            val genre = genres.firstOrNull() ?: when (genreId) {
-                0L -> Genre.Builder(genreUri).build()
-                else -> null
-            }
+            ).mapEachRowToAlbum(volumeName),
+            contentResolver.queryFlow(
+                getAudiosUri(volumeName),
+                audiosProjection,
+                bundleOf(
+                    ContentResolver.QUERY_ARG_SQL_SELECTION to query {
+                        MediaStore.Audio.AudioColumns.ALBUM_ID eq Query.ARG
+                    },
+                    ContentResolver.QUERY_ARG_SQL_SELECTION_ARGS to arrayOf(
+                        ContentUris.parseId(albumUri).toString(),
+                    ),
+                    ContentResolver.QUERY_ARG_SORT_COLUMNS to arrayOf(
+                        MediaStore.Audio.AudioColumns.TRACK,
+                    )
+                )
+            ).mapEachRowToAudio(volumeName)
+        ) { albums, audios ->
+            albums.firstOrNull()?.let { album ->
+                Result.Success(album to audios)
+            } ?: Result.Error(Error.NOT_FOUND)
+        }
+    }
 
-            genre?.let {
-                val genreContent = GenreContent(
-                    appearsInAlbums,
+    override fun artist(artistUri: Uri) = withVolumeName(artistUri) { volumeName ->
+        combine(
+            contentResolver.queryFlow(
+                getArtistsUri(volumeName),
+                artistsProjection,
+                bundleOf(
+                    ContentResolver.QUERY_ARG_SQL_SELECTION to query {
+                        MediaStore.Audio.AudioColumns._ID eq Query.ARG
+                    },
+                    ContentResolver.QUERY_ARG_SQL_SELECTION_ARGS to arrayOf(
+                        ContentUris.parseId(artistUri).toString(),
+                    ),
+                )
+            ).mapEachRowToArtist(volumeName),
+            contentResolver.queryFlow(
+                getAlbumsUri(volumeName),
+                albumsProjection,
+                bundleOf(
+                    ContentResolver.QUERY_ARG_SQL_SELECTION to query {
+                        MediaStore.Audio.AlbumColumns.ARTIST_ID eq Query.ARG
+                    },
+                    ContentResolver.QUERY_ARG_SQL_SELECTION_ARGS to arrayOf(
+                        ContentUris.parseId(artistUri).toString(),
+                    ),
+                )
+            ).mapEachRowToAlbum(volumeName),
+            contentResolver.queryFlow(
+                getAudiosUri(volumeName),
+                audioAlbumIdsProjection,
+                bundleOf(
+                    ContentResolver.QUERY_ARG_SQL_SELECTION to query {
+                        MediaStore.Audio.AudioColumns.ARTIST_ID eq Query.ARG
+                    },
+                    ContentResolver.QUERY_ARG_SQL_SELECTION_ARGS to arrayOf(
+                        ContentUris.parseId(artistUri).toString(),
+                    ),
+                    ContentResolver.QUERY_ARG_SQL_GROUP_BY to MediaStore.Audio.AudioColumns.ALBUM_ID,
+                )
+            ).mapEachRow {
+                it.getLong(MediaStore.Audio.AudioColumns.ALBUM_ID)
+            }.flatMapLatest { albumIds ->
+                contentResolver.queryFlow(
+                    getAlbumsUri(volumeName),
+                    albumsProjection,
+                    bundleOf(
+                        ContentResolver.QUERY_ARG_SQL_SELECTION to query {
+                            (MediaStore.Audio.AudioColumns.ARTIST_ID neq Query.ARG) and
+                                    (MediaStore.Audio.AudioColumns._ID `in` List(albumIds.size) {
+                                        Query.ARG
+                                    })
+                        },
+                        ContentResolver.QUERY_ARG_SQL_SELECTION_ARGS to arrayOf(
+                            ContentUris.parseId(artistUri).toString(),
+                            *albumIds
+                                .map { it.toString() }
+                                .toTypedArray(),
+                        ),
+                    )
+                ).mapEachRowToAlbum(volumeName)
+            }
+        ) { artists, albums, appearsInAlbum ->
+            artists.firstOrNull()?.let { artist ->
+                val artistWorks = ArtistWorks(
+                    albums,
+                    appearsInAlbum,
                     listOf(),
-                    audios,
                 )
 
-                Result.Success<_, Error>(it to genreContent)
+                Result.Success(artist to artistWorks)
             } ?: Result.Error(Error.NOT_FOUND)
+        }
+    }
+
+    override fun genre(genreUri: Uri) = withVolumeName(genreUri) { volumeName ->
+        ContentUris.parseId(genreUri).let { genreId ->
+            val (genreSelection, genreSelectionArgs) = when (genreId) {
+                0L -> (MediaStore.Audio.AudioColumns.GENRE_ID `is` Query.NULL) to arrayOf()
+
+                else -> (MediaStore.Audio.AudioColumns.GENRE_ID eq Query.ARG) to
+                        arrayOf(genreId.toString())
+            }
+
+            combine(
+                contentResolver.queryFlow(
+                    getGenresUri(volumeName),
+                    genresProjection,
+                    bundleOf(
+                        ContentResolver.QUERY_ARG_SQL_SELECTION to query {
+                            when (genreId) {
+                                0L -> MediaStore.Audio.AudioColumns._ID `is` Query.NULL
+                                else -> MediaStore.Audio.AudioColumns._ID eq Query.ARG
+                            }
+                        },
+                        ContentResolver.QUERY_ARG_SQL_SELECTION_ARGS to arrayOf(
+                            *when (genreId) {
+                                0L -> arrayOf()
+                                else -> arrayOf(genreId.toString())
+                            }
+                        ),
+                    )
+                ).mapEachRowToGenre(volumeName),
+                contentResolver.queryFlow(
+                    getAudiosUri(volumeName),
+                    audioAlbumIdsProjection,
+                    bundleOf(
+                        ContentResolver.QUERY_ARG_SQL_SELECTION to query {
+                            genreSelection
+                        },
+                        ContentResolver.QUERY_ARG_SQL_SELECTION_ARGS to arrayOf(
+                            *genreSelectionArgs,
+                        ),
+                        ContentResolver.QUERY_ARG_SQL_GROUP_BY to
+                                MediaStore.Audio.AudioColumns.ALBUM_ID,
+                    )
+                ).mapEachRow {
+                    it.getLong(MediaStore.Audio.AudioColumns.ALBUM_ID)
+                }.flatMapLatest { albumIds ->
+                    contentResolver.queryFlow(
+                        getAlbumsUri(volumeName),
+                        albumsProjection,
+                        bundleOf(
+                            ContentResolver.QUERY_ARG_SQL_SELECTION to query {
+                                MediaStore.Audio.AudioColumns._ID `in` List(albumIds.size) {
+                                    Query.ARG
+                                }
+                            },
+                            ContentResolver.QUERY_ARG_SQL_SELECTION_ARGS to arrayOf(
+                                *albumIds
+                                    .map { it.toString() }
+                                    .toTypedArray(),
+                            ),
+                        )
+                    ).mapEachRowToAlbum(volumeName)
+                },
+                contentResolver.queryFlow(
+                    getAudiosUri(volumeName),
+                    audiosProjection,
+                    bundleOf(
+                        ContentResolver.QUERY_ARG_SQL_SELECTION to query {
+                            genreSelection
+                        },
+                        ContentResolver.QUERY_ARG_SQL_SELECTION_ARGS to arrayOf(
+                            *genreSelectionArgs,
+                        ),
+                    )
+                ).mapEachRowToAudio(volumeName)
+            ) { genres, appearsInAlbums, audios ->
+                val genre = genres.firstOrNull() ?: when (genreId) {
+                    0L -> Genre.Builder(genreUri).build()
+                    else -> null
+                }
+
+                genre?.let {
+                    val genreContent = GenreContent(
+                        appearsInAlbums,
+                        listOf(),
+                        audios,
+                    )
+
+                    Result.Success(it to genreContent)
+                } ?: Result.Error(Error.NOT_FOUND)
+            }
         }
     }
 
     override fun playlist(playlistUri: Uri) = when {
         playlistUri == favoritesUri -> database.getFavoriteDao().getAll().flatMapLatest {
-            audios(it)
-                .mapLatest { items ->
-                    Result.Success<_, Error>(favoritesPlaylist to items.filterNotNull())
-                }
+            audios(it).mapLatest { items ->
+                Result.Success(favoritesPlaylist to items.filterNotNull())
+            }
         }
 
         else -> database.getPlaylistDao().getPlaylistWithItems(
@@ -499,10 +609,9 @@ class LocalDataSource(
             data?.let { playlistWithItems ->
                 val playlist = playlistWithItems.playlist.toModel()
 
-                audios(playlistWithItems.items)
-                    .mapLatest { items ->
-                        Result.Success(playlist to items.filterNotNull())
-                    }
+                audios(playlistWithItems.items).mapLatest { items ->
+                    Result.Success<_, Error>(playlist to items.filterNotNull())
+                }
             } ?: flowOf(Result.Error(Error.NOT_FOUND))
         }
     }
@@ -526,7 +635,10 @@ class LocalDataSource(
         Result.Error<Lyrics, _>(Error.NOT_IMPLEMENTED)
     )
 
-    override suspend fun createPlaylist(name: String) = database.getPlaylistDao().create(
+    override suspend fun createPlaylist(
+        providerIdentifier: ProviderIdentifier,
+        name: String,
+    ) = database.getPlaylistDao().create(
         name
     ).let {
         Result.Success<_, Error>(ContentUris.withAppendedId(playlistsBaseUri, it))
@@ -590,207 +702,222 @@ class LocalDataSource(
     }
 
     fun audios() = contentResolver.queryFlow(
-        audiosUri,
+        getAudiosUri(MediaStore.VOLUME_EXTERNAL),
         audiosProjection
-    ).mapEachRowToAudio()
+    ).mapEachRowToAudio(MediaStore.VOLUME_EXTERNAL)
 
     /**
      * Given a list of audio URIs, return a list of [Audio], where null if the audio hasn't been
      * found.
      */
-    private fun audios(audioUris: List<Uri>) = contentResolver.queryFlow(
-        audiosUri,
-        audiosProjection,
-        bundleOf(
-            ContentResolver.QUERY_ARG_SQL_SELECTION to query {
-                MediaStore.Audio.AudioColumns._ID `in` List(audioUris.size) {
-                    Query.ARG
-                }
-            },
-            ContentResolver.QUERY_ARG_SQL_SELECTION_ARGS to audioUris.map {
-                ContentUris.parseId(it).toString()
-            }.toTypedArray(),
+    fun audios(audioUris: List<Uri>) = audioUris.map {
+        ContentUris.parseId(it).toString()
+    }.let { audioIds ->
+        contentResolver.queryFlow(
+            getAudiosUri(MediaStore.VOLUME_EXTERNAL),
+            audiosProjection,
+            bundleOf(
+                ContentResolver.QUERY_ARG_SQL_SELECTION to query {
+                    MediaStore.Audio.AudioColumns._ID `in` List(audioIds.size) {
+                        Query.ARG
+                    }
+                },
+                ContentResolver.QUERY_ARG_SQL_SELECTION_ARGS to audioIds.toTypedArray(),
+            )
         )
-    )
-        .mapEachRowToAudio()
-        .mapLatest { audios ->
-            audioUris.map { audioUri ->
-                audios.firstOrNull { it.uri == audioUri }
-            }
-        }
-
-    private fun mostPlayedAlbums(nTopTracks: Int = 100) =
-        database.getLocalMediaStatsProviderDao()
-            .getAllByPlayCount(nTopTracks)
-            .map { stats -> stats.map { it.audioUri } }
-            .flatMapLatest { uris ->
-                contentResolver.queryFlow(
-                    audiosUri,
-                    arrayOf(MediaStore.Audio.AlbumColumns.ALBUM_ID),
-                    bundleOf(
-                        ContentResolver.QUERY_ARG_SQL_SELECTION to query {
-                            MediaStore.Audio.AudioColumns._ID `in` List(uris.size) {
-                                Query.ARG
-                            }
-                        },
-                        ContentResolver.QUERY_ARG_SQL_SELECTION_ARGS to uris.map {
-                            ContentUris.parseId(it).toString()
-                        }.toTypedArray(),
-                    )
-                )
-            }
-            .mapEachRow { it.getLong(MediaStore.Audio.AlbumColumns.ALBUM_ID) }
-            .map { it.distinct() }
-            .flatMapLatest { uris ->
-                contentResolver.queryFlow(
-                    albumsUri,
-                    albumsProjection,
-                    bundleOf(
-                        ContentResolver.QUERY_ARG_SQL_SELECTION to query {
-                            MediaStore.Audio.AlbumColumns.ALBUM_ID `in` List(uris.size) {
-                                Query.ARG
-                            }
-                        },
-                        ContentResolver.QUERY_ARG_SQL_SELECTION_ARGS to uris.map {
-                            it.toString()
-                        }.toTypedArray(),
-                    )
-                ).mapEachRowToAlbum()
-            }
-            .mapLatest {
-                Result.Success<List<Album>, Error>(it)
-            }
-
-    private fun Flow<Cursor?>.mapEachRowToAlbum() = mapEachRow { columnIndexCache ->
-        val albumId = columnIndexCache.getLong(MediaStore.Audio.AudioColumns._ID)
-        val album = columnIndexCache.getString(MediaStore.Audio.AlbumColumns.ALBUM)
-        val artistId = columnIndexCache.getLong(MediaStore.Audio.AlbumColumns.ARTIST_ID)
-        val artist = columnIndexCache.getString(MediaStore.Audio.AlbumColumns.ARTIST)
-        val lastYear = columnIndexCache.getInt(MediaStore.Audio.AlbumColumns.LAST_YEAR)
-
-        val uri = ContentUris.withAppendedId(albumsUri, albumId)
-        val artistUri = ContentUris.withAppendedId(artistsUri, artistId)
-
-        val albumArtUri = ContentUris.withAppendedId(albumsArtUri, albumId)
-
-        val thumbnail = Thumbnail.Builder()
-            .setUri(albumArtUri)
-            .setType(Thumbnail.Type.FRONT_COVER)
-            .build()
-
-        Album.Builder(uri)
-            .setThumbnail(thumbnail)
-            .setTitle(album.takeIf { it != MediaStore.UNKNOWN_STRING })
-            .setArtistUri(artistUri)
-            .setArtistName(artist.takeIf { it != MediaStore.UNKNOWN_STRING })
-            .setYear(lastYear.takeIf { it != 0 })
-            .build()
-    }
-
-    private fun Flow<Cursor?>.mapEachRowToArtist() = mapEachRow { columnIndexCache ->
-        val artistId = columnIndexCache.getLong(MediaStore.Audio.AudioColumns._ID)
-        val artist = columnIndexCache.getString(MediaStore.Audio.ArtistColumns.ARTIST)
-
-        val uri = ContentUris.withAppendedId(artistsUri, artistId)
-
-        Artist.Builder(uri)
-            .setName(artist.takeIf { it != MediaStore.UNKNOWN_STRING })
-            .build()
-    }
-
-    private fun Flow<Cursor?>.mapEachRowToAudio() = mapEachRow { columnIndexCache ->
-        val audioId = columnIndexCache.getLong(MediaStore.Audio.AudioColumns._ID)
-        val mimeType = columnIndexCache.getString(MediaStore.Audio.AudioColumns.MIME_TYPE)
-        val title = columnIndexCache.getString(MediaStore.Audio.AudioColumns.TITLE)
-        val isMusic = columnIndexCache.getBoolean(MediaStore.Audio.AudioColumns.IS_MUSIC)
-        val isPodcast = columnIndexCache.getBoolean(MediaStore.Audio.AudioColumns.IS_PODCAST)
-        val isAudiobook = columnIndexCache.getBoolean(MediaStore.Audio.AudioColumns.IS_AUDIOBOOK)
-        val duration = columnIndexCache.getLong(MediaStore.Audio.AudioColumns.DURATION)
-        val artistId = columnIndexCache.getLong(MediaStore.Audio.AudioColumns.ARTIST_ID)
-        val artist = columnIndexCache.getString(MediaStore.Audio.AudioColumns.ARTIST)
-        val albumId = columnIndexCache.getLong(MediaStore.Audio.AudioColumns.ALBUM_ID)
-        val album = columnIndexCache.getString(MediaStore.Audio.AudioColumns.ALBUM)
-        val track = columnIndexCache.getInt(MediaStore.Audio.AudioColumns.TRACK)
-        val genreId = columnIndexCache.getLong(MediaStore.Audio.AudioColumns.GENRE_ID)
-        val genre = columnIndexCache.getStringOrNull(MediaStore.Audio.AudioColumns.GENRE)
-        val year = columnIndexCache.getInt(MediaStore.Audio.AudioColumns.YEAR)
-
-        val isRecording = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            columnIndexCache.getBoolean(MediaStore.Audio.AudioColumns.IS_RECORDING)
-        } else {
-            false
-        }
-
-        val uri = ContentUris.withAppendedId(audiosUri, audioId)
-        val artistUri = ContentUris.withAppendedId(artistsUri, artistId)
-        val albumUri = ContentUris.withAppendedId(albumsUri, albumId)
-        val genreUri = ContentUris.withAppendedId(genresUri, genreId)
-
-        val audioType = when {
-            isMusic -> Audio.Type.MUSIC
-            isPodcast -> Audio.Type.PODCAST
-            isAudiobook -> Audio.Type.AUDIOBOOK
-            isRecording -> Audio.Type.RECORDING
-            else -> Audio.Type.MUSIC
-        }
-
-        val (discNumber, discTrack) = track.takeUnless { it == 0 }?.let {
-            when (track > 1000) {
-                true -> track / 1000 to track % 1000
-                false -> null to track
-            }
-        } ?: (null to null)
-
-        val albumArtUri = uri.buildUpon()
-            .appendPath(AUDIO_ALBUMART)
-            .build()
-
-        val thumbnail = Thumbnail.Builder()
-            .setUri(albumArtUri)
-            .setType(Thumbnail.Type.FRONT_COVER)
-            .build()
-
-        Audio.Builder(uri)
-            .setThumbnail(thumbnail)
-            .setPlaybackUri(uri)
-            .setMimeType(mimeType)
-            .setTitle(title)
-            .setType(audioType)
-            .setDurationMs(duration)
-            .setArtistUri(artistUri)
-            .setArtistName(artist.takeIf { it != MediaStore.UNKNOWN_STRING })
-            .setAlbumUri(albumUri)
-            .setAlbumTitle(album.takeIf { it != MediaStore.UNKNOWN_STRING })
-            .setDiscNumber(discNumber)
-            .setTrackNumber(discTrack)
-            .setGenreUri(genreUri)
-            .setGenreName(genre)
-            .setYear(year.takeIf { it != 0 })
-            .build()
-    }.flatMapLatest { audios ->
-        when (audios.isNotEmpty()) {
-            true -> combine(
-                audios.map { audio ->
-                    database.getFavoriteDao().containsFlow(audio.uri)
-                        .mapLatest { isFavorite ->
-                            audio.copy(isFavorite = isFavorite)
-                        }
+            .mapEachRowToAudio(MediaStore.VOLUME_EXTERNAL)
+            .mapLatest { audios ->
+                audioUris.map { audioUri ->
+                    audios.firstOrNull {
+                        it.uri.lastPathSegment == audioUri.lastPathSegment
+                    }?.copy(uri = audioUri)
                 }
-            ) { it.toList() }
+            }
+    }
 
-            false -> flowOf(listOf())
+    private fun <T> withVolumeName(
+        mediaItemUri: Uri,
+        block: (volumeName: String) -> Flow<Result<T, Error>>,
+    ) = MediaStoreAudioUri.from(mediaItemUri)?.let {
+        block(it.volumeName)
+    } ?: flowOf(Result.Error(Error.NOT_FOUND))
+
+    private fun getAlbumsUri(
+        volumeName: String
+    ): Uri = MediaStore.Audio.Albums.getContentUri(volumeName)
+
+    private fun getArtistsUri(
+        volumeName: String
+    ): Uri = MediaStore.Audio.Artists.getContentUri(volumeName)
+
+    private fun getAudiosUri(
+        volumeName: String
+    ): Uri = MediaStore.Audio.Media.getContentUri(volumeName)
+
+    private fun getGenresUri(
+        volumeName: String
+    ): Uri = MediaStore.Audio.Genres.getContentUri(volumeName)
+
+    private fun getAlbumsArtUri(
+        volumeName: String
+    ): Uri = MediaStore.AUTHORITY_URI.buildUpon()
+        .appendPath(volumeName)
+        .appendPath("audio")
+        .appendPath(AUDIO_ALBUMART)
+        .build()
+
+    private fun Flow<Cursor?>.mapEachRowToAlbum(volumeName: String) = run {
+        val albumsUri = getAlbumsUri(volumeName)
+        val artistsUri = getArtistsUri(volumeName)
+        val albumsArtUri = getAlbumsArtUri(volumeName)
+
+        mapEachRow { columnIndexCache ->
+            val albumId = columnIndexCache.getLong(MediaStore.Audio.AudioColumns._ID)
+            val album = columnIndexCache.getString(MediaStore.Audio.AlbumColumns.ALBUM)
+            val artistId = columnIndexCache.getLong(MediaStore.Audio.AlbumColumns.ARTIST_ID)
+            val artist = columnIndexCache.getString(MediaStore.Audio.AlbumColumns.ARTIST)
+            val lastYear = columnIndexCache.getInt(MediaStore.Audio.AlbumColumns.LAST_YEAR)
+
+            val uri = ContentUris.withAppendedId(albumsUri, albumId)
+            val artistUri = ContentUris.withAppendedId(artistsUri, artistId)
+
+            val albumArtUri = ContentUris.withAppendedId(albumsArtUri, albumId)
+
+            val thumbnail = Thumbnail.Builder()
+                .setUri(albumArtUri)
+                .setType(Thumbnail.Type.FRONT_COVER)
+                .build()
+
+            Album.Builder(uri)
+                .setThumbnail(thumbnail)
+                .setTitle(album.takeIf { it != MediaStore.UNKNOWN_STRING })
+                .setArtistUri(artistUri)
+                .setArtistName(artist.takeIf { it != MediaStore.UNKNOWN_STRING })
+                .setYear(lastYear.takeIf { it != 0 })
+                .build()
         }
     }
 
-    private fun Flow<Cursor?>.mapEachRowToGenre() = mapEachRow { columnIndexCache ->
-        val genreId = columnIndexCache.getLong(MediaStore.Audio.AudioColumns._ID)
-        val name = columnIndexCache.getStringOrNull(MediaStore.Audio.GenresColumns.NAME)
+    private fun Flow<Cursor?>.mapEachRowToArtist(volumeName: String) = run {
+        val artistsUri = MediaStore.Audio.Artists.getContentUri(volumeName)
 
-        val uri = ContentUris.withAppendedId(genresUri, genreId)
+        mapEachRow { columnIndexCache ->
+            val artistId = columnIndexCache.getLong(MediaStore.Audio.AudioColumns._ID)
+            val artist = columnIndexCache.getString(MediaStore.Audio.ArtistColumns.ARTIST)
 
-        Genre.Builder(uri)
-            .setName(name)
-            .build()
+            val uri = ContentUris.withAppendedId(artistsUri, artistId)
+
+            Artist.Builder(uri)
+                .setName(artist.takeIf { it != MediaStore.UNKNOWN_STRING })
+                .build()
+        }
+    }
+
+    private fun Flow<Cursor?>.mapEachRowToAudio(volumeName: String) = run {
+        val audiosUri = MediaStore.Audio.Media.getContentUri(volumeName)
+        val artistsUri = MediaStore.Audio.Artists.getContentUri(volumeName)
+        val albumsUri = MediaStore.Audio.Albums.getContentUri(volumeName)
+        val genresUri = MediaStore.Audio.Genres.getContentUri(volumeName)
+
+        mapEachRow { columnIndexCache ->
+            val audioId = columnIndexCache.getLong(MediaStore.Audio.AudioColumns._ID)
+            val mimeType = columnIndexCache.getString(MediaStore.Audio.AudioColumns.MIME_TYPE)
+            val title = columnIndexCache.getString(MediaStore.Audio.AudioColumns.TITLE)
+            val isMusic = columnIndexCache.getBoolean(MediaStore.Audio.AudioColumns.IS_MUSIC)
+            val isPodcast = columnIndexCache.getBoolean(MediaStore.Audio.AudioColumns.IS_PODCAST)
+            val isAudiobook =
+                columnIndexCache.getBoolean(MediaStore.Audio.AudioColumns.IS_AUDIOBOOK)
+            val duration = columnIndexCache.getLong(MediaStore.Audio.AudioColumns.DURATION)
+            val artistId = columnIndexCache.getLong(MediaStore.Audio.AudioColumns.ARTIST_ID)
+            val artist = columnIndexCache.getString(MediaStore.Audio.AudioColumns.ARTIST)
+            val albumId = columnIndexCache.getLong(MediaStore.Audio.AudioColumns.ALBUM_ID)
+            val album = columnIndexCache.getString(MediaStore.Audio.AudioColumns.ALBUM)
+            val track = columnIndexCache.getInt(MediaStore.Audio.AudioColumns.TRACK)
+            val genreId = columnIndexCache.getLong(MediaStore.Audio.AudioColumns.GENRE_ID)
+            val genre = columnIndexCache.getStringOrNull(MediaStore.Audio.AudioColumns.GENRE)
+            val year = columnIndexCache.getInt(MediaStore.Audio.AudioColumns.YEAR)
+
+            val isRecording = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                columnIndexCache.getBoolean(MediaStore.Audio.AudioColumns.IS_RECORDING)
+            } else {
+                false
+            }
+
+            val uri = ContentUris.withAppendedId(audiosUri, audioId)
+            val artistUri = ContentUris.withAppendedId(artistsUri, artistId)
+            val albumUri = ContentUris.withAppendedId(albumsUri, albumId)
+            val genreUri = ContentUris.withAppendedId(genresUri, genreId)
+
+            val audioType = when {
+                isMusic -> Audio.Type.MUSIC
+                isPodcast -> Audio.Type.PODCAST
+                isAudiobook -> Audio.Type.AUDIOBOOK
+                isRecording -> Audio.Type.RECORDING
+                else -> Audio.Type.MUSIC
+            }
+
+            val (discNumber, discTrack) = track.takeUnless { it == 0 }?.let {
+                when (track > 1000) {
+                    true -> track / 1000 to track % 1000
+                    false -> null to track
+                }
+            } ?: (null to null)
+
+            val albumArtUri = uri.buildUpon()
+                .appendPath(AUDIO_ALBUMART)
+                .build()
+
+            val thumbnail = Thumbnail.Builder()
+                .setUri(albumArtUri)
+                .setType(Thumbnail.Type.FRONT_COVER)
+                .build()
+
+            Audio.Builder(uri)
+                .setThumbnail(thumbnail)
+                .setPlaybackUri(uri)
+                .setMimeType(mimeType)
+                .setTitle(title)
+                .setType(audioType)
+                .setDurationMs(duration)
+                .setArtistUri(artistUri)
+                .setArtistName(artist.takeIf { it != MediaStore.UNKNOWN_STRING })
+                .setAlbumUri(albumUri)
+                .setAlbumTitle(album.takeIf { it != MediaStore.UNKNOWN_STRING })
+                .setDiscNumber(discNumber)
+                .setTrackNumber(discTrack)
+                .setGenreUri(genreUri)
+                .setGenreName(genre)
+                .setYear(year.takeIf { it != 0 })
+                .build()
+        }.flatMapLatest { audios ->
+            when (audios.isNotEmpty()) {
+                true -> combine(
+                    audios.map { audio ->
+                        database.getFavoriteDao().containsFlow(audio.uri)
+                            .mapLatest { isFavorite ->
+                                audio.copy(isFavorite = isFavorite)
+                            }
+                    }
+                ) { it.toList() }
+
+                false -> flowOf(listOf())
+            }
+        }
+    }
+
+    private fun Flow<Cursor?>.mapEachRowToGenre(volumeName: String) = run {
+        val genresUri = MediaStore.Audio.Genres.getContentUri(volumeName)
+
+        mapEachRow { columnIndexCache ->
+            val genreId = columnIndexCache.getLong(MediaStore.Audio.AudioColumns._ID)
+            val name = columnIndexCache.getStringOrNull(MediaStore.Audio.GenresColumns.NAME)
+
+            val uri = ContentUris.withAppendedId(genresUri, genreId)
+
+            Genre.Builder(uri)
+                .setName(name)
+                .build()
+        }
     }
 
     companion object {
@@ -877,5 +1004,13 @@ class LocalDataSource(
             Playlist.Builder(ContentUris.withAppendedId(playlistsBaseUri, id))
                 .setName(name)
                 .build()
+
+        val ARG_VOLUME_NAME = ProviderArgument(
+            "volume_name",
+            String::class,
+            R.string.provider_argument_volume_name,
+            required = true,
+            hidden = false,
+        )
     }
 }
