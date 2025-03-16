@@ -22,10 +22,10 @@ open class ProvidersViewModel(application: Application) : TwelveViewModel(applic
         )
 
     val providersToIsCurrent = combine(
-        mediaRepository.allVisibleProviders,
+        providersRepository.allProviders,
         navigationProvider,
-    ) { allVisibleProviders, navigationProvider ->
-        allVisibleProviders.map { provider ->
+    ) { allProviders, navigationProvider ->
+        allProviders.map { provider ->
             provider to provider.areItemsTheSame(navigationProvider)
         }
     }

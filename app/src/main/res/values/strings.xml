@@ -134,6 +134,7 @@
     <string name="provider_argument_username">Username</string>
     <string name="provider_argument_password">Password</string>
     <string name="provider_argument_use_legacy_authentication">Use legacy authentication</string>
+    <string name="provider_argument_volume_name">Volume name</string>
 
     <!-- Provider arguments validation errors -->
     <string name="provider_argument_validation_error_required">A value is required</string>
