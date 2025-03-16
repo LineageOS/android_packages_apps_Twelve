@@ -170,6 +170,7 @@ class PlaybackService : MediaLibraryService(), LifecycleOwner {
         MediaRepositoryTree(
             applicationContext,
             mediaRepository,
+            providersRepository,
         )
     }
 
@@ -183,6 +184,10 @@ class PlaybackService : MediaLibraryService(), LifecycleOwner {
 
     private val mediaRepository by lazy {
         (application as TwelveApplication).mediaRepository
+    }
+
+    private val providersRepository by lazy {
+        (application as TwelveApplication).providersRepository
     }
 
     private val audioSessionId by lazy {
