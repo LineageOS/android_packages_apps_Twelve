@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1afefcad_fbf2dbd3",
+        "filename": "app/src/main/java/org/lineageos/twelve/services/PlaybackService.kt",
+        "patchSetId": 1
+      },
+      "lineNbr": 229,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2025-03-17T16:07:40Z",
+      "side": 1,
+      "message": "just get the matching media item along its index... don\u0027t iterate looks weird",
+      "revId": "cc5aa78b84eacd4a9bb3f49b7972038f7c91a347",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
