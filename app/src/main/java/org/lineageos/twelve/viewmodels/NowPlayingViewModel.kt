@@ -427,6 +427,12 @@ open class NowPlayingViewModel(application: Application) : TwelveViewModel(appli
         }
     }
 
+    fun seekToRelativePosition(positionMs: Long) {
+        mediaController.value?.let {
+            it.seekTo(it.currentPosition + positionMs)
+        }
+    }
+
     fun toggleShuffleMode() {
         shuffleModeEnabled = shuffleModeEnabled.not()
     }
