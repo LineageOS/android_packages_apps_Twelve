@@ -51,6 +51,7 @@ import org.lineageos.twelve.models.FlowResult.Companion.getOrNull
 import org.lineageos.twelve.models.PlaybackState
 import org.lineageos.twelve.models.RepeatMode
 import org.lineageos.twelve.models.Result
+import org.lineageos.twelve.ui.views.AlbumArtDoubleTapImageView
 import org.lineageos.twelve.ui.visualizer.VisualizerNVDataSource
 import org.lineageos.twelve.utils.PermissionsChecker
 import org.lineageos.twelve.utils.PermissionsUtils
@@ -69,7 +70,7 @@ class NowPlayingFragment : Fragment(R.layout.fragment_now_playing) {
 
     // Views
     private val albumArtConstraintLayout by getViewProperty<ConstraintLayout?>(R.id.albumArtConstraintLayout)
-    private val albumArtImageView by getViewProperty<ImageView>(R.id.albumArtImageView)
+    private val albumArtDoubleTapImageView by getViewProperty<AlbumArtDoubleTapImageView>(R.id.albumArtDoubleTapImageView)
     private val albumTitleTextView by getViewProperty<TextView>(R.id.albumTitleTextView)
     private val audioInformationMaterialButton by getViewProperty<MaterialButton>(R.id.audioInformationMaterialButton)
     private val audioTitleTextView by getViewProperty<TextView>(R.id.audioTitleTextView)
@@ -191,6 +192,13 @@ class NowPlayingFragment : Fragment(R.layout.fragment_now_playing) {
         albumTitleTextView.isSelected = true
 
         // Media controls
+        albumArtDoubleTapImageView.setOnDoubleLeftTapListener {
+            viewModel.seekToRelativePosition(-10L * SECONDS_TO_MILLIS)
+        }
+        albumArtDoubleTapImageView.setOnDoubleRightTapListener {
+            viewModel.seekToRelativePosition(10L * SECONDS_TO_MILLIS)
+        }
+
         progressSlider.setLabelFormatter {
             TimestampFormatter.formatTimestampMillis(it)
         }
@@ -373,7 +381,7 @@ class NowPlayingFragment : Fragment(R.layout.fragment_now_playing) {
                             }
 
                             is Result.Success -> {
-                                albumArtImageView.loadThumbnail(
+                                albumArtDoubleTapImageView.loadThumbnail(
                                     it.data,
                                     placeholder = R.drawable.ic_music_note,
                                 )
@@ -619,5 +627,7 @@ class NowPlayingFragment : Fragment(R.layout.fragment_now_playing) {
         private val decimalFormatSymbols = DecimalFormatSymbols(Locale.ROOT)
 
         private val playbackSpeedFormatter = DecimalFormat("0.#", decimalFormatSymbols)
+
+        private const val SECONDS_TO_MILLIS = 1000L
     }
 }

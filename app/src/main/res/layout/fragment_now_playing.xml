@@ -95,8 +95,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
-                    <ImageView
-                        android:id="@+id/albumArtImageView"
+                    <org.lineageos.twelve.ui.views.AlbumArtDoubleTapImageView
+                        android:id="@+id/albumArtDoubleTapImageView"
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
                         android:contentDescription="@string/content_description_thumbnail"
@@ -111,7 +111,7 @@
                         android:layout_height="0dp"
                         android:background="#55000000"
                         android:visibility="visible"
-                        app:layout_constraintBottom_toBottomOf="@+id/albumArtImageView"
+                        app:layout_constraintBottom_toBottomOf="@+id/albumArtDoubleTapImageView"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
