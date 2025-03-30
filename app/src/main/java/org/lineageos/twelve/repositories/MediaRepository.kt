@@ -26,6 +26,7 @@ import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.launch
 import okhttp3.Cache
 import org.lineageos.twelve.database.TwelveDatabase
+import org.lineageos.twelve.datasources.FileDataSource
 import org.lineageos.twelve.datasources.JellyfinDataSource
 import org.lineageos.twelve.datasources.MediaDataSource
 import org.lineageos.twelve.datasources.MediaStoreDataSource
@@ -97,11 +98,20 @@ class MediaRepository(
         cache,
     )
 
+    /**
+     * File data source.
+     */
+    private val fileDataSource = FileDataSource(
+        context.contentResolver,
+        cache,
+    )
+
     private val allDataSources = MutableStateFlow(
         listOf(
             mediaStoreDataSource,
             subsonicDataSource,
             jellyfinDataSource,
+            fileDataSource,
         )
     ).asStateFlow()
 
