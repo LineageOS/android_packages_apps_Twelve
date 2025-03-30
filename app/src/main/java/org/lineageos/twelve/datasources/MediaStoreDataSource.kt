@@ -21,7 +21,7 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.mapLatest
 import org.lineageos.twelve.R
 import org.lineageos.twelve.database.TwelveDatabase
-import org.lineageos.twelve.datasources.local.MediaStoreAudioUri
+import org.lineageos.twelve.datasources.mediastore.MediaStoreAudioUri
 import org.lineageos.twelve.ext.isRelativeTo
 import org.lineageos.twelve.ext.mapEachRow
 import org.lineageos.twelve.ext.queryFlow
@@ -64,13 +64,13 @@ import kotlin.random.Random
  * [MediaStore.Audio] backed data source.
  */
 @OptIn(ExperimentalCoroutinesApi::class)
-class LocalDataSource(
+class MediaStoreDataSource(
     private val contentResolver: ContentResolver,
     coroutineScope: CoroutineScope,
     providersRepository: ProvidersRepository,
     private val database: TwelveDatabase,
 ) : MediaDataSource {
-    private inner class LocalInstance(
+    private inner class MediaStoreInstance(
         private val volumeName: String,
     ) : ProvidersManager.Instance {
         val albumsUri by lazy { getAlbumsUri(volumeName) }
@@ -138,11 +138,11 @@ class LocalDataSource(
     private val providersManager = ProvidersManager(
         coroutineScope,
         providersRepository,
-        ProviderType.LOCAL,
+        ProviderType.MEDIASTORE,
     ) { _, arguments ->
         val volumeName = arguments.requireArgument(ARG_VOLUME_NAME)
 
-        LocalInstance(volumeName)
+        MediaStoreInstance(volumeName)
     }
 
     override fun status(providerIdentifier: ProviderIdentifier) = flowOf(

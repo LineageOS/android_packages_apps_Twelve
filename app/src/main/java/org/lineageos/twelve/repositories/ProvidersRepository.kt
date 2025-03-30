@@ -25,7 +25,7 @@ import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.shareIn
 import org.lineageos.twelve.database.TwelveDatabase
 import org.lineageos.twelve.datasources.JellyfinDataSource
-import org.lineageos.twelve.datasources.LocalDataSource
+import org.lineageos.twelve.datasources.MediaStoreDataSource
 import org.lineageos.twelve.datasources.SubsonicDataSource
 import org.lineageos.twelve.ext.SPLIT_LOCAL_DEVICES_KEY
 import org.lineageos.twelve.ext.preferenceFlow
@@ -47,7 +47,7 @@ class ProvidersRepository(
      */
     private val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
 
-    // Local
+    // MediaStore
     private val storageManager = context.getSystemService(StorageManager::class.java)
 
     private val mediaStoreVolumes = storageManager.storageVolumesFlow()
@@ -59,7 +59,7 @@ class ProvidersRepository(
         }
         .distinctUntilChanged()
 
-    private val localProviders = combine(
+    private val mediaStoreProviders = combine(
         sharedPreferences.preferenceFlow(
             SPLIT_LOCAL_DEVICES_KEY,
             getter = SharedPreferences::splitLocalDevices,
@@ -71,22 +71,22 @@ class ProvidersRepository(
                 true -> mediaStoreVolumes.forEach {
                     add(
                         Provider(
-                            ProviderType.LOCAL,
+                            ProviderType.MEDIASTORE,
                             it.mediaStoreVolumeName.hashCode().toLong(),
                             it.getDescription(context),
                         ) to bundleOf(
-                            LocalDataSource.ARG_VOLUME_NAME.key to it.mediaStoreVolumeName,
+                            MediaStoreDataSource.ARG_VOLUME_NAME.key to it.mediaStoreVolumeName,
                         )
                     )
                 }
 
                 false -> add(
                     Provider(
-                        ProviderType.LOCAL,
+                        ProviderType.MEDIASTORE,
                         0L,
                         Build.MODEL,
                     ) to bundleOf(
-                        LocalDataSource.ARG_VOLUME_NAME.key to MediaStore.VOLUME_EXTERNAL,
+                        MediaStoreDataSource.ARG_VOLUME_NAME.key to MediaStore.VOLUME_EXTERNAL,
                     )
                 )
             }
@@ -129,7 +129,7 @@ class ProvidersRepository(
 
     // All providers
     val allProvidersToArguments = combine(
-        localProviders,
+        mediaStoreProviders,
         subsonicProviders,
         jellyfinProviders,
     ) { it ->
@@ -190,7 +190,7 @@ class ProvidersRepository(
     suspend fun addProvider(
         providerType: ProviderType, name: String, arguments: Bundle
     ) = when (providerType) {
-        ProviderType.LOCAL -> throw Exception("Cannot create local providers")
+        ProviderType.MEDIASTORE -> throw Exception("Cannot create MediaStore providers")
 
         ProviderType.SUBSONIC -> {
             val server = arguments.requireArgument(SubsonicDataSource.ARG_SERVER)
@@ -233,7 +233,7 @@ class ProvidersRepository(
         arguments: Bundle
     ) {
         when (providerIdentifier.type) {
-            ProviderType.LOCAL -> throw Exception("Cannot update local providers")
+            ProviderType.MEDIASTORE -> throw Exception("Cannot update MediaStore providers")
 
             ProviderType.SUBSONIC -> {
                 val server = arguments.requireArgument(SubsonicDataSource.ARG_SERVER)
@@ -276,7 +276,7 @@ class ProvidersRepository(
      */
     suspend fun deleteProvider(providerIdentifier: ProviderIdentifier) {
         when (providerIdentifier.type) {
-            ProviderType.LOCAL -> throw Exception("Cannot delete local providers")
+            ProviderType.MEDIASTORE -> throw Exception("Cannot delete MediaStore providers")
 
             ProviderType.SUBSONIC -> database.getSubsonicProviderDao().delete(
                 providerIdentifier.typeId

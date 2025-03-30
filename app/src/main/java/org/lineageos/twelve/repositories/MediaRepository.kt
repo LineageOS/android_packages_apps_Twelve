@@ -27,8 +27,8 @@ import kotlinx.coroutines.launch
 import okhttp3.Cache
 import org.lineageos.twelve.database.TwelveDatabase
 import org.lineageos.twelve.datasources.JellyfinDataSource
-import org.lineageos.twelve.datasources.LocalDataSource
 import org.lineageos.twelve.datasources.MediaDataSource
+import org.lineageos.twelve.datasources.MediaStoreDataSource
 import org.lineageos.twelve.datasources.SubsonicDataSource
 import org.lineageos.twelve.ext.DEFAULT_PROVIDER_KEY
 import org.lineageos.twelve.ext.defaultProvider
@@ -67,9 +67,9 @@ class MediaRepository(
     private val cache = Cache(context.cacheDir, 50 * 1024 * 1024)
 
     /**
-     * Local data source.
+     * MediaStore data source.
      */
-    private val localDataSource = LocalDataSource(
+    private val mediaStoreDataSource = MediaStoreDataSource(
         context.contentResolver,
         scope,
         providersRepository,
@@ -99,7 +99,7 @@ class MediaRepository(
 
     private val allDataSources = MutableStateFlow(
         listOf(
-            localDataSource,
+            mediaStoreDataSource,
             subsonicDataSource,
             jellyfinDataSource,
         )
@@ -338,7 +338,7 @@ class MediaRepository(
     private fun getDataSource(
         providerIdentifier: ProviderIdentifier,
     ) = when (providerIdentifier.type) {
-        ProviderType.LOCAL -> localDataSource
+        ProviderType.MEDIASTORE -> mediaStoreDataSource
         ProviderType.SUBSONIC -> subsonicDataSource
         ProviderType.JELLYFIN -> jellyfinDataSource
     }
@@ -424,7 +424,7 @@ class MediaRepository(
     private suspend fun gcLocalMediaStats() {
         val statsDao = database.getLocalMediaStatsProviderDao()
         val allStats = statsDao.getAll()
-        val inSource = localDataSource.audios().mapLatest { it }.first()
+        val inSource = mediaStoreDataSource.audios().mapLatest { it }.first()
 
         val removedMedia = allStats.mapNotNull {
             val notPresent = inSource.none { audio ->

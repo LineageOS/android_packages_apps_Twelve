@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package org.lineageos.twelve.datasources.local
+package org.lineageos.twelve.datasources.mediastore
 
 import android.content.ContentResolver
 import android.net.Uri
