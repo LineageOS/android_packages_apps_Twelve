@@ -773,9 +773,9 @@ class MediaStoreDataSource(
 
         mapEachRow { columnIndexCache ->
             val albumId = columnIndexCache.getLong(MediaStore.Audio.AudioColumns._ID)
-            val album = columnIndexCache.getString(MediaStore.Audio.AlbumColumns.ALBUM)
+            val album = columnIndexCache.getStringOrNull(MediaStore.Audio.AlbumColumns.ALBUM)
             val artistId = columnIndexCache.getLong(MediaStore.Audio.AlbumColumns.ARTIST_ID)
-            val artist = columnIndexCache.getString(MediaStore.Audio.AlbumColumns.ARTIST)
+            val artist = columnIndexCache.getStringOrNull(MediaStore.Audio.AlbumColumns.ARTIST)
             val lastYear = columnIndexCache.getInt(MediaStore.Audio.AlbumColumns.LAST_YEAR)
 
             val uri = ContentUris.withAppendedId(albumsUri, albumId)
@@ -790,9 +790,9 @@ class MediaStoreDataSource(
 
             Album.Builder(uri)
                 .setThumbnail(thumbnail)
-                .setTitle(album.takeIf { it != MediaStore.UNKNOWN_STRING })
+                .setTitle(album?.takeIf { it != MediaStore.UNKNOWN_STRING })
                 .setArtistUri(artistUri)
-                .setArtistName(artist.takeIf { it != MediaStore.UNKNOWN_STRING })
+                .setArtistName(artist?.takeIf { it != MediaStore.UNKNOWN_STRING })
                 .setYear(lastYear.takeIf { it != 0 })
                 .build()
         }
@@ -803,12 +803,12 @@ class MediaStoreDataSource(
 
         mapEachRow { columnIndexCache ->
             val artistId = columnIndexCache.getLong(MediaStore.Audio.AudioColumns._ID)
-            val artist = columnIndexCache.getString(MediaStore.Audio.ArtistColumns.ARTIST)
+            val artist = columnIndexCache.getStringOrNull(MediaStore.Audio.ArtistColumns.ARTIST)
 
             val uri = ContentUris.withAppendedId(artistsUri, artistId)
 
             Artist.Builder(uri)
-                .setName(artist.takeIf { it != MediaStore.UNKNOWN_STRING })
+                .setName(artist?.takeIf { it != MediaStore.UNKNOWN_STRING })
                 .build()
         }
     }
@@ -829,9 +829,9 @@ class MediaStoreDataSource(
                 columnIndexCache.getBoolean(MediaStore.Audio.AudioColumns.IS_AUDIOBOOK)
             val duration = columnIndexCache.getLong(MediaStore.Audio.AudioColumns.DURATION)
             val artistId = columnIndexCache.getLong(MediaStore.Audio.AudioColumns.ARTIST_ID)
-            val artist = columnIndexCache.getString(MediaStore.Audio.AudioColumns.ARTIST)
+            val artist = columnIndexCache.getStringOrNull(MediaStore.Audio.AudioColumns.ARTIST)
             val albumId = columnIndexCache.getLong(MediaStore.Audio.AudioColumns.ALBUM_ID)
-            val album = columnIndexCache.getString(MediaStore.Audio.AudioColumns.ALBUM)
+            val album = columnIndexCache.getStringOrNull(MediaStore.Audio.AudioColumns.ALBUM)
             val track = columnIndexCache.getInt(MediaStore.Audio.AudioColumns.TRACK)
             val genreId = columnIndexCache.getLong(MediaStore.Audio.AudioColumns.GENRE_ID)
             val genre = columnIndexCache.getStringOrNull(MediaStore.Audio.AudioColumns.GENRE)
@@ -880,9 +880,9 @@ class MediaStoreDataSource(
                 .setType(audioType)
                 .setDurationMs(duration)
                 .setArtistUri(artistUri)
-                .setArtistName(artist.takeIf { it != MediaStore.UNKNOWN_STRING })
+                .setArtistName(artist?.takeIf { it != MediaStore.UNKNOWN_STRING })
                 .setAlbumUri(albumUri)
-                .setAlbumTitle(album.takeIf { it != MediaStore.UNKNOWN_STRING })
+                .setAlbumTitle(album?.takeIf { it != MediaStore.UNKNOWN_STRING })
                 .setDiscNumber(discNumber)
                 .setTrackNumber(discTrack)
                 .setGenreUri(genreUri)
