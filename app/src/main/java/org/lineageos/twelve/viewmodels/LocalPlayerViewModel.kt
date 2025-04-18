@@ -82,7 +82,7 @@ class LocalPlayerViewModel(application: Application) : AndroidViewModel(applicat
             TwelveRenderersFactory(
                 applicationContext,
                 false,
-            )
+            ) { }
         )
         .build()
 
