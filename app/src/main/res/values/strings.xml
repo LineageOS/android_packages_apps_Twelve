@@ -111,10 +111,6 @@
     <string name="audio_channel_count_unknown">Unknown</string>
     <string name="audio_encoding">Encoding</string>
     <string name="audio_encoding_unknown">Unknown</string>
-    <string name="audio_float_mode">PCM float mode</string>
-    <string name="audio_float_mode_unknown">Unknown</string>
-    <string name="audio_float_mode_enabled">Enabled</string>
-    <string name="audio_float_mode_disabled">Disabled</string>
     <string name="audio_output_mode">Output mode</string>
     <string name="audio_output_mode_unknown">Unknown</string>
     <string name="audio_output_mode_pcm">PCM</string>
@@ -123,6 +119,16 @@
     <string name="audio_bitrate">Bitrate</string>
     <string name="audio_bitrate_unknown">Unknown</string>
     <string name="audio_bitrate_format">%1$s kbps</string>
+    <string name="audio_output_device_type">Type</string>
+    <string name="audio_output_device_type_unknown">Unknown</string>
+    <string name="audio_output_device_type_device">Device</string>
+    <string name="audio_output_device_type_headphones">Headphones</string>
+    <string name="audio_output_device_type_external_speakers">External speakers</string>
+    <string name="audio_output_device_type_bluetooth">Bluetooth</string>
+    <string name="audio_output_device_type_hdmi">HDMI</string>
+    <string name="audio_output_device_type_usb">USB</string>
+    <string name="audio_output_device_type_remote">Remote</string>
+    <string name="audio_output_device_type_hearing_aid">Hearing aid</string>
 
     <!-- Provider types -->
     <string name="provider_type_local">Local</string>
