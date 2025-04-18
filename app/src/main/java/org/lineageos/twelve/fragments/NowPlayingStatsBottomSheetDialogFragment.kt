@@ -15,11 +15,11 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.lineageos.twelve.R
 import org.lineageos.twelve.ext.getViewProperty
-import org.lineageos.twelve.models.AudioOutputMode
 import org.lineageos.twelve.ui.views.ListItem
 import org.lineageos.twelve.viewmodels.NowPlayingStatsViewModel
 import java.util.Locale
@@ -28,8 +28,8 @@ import java.util.Locale
  * A fragment showing playback statistics for nerds and audiophiles thinking that audio files
  * with a sample rate higher than 48 kHz is better.
  */
-class NowPlayingStatsDialogFragment : MaterialDialogFragment(
-    R.layout.fragment_now_playing_stats_dialog
+class NowPlayingStatsBottomSheetDialogFragment : BottomSheetDialogFragment(
+    R.layout.fragment_now_playing_stats_bottom_sheet_dialog
 ) {
     // View models
     private val viewModel by viewModels<NowPlayingStatsViewModel>()
@@ -64,6 +64,7 @@ class NowPlayingStatsDialogFragment : MaterialDialogFragment(
                     }
                 }
 
+                /*
                 launch {
                     viewModel.sourceAudioStreamInformation.collectLatest {
                         it?.sampleRate?.also { sampleRate ->
@@ -175,6 +176,7 @@ class NowPlayingStatsDialogFragment : MaterialDialogFragment(
                         )
                     }
                 }
+                 */
             }
         }
     }
