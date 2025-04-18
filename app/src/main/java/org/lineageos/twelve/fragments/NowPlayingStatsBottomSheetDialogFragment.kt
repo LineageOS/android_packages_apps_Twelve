@@ -15,11 +15,11 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.lineageos.twelve.R
 import org.lineageos.twelve.ext.getViewProperty
-import org.lineageos.twelve.models.AudioOutputMode
 import org.lineageos.twelve.ui.views.ListItem
 import org.lineageos.twelve.viewmodels.NowPlayingStatsViewModel
 import java.util.Locale
@@ -28,8 +28,8 @@ import java.util.Locale
  * A fragment showing playback statistics for nerds and audiophiles thinking that audio files
  * with a sample rate higher than 48 kHz is better.
  */
-class NowPlayingStatsDialogFragment : MaterialDialogFragment(
-    R.layout.fragment_now_playing_stats_dialog
+class NowPlayingStatsBottomSheetDialogFragment : BottomSheetDialogFragment(
+    R.layout.fragment_now_playing_stats_bottom_sheet_dialog
 ) {
     // View models
     private val viewModel by viewModels<NowPlayingStatsViewModel>()
@@ -64,6 +64,7 @@ class NowPlayingStatsDialogFragment : MaterialDialogFragment(
                     }
                 }
 
+                /*
                 launch {
                     viewModel.sourceAudioStreamInformation.collectLatest {
                         it?.sampleRate?.also { sampleRate ->
@@ -150,10 +151,12 @@ class NowPlayingStatsDialogFragment : MaterialDialogFragment(
                         outputItemsLinearLayout.isVisible = it != false
                     }
                 }
+                */
 
                 launch {
-                    viewModel.outputAudioStreamInformation.collectLatest {
-                        it?.sampleRate?.also { sampleRate ->
+                    viewModel.outputConfiguration.collectLatest {
+                        // Audio device configuration
+                        it?.audioDeviceConfiguration?.sampleRate?.also { sampleRate ->
                             outputSampleRateListItem.setSupportingText(
                                 R.string.audio_sample_rate_format,
                                 decimalFormatter.format(sampleRate.toFloat() / 1000)
@@ -162,14 +165,14 @@ class NowPlayingStatsDialogFragment : MaterialDialogFragment(
                             R.string.audio_sample_rate_unknown
                         )
 
-                        it?.channelCount?.let { channelCount ->
+                        it?.audioDeviceConfiguration?.channelCount?.let { channelCount ->
                             outputChannelCountListItem.supportingText = channelCount.toString()
                         } ?: outputChannelCountListItem.setSupportingText(
                             R.string.audio_channel_count_unknown
                         )
 
-                        it?.encoding?.let { encoding ->
-                            outputEncodingListItem.supportingText = encoding.displayName
+                        it?.audioDeviceConfiguration?.type?.let { encoding ->
+                            outputEncodingListItem.supportingText = encoding.name
                         } ?: outputEncodingListItem.setSupportingText(
                             R.string.audio_encoding_unknown
                         )
