@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2024 The LineageOS Project
+ * SPDX-FileCopyrightText: 2024-2025 The LineageOS Project
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -7,52 +7,46 @@ package org.lineageos.twelve.viewmodels
 
 import android.app.Application
 import androidx.lifecycle.viewModelScope
-import androidx.media3.common.C
-import androidx.media3.common.MimeTypes
 import androidx.media3.common.util.UnstableApi
-import androidx.media3.exoplayer.audio.DefaultAudioSink
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.flow.stateIn
-import org.lineageos.twelve.models.AudioOutputMode
-import org.lineageos.twelve.models.AudioStreamInformation
-import org.lineageos.twelve.models.Encoding
+import org.lineageos.twelve.models.OutputConfiguration
 import org.lineageos.twelve.services.InfoAudioProcessor
 import org.lineageos.twelve.services.ProxyDefaultAudioTrackBufferSizeProvider
+import org.lineageos.twelve.utils.OutputConfigurationUtils
+import org.lineageos.twelve.utils.OutputConfigurationUtils.toModel
 
 class NowPlayingStatsViewModel(application: Application) : NowPlayingViewModel(application) {
-    /**
-     * [AudioStreamInformation] parsed from the currently selected audio track returned by the
-     * player.
-     */
-    @androidx.annotation.OptIn(UnstableApi::class)
     @OptIn(ExperimentalCoroutinesApi::class)
-    val sourceAudioStreamInformation = currentTrackFormat
-        .mapLatest { currentTrackFormat ->
-            currentTrackFormat?.let {
-                AudioStreamInformation(
-                    it.sampleRate,
-                    it.channelCount,
-                    it.sampleMimeType?.let { sampleMimeType ->
-                        Encoding.fromMedia3Encoding(
-                            MimeTypes.getEncoding(
-                                MimeTypes.normalizeMimeType(sampleMimeType),
-                                it.codecs
-                            )
-                        )
-                    } ?: Encoding.fromMedia3Encoding(it.pcmEncoding),
-                )
-            }
-        }
+    private val outputSource = currentTrackFormat
+        .mapLatest { it?.toModel() }
         .flowOn(Dispatchers.IO)
-        .stateIn(
+        .shareIn(
             viewModelScope,
             started = SharingStarted.WhileSubscribed(),
-            initialValue = null
+            replay = 1
+        )
+
+    private val outputTranscoding = combine(
+        ProxyDefaultAudioTrackBufferSizeProvider.transcodingData,
+        outputConfigurationRepository.audioFormat,
+    ) { transcodingData, audioFormat ->
+        OutputConfigurationUtils.buildOutputTranscoding(
+            transcodingData = transcodingData,
+            audioFormat = audioFormat,
+        )
+    }
+        .flowOn(Dispatchers.IO)
+        .shareIn(
+            viewModelScope,
+            started = SharingStarted.WhileSubscribed(),
+            replay = 1
         )
 
     /**
@@ -60,77 +54,67 @@ class NowPlayingStatsViewModel(application: Application) : NowPlayingViewModel(a
      * This means the audio sink is ignoring all the processors.
      */
     @androidx.annotation.OptIn(UnstableApi::class)
-    val transcodingFloatModeEnabled = combine(
-        ProxyDefaultAudioTrackBufferSizeProvider.encodingFlow,
-        ProxyDefaultAudioTrackBufferSizeProvider.outputModeFlow,
-    ) { encoding, outputMode ->
-        outputMode == DefaultAudioSink.OUTPUT_MODE_PCM && encoding == C.ENCODING_PCM_FLOAT
-    }
-        .flowOn(Dispatchers.IO)
-        .stateIn(
-            viewModelScope,
-            started = SharingStarted.WhileSubscribed(),
-            initialValue = null
-        )
-
     @OptIn(ExperimentalCoroutinesApi::class)
-    val transcodingEncoding = ProxyDefaultAudioTrackBufferSizeProvider.encodingFlow
+    val transcodingFloatModeEnabled = outputTranscoding
         .mapLatest {
-            it?.let { Encoding.fromMedia3Encoding(it) }
+            it?.let {
+                it.outputMode == OutputConfiguration.Transcoding.OutputMode.PCM
+                        && it.encoding == OutputConfiguration.Encoding.PCM_FLOAT
+            }
         }
         .flowOn(Dispatchers.IO)
-        .stateIn(
+        .shareIn(
             viewModelScope,
             started = SharingStarted.WhileSubscribed(),
-            initialValue = null
+            replay = 1
         )
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    val transcodingOutputMode = ProxyDefaultAudioTrackBufferSizeProvider.outputModeFlow
-        .mapLatest {
-            it?.let { AudioOutputMode.fromMedia3OutputMode(it) }
-        }
-        .flowOn(Dispatchers.IO)
-        .stateIn(
-            viewModelScope,
-            started = SharingStarted.WhileSubscribed(),
-            initialValue = null
-        )
-
-    val transcodingBitrate = ProxyDefaultAudioTrackBufferSizeProvider.bitrateFlow
 
     /**
      * Whether the output has valid information.
      */
     @androidx.annotation.OptIn(UnstableApi::class)
     val hasOutputInformation = combine(
-        ProxyDefaultAudioTrackBufferSizeProvider.outputModeFlow,
+        outputTranscoding,
         transcodingFloatModeEnabled,
-    ) { outputMode, transcodingFloatModeEnabled ->
-        outputMode == DefaultAudioSink.OUTPUT_MODE_PCM && transcodingFloatModeEnabled != true
+    ) { outputTranscoding, transcodingFloatModeEnabled ->
+        outputTranscoding?.outputMode == OutputConfiguration.Transcoding.OutputMode.PCM
+                && transcodingFloatModeEnabled != true
     }
         .flowOn(Dispatchers.IO)
-        .stateIn(
+        .shareIn(
             viewModelScope,
             started = SharingStarted.WhileSubscribed(),
-            initialValue = null
+            replay = 1
         )
 
     /**
      * The output audio stream information.
      */
     @androidx.annotation.OptIn(UnstableApi::class)
-    val outputAudioStreamInformation = combine(
+    private val outputAudioFormat = combine(
         InfoAudioProcessor.audioFormatFlow,
         hasOutputInformation,
     ) { audioFormat, hasOutputInformation ->
-        audioFormat?.takeIf { hasOutputInformation != false }?.let {
-            AudioStreamInformation(
-                it.sampleRate,
-                it.channelCount,
-                Encoding.fromMedia3Encoding(it.encoding),
-            )
-        }
+        audioFormat?.takeIf { hasOutputInformation }
+    }
+        .flowOn(Dispatchers.IO)
+        .shareIn(
+            viewModelScope,
+            started = SharingStarted.WhileSubscribed(),
+            replay = 1
+        )
+
+    @androidx.annotation.OptIn(UnstableApi::class)
+    val outputConfiguration = combine(
+        outputSource,
+        outputTranscoding,
+        outputConfigurationRepository.device,
+    ) { outputSource, outputTranscoding, outputDevice ->
+        OutputConfigurationUtils.classify(
+            source = outputSource,
+            transcoding = outputTranscoding,
+            device = outputDevice,
+        )
     }
         .flowOn(Dispatchers.IO)
         .stateIn(
