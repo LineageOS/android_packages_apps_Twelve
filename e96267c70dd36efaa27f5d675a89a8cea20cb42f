@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f982c6cd_9e2ee0fe",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2025-04-19T07:48:30Z",
+      "side": 1,
+      "message": "But we don\u0027t use extensions?",
+      "revId": "e96267c70dd36efaa27f5d675a89a8cea20cb42f",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
