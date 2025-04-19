@@ -16,6 +16,24 @@
       "message": "But we don\u0027t use extensions?",
       "revId": "e96267c70dd36efaa27f5d675a89a8cea20cb42f",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3bfbe396_715485e9",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 25732
+      },
+      "writtenOn": "2025-04-19T12:37:49Z",
+      "side": 1,
+      "message": "Does it bring any benefits keeping our own renderers factory?",
+      "parentUuid": "f982c6cd_9e2ee0fe",
+      "revId": "e96267c70dd36efaa27f5d675a89a8cea20cb42f",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
