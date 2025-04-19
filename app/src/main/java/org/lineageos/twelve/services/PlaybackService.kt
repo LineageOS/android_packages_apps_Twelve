@@ -26,7 +26,6 @@ import androidx.media3.common.Player
 import androidx.media3.common.Rating
 import androidx.media3.common.listen
 import androidx.media3.common.util.UnstableApi
-import androidx.media3.common.util.Util
 import androidx.media3.exoplayer.DefaultLoadControl
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.session.CommandButton
@@ -192,10 +191,6 @@ class PlaybackService : MediaLibraryService(), LifecycleOwner {
 
     private val providersRepository by lazy {
         (application as TwelveApplication).providersRepository
-    }
-
-    private val audioSessionId by lazy {
-        Util.generateAudioSessionIdV21(this)
     }
 
     private val mediaLibrarySessionCallback = object : MediaLibrarySession.Callback {
@@ -381,7 +376,7 @@ class PlaybackService : MediaLibraryService(), LifecycleOwner {
                 CustomCommand.GET_AUDIO_SESSION_ID -> {
                     SessionResult(
                         SessionResult.RESULT_SUCCESS,
-                        bundleOf(CustomCommand.RSP_VALUE to audioSessionId),
+                        bundleOf(CustomCommand.RSP_VALUE to player.audioSessionId),
                     )
                 }
 
@@ -440,10 +435,7 @@ class PlaybackService : MediaLibraryService(), LifecycleOwner {
             .build()
             .apply {
                 setOffloadEnabled(sharedPreferences.enableOffload)
-                audioSessionId = this@PlaybackService.audioSessionId
             }
-
-        openAudioEffectSession()
 
         mediaLibrarySession = MediaLibrarySession.Builder(
             this, player, mediaLibrarySessionCallback
@@ -498,6 +490,10 @@ class PlaybackService : MediaLibraryService(), LifecycleOwner {
                     )
                 ) {
                     mediaLibrarySession.setCustomLayout(getCustomLayout())
+                }
+
+                if (events.contains(Player.EVENT_AUDIO_SESSION_ID)) {
+                    openAudioEffectSession()
                 }
             }
         }
@@ -560,7 +556,7 @@ class PlaybackService : MediaLibraryService(), LifecycleOwner {
     private fun openAudioEffectSession() {
         Intent(AudioEffect.ACTION_OPEN_AUDIO_EFFECT_CONTROL_SESSION).apply {
             putExtra(AudioEffect.EXTRA_PACKAGE_NAME, application.packageName)
-            putExtra(AudioEffect.EXTRA_AUDIO_SESSION, audioSessionId)
+            putExtra(AudioEffect.EXTRA_AUDIO_SESSION, player.audioSessionId)
             putExtra(AudioEffect.EXTRA_CONTENT_TYPE, AudioEffect.CONTENT_TYPE_MUSIC)
             sendBroadcast(this)
         }
@@ -569,7 +565,7 @@ class PlaybackService : MediaLibraryService(), LifecycleOwner {
     private fun closeAudioEffectSession() {
         Intent(AudioEffect.ACTION_CLOSE_AUDIO_EFFECT_CONTROL_SESSION).apply {
             putExtra(AudioEffect.EXTRA_PACKAGE_NAME, application.packageName)
-            putExtra(AudioEffect.EXTRA_AUDIO_SESSION, audioSessionId)
+            putExtra(AudioEffect.EXTRA_AUDIO_SESSION, player.audioSessionId)
             putExtra(AudioEffect.EXTRA_CONTENT_TYPE, AudioEffect.CONTENT_TYPE_MUSIC)
             sendBroadcast(this)
         }
