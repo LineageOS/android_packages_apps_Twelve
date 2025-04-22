@@ -16,6 +16,23 @@
       "message": "It wasn\u0027t even used because it was only compile-time, but now we don\u0027t even track it...",
       "revId": "474bfcadfb9c8ddf260aaefd320e715509439c56",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "aa0c83f3_10c3d98f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 10067
+      },
+      "writtenOn": "2025-04-22T11:27:29Z",
+      "side": 1,
+      "message": "should hit the same issue as aperture.",
+      "revId": "474bfcadfb9c8ddf260aaefd320e715509439c56",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
