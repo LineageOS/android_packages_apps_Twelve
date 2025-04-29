@@ -6,6 +6,7 @@
 <resources>
     <string name="app_name">Música</string>
     <string name="visualizer_permissions_toast">El permisu pa grabar audiu ye obligatoriu pal visualizador.</string>
+    <string name="request_status_error_type_invalid_credentials">Les credenciales son inválides</string>
     <string name="main_fragment_section_activity">Actividá</string>
     <string name="main_fragment_section_search">Busca</string>
     <string name="main_fragment_section_library">Biblioteca</string>
@@ -25,6 +26,7 @@
     <string name="providers">Fornidores</string>
     <string name="provider_name">Nome</string>
     <string name="argument_validation_error_title">Error</string>
+    <string name="argument_validation_error_message">Prodúxose un error mentanto s\'analizaben los argumentos siguientes:\n%1$s</string>
     <string name="title_activity_settings">Configuración</string>
     <string name="general_header">Xeneral</string>
     <string name="experimental_header">Esperimental</string>
