@@ -64,7 +64,7 @@
     <string name="playback_speed">Ταχύτητα αναπαραγωγής</string>
     <string name="playback_speed_format">%1$s×</string>
     <string name="playback_pitch_slider_description">Τόνος αναπαραγωγής</string>
-    <string name="playbacl_pitch_unlock">Ξεκλείδωμα αλλαγής τόνου</string>
+    <string name="playback_pitch_unlock">Ξεκλείδωμα αλλαγής τόνου</string>
     <string name="playback_warning">Η ταχύτητα και ο τόνος ενδέχεται να μη λειτουργούν σωστά ενώ είναι ενεργοποιημένη η λειτουργία αναπαραγωγής offload. Δοκιμάστε να την αλλάξετε στις ρυθμίσεις της εφαρμογής.</string>
     <string name="visualizer">Οπτικοποιητής</string>
     <string name="audio_source">Πηγή</string>

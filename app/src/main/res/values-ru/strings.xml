@@ -68,7 +68,7 @@
     <string name="playback_speed">Скорость воспроизведения</string>
     <string name="playback_speed_format">%1$s×</string>
     <string name="playback_pitch_slider_description">Тон воспроизведения</string>
-    <string name="playbacl_pitch_unlock">Разблокировать изменение тона</string>
+    <string name="playback_pitch_unlock">Разблокировать изменение тона</string>
     <string name="playback_warning">Скорость и тон могут работать некорректно, если включена функция разгрузки воспроизведения. Попробуйте переключить ее в настройках приложения.</string>
     <string name="visualizer">Визуализатор</string>
     <string name="audio_source">Источник</string>

@@ -64,7 +64,7 @@
     <string name="playback_speed">Velocitât di riproduzion</string>
     <string name="playback_speed_format">%1$s×</string>
     <string name="playback_pitch_slider_description">Ton di riproduzion</string>
-    <string name="playbacl_pitch_unlock">Sbloche la modifiche dal ton</string>
+    <string name="playback_pitch_unlock">Sbloche la modifiche dal ton</string>
     <string name="playback_warning">Al è pussibil che la regolazion de velocitât e dal ton no funzionin ben intant che la funzion di offload audio pe riproduzion e je ative. Prove a comutâle tes impostazions de aplicazion.</string>
     <string name="visualizer">Visualizadôr</string>
     <string name="audio_source">Sorzint</string>

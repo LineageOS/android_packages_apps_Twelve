@@ -64,7 +64,7 @@
     <string name="playback_speed">سرعت پخش</string>
     <string name="playback_speed_format">%1$sx</string>
     <string name="playback_pitch_slider_description">پخش صدای زیر و بم</string>
-    <string name="playbacl_pitch_unlock">باز کردن تغییر زیر و بمی صدا</string>
+    <string name="playback_pitch_unlock">باز کردن تغییر زیر و بمی صدا</string>
     <string name="playback_warning">سرعت و زیر و بمی صدا ممکن است به درستی کار نکند در حالی که ویژگی تخلیه پخش فعال است. سعی کنید آن را در تنظیمات برنامه تغییر دهید.</string>
     <string name="visualizer">جلوه های تصویری</string>
     <string name="audio_source">منبع</string>

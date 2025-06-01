@@ -62,7 +62,7 @@
     <string name="playback_speed">Shpejtësia e luajtjes</string>
     <string name="playback_speed_format">%1$s×</string>
     <string name="playback_pitch_slider_description">Hapi i riprodhimit</string>
-    <string name="playbacl_pitch_unlock">Zhblloko ndryshimin e zërit</string>
+    <string name="playback_pitch_unlock">Zhblloko ndryshimin e zërit</string>
     <string name="playback_warning">Shpejtësia dhe lartësia mund të mos funksionojnë siç duhet ndërsa funksioni i shkarkimit të riprodhimit është i aktivizuar.  Provoni ta ndryshoni atë në cilësimet e aplikacionit.</string>
     <string name="visualizer">Vizualizues</string>
     <string name="audio_source">Burim</string>

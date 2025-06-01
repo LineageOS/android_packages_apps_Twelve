@@ -62,7 +62,7 @@
     <string name="playback_speed">Afspeelsnelheid</string>
     <string name="playback_speed_format">%1$sx</string>
     <string name="playback_pitch_slider_description">Afspeeltoonhoogte</string>
-    <string name="playbacl_pitch_unlock">Veranderen van afsperltoonhoogte ontgrendelen</string>
+    <string name="playback_pitch_unlock">Veranderen van afsperltoonhoogte ontgrendelen</string>
     <string name="playback_warning">Mogelijk werkt de afsperlsnelheid en  - toonhoogte niet goed als het afspelen van de functie is ingeschakeld. Zet deze aan in de instellingen van de app.</string>
     <string name="visualizer">Visualisatie</string>
     <string name="audio_source">Bron</string>

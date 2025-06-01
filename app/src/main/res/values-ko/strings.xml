@@ -62,7 +62,7 @@
     <string name="playback_speed">재생 속도</string>
     <string name="playback_speed_format">%1$s×</string>
     <string name="playback_pitch_slider_description">재생 피치</string>
-    <string name="playbacl_pitch_unlock">피치 변경 잠금 해제</string>
+    <string name="playback_pitch_unlock">피치 변경 잠금 해제</string>
     <string name="playback_warning">속도 및 피치 컨트롤은 오프로드 옵션이 켜져 있는 경우 정상적으로 사용하지 못할 수 있습니다. 앱 설정에서 오프로드 옵션을 확인하세요.</string>
     <string name="visualizer">시각화</string>
     <string name="audio_source">소스</string>
