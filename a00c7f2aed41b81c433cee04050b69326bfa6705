@@ -20,6 +20,24 @@
     {
       "unresolved": false,
       "key": {
+        "uuid": "0f177993_b1d1f8a4",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 10067
+      },
+      "writtenOn": "2025-06-04T19:11:14Z",
+      "side": 1,
+      "message": "would have been faster for you to just fix it with web ui.",
+      "parentUuid": "c4bc58f1_3f29ee07",
+      "revId": "a00c7f2aed41b81c433cee04050b69326bfa6705",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
         "uuid": "c9b98ebd_75634109",
         "filename": "/PATCHSET_LEVEL",
         "patchSetId": 2
