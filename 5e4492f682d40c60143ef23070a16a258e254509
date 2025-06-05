@@ -16,6 +16,24 @@
       "message": "This should be fine right @baddaemon87@gmail.com",
       "revId": "5e4492f682d40c60143ef23070a16a258e254509",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "26f17b7a_97202e5b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 10067
+      },
+      "writtenOn": "2025-06-05T07:22:05Z",
+      "side": 1,
+      "message": "yes, except it should be merged on 15th before translation import.",
+      "parentUuid": "6551c83b_52a467f0",
+      "revId": "5e4492f682d40c60143ef23070a16a258e254509",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
