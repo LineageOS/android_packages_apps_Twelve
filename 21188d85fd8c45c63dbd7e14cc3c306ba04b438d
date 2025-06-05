@@ -16,6 +16,24 @@
       "message": "Translations are synced automatically, no need to manually change them",
       "revId": "21188d85fd8c45c63dbd7e14cc3c306ba04b438d",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "df220ef0_4d3b2029",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 35350
+      },
+      "writtenOn": "2025-06-05T00:23:08Z",
+      "side": 1,
+      "message": "Is that what you meant?",
+      "parentUuid": "f9c26e10_1e9bc0e1",
+      "revId": "21188d85fd8c45c63dbd7e14cc3c306ba04b438d",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
