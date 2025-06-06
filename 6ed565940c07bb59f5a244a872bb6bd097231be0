@@ -16,6 +16,24 @@
       "message": "can you confirm that current patchset still works? (+V the change pls)",
       "revId": "6ed565940c07bb59f5a244a872bb6bd097231be0",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2de1fb9f_aeacdb6f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 35422
+      },
+      "writtenOn": "2025-06-06T17:53:31Z",
+      "side": 1,
+      "message": "Works, thanks for the patch. I found toHexString in the documentation, but this is my first ever contribution to LineageOS and first change in Kotlin so I wasn\u0027t sure if an experimental API was acceptable.",
+      "parentUuid": "8059830b_9ab79528",
+      "revId": "6ed565940c07bb59f5a244a872bb6bd097231be0",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
