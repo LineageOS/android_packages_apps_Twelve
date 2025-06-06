@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8059830b_9ab79528",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 10067
+      },
+      "writtenOn": "2025-06-06T16:50:58Z",
+      "side": 1,
+      "message": "can you confirm that current patchset still works? (+V the change pls)",
+      "revId": "6ed565940c07bb59f5a244a872bb6bd097231be0",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
