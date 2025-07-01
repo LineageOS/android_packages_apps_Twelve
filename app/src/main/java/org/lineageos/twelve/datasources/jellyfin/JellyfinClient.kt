@@ -273,6 +273,11 @@ class JellyfinClient(
             "Images",
             "Primary",
         ),
+        queryParameters = listOf(
+            "fillHeight" to "200",
+            "fillWidth" to "200",
+            "quality" to "96",
+        )
     )
 
     private fun getSortParameter(sortingRule: SortingRule) = buildList {
