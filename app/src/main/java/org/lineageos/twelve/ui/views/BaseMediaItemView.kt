@@ -155,12 +155,6 @@ abstract class BaseMediaItemView @JvmOverloads constructor(
     private fun setHeadlineText(@StringRes resId: Int) =
         headlineTextView.setTextAndUpdateVisibility(resId)
 
-    private fun setSubheadText(@StringRes resId: Int) =
-        subheadTextView.setTextAndUpdateVisibility(resId)
-
-    private fun setSupportingText(@StringRes resId: Int) =
-        supportingTextView.setTextAndUpdateVisibility(resId)
-
     // TextView utils
 
     private fun TextView.setTextAndUpdateVisibility(text: CharSequence?) {

@@ -150,8 +150,6 @@ class ListItem @JvmOverloads constructor(
     fun setLeadingIconImage(uri: Uri) = leadingIconImageView.setImageAndUpdateVisibility(uri)
 
     fun setLeadingText(@StringRes resId: Int) = leadingTextView.setTextAndUpdateVisibility(resId)
-    fun setLeadingText(@StringRes resId: Int, vararg formatArgs: Any) =
-        leadingTextView.setTextAndUpdateVisibility(resId, *formatArgs)
 
     fun setLeadingView(@LayoutRes resId: Int) =
         leadingViewContainerFrameLayout.setChildAndUpdateVisibility(resId)
@@ -171,9 +169,6 @@ class ListItem @JvmOverloads constructor(
 
     fun setTrailingSupportingText(@StringRes resId: Int) =
         trailingSupportingTextView.setTextAndUpdateVisibility(resId)
-
-    fun setTrailingSupportingText(@StringRes resId: Int, vararg formatArgs: Any) =
-        trailingSupportingTextView.setTextAndUpdateVisibility(resId, *formatArgs)
 
     fun setTrailingView(@LayoutRes resId: Int) =
         trailingViewContainerFrameLayout.setChildAndUpdateVisibility(resId)

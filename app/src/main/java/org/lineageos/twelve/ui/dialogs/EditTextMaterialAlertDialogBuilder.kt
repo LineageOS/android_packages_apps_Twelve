@@ -39,10 +39,6 @@ class EditTextMaterialAlertDialogBuilder(
         this.text = text
     }
 
-    fun setHint(hint: String?) = apply {
-        this.hint = hint
-    }
-
     fun setPositiveButton(
         textId: Int,
         listener: ((text: String) -> Unit)?
