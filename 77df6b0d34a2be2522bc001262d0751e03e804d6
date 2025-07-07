@@ -16,6 +16,24 @@
       "message": "Please only remove this.\n\nThe rest are \"generic\" UI elements we may use in other projects.",
       "revId": "77df6b0d34a2be2522bc001262d0751e03e804d6",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1f97566e_ed7a3274",
+        "filename": "app/src/main/java/org/lineageos/twelve/models/Lyrics.kt",
+        "patchSetId": 1
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 35350
+      },
+      "writtenOn": "2025-07-07T02:10:24Z",
+      "side": 0,
+      "message": "Done",
+      "parentUuid": "416e4fe0_b57353bc",
+      "revId": "77df6b0d34a2be2522bc001262d0751e03e804d6",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
