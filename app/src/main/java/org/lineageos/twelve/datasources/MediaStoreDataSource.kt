@@ -175,7 +175,7 @@ class MediaStoreDataSource(
             artists(providerIdentifier, SortingRule(SortingStrategy.NAME)),
             genres(providerIdentifier, SortingRule(SortingStrategy.NAME)),
         ) { mostPlayed, albums, artists, genres ->
-            val now = LocalDateTime.now()
+            val randomSeed = System.currentTimeMillis()
 
             Result.Success(
                 listOf(
@@ -194,7 +194,7 @@ class MediaStoreDataSource(
                             LocalizedString.StringResIdLocalizedString(
                                 R.string.activity_random_albums
                             ),
-                            it.shuffled(Random(now.dayOfYear)),
+                            it.shuffled(Random(randomSeed)),
                         )
                     },
                     artists.map {
@@ -203,7 +203,7 @@ class MediaStoreDataSource(
                             LocalizedString.StringResIdLocalizedString(
                                 R.string.activity_random_artists
                             ),
-                            it.shuffled(Random(now.dayOfYear)),
+                            it.shuffled(Random(randomSeed)),
                         )
                     },
                     genres.map {
@@ -212,7 +212,7 @@ class MediaStoreDataSource(
                             LocalizedString.StringResIdLocalizedString(
                                 R.string.activity_random_genres
                             ),
-                            it.shuffled(Random(now.dayOfYear)),
+                            it.shuffled(Random(randomSeed)),
                         )
                     },
                 ).mapNotNull {
