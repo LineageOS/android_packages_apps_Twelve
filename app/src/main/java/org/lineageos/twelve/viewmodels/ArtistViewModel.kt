@@ -39,4 +39,18 @@ class ArtistViewModel(application: Application) : TwelveViewModel(application) {
     fun loadAlbum(artistUri: Uri) {
         this.artistUri.value = artistUri
     }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val artistTracks = artistUri
+        .filterNotNull()
+        .flatMapLatest {
+            mediaRepository.artistTracks(it)
+        }
+        .asFlowResult()
+        .flowOn(Dispatchers.IO)
+        .stateIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(),
+            FlowResult.Loading()
+        )
 }
