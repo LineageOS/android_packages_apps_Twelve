@@ -282,6 +282,33 @@ class MediaStoreDataSource(
         }
     }
 
+    override fun artistTracks(
+        providerIdentifier: ProviderIdentifier, artistUri: Uri
+    ) = providersManager.flatMapWithInstanceOf(providerIdentifier) {
+        val artistId = ContentUris.parseId(artistUri)
+
+        contentResolver.queryFlow(
+            MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
+            audiosProjection,
+            bundleOf(
+                ContentResolver.QUERY_ARG_SQL_SELECTION to "${MediaStore.Audio.Media.ARTIST_ID} = ?",
+                ContentResolver.QUERY_ARG_SQL_SELECTION_ARGS to arrayOf(artistId.toString()),
+                ContentResolver.QUERY_ARG_SORT_COLUMNS to arrayOf(MediaStore.Audio.Media.TRACK)
+            )
+        )
+            .mapEachRowToAudio()
+            .mapLatest { tracks ->
+                val activityTab = ActivityTab(
+                    "${tracks[0].artistName}_tracks",
+                    LocalizedString.StringLocalizedString(tracks[0].artistName ?: ""),
+                    tracks
+                )
+
+                Result.Success(activityTab)
+            }
+    }
+
+
     override fun genres(
         providerIdentifier: ProviderIdentifier,
         sortingRule: SortingRule,

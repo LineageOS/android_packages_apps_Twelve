@@ -97,4 +97,17 @@
         android:indeterminate="true"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        android:id="@+id/playArtistTracksExtendedFloatingActionButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="24dp"
+        android:tooltipText="@string/shuffle_play"
+        android:layout_gravity="bottom|end"
+        android:layout_marginBottom="28dp"
+        app:backgroundTint="?attr/colorTertiaryContainer"
+        app:collapsedSize="46dp"
+        app:icon="@drawable/ic_shuffle_play"
+        app:layout_behavior="@string/hide_bottom_view_on_scroll_behavior" />
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
