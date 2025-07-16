@@ -12,7 +12,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.mapLatest
 import okhttp3.Cache
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
@@ -294,7 +293,32 @@ class JellyfinDataSource(
 
     override fun activity(
         providerIdentifier: ProviderIdentifier,
-    ) = flowOf(Result.Success<_, Error>(listOf<ActivityTab>()))
+    ) = providersManager.mapWithInstanceOf(providerIdentifier) {
+        client.suggestions().map { queryResult ->
+            queryResult.items
+                .asSequence()
+                .filter { it.type == ItemType.AUDIO }
+                .mapNotNull { item ->
+                    item.artists?.firstOrNull()?.let { artistName ->
+                        Pair(LocalizedString.StringLocalizedString(artistName), item)
+                    }
+                }
+                .groupBy({ it.first }, { it.second })
+                .toList()
+                .sortedBy { (artist, _) ->
+                    artist.toString()
+                }
+                .map { (artist, items) ->
+                    val mediaItems = items.map { it.toMediaItemAudio() }
+                    ActivityTab(
+                        id = "suggestions-artist-${artist.hashCode()}",
+                        title = artist,
+                        items = mediaItems
+                    )
+                }
+                .toList()
+        }
+    }
 
     override fun albums(
         providerIdentifier: ProviderIdentifier,
