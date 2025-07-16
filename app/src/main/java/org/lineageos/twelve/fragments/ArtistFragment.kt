@@ -26,6 +26,7 @@ import androidx.navigation.ui.setupWithNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.MaterialToolbar
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.google.android.material.progressindicator.LinearProgressIndicator
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -38,6 +39,7 @@ import org.lineageos.twelve.ext.navigateSafe
 import org.lineageos.twelve.ext.setProgressCompat
 import org.lineageos.twelve.ext.updatePadding
 import org.lineageos.twelve.models.Album
+import org.lineageos.twelve.models.Audio
 import org.lineageos.twelve.models.Error
 import org.lineageos.twelve.models.FlowResult
 import org.lineageos.twelve.models.Playlist
@@ -69,6 +71,9 @@ class ArtistFragment : CollapsingToolbarLayoutFragment(R.layout.fragment_artist)
     private val linearProgressIndicator by getViewProperty<LinearProgressIndicator>(R.id.linearProgressIndicator)
     private val nestedScrollView by getViewProperty<NestedScrollView>(R.id.nestedScrollView)
     private val noElementsNestedScrollView by getViewProperty<NestedScrollView>(R.id.noElementsNestedScrollView)
+    private val playArtistTracksExtendedFloatingActionButton by getViewProperty<ExtendedFloatingActionButton>(
+        R.id.playArtistTracksExtendedFloatingActionButton
+    )
     private val thumbnailImageView by getViewProperty<ImageView>(R.id.thumbnailImageView)
     private val toolbar by getViewProperty<MaterialToolbar>(R.id.toolbar)
 
@@ -185,6 +190,17 @@ class ArtistFragment : CollapsingToolbarLayoutFragment(R.layout.fragment_artist)
             )
 
             windowInsets
+        }
+
+        playArtistTracksExtendedFloatingActionButton.setOnClickListener {
+            lifecycleScope.launch {
+                viewModel.artistTracks.collectLatest { requestStatus ->
+                    if (requestStatus is FlowResult.Success) {
+                        val tracks = requestStatus.data.items.filterIsInstance<Audio>()
+                        viewModel.playAudio(tracks.shuffled(), 0)
+                    }
+                }
+            }
         }
 
         toolbar.setupWithNavController(findNavController())

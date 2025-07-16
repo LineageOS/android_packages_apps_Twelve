@@ -254,6 +254,13 @@ class MediaRepository(
     fun search(query: String) = withNavigationDataSourceAndProviderFlow { search(it, query) }
 
     /**
+     * @see MediaDataSource.artistTracks
+     */
+    fun artistTracks(artistUri: Uri) = withNavigationDataSourceAndProviderFlow {
+        artistTracks(it, artistUri)
+    }
+
+    /**
      * @see MediaDataSource.audio
      */
     fun audio(audioUri: Uri) = withMediaItemsDataSourceFlow(audioUri) {
