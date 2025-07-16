@@ -12,6 +12,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.mapLatest
 import okhttp3.Cache
@@ -88,6 +89,10 @@ class JellyfinDataSource(
             .build()
         val favoritesPlaylist = Playlist.Builder(favoritesUri)
             .setType(Playlist.Type.FAVORITES)
+            .build()
+
+        val instantMixUri: Uri = dataSourceBaseUri.buildUpon()
+            .appendPath(INSTANT_MIX_PATH)
             .build()
 
         /**
@@ -403,6 +408,27 @@ class JellyfinDataSource(
         }
     }
 
+    override fun artistTracks(
+        providerIdentifier: ProviderIdentifier,
+        artistUri: Uri,
+    ) = providersManager.flatMapWithInstanceOf(providerIdentifier) {
+        flow {
+            val id = UUID.fromString(artistUri.lastPathSegment!!)
+            val result = client.getArtistTracks(id).map { queryResult ->
+                val tracks = queryResult.items.map { it.toMediaItemAudio() }
+                val playlist = Playlist(
+                    instantMixUri,
+                    null,
+                    tracks[0].artistName,
+                    Playlist.Type.QUEUE,
+                )
+
+                playlist to tracks
+            }
+            emit(result)
+        }
+    }
+
     override fun genre(genreUri: Uri) = providersManager.mapWithInstanceOf(genreUri) {
         val id = UUID.fromString(genreUri.lastPathSegment!!)
         client.getGenre(id).map { item ->
@@ -571,6 +597,8 @@ class JellyfinDataSource(
         private const val PLAYLISTS_PATH = "playlists"
 
         private const val FAVORITES_PATH = "favorites"
+
+        private const val INSTANT_MIX_PATH = "instant_mix"
 
         val ARG_SERVER = ProviderArgument(
             "server",
