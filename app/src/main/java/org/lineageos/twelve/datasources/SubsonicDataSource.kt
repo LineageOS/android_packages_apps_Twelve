@@ -429,6 +429,9 @@ class SubsonicDataSource(
             ).map { it.toMediaItem() }
         }
     }
+    override fun artistTracks(providerIdentifier: ProviderIdentifier, artistUri: Uri) = flowOf(
+        Result.Error<ActivityTab, _>(Error.NOT_IMPLEMENTED)
+    )
 
     override fun genres(
         providerIdentifier: ProviderIdentifier,
