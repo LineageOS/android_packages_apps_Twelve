@@ -9,8 +9,10 @@ import android.net.Uri
 import androidx.core.net.toUri
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.mapLatest
 import okhttp3.Cache
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
@@ -397,6 +399,10 @@ class AmpacheDataSource(
             songs.song.map { it.toMediaItem() }
         }
     }
+
+    override fun artistTracks(providerIdentifier: ProviderIdentifier, artistUri: Uri) = flowOf(
+        Result.Error<ActivityTab, _>(Error.NOT_IMPLEMENTED)
+    )
 
     override fun genres(
         providerIdentifier: ProviderIdentifier,

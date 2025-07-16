@@ -328,6 +328,38 @@ class MediaStoreDataSource(
         }
     }
 
+    override fun artistTracks(
+        providerIdentifier: ProviderIdentifier, artistUri: Uri
+    ) = providersManager.flatMapWithInstanceOf(providerIdentifier) {
+        val artistId = ContentUris.parseId(artistUri)
+        val queryArgs = android.os.Bundle().apply {
+            putString(ContentResolver.QUERY_ARG_SQL_SELECTION,
+                "${MediaStore.Audio.Media.ARTIST_ID} = ?")
+            putStringArray(ContentResolver.QUERY_ARG_SQL_SELECTION_ARGS,
+                arrayOf(artistId.toString()))
+            putStringArray(ContentResolver.QUERY_ARG_SORT_COLUMNS,
+                arrayOf(MediaStore.Audio.Media.TRACK))
+            putInt(ContentResolver.QUERY_ARG_SORT_DIRECTION,
+                ContentResolver.QUERY_SORT_DIRECTION_ASCENDING)
+        }
+
+        contentResolver.queryFlow(
+            MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
+            audiosProjection,
+            queryArgs,
+        )
+            .mapEachRowToAudio()
+            .mapLatest { tracks ->
+                val activityTab = ActivityTab(
+                    "${tracks[0].artistName}_tracks",
+                    LocalizedString.StringLocalizedString(tracks[0].artistName ?: ""),
+                    tracks
+                )
+
+                Result.Success(activityTab)
+            }
+    }
+
     override fun genres(
         providerIdentifier: ProviderIdentifier,
         sortingRule: SortingRule,

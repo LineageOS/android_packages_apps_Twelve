@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2024 The LineageOS Project
+ * SPDX-FileCopyrightText: 2024-2026 The LineageOS Project
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -39,4 +39,18 @@ class ArtistViewModel(application: Application) : TwelveViewModel(application) {
     fun loadAlbum(artistUri: Uri) {
         this.artistUri.value = artistUri
     }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val artistTracks = artistUri
+        .filterNotNull()
+        .flatMapLatest {
+            mediaRepository.artistTracks(it)
+        }
+        .asFlowResult()
+        .flowOn(Dispatchers.IO)
+        .stateIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(),
+            FlowResult.Loading()
+        )
 }
