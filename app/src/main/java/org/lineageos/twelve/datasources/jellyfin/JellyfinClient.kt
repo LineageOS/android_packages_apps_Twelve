@@ -159,6 +159,16 @@ class JellyfinClient(
         ),
     ).execute(api).mapToError()
 
+    suspend fun getArtistTracks(id: UUID) = ApiRequest.get<QueryResult>(
+        listOf("Items"),
+        queryParameters = listOf(
+            "ArtistIds" to id,
+            "MediaTypes" to "Audio",
+            "Limit" to 300,
+            "Recursive" to true,
+        ),
+    ).execute(api).mapToError()
+
     suspend fun getPlaylistItemIds(id: UUID) = ApiRequest.get<PlaylistItems>(
         listOf(
             "Playlists",
