@@ -340,6 +340,14 @@ class MediaRepository(
         }
 
     /**
+     * @see MediaDataSource.artistInstantMix
+     */
+    fun artistInstantMix(artistUri: Uri) = withMediaItemsDataSourceFlow(artistUri) {
+        android.util.Log.e("testing", "mediarepository")
+        artistInstantMix(artistUri)
+    }
+
+    /**
      * Get the [MediaDataSource] associated with the given [Provider].
      *
      * @param providerIdentifier The [ProviderIdentifier]

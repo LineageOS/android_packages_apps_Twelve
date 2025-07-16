@@ -12,6 +12,7 @@ import android.webkit.MimeTypeMap
 import androidx.core.os.bundleOf
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.mapLatest
@@ -218,6 +219,10 @@ class FileDataSource(
         audioUri: Uri,
         isFavorite: Boolean,
     ) = Result.Error<Unit, _>(Error.NOT_IMPLEMENTED)
+
+    override fun artistInstantMix(artistUri: Uri): Flow<MediaRequestStatus<Pair<Playlist, List<Audio>>>> {
+        TODO("Not yet implemented")
+    }
 
     private suspend fun getMimeType(uri: Uri) = withContext(Dispatchers.IO) {
         when (uri.scheme) {

@@ -219,4 +219,10 @@ interface MediaDataSource {
      * @return [Result.Success] if success, [Result.Error] with an error otherwise
      */
     suspend fun setFavorite(audioUri: Uri, isFavorite: Boolean): MediaRequestStatus<Unit>
+
+    /**
+     * Get an instant mix playlist given an artist.
+     * @param artistUri The URI of the artist
+     */
+    fun artistInstantMix(artistUri: Uri): Flow<MediaRequestStatus<Pair<Playlist, List<Audio>>>>
 }

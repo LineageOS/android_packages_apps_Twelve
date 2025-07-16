@@ -14,10 +14,13 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.stateIn
+import org.lineageos.twelve.models.Error
 import org.lineageos.twelve.models.FlowResult
 import org.lineageos.twelve.models.FlowResult.Companion.asFlowResult
+import org.lineageos.twelve.models.Result
 
 class ArtistViewModel(application: Application) : TwelveViewModel(application) {
     private val artistUri = MutableStateFlow<Uri?>(null)
@@ -39,4 +42,18 @@ class ArtistViewModel(application: Application) : TwelveViewModel(application) {
     fun loadAlbum(artistUri: Uri) {
         this.artistUri.value = artistUri
     }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val artistInstantMix = artistUri
+        .filterNotNull()
+        .flatMapLatest {
+            mediaRepository.artistInstantMix(it)
+        }
+        .asFlowResult()
+        .flowOn(Dispatchers.IO)
+        .stateIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(),
+            FlowResult.Loading()
+        )
 }

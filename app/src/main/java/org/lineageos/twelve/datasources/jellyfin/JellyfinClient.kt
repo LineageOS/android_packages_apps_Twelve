@@ -259,6 +259,14 @@ class JellyfinClient(
         ),
     ).execute(api).mapToError()
 
+    suspend fun getArtistInstantMix(id: UUID) = ApiRequest.get<QueryResult>(
+        listOf(
+            "Artists",
+            id.toString(),
+            "InstantMix",
+        )
+    ).execute(api).mapToError()
+
     private suspend fun getItem(id: UUID) = ApiRequest.get<Item>(
         listOf(
             "Items",

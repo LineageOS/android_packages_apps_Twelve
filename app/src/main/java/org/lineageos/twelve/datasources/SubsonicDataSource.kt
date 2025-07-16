@@ -9,12 +9,15 @@ import android.net.Uri
 import androidx.core.net.toUri
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.mapLatest
 import okhttp3.Cache
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import org.lineageos.twelve.R
+import org.lineageos.twelve.datasources.jellyfin.models.QueryResult
 import org.lineageos.twelve.datasources.subsonic.SubsonicClient
 import org.lineageos.twelve.datasources.subsonic.models.AlbumID3
 import org.lineageos.twelve.datasources.subsonic.models.ArtistID3
@@ -45,6 +48,9 @@ import org.lineageos.twelve.models.SortingRule
 import org.lineageos.twelve.models.SortingStrategy
 import org.lineageos.twelve.models.Thumbnail
 import org.lineageos.twelve.repositories.ProvidersRepository
+import org.lineageos.twelve.utils.ApiRequest
+import org.lineageos.twelve.utils.mapToError
+import java.util.UUID
 
 /**
  * Subsonic based data source.
@@ -694,6 +700,10 @@ class SubsonicDataSource(
         }.map {
             onFavoritesChanged()
         }
+    }
+
+    override fun artistInstantMix(artistUri: Uri): Flow<MediaRequestStatus<Pair<Playlist, List<Audio>>>> {
+        TODO("Not yet implemented")
     }
 
     /**

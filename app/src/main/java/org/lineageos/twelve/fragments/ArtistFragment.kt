@@ -26,6 +26,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.MaterialToolbar
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.google.android.material.progressindicator.LinearProgressIndicator
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -66,6 +67,9 @@ class ArtistFragment : Fragment(R.layout.fragment_artist) {
     private val linearProgressIndicator by getViewProperty<LinearProgressIndicator>(R.id.linearProgressIndicator)
     private val nestedScrollView by getViewProperty<NestedScrollView>(R.id.nestedScrollView)
     private val noElementsNestedScrollView by getViewProperty<NestedScrollView>(R.id.noElementsNestedScrollView)
+    private val playArtistInstantMixExtendedFloatingActionButton by getViewProperty<ExtendedFloatingActionButton>(
+        R.id.playArtistInstantMixExtendedFloatingActionButton
+    )
     private val thumbnailImageView by getViewProperty<ImageView>(R.id.thumbnailImageView)
     private val toolbar by getViewProperty<MaterialToolbar>(R.id.toolbar)
 
@@ -183,6 +187,25 @@ class ArtistFragment : Fragment(R.layout.fragment_artist) {
 
             windowInsets
         }
+
+        playArtistInstantMixExtendedFloatingActionButton.setOnClickListener {
+            lifecycleScope.launch {
+                viewModel.artistInstantMix.collectLatest { requestStatus ->
+                    if (requestStatus is FlowResult.Success) {
+                        val tracks = requestStatus.data.second
+                        if (tracks.isNotEmpty()) {
+                            Log.e("Play", "Playing ${tracks.size} tracks")
+                            viewModel.playAudio(tracks, 0)
+                        } else {
+                            Log.e("Play", "No tracks to play")
+                        }
+                    } else if (requestStatus is FlowResult.Error) {
+                        Log.e("Play", "Error: ${requestStatus.throwable}")
+                    }
+                }
+            }
+        }
+
 
         toolbar.setupWithNavController(findNavController())
 

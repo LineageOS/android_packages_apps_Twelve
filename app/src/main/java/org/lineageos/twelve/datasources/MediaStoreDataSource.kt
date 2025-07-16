@@ -701,6 +701,10 @@ class MediaStoreDataSource(
         Result.Success<_, Error>(Unit)
     }
 
+    override fun artistInstantMix(artistUri: Uri): Flow<MediaRequestStatus<Pair<Playlist, List<Audio>>>> {
+        TODO("Not yet implemented")
+    }
+
     fun audios() = contentResolver.queryFlow(
         getAudiosUri(MediaStore.VOLUME_EXTERNAL),
         audiosProjection

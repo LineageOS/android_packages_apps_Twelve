@@ -554,6 +554,23 @@ class JellyfinDataSource(
         }
     }
 
+    override fun artistInstantMix(
+        artistUri: Uri,
+    ) = providersManager.flatMapWithInstanceOf(artistUri) {
+        playlistsChanged.mapLatest {
+            val id = UUID.fromString(artistUri.lastPathSegment!!)
+            client.getPlaylist(id).map { item ->
+                val tracks = client.getArtistInstantMix(id).map { queryResult ->
+                    queryResult.items.map { it.toMediaItemAudio() }
+                }.getOrNull().orEmpty()
+
+                android.util.Log.e("TESTING", tracks.toString())
+
+                item.toMediaItemPlaylist() to tracks
+            }
+        }
+    }
+
     companion object {
         private const val ALBUMS_PATH = "albums"
         private const val ARTISTS_PATH = "artists"
