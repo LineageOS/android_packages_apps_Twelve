@@ -228,6 +228,7 @@
     <string name="activity_random_artists">Random artists</string>
     <string name="activity_random_genres">Random genres</string>
     <string name="activity_random_songs">Random songs</string>
+    <string name="activity_random_playlists">Random playlists</string>
 
     <!-- Content descriptions -->
     <string name="content_description_play_pause">Play/pause</string>
