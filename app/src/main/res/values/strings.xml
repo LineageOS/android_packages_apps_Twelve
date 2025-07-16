@@ -228,6 +228,7 @@
     <string name="activity_random_artists">Random artists</string>
     <string name="activity_random_genres">Random genres</string>
     <string name="activity_random_songs">Random songs</string>
+    <string name="activity_random_playlists">Random playlists</string>
 
     <!-- Content descriptions -->
     <string name="content_description_play_pause">Play/pause</string>
@@ -293,4 +294,7 @@
     <string name="favorites_playlist">Favorites</string>
     <string name="add_to_favorites">Add to favorites</string>
     <string name="remove_from_favorites">Remove from favorites</string>
+
+    <!-- Activity -->
+    <string name="suggestions_playlist_title">Suggestions</string>
 </resources>
