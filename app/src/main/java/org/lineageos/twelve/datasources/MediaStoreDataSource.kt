@@ -282,6 +282,10 @@ class MediaStoreDataSource(
         }
     }
 
+    override fun artistTracks(artistUri: Uri) = flowOf(
+        Result.Error<Pair<Playlist, List<Audio>>, _>(Error.NOT_IMPLEMENTED)
+    )
+
     override fun genres(
         providerIdentifier: ProviderIdentifier,
         sortingRule: SortingRule,
