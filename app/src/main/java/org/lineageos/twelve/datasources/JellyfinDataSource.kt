@@ -12,7 +12,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.mapLatest
 import okhttp3.Cache
@@ -300,7 +299,60 @@ class JellyfinDataSource(
 
     override fun activity(
         providerIdentifier: ProviderIdentifier,
-    ) = flowOf(Result.Success<_, Error>(listOf<ActivityTab>()))
+    ) = providersManager.mapWithInstanceOf(providerIdentifier) {
+        val randomSongs = client.audioSuggestions().map { queryResult ->
+            ActivityTab(
+                "random_songs",
+                LocalizedString.StringResIdLocalizedString(
+                    R.string.activity_random_songs,
+                ),
+                queryResult.items.map { it.toMediaItemAudio() }
+            )
+        }
+
+        val randomAlbums = client.albumSuggestions().map { queryResult ->
+            ActivityTab(
+                "random_albums",
+                LocalizedString.StringResIdLocalizedString(
+                    R.string.activity_random_albums,
+                ),
+                queryResult.items.map { it.toMediaItemAlbum() }
+            )
+        }
+
+        val randomArtists = client.artistSuggestions().map { queryResult ->
+            ActivityTab(
+                "random_artists",
+                LocalizedString.StringResIdLocalizedString(
+                    R.string.activity_random_artists,
+                ),
+                queryResult.items.map { it.toMediaItemArtist() }
+            )
+        }
+
+        val randomPlaylists = client.playlistSuggestions().map { queryResult ->
+            ActivityTab(
+                "random_playlists",
+                LocalizedString.StringResIdLocalizedString(
+                    R.string.activity_random_playlists,
+                ),
+                queryResult.items.map { it.toMediaItemPlaylist() }
+            )
+        }
+
+        Result.Success(
+            listOf(
+                randomSongs,
+                randomAlbums,
+                randomArtists,
+                randomPlaylists,
+            ).mapNotNull {
+                (it as? Result.Success)?.data?.takeIf { activityTab ->
+                    activityTab.items.isNotEmpty()
+                }
+            }
+        )
+    }
 
     override fun albums(
         providerIdentifier: ProviderIdentifier,
