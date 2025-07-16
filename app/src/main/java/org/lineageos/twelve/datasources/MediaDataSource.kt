@@ -92,6 +92,12 @@ interface MediaDataSource {
     ): Flow<MediaRequestStatus<List<Artist>>>
 
     /**
+     * Get an instant mix playlist given an artist.
+     * @param artistUri The URI of the artist
+     */
+    fun artistTracks(artistUri: Uri): Flow<MediaRequestStatus<Pair<Playlist, List<Audio>>>>
+
+    /**
      * Get all the genres. All genres must have at least one audio associated with them.
      *
      * @param providerIdentifier The [ProviderIdentifier] of the provider
