@@ -269,6 +269,17 @@ class JellyfinClient(
         ),
     ).execute(api).mapToError()
 
+    suspend fun suggestions() = ApiRequest.get<QueryResult>(
+        listOf(
+            "Items",
+            "Suggestions",
+        ),
+        queryParameters = listOf(
+            "MediaType" to "Audio",
+            "Limit" to 10,
+        )
+    ).execute(api).mapToError()
+
     private suspend fun getItem(id: UUID) = ApiRequest.get<Item>(
         listOf(
             "Items",
