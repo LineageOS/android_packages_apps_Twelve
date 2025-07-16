@@ -396,6 +396,20 @@ class JellyfinDataSource(
         }
     }
 
+    override fun artistTracks(
+        artistUri: Uri,
+    ) = providersManager.flatMapWithInstanceOf(artistUri) {
+        playlistsChanged.mapLatest {
+            val id = UUID.fromString(artistUri.lastPathSegment!!)
+            client.getPlaylist(id).map { item ->
+                val tracks = client.getArtistTracks(id).map { queryResult ->
+                    queryResult.items.map { it.toMediaItemAudio() }
+                }.getOrNull().orEmpty()
+                item.toMediaItemPlaylist() to tracks
+            }
+        }
+    }
+
     override fun genre(genreUri: Uri) = providersManager.mapWithInstanceOf(genreUri) {
         val id = UUID.fromString(genreUri.lastPathSegment!!)
         client.getGenre(id).map { item ->
