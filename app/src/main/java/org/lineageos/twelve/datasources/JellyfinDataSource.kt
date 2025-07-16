@@ -13,6 +13,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.mapLatest
 import okhttp3.Cache
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
@@ -393,6 +394,29 @@ class JellyfinDataSource(
                 appearsInAlbum = listOf(),
                 appearsInPlaylist = listOf(),
             )
+        }
+    }
+
+    override fun artistTracks(
+        artistUri: Uri,
+    ) = providersManager.flatMapWithInstanceOf(artistUri) {
+        flow {
+            val id = UUID.fromString(artistUri.lastPathSegment!!)
+            val result = client.getArtistTracks(id).map { queryResult ->
+                val tracks = queryResult.items.map { it.toMediaItemAudio() }
+
+                val playlist = Playlist(
+                    artistUri,
+                    null,
+                    LocalizedString.StringResIdLocalizedString(
+                        R.string.artist_tracks,
+                    ).toString(),
+                    Playlist.Type.PLAYLIST,
+                )
+
+                playlist to tracks
+            }
+            emit(result)
         }
     }
 
