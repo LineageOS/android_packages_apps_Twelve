@@ -12,6 +12,7 @@ import android.webkit.MimeTypeMap
 import androidx.core.os.bundleOf
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.mapLatest
@@ -87,6 +88,13 @@ class FileDataSource(
         providerIdentifier: ProviderIdentifier,
         sortingRule: SortingRule,
     ) = flowOf(Result.Error<List<Artist>, _>(Error.NOT_IMPLEMENTED))
+
+    override fun artistTracks(
+        providerIdentifier: ProviderIdentifier,
+        artistUri: Uri
+    ) = flowOf(
+        Result.Error<Pair<Playlist, List<Audio>>, _>(Error.NOT_IMPLEMENTED)
+    )
 
     override fun genres(
         providerIdentifier: ProviderIdentifier,
