@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c4bce858_60ba07fe",
+        "filename": "app/src/main/java/org/lineageos/twelve/datasources/JellyfinDataSource.kt",
+        "patchSetId": 2
+      },
+      "lineNbr": 300,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2025-07-16T19:22:34Z",
+      "side": 1,
+      "message": "you query for MediaType \u003d Audio, is this needed?",
+      "range": {
+        "startLine": 300,
+        "startChar": 0,
+        "endLine": 300,
+        "endChar": 53
+      },
+      "revId": "57b4c64c23fc654b7a196b7233582969c9ceecbc",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f10fcf47_27a2eb6f",
+        "filename": "app/src/main/java/org/lineageos/twelve/datasources/JellyfinDataSource.kt",
+        "patchSetId": 2
+      },
+      "lineNbr": 320,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2025-07-16T19:22:34Z",
+      "side": 1,
+      "message": "```suggestion\n        client.suggestions().map { queryResult -\u003e\n            queryResult.items\n                .mapNotNull { item -\u003e\n                    item.artists?.firstOrNull()?.let { artistName -\u003e\n                        artistName to item\n                    }\n                }\n                .groupBy(\n                    keySelector \u003d { (artistName, _) -\u003e\n                        LocalizedString.StringLocalizedString(artistName)\n                    },\n                    valueTransform \u003d { (_, item) -\u003e item.toMediaItemAudio() }\n                )\n                .toSortedMap(compareBy { it.toString() })\n                .map { (artist, mediaItems) -\u003e\n                    ActivityTab(\n                        id \u003d \"suggestions-artist-${artist.hashCode()}\",\n                        title \u003d artist,\n                        items \u003d mediaItems\n                    )\n                }\n        }\n```",
+      "range": {
+        "startLine": 297,
+        "startChar": 0,
+        "endLine": 320,
+        "endChar": 9
+      },
+      "revId": "57b4c64c23fc654b7a196b7233582969c9ceecbc",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
