@@ -13,7 +13,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.mapLatest
 import okhttp3.Cache
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
@@ -304,7 +303,60 @@ class JellyfinDataSource(
 
     override fun activity(
         providerIdentifier: ProviderIdentifier,
-    ) = flowOf(Result.Success<_, Error>(listOf<ActivityTab>()))
+    ) = providersManager.mapWithInstanceOf(providerIdentifier) {
+        val randomSongs = client.audioSuggestions().map { queryResult ->
+            ActivityTab(
+                "random_songs",
+                LocalizedString.StringResIdLocalizedString(
+                    R.string.activity_random_songs,
+                ),
+                queryResult.items.map { it.toMediaItemAudio() }
+            )
+        }
+
+        val randomAlbums = client.albumSuggestions().map { queryResult ->
+            ActivityTab(
+                "random_albums",
+                LocalizedString.StringResIdLocalizedString(
+                    R.string.activity_random_albums,
+                ),
+                queryResult.items.map { it.toMediaItemAlbum() }
+            )
+        }
+
+        val randomArtists = client.artistSuggestions().map { queryResult ->
+            ActivityTab(
+                "random_artists",
+                LocalizedString.StringResIdLocalizedString(
+                    R.string.activity_random_artists,
+                ),
+                queryResult.items.map { it.toMediaItemArtist() }
+            )
+        }
+
+        val randomPlaylists = client.playlistSuggestions().map { queryResult ->
+            ActivityTab(
+                "random_playlists",
+                LocalizedString.StringResIdLocalizedString(
+                    R.string.activity_random_playlists,
+                ),
+                queryResult.items.map { it.toMediaItemPlaylist() }
+            )
+        }
+
+        Result.Success(
+            listOf(
+                randomSongs,
+                randomAlbums,
+                randomArtists,
+                randomPlaylists,
+            ).mapNotNull {
+                (it as? Result.Success)?.data?.takeIf { activityTab ->
+                    activityTab.items.isNotEmpty()
+                }
+            }
+        )
+    }
 
     override fun albums(
         providerIdentifier: ProviderIdentifier,
@@ -420,7 +472,7 @@ class JellyfinDataSource(
                     instantMixUri,
                     null,
                     tracks[0].artistName,
-                    Playlist.Type.QUEUE,
+                    Playlist.Type.SUGGESTION,
                 )
 
                 playlist to tracks
@@ -525,7 +577,7 @@ class JellyfinDataSource(
         name: String,
     ) = providersManager.doWithInstanceOf(playlistUri) {
         when {
-            playlistUri == favoritesUri -> Result.Error(Error.IO)
+            playlistUri == favoritesUri || playlistUri == instantMixUri -> Result.Error(Error.IO)
             else -> client.renamePlaylist(
                 UUID.fromString(playlistUri.lastPathSegment!!), name
             ).map {
@@ -538,7 +590,7 @@ class JellyfinDataSource(
         playlistUri: Uri,
     ) = providersManager.doWithInstanceOf(playlistUri) {
         when {
-            playlistUri == favoritesUri -> Result.Error(Error.IO)
+            playlistUri == favoritesUri || playlistUri == instantMixUri -> Result.Error(Error.IO)
             else -> Result.Error<Unit, _>(Error.NOT_IMPLEMENTED)
         }
     }
@@ -547,8 +599,9 @@ class JellyfinDataSource(
         playlistUri: Uri,
         audioUri: Uri,
     ) = providersManager.doWithInstanceOf(playlistUri, audioUri) {
-        when {
-            playlistUri == favoritesUri -> setFavorite(audioUri, true)
+        when (playlistUri) {
+            instantMixUri -> Result.Error(Error.IO)
+            favoritesUri -> setFavorite(audioUri, true)
             else -> {
                 val playlistId = UUID.fromString(playlistUri.lastPathSegment!!)
                 val audioId = UUID.fromString(audioUri.lastPathSegment!!)
@@ -563,8 +616,9 @@ class JellyfinDataSource(
         playlistUri: Uri,
         audioUri: Uri,
     ) = providersManager.doWithInstanceOf(playlistUri, audioUri) {
-        when {
-            playlistUri == favoritesUri -> setFavorite(audioUri, false)
+        when (playlistUri) {
+            instantMixUri -> Result.Error(Error.IO)
+            favoritesUri -> setFavorite(audioUri, false)
             else -> {
                 val playlistId = UUID.fromString(playlistUri.lastPathSegment!!)
                 val audioId = UUID.fromString(audioUri.lastPathSegment!!)
