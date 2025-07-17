@@ -24,6 +24,30 @@
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "076f11da_b93d0fd5",
+        "filename": "app/src/main/java/org/lineageos/twelve/datasources/JellyfinDataSource.kt",
+        "patchSetId": 2
+      },
+      "lineNbr": 300,
+      "author": {
+        "id": 21651
+      },
+      "writtenOn": "2025-07-17T14:15:14Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c4bce858_60ba07fe",
+      "range": {
+        "startLine": 300,
+        "startChar": 0,
+        "endLine": 300,
+        "endChar": 53
+      },
+      "revId": "57b4c64c23fc654b7a196b7233582969c9ceecbc",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "f10fcf47_27a2eb6f",
@@ -61,6 +85,30 @@
       "side": 1,
       "message": "I\u0027ll make this a single playlist instead",
       "parentUuid": "f10fcf47_27a2eb6f",
+      "range": {
+        "startLine": 297,
+        "startChar": 0,
+        "endLine": 320,
+        "endChar": 9
+      },
+      "revId": "57b4c64c23fc654b7a196b7233582969c9ceecbc",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "428bdf4b_00755c2f",
+        "filename": "app/src/main/java/org/lineageos/twelve/datasources/JellyfinDataSource.kt",
+        "patchSetId": 2
+      },
+      "lineNbr": 320,
+      "author": {
+        "id": 21651
+      },
+      "writtenOn": "2025-07-17T14:15:14Z",
+      "side": 1,
+      "message": "Acknowledged",
+      "parentUuid": "c3471cc8_a61a286c",
       "range": {
         "startLine": 297,
         "startChar": 0,
