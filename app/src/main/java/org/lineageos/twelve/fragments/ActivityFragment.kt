@@ -69,7 +69,12 @@ class ActivityFragment : Fragment(R.layout.fragment_activity) {
                             ArtistFragment.createBundle(mediaItem.uri)
                         )
 
-                        is Audio -> viewModel.playAudio(listOf(mediaItem), 0)
+                        is Audio -> {
+                            val audioItems = item.items.mapNotNull { it as? Audio }.sortedWith(
+                                compareByDescending { it.uri == mediaItem.uri }
+                            )
+                            viewModel.playAudio(audioItems, 0)
+                        }
 
                         is Genre -> findNavController().navigateSafe(
                             R.id.action_mainFragment_to_fragment_genre,
