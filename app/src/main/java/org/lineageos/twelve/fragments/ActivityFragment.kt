@@ -69,7 +69,10 @@ class ActivityFragment : Fragment(R.layout.fragment_activity) {
                             ArtistFragment.createBundle(mediaItem.uri)
                         )
 
-                        is Audio -> viewModel.playAudio(listOf(mediaItem), 0)
+                        is Audio -> viewModel.playAudio(
+                            mediaItem,
+                            item.items.filterIsInstance<Audio>()
+                        )
 
                         is Genre -> findNavController().navigateSafe(
                             R.id.action_mainFragment_to_fragment_genre,

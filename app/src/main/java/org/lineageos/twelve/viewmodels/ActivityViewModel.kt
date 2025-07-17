@@ -11,6 +11,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.stateIn
+import org.lineageos.twelve.models.Audio
 import org.lineageos.twelve.models.FlowResult
 import org.lineageos.twelve.models.FlowResult.Companion.asFlowResult
 
@@ -23,4 +24,11 @@ class ActivityViewModel(application: Application) : TwelveViewModel(application)
             SharingStarted.WhileSubscribed(),
             FlowResult.Loading(),
         )
+
+    fun playAudio(start: Audio, rest: List<Audio>) {
+        val audioList = mutableListOf(start).apply {
+            addAll(rest.filter { it.uri != start.uri })
+        }
+        playAudio(audioList, 0)
+    }
 }
