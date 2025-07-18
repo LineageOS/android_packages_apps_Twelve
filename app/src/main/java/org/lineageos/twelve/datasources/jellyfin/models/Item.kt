@@ -18,6 +18,7 @@ import java.util.UUID
 data class Item(
     @SerialName("Id") val id: UUID,
     @SerialName("Name") val name: String? = null,
+    @SerialName("ArtistItems") val artistItems: List<ArtistItem>? = null,
     @SerialName("Artists") val artists: List<String>? = null,
     @SerialName("AlbumId") val albumId: UUID? = null,
     @SerialName("ProductionYear") val productionYear: Int? = null,
