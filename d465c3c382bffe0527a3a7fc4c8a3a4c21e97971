@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "431d39f9_be7b0817",
+        "filename": "app/src/main/java/org/lineageos/twelve/datasources/JellyfinDataSource.kt",
+        "patchSetId": 1
+      },
+      "lineNbr": 561,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2025-07-18T13:56:20Z",
+      "side": 1,
+      "message": "this is wrong\nIt\u0027ll map any error from add/remove into a success\n\nshould be something like .unlessError {on changed }",
+      "range": {
+        "startLine": 561,
+        "startChar": 10,
+        "endLine": 561,
+        "endChar": 13
+      },
+      "revId": "d465c3c382bffe0527a3a7fc4c8a3a4c21e97971",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
