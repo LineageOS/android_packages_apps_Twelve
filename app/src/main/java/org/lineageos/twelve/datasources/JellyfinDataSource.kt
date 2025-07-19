@@ -499,7 +499,7 @@ class JellyfinDataSource(
         name: String,
     ) = providersManager.doWithInstanceOf(playlistUri) {
         when {
-            playlistUri == favoritesUri -> Result.Error(Error.IO)
+            playlistUri == favoritesUri || playlistUri == instantMixUri -> Result.Error(Error.IO)
             else -> client.renamePlaylist(
                 UUID.fromString(playlistUri.lastPathSegment!!), name
             ).map {
@@ -512,7 +512,7 @@ class JellyfinDataSource(
         playlistUri: Uri,
     ) = providersManager.doWithInstanceOf(playlistUri) {
         when {
-            playlistUri == favoritesUri -> Result.Error(Error.IO)
+            playlistUri == favoritesUri || playlistUri == instantMixUri -> Result.Error(Error.IO)
             else -> Result.Error<Unit, _>(Error.NOT_IMPLEMENTED)
         }
     }
@@ -521,8 +521,9 @@ class JellyfinDataSource(
         playlistUri: Uri,
         audioUri: Uri,
     ) = providersManager.doWithInstanceOf(playlistUri, audioUri) {
-        when {
-            playlistUri == favoritesUri -> setFavorite(audioUri, true)
+        when (playlistUri) {
+            instantMixUri -> Result.Error(Error.IO)
+            favoritesUri -> setFavorite(audioUri, true)
             else -> {
                 val playlistId = UUID.fromString(playlistUri.lastPathSegment!!)
                 val audioId = UUID.fromString(audioUri.lastPathSegment!!)
@@ -537,8 +538,9 @@ class JellyfinDataSource(
         playlistUri: Uri,
         audioUri: Uri,
     ) = providersManager.doWithInstanceOf(playlistUri, audioUri) {
-        when {
-            playlistUri == favoritesUri -> setFavorite(audioUri, false)
+        when (playlistUri) {
+            instantMixUri -> Result.Error(Error.IO)
+            favoritesUri -> setFavorite(audioUri, false)
             else -> {
                 val playlistId = UUID.fromString(playlistUri.lastPathSegment!!)
                 val audioId = UUID.fromString(audioUri.lastPathSegment!!)
