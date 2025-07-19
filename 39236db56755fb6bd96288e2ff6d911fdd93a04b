@@ -1,0 +1,101 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6ac4c265_48f1380e",
+        "filename": "app/src/main/java/org/lineageos/twelve/fragments/NowPlayingFragment.kt",
+        "patchSetId": 8
+      },
+      "lineNbr": 446,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2025-07-19T17:39:43Z",
+      "side": 1,
+      "message": "at this point mixing .also and ?: run is hard to read...\nwhy not simply\n\nval deviceType \u003d outputConfiguration?.device?.type\nif !\u003d null {} else {}",
+      "range": {
+        "startLine": 416,
+        "startChar": 0,
+        "endLine": 446,
+        "endChar": 25
+      },
+      "revId": "39236db56755fb6bd96288e2ff6d911fdd93a04b",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4b9f37db_e309ad51",
+        "filename": "app/src/main/java/org/lineageos/twelve/fragments/NowPlayingStatsBottomSheetDialogFragment.kt",
+        "patchSetId": 8
+      },
+      "lineNbr": 119,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2025-07-19T17:39:43Z",
+      "side": 1,
+      "message": "You\u0027re mixing also and let all over the place...\n\nWhy not introduce something like\n\n```\ninline fun \u003cT\u003e View.showIfNotNull(value: T?, block: (T) -\u003e Unit) {\n    if (value !\u003d null) {\n        block(value)\n        isVisible \u003d true\n    } else {\n        isVisible \u003d false\n    }\n}\n\n\nsourceFileTypeListItem.showIfNotNull(outputConfiguration?.source?.mimeType) {\n    sourceFileTypeListItem.supportingText \u003d it\n}\n```\n\nAnd for supporting text\n\n```\nfun setSupportingTextOrFallback(\n    item: OurViewTypeIDontRemember,\n    text: String?,\n    @StringRes fallbackRes: Int\n) {\n    if (text !\u003d null) {\n        item.supportingText \u003d text\n    } else {\n        item.setSupportingText(fallbackRes)\n    }\n}\n\nsetSupportingTextOrFallback(\n    sourceEncodingListItem,\n    outputConfiguration?.source?.encoding?.displayName,\n    R.string.audio_encoding_unknown\n)\n```",
+      "revId": "39236db56755fb6bd96288e2ff6d911fdd93a04b",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6e2d3e8b_d8ee35ad",
+        "filename": "app/src/main/java/org/lineageos/twelve/services/TwelveAudioSink.kt",
+        "patchSetId": 8
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2025-07-19T17:39:43Z",
+      "side": 1,
+      "message": "sad",
+      "revId": "39236db56755fb6bd96288e2ff6d911fdd93a04b",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e4299ffa_947684f2",
+        "filename": "app/src/main/java/org/lineageos/twelve/services/TwelveRenderersFactory.kt",
+        "patchSetId": 8
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2025-07-19T17:39:43Z",
+      "side": 1,
+      "message": "Why don\u0027t you use AudioSink.Listener onAudioTrackInitialized/onAudioTrackReleased to send the \"now public\" AudioTrack?",
+      "revId": "39236db56755fb6bd96288e2ff6d911fdd93a04b",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "60009a6f_ecab9d12",
+        "filename": "app/src/main/res/layout/fragment_now_playing_stats_bottom_sheet_dialog.xml",
+        "patchSetId": 8
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2025-07-19T17:39:43Z",
+      "side": 1,
+      "message": "This section only caused me confusion",
+      "range": {
+        "startLine": 28,
+        "startChar": 0,
+        "endLine": 28,
+        "endChar": 62
+      },
+      "revId": "39236db56755fb6bd96288e2ff6d911fdd93a04b",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
