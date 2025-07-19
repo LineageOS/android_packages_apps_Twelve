@@ -701,6 +701,13 @@ class SubsonicDataSource(
         }
     }
 
+    override fun getSuggestionsFromAudio(
+        providerIdentifier: ProviderIdentifier,
+        audioUri: Uri
+    ) = flowOf(
+        Result.Error<ActivityTab, _>(Error.NOT_IMPLEMENTED)
+    )
+
     /**
      * Apply [List.asReversed] if [condition] is true.
      * Reminder that [List.asReversed] returns a new list view, thus being O(1).
