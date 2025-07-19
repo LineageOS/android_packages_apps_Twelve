@@ -36,6 +36,24 @@
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "a6fc90a5_5bb6f379",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 8
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 25732
+      },
+      "writtenOn": "2025-07-19T21:20:32Z",
+      "side": 1,
+      "message": "It has a \"virtual\" playlist with all their song, sorted by popularity, descending",
+      "parentUuid": "5795d20f_9d4c36e0",
+      "revId": "09b1964924f52891f44d5cb3abd51b93e274fce6",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "8f436873_3a0561b4",
