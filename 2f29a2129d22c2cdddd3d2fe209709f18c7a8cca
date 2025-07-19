@@ -18,6 +18,24 @@
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "91490d98_59dc855c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 21651
+      },
+      "writtenOn": "2025-07-19T17:05:47Z",
+      "side": 1,
+      "message": "Maybe that could be a setting? The main use case is that search gives 1 song to the queue.",
+      "parentUuid": "61d60653_03dbe25f",
+      "revId": "2f29a2129d22c2cdddd3d2fe209709f18c7a8cca",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "8e3bb20d_3eea8bb3",
