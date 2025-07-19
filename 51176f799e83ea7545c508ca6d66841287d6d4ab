@@ -16,6 +16,24 @@
       "message": "`it.getOrNull()?.takeIf...`",
       "revId": "51176f799e83ea7545c508ca6d66841287d6d4ab",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "460dd566_d19a7018",
+        "filename": "app/src/main/java/org/lineageos/twelve/datasources/JellyfinDataSource.kt",
+        "patchSetId": 8
+      },
+      "lineNbr": 350,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2025-07-19T17:03:56Z",
+      "side": 1,
+      "message": "```suggestion\n                it.getOrNull()?.takeIf { activityTab -\u003e\n                    activityTab.items.isNotEmpty()\n                }\n```\n\nWill do",
+      "parentUuid": "1505ae8c_3419f474",
+      "revId": "51176f799e83ea7545c508ca6d66841287d6d4ab",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
