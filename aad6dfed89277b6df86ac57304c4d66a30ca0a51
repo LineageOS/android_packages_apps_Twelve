@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "77c7120c_563d5987",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 8
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 25732
+      },
+      "writtenOn": "2025-07-19T16:41:46Z",
+      "side": 1,
+      "message": "Can we do this inside the view model? Should avoid logic code in the fragment",
+      "revId": "aad6dfed89277b6df86ac57304c4d66a30ca0a51",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
