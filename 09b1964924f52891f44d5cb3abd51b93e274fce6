@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0a186dc7_337ce906",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 8
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 25732
+      },
+      "writtenOn": "2025-07-19T16:40:50Z",
+      "side": 1,
+      "message": "Code is fine, not entirely sure about the UX... I\u0027d rather show the top 5 tracks as a list like Spotify does",
+      "revId": "09b1964924f52891f44d5cb3abd51b93e274fce6",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9d660ac2_0e618731",
+        "filename": "app/src/main/res/layout/fragment_artist.xml",
+        "patchSetId": 8
+      },
+      "lineNbr": 111,
+      "author": {
+        "id": 25732
+      },
+      "writtenOn": "2025-07-19T16:40:50Z",
+      "side": 1,
+      "message": "Newline here",
+      "revId": "09b1964924f52891f44d5cb3abd51b93e274fce6",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
