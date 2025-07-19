@@ -16,6 +16,29 @@
       "message": "Not really happy about shoving a new queue to the user w/o asking",
       "revId": "2f29a2129d22c2cdddd3d2fe209709f18c7a8cca",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8e3bb20d_3eea8bb3",
+        "filename": "app/src/main/java/org/lineageos/twelve/services/PlaybackService.kt",
+        "patchSetId": 3
+      },
+      "lineNbr": 469,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2025-07-19T16:45:29Z",
+      "side": 1,
+      "message": "move this into a function of sort\n\nplayer.addMediaItems(\n    getSuggestionsFromAudio()\n)\n\nfun getSugg(..) {\n   val mediaId \u003d player.currentMediaItem?.mediaId? :? return listOf();\n   etc\n}",
+      "range": {
+        "startLine": 453,
+        "startChar": 0,
+        "endLine": 469,
+        "endChar": 21
+      },
+      "revId": "2f29a2129d22c2cdddd3d2fe209709f18c7a8cca",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
