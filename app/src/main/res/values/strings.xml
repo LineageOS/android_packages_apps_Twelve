@@ -10,13 +10,6 @@
     <string name="app_permissions_toast">Permissions not granted by the user.</string>
     <string name="visualizer_permissions_toast">Record audio permission is required for the visualizer.</string>
 
-    <!-- Request status error types -->
-    <string name="request_status_error_type_unknown">Unknown</string>
-    <string name="request_status_error_type_not_found">Not found</string>
-    <string name="request_status_error_type_io">I/O error</string>
-    <string name="request_status_error_type_authentication_required">Authentication required</string>
-    <string name="request_status_error_type_invalid_credentials">Invalid credentials</string>
-
     <!-- Main fragment sections -->
     <string name="main_fragment_section_activity">Activity</string>
     <string name="main_fragment_section_search">Search</string>
@@ -58,10 +51,12 @@
     <string name="year_format" translatable="false">%1$d</string>
     <plurals name="tracks_count">
         <item quantity="one">%d track</item>
+        <item quantity="many">%d tracks</item>
         <item quantity="other">%d tracks</item>
     </plurals>
     <plurals name="tracks_duration">
         <item quantity="one">%d minute</item>
+        <item quantity="many">%d minutes</item>
         <item quantity="other">%d minutes</item>
     </plurals>
     <string name="tracks_info" translatable="false">%1$s, %2$s</string>
@@ -282,9 +277,6 @@
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="unknown">Unknown</string>
-
-    <!-- Data source information -->
-    <string name="local_volume_name">Volume name</string>
 
     <!-- Data source information - Subsonic -->
     <string name="subsonic_version">Subsonic version</string>
