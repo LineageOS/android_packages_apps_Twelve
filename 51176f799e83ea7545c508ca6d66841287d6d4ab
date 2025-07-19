@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1505ae8c_3419f474",
+        "filename": "app/src/main/java/org/lineageos/twelve/datasources/JellyfinDataSource.kt",
+        "patchSetId": 8
+      },
+      "lineNbr": 350,
+      "author": {
+        "id": 25732
+      },
+      "writtenOn": "2025-07-19T16:37:44Z",
+      "side": 1,
+      "message": "`it.getOrNull()?.takeIf...`",
+      "revId": "51176f799e83ea7545c508ca6d66841287d6d4ab",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
