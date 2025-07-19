@@ -701,6 +701,11 @@ class MediaStoreDataSource(
         Result.Success<_, Error>(Unit)
     }
 
+    override fun getSuggestionsFromAudio(providerIdentifier: ProviderIdentifier, audioUri: Uri) =
+        flowOf(
+            Result.Error<ActivityTab, _>(Error.NOT_IMPLEMENTED)
+        )
+
     fun audios() = contentResolver.queryFlow(
         getAudiosUri(MediaStore.VOLUME_EXTERNAL),
         audiosProjection
