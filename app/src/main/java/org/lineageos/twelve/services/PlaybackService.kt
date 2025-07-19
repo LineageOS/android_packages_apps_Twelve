@@ -13,6 +13,7 @@ import android.os.Bundle
 import android.os.IBinder
 import android.util.Log
 import androidx.annotation.OptIn
+import androidx.core.net.toUri
 import androidx.core.os.bundleOf
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
@@ -39,6 +40,7 @@ import androidx.media3.session.SessionResult
 import androidx.preference.PreferenceManager
 import com.google.common.util.concurrent.Futures
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.guava.await
 import kotlinx.coroutines.guava.future
 import kotlinx.coroutines.launch
@@ -56,6 +58,7 @@ import org.lineageos.twelve.ext.skipSilence
 import org.lineageos.twelve.ext.stopPlaybackOnTaskRemoved
 import org.lineageos.twelve.ext.typedRepeatMode
 import org.lineageos.twelve.models.RepeatMode
+import org.lineageos.twelve.models.Result.Success
 import org.lineageos.twelve.ui.widgets.NowPlayingAppWidgetProvider
 
 @OptIn(UnstableApi::class)
@@ -446,6 +449,23 @@ class PlaybackService : MediaLibraryService(), LifecycleOwner {
             player.listen { events ->
                 // Update startIndex and startPositionMs in resumption playlist.
                 if (events.containsAny(Player.EVENT_MEDIA_ITEM_TRANSITION)) {
+                    if (player.mediaItemCount - player.currentMediaItemIndex <= 1) {
+                        player.currentMediaItem?.mediaId?.let { mediaId ->
+                            lifecycleScope.launch {
+                                mediaRepository.getSuggestionsFromAudio(mediaId.toUri())
+                                    .firstOrNull { it is Success }
+                                    ?.let { result ->
+                                        val tracks = (result as Success).data.second
+                                        player.addMediaItems(tracks.map {
+                                            it.toMedia3MediaItem(
+                                                resources
+                                            )
+                                        })
+                                    }
+                            }
+                        }
+                    }
+
                     lifecycleScope.launch {
                         resumptionPlaylistRepository.onPlaybackPositionChanged(
                             player.currentMediaItemIndex,

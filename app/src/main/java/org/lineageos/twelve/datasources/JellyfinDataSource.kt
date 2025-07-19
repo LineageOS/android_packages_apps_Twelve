@@ -629,6 +629,28 @@ class JellyfinDataSource(
         }
     }
 
+    override fun getSuggestionsFromAudio(
+        providerIdentifier: ProviderIdentifier,
+        audioUri: Uri,
+    ) = providersManager.flatMapWithInstanceOf(providerIdentifier) {
+        flow {
+            val id = UUID.fromString(audioUri.lastPathSegment!!)
+            val result = client.songInstantMix(id).map { queryResult ->
+                val tracks =
+                    queryResult.items.map { it.toMediaItemAudio() }.filter { it.uri != audioUri }
+
+                val playlist = Playlist(
+                    instantMixUri,
+                    null,
+                    "instant mix",
+                    Playlist.Type.SUGGESTION,
+                )
+                playlist to tracks
+            }
+            emit(result)
+        }
+    }
+
     override suspend fun onAudioPlayed(audioUri: Uri) = Result.Success<Unit, Error>(Unit)
 
     override suspend fun setFavorite(
