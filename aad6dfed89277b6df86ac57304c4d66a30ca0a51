@@ -16,6 +16,46 @@
       "message": "Can we do this inside the view model? Should avoid logic code in the fragment",
       "revId": "aad6dfed89277b6df86ac57304c4d66a30ca0a51",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4cd41bb6_a2e90c8f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 8
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2025-07-19T17:08:34Z",
+      "side": 1,
+      "message": "maybe?",
+      "revId": "aad6dfed89277b6df86ac57304c4d66a30ca0a51",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1681eee4_f4bd0c0e",
+        "filename": "app/src/main/java/org/lineageos/twelve/fragments/ActivityFragment.kt",
+        "patchSetId": 8
+      },
+      "lineNbr": 79,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2025-07-19T17:08:34Z",
+      "side": 1,
+      "message": "viewModel.playAudio(mediaItem, item.items.filterIsInstance\u003cAudio\u003e())\n                            \n                                fun playAudio(start: Audio, rest: List\u003cAudio\u003e) {\n        val audioList \u003d mutableListOf(start).apply {\n            addAll(rest.filter { it.uri !\u003d start.uri })\n        }\n        playAudio(audioList, 0)\n    }",
+      "range": {
+        "startLine": 73,
+        "startChar": 0,
+        "endLine": 79,
+        "endChar": 0
+      },
+      "revId": "aad6dfed89277b6df86ac57304c4d66a30ca0a51",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
