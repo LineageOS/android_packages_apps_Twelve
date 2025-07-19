@@ -200,6 +200,7 @@ class MediaItemBottomSheetDialogFragment : BottomSheetDialogFragment(
                                 when (mediaItem.type) {
                                     Playlist.Type.PLAYLIST -> R.string.playlist_unknown
                                     Playlist.Type.FAVORITES -> R.string.favorites_playlist
+                                    Playlist.Type.SUGGESTION -> R.string.suggested_songs
                                 }
                             )
                         }
@@ -226,6 +227,7 @@ class MediaItemBottomSheetDialogFragment : BottomSheetDialogFragment(
                                 is Playlist -> when (mediaItem.type) {
                                     Playlist.Type.PLAYLIST -> R.drawable.ic_playlist_play
                                     Playlist.Type.FAVORITES -> R.drawable.ic_favorite
+                                    Playlist.Type.SUGGESTION -> R.drawable.ic_playlist_play
                                 }
                             }
                         )
