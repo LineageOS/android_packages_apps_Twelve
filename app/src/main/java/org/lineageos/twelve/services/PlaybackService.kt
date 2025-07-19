@@ -14,6 +14,7 @@ import android.os.Bundle
 import android.os.IBinder
 import android.util.Log
 import androidx.annotation.OptIn
+import androidx.core.net.toUri
 import androidx.core.os.bundleOf
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
@@ -47,6 +48,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
@@ -70,7 +72,9 @@ import org.lineageos.twelve.ext.setOffloadEnabled
 import org.lineageos.twelve.ext.skipSilence
 import org.lineageos.twelve.ext.stopPlaybackOnTaskRemoved
 import org.lineageos.twelve.ext.typedRepeatMode
+import org.lineageos.twelve.models.Audio
 import org.lineageos.twelve.models.RepeatMode
+import org.lineageos.twelve.models.Result.Success
 import org.lineageos.twelve.ui.widgets.NowPlayingAppWidgetProvider
 import org.lineageos.twelve.utils.AudioPreloader
 
@@ -502,6 +506,13 @@ class PlaybackService : MediaLibraryService(), LifecycleOwner {
             player.listen { events ->
                 // Update startIndex and startPositionMs in resumption playlist.
                 if (events.containsAny(Player.EVENT_MEDIA_ITEM_TRANSITION)) {
+                    if (player.mediaItemCount - player.currentMediaItemIndex <= 1) {
+                        lifecycleScope.launch {
+                            val suggestions = getSuggestionsFromCurrentAudio()
+                            player.addMediaItems(suggestions)
+                        }
+                    }
+
                     lifecycleScope.launch {
                         resumptionPlaylistRepository.onPlaybackPositionChanged(
                             player.currentMediaItemIndex,
@@ -650,6 +661,18 @@ class PlaybackService : MediaLibraryService(), LifecycleOwner {
 
     private fun getCustomLayout() = CustomCommand.entries.mapNotNull {
         it.buildCommandButton(player, resources)
+    }
+
+    private suspend fun getSuggestionsFromCurrentAudio(): List<MediaItem> {
+        val mediaId = player.currentMediaItem?.mediaId ?: return emptyList()
+
+        return mediaRepository.getSuggestionsFromAudio(mediaId.toUri())
+            .firstOrNull { it is Success }?.let { requestStatus ->
+                val data = (requestStatus as Success).data
+                data.items.filterIsInstance<Audio>().map {
+                    it.toMedia3MediaItem(resources)
+                }
+            }.orEmpty()
     }
 
     /**
