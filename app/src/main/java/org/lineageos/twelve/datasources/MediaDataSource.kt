@@ -231,4 +231,13 @@ interface MediaDataSource {
      * @return [Result.Success] if success, [Result.Error] with an error otherwise
      */
     suspend fun setFavorite(audioUri: Uri, isFavorite: Boolean): MediaRequestStatus<Unit>
+
+    /**
+     * Get an instant mix playlist given a track.
+     * @param audioUri The URI of the track
+     */
+    fun getSuggestionsFromAudio(
+        providerIdentifier: ProviderIdentifier,
+        audioUri: Uri
+    ): Flow<MediaRequestStatus<ActivityTab>>
 }

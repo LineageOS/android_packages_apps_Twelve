@@ -12,6 +12,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.mapLatest
 import okhttp3.Cache
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
@@ -621,6 +622,7 @@ class JellyfinDataSource(
         }
     }
 
+
     override suspend fun onAudioPlayed(
         audioUri: Uri,
         positionMs: Long,
@@ -630,6 +632,26 @@ class JellyfinDataSource(
             itemId = itemId,
             positionTicks = positionMs,
         )
+    }
+
+    override fun getSuggestionsFromAudio(
+        providerIdentifier: ProviderIdentifier,
+        audioUri: Uri,
+    ) = providersManager.flatMapWithInstanceOf(providerIdentifier) {
+        flow {
+            val id = UUID.fromString(audioUri.lastPathSegment!!)
+            val result = client.songInstantMix(id).map { queryResult ->
+                val tracks =
+                    queryResult.items.map { it.toMediaItemAudio() }.filter { it.uri != audioUri }
+
+                ActivityTab(
+                    "instant mix",
+                    LocalizedString.StringLocalizedString("Instant mix"),
+                    tracks
+                )
+            }
+            emit(result)
+        }
     }
 
     override suspend fun setFavorite(

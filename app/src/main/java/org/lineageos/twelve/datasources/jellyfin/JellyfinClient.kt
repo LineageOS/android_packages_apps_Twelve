@@ -332,6 +332,17 @@ class JellyfinClient(
             "Playing",
         ),
         data = PlaybackRequest(itemId.toString(), positionTicks)
+    )
+
+    suspend fun songInstantMix(id: UUID) = ApiRequest.get<QueryResult>(
+        listOf(
+            "Songs",
+            id.toString(),
+            "InstantMix",
+        ),
+        queryParameters = listOf(
+            "Limit" to 20,
+        )
     ).execute(api).mapToError()
 
     private suspend fun getItem(id: UUID) = ApiRequest.get<Item>(
