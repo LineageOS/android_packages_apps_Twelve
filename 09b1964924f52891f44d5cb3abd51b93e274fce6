@@ -18,6 +18,24 @@
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "5795d20f_9d4c36e0",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 8
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 21651
+      },
+      "writtenOn": "2025-07-19T19:20:29Z",
+      "side": 1,
+      "message": "I think spotify also has a \"play all\" button for an artist?",
+      "parentUuid": "0a186dc7_337ce906",
+      "revId": "09b1964924f52891f44d5cb3abd51b93e274fce6",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "8f436873_3a0561b4",
