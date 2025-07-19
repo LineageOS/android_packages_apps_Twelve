@@ -34,6 +34,11 @@ data class Playlist(
          * The list of favorite songs.
          */
         FAVORITES,
+
+        /**
+         * Generated list of songs.
+         */
+        QUEUE,
     }
 
     override val mediaType = MediaType.PLAYLIST
@@ -50,6 +55,7 @@ data class Playlist(
             when (type) {
                 Type.PLAYLIST -> R.string.playlist_unknown
                 Type.FAVORITES -> R.string.favorites_playlist
+                Type.QUEUE -> R.string.activity_random_songs
             }
         ),
         mediaId = uri.toString(),
