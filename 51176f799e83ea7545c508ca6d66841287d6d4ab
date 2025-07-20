@@ -34,6 +34,24 @@
       "parentUuid": "1505ae8c_3419f474",
       "revId": "51176f799e83ea7545c508ca6d66841287d6d4ab",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "135d99ab_ca4c77bc",
+        "filename": "app/src/main/java/org/lineageos/twelve/datasources/JellyfinDataSource.kt",
+        "patchSetId": 8
+      },
+      "lineNbr": 350,
+      "author": {
+        "id": 21651
+      },
+      "writtenOn": "2025-07-20T10:07:10Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "460dd566_d19a7018",
+      "revId": "51176f799e83ea7545c508ca6d66841287d6d4ab",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
