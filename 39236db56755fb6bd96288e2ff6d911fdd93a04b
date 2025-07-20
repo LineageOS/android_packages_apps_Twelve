@@ -24,6 +24,30 @@
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "5b100b2a_92d3c7d7",
+        "filename": "app/src/main/java/org/lineageos/twelve/fragments/NowPlayingFragment.kt",
+        "patchSetId": 8
+      },
+      "lineNbr": 446,
+      "author": {
+        "id": 25732
+      },
+      "writtenOn": "2025-07-20T01:25:44Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "6ac4c265_48f1380e",
+      "range": {
+        "startLine": 416,
+        "startChar": 0,
+        "endLine": 446,
+        "endChar": 25
+      },
+      "revId": "39236db56755fb6bd96288e2ff6d911fdd93a04b",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "4b9f37db_e309ad51",
@@ -37,6 +61,24 @@
       "writtenOn": "2025-07-19T17:39:43Z",
       "side": 1,
       "message": "You\u0027re mixing also and let all over the place...\n\nWhy not introduce something like\n\n```\ninline fun \u003cT\u003e View.showIfNotNull(value: T?, block: (T) -\u003e Unit) {\n    if (value !\u003d null) {\n        block(value)\n        isVisible \u003d true\n    } else {\n        isVisible \u003d false\n    }\n}\n\n\nsourceFileTypeListItem.showIfNotNull(outputConfiguration?.source?.mimeType) {\n    sourceFileTypeListItem.supportingText \u003d it\n}\n```\n\nAnd for supporting text\n\n```\nfun setSupportingTextOrFallback(\n    item: OurViewTypeIDontRemember,\n    text: String?,\n    @StringRes fallbackRes: Int\n) {\n    if (text !\u003d null) {\n        item.supportingText \u003d text\n    } else {\n        item.setSupportingText(fallbackRes)\n    }\n}\n\nsetSupportingTextOrFallback(\n    sourceEncodingListItem,\n    outputConfiguration?.source?.encoding?.displayName,\n    R.string.audio_encoding_unknown\n)\n```",
+      "revId": "39236db56755fb6bd96288e2ff6d911fdd93a04b",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f1bba9b1_8422d4a6",
+        "filename": "app/src/main/java/org/lineageos/twelve/fragments/NowPlayingStatsBottomSheetDialogFragment.kt",
+        "patchSetId": 8
+      },
+      "lineNbr": 119,
+      "author": {
+        "id": 25732
+      },
+      "writtenOn": "2025-07-20T01:25:44Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "4b9f37db_e309ad51",
       "revId": "39236db56755fb6bd96288e2ff6d911fdd93a04b",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     },
@@ -77,6 +119,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "8342f808_dcb37589",
+        "filename": "app/src/main/java/org/lineageos/twelve/services/TwelveRenderersFactory.kt",
+        "patchSetId": 8
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 25732
+      },
+      "writtenOn": "2025-07-20T01:25:44Z",
+      "side": 1,
+      "message": "Tried it, I cannot get it to work, those callbacks aren\u0027t being called for whatever reason",
+      "parentUuid": "e4299ffa_947684f2",
+      "revId": "39236db56755fb6bd96288e2ff6d911fdd93a04b",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "60009a6f_ecab9d12",
         "filename": "app/src/main/res/layout/fragment_now_playing_stats_bottom_sheet_dialog.xml",
         "patchSetId": 8
@@ -88,6 +148,30 @@
       "writtenOn": "2025-07-19T17:39:43Z",
       "side": 1,
       "message": "This section only caused me confusion",
+      "range": {
+        "startLine": 28,
+        "startChar": 0,
+        "endLine": 28,
+        "endChar": 62
+      },
+      "revId": "39236db56755fb6bd96288e2ff6d911fdd93a04b",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8d3755ae_258aaaf5",
+        "filename": "app/src/main/res/layout/fragment_now_playing_stats_bottom_sheet_dialog.xml",
+        "patchSetId": 8
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 25732
+      },
+      "writtenOn": "2025-07-20T01:25:44Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "60009a6f_ecab9d12",
       "range": {
         "startLine": 28,
         "startChar": 0,
