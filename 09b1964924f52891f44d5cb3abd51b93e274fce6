@@ -116,6 +116,24 @@
       "message": "Newline here",
       "revId": "09b1964924f52891f44d5cb3abd51b93e274fce6",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e4ddd66b_c3c0a5b2",
+        "filename": "app/src/main/res/layout/fragment_artist.xml",
+        "patchSetId": 8
+      },
+      "lineNbr": 111,
+      "author": {
+        "id": 21651
+      },
+      "writtenOn": "2025-07-20T10:08:53Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9d660ac2_0e618731",
+      "revId": "09b1964924f52891f44d5cb3abd51b93e274fce6",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
