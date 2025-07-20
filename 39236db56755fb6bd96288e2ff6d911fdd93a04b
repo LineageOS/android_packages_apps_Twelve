@@ -135,6 +135,24 @@
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "7daf7678_def42025",
+        "filename": "app/src/main/java/org/lineageos/twelve/services/TwelveRenderersFactory.kt",
+        "patchSetId": 8
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2025-07-20T11:47:37Z",
+      "side": 1,
+      "message": "Acknowledged",
+      "parentUuid": "8342f808_dcb37589",
+      "revId": "39236db56755fb6bd96288e2ff6d911fdd93a04b",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "60009a6f_ecab9d12",
