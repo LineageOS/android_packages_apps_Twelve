@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "08fdccfb_273fc54b",
+        "filename": "app/src/main/java/org/lineageos/twelve/datasources/MediaDataSource.kt",
+        "patchSetId": 7
+      },
+      "lineNbr": 230,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2025-07-25T18:00:24Z",
+      "side": 1,
+      "message": "Make it return a list",
+      "revId": "2ab5830b1fe07362653fc92bb7f3b8c4cd9259f2",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f5d55ebc_36a5846f",
+        "filename": "app/src/main/java/org/lineageos/twelve/services/PlaybackService.kt",
+        "patchSetId": 7
+      },
+      "lineNbr": 642,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2025-07-25T18:00:24Z",
+      "side": 1,
+      "message": "getOrNull please",
+      "revId": "2ab5830b1fe07362653fc92bb7f3b8c4cd9259f2",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
