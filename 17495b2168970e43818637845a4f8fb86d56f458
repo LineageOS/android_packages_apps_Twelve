@@ -16,6 +16,23 @@
       "message": "Fixes compress offload \\o/",
       "revId": "17495b2168970e43818637845a4f8fb86d56f458",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b056c52b_304138dc",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2025-08-20T21:37:52Z",
+      "side": 1,
+      "message": "`Java default methods are not overridden by delegation`",
+      "revId": "17495b2168970e43818637845a4f8fb86d56f458",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
