@@ -12,6 +12,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.mapLatest
 import okhttp3.Cache
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
@@ -351,6 +352,14 @@ class JellyfinDataSource(
                 }
             }
         )
+    }
+
+    override fun allSongs(
+        providerIdentifier: ProviderIdentifier
+    ) = providersManager.mapWithInstanceOf(providerIdentifier) {
+        client.getAllSongs().map { queryResult ->
+                queryResult.items.map { it.toMediaItemAudio() }
+        }
     }
 
     override fun albums(

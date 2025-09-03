@@ -67,6 +67,21 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        android:id="@+id/playAllSongsExtendedFloatingActionButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="12dp"
+        android:tooltipText="@string/play_all_songs_fab_description"
+        android:contentDescription="@string/play_all_songs_fab_description"
+        app:backgroundTint="?attr/colorTertiaryContainer"
+        app:collapsedSize="46dp"
+        app:icon="@drawable/ic_shuffle_play"
+        app:layout_behavior="@string/hide_bottom_view_on_scroll_behavior"
+        app:layout_constraintBottom_toTopOf="@+id/nowPlayingBar"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
     <com.google.android.material.navigationrail.NavigationRailView
         android:id="@+id/navigationBarView"
         android:layout_width="wrap_content"
