@@ -78,6 +78,10 @@ class FileDataSource(
         providerIdentifier: ProviderIdentifier,
     ) = flowOf(Result.Error<List<ActivityTab>, _>(Error.NOT_IMPLEMENTED))
 
+    override fun allSongs(
+        providerIdentifier: ProviderIdentifier,
+    ) = flowOf(Result.Error<List<Audio>, _>(Error.NOT_IMPLEMENTED))
+
     override fun albums(
         providerIdentifier: ProviderIdentifier,
         sortingRule: SortingRule,

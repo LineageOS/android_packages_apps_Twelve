@@ -31,6 +31,7 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.google.android.material.navigation.NavigationBarView
 import com.google.android.material.progressindicator.LinearProgressIndicator
 import com.google.android.material.search.SearchView
@@ -60,6 +61,7 @@ import org.lineageos.twelve.ui.views.NowPlayingBar
 import org.lineageos.twelve.viewmodels.NowPlayingViewModel
 import org.lineageos.twelve.viewmodels.ProvidersViewModel
 import org.lineageos.twelve.viewmodels.SearchViewModel
+import org.lineageos.twelve.viewmodels.MainViewModel
 
 /**
  * The home page.
@@ -69,6 +71,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
     private val viewModel by viewModels<NowPlayingViewModel>()
     private val providersViewModel by viewModels<ProvidersViewModel>()
     private val searchViewModel by viewModels<SearchViewModel>()
+    private val mainViewModel by viewModels<MainViewModel>()
 
     // Views
     private val navigationBarView by getViewProperty<NavigationBarView>(R.id.navigationBarView)
@@ -81,6 +84,9 @@ class MainFragment : Fragment(R.layout.fragment_main) {
     private val settingsMaterialButton by getViewProperty<MaterialButton>(R.id.settingsMaterialButton)
     private val toolbar by getViewProperty<MaterialToolbar>(R.id.toolbar)
     private val viewPager2 by getViewProperty<ViewPager2>(R.id.viewPager2)
+    private val playAllSongsExtendedFloatingActionButton by getViewProperty<ExtendedFloatingActionButton>(
+        R.id.playAllSongsExtendedFloatingActionButton
+    )
 
     // System services
     private val inputMethodManager: InputMethodManager
@@ -318,6 +324,18 @@ class MainFragment : Fragment(R.layout.fragment_main) {
             val intent = Intent(context, SettingsActivity::class.java)
             startActivity(intent)
         }
+
+        playAllSongsExtendedFloatingActionButton.setOnClickListener {
+            lifecycleScope.launch {
+                mainViewModel.allSongs.collectLatest { requestStatus ->
+                    if (requestStatus is FlowResult.Success) {
+                        val tracks = requestStatus.data
+                        viewModel.playAudio(tracks.shuffled(), 0)
+                    }
+                }
+            }
+        }
+
 
         // View pager
         viewPager2.isUserInputEnabled = false

@@ -88,4 +88,19 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        android:id="@+id/playAllSongsExtendedFloatingActionButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="12dp"
+        android:tooltipText="@string/main_fragment_fab_shuffle_all"
+        android:contentDescription="@string/main_fragment_fab_shuffle_all"
+        app:backgroundTint="?attr/colorTertiaryContainer"
+        app:collapsedSize="46dp"
+        app:icon="@drawable/ic_shuffle_play"
+        app:layout_behavior="@string/hide_bottom_view_on_scroll_behavior"
+        app:layout_constraintBottom_toBottomOf="@+id/navigationBarView"
+        app:layout_constraintEnd_toEndOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
