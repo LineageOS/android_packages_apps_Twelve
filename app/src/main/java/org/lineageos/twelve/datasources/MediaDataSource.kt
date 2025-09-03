@@ -70,6 +70,13 @@ interface MediaDataSource {
     ): Flow<MediaRequestStatus<List<ActivityTab>>>
 
     /**
+     * Get all songs
+     */
+    fun allSongs(
+        providerIdentifier: ProviderIdentifier,
+    ): Flow<MediaRequestStatus<List<Audio>>>
+
+    /**
      * Get all the albums. All albums must have at least one audio associated with them.
      *
      * @param providerIdentifier The [ProviderIdentifier] of the provider

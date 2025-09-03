@@ -198,6 +198,11 @@ class MediaRepository(
     fun activity() = withNavigationDataSourceAndProviderFlow { activity(it) }
 
     /**
+     * @see MediaDataSource.allSongs
+     */
+    fun allSongs() = withNavigationDataSourceAndProviderFlow { allSongs(it) }
+
+    /**
      * @see MediaDataSource.albums
      */
     fun albums(
