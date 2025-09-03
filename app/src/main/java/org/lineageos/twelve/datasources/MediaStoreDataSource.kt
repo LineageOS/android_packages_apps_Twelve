@@ -224,6 +224,19 @@ class MediaStoreDataSource(
         }
     }
 
+    override fun allSongs(
+        providerIdentifier: ProviderIdentifier
+    )= providersManager.flatMapWithInstanceOf(providerIdentifier) {
+        contentResolver.queryFlow(
+            MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
+            audiosProjection,
+        )
+            .mapEachRowToAudio()
+            .mapLatest {
+                Result.Success(it)
+            }
+    }
+
     override fun albums(
         providerIdentifier: ProviderIdentifier,
         sortingRule: SortingRule,

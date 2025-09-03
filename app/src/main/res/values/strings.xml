@@ -264,6 +264,11 @@
     <string name="play_all">Play all</string>
     <string name="shuffle_play">Shuffle play</string>
 
+    <!-- Play all songs button -->
+    <string name="main_fragment_fab_shuffle_all">Shuffle All Songs</string>
+    <string name="play_all_songs_error">Failed to load songs</string>
+    <string name="play_all_songs_error_no_songs">No songs found to play</string>
+
     <!-- Media repository tree -->
     <string name="library_item_no_permissions">No permissions</string>
     <string name="library_item_no_permissions_description">The app doesn\'t have the necessary permissions</string>

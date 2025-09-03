@@ -11,6 +11,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.mapLatest
 import okhttp3.Cache
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
@@ -374,6 +375,10 @@ class SubsonicDataSource(
             }
         )
     }
+
+    override fun allSongs(providerIdentifier: ProviderIdentifier) = flowOf(
+        Result.Error<List<Audio>, _>(Error.NOT_IMPLEMENTED)
+    )
 
     override fun albums(
         providerIdentifier: ProviderIdentifier,
