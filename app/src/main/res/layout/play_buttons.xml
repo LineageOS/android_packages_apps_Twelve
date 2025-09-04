@@ -9,7 +9,9 @@
     android:id="@+id/playButtonsLinearLayout"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:clipToPadding="false"
+    android:orientation="vertical"
+    android:padding="6dp">
 
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
         android:id="@+id/shufflePlayExtendedFloatingActionButton"
@@ -30,6 +32,7 @@
         android:id="@+id/playAllExtendedFloatingActionButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="12dp"
         android:text="@string/play_all"
         android:visibility="gone"
         app:icon="@drawable/ic_play_arrow"
