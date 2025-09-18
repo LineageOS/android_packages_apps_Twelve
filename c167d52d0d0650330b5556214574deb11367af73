@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "565fb8ad_69ea30d2",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 25732
+      },
+      "writtenOn": "2025-09-18T18:30:09Z",
+      "side": 1,
+      "message": "@luca.stefani.ge1@gmail.com commit matches mentioned behavior, but this also refreshes the list at every flow resumption",
+      "revId": "c167d52d0d0650330b5556214574deb11367af73",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
