@@ -132,16 +132,11 @@ class ListItem @JvmOverloads constructor(
 
         inflate(context, R.layout.list_item, this)
 
-        context.obtainStyledAttributes(
-            attrs, androidx.cardview.R.styleable.CardView, defStyleAttr, 0
-        ).use {
+        context.obtainStyledAttributes(attrs, R.styleable.ListItem, 0, 0).use {
             cardCornerRadius = it.getDimension(
-                androidx.cardview.R.styleable.CardView_cardCornerRadius,
+                R.styleable.ListItem_cardCornerRadius,
                 resources.getDimension(R.dimen.list_item_default_corner_radius)
             )
-        }
-
-        context.obtainStyledAttributes(attrs, R.styleable.ListItem, 0, 0).use {
             leadingIconImage = it.getDrawable(R.styleable.ListItem_leadingIconImage)
             leadingText = it.getString(R.styleable.ListItem_leadingText)
             it.getResourceId(R.styleable.ListItem_leadingViewLayout, 0).let { leadingViewLayout ->
