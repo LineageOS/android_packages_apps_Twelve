@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e489e985_d68cef06",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 25732
+      },
+      "writtenOn": "2025-09-18T18:35:04Z",
+      "side": 1,
+      "message": "I still hate the \"process all audio files w/o any type of categorization\", feels like cheap UX, but whatever, if that makes users happy\n\nWe can also add a \"ALL_AUDIOS\" playlist type so we don\u0027t need a new viewpager page for all audios",
+      "revId": "3026c4d4608c549ef54c92341fbcd2262755ea19",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
