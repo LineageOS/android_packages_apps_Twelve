@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ac398e90_3eb91e46",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 25732
+      },
+      "writtenOn": "2025-09-18T18:32:36Z",
+      "side": 1,
+      "message": "I could have just made it return `Result\u003cT, E\u003e` (avoiding `reified`) instead of the original type, but it\u0027s more accurate to just return the exact class, to better represent the fact that the original object will be returned for chained calls, lmk",
+      "revId": "8b559295aa481c3771643ccbd636553e31e2106a",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
