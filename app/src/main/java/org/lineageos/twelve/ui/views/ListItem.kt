@@ -24,6 +24,7 @@ import androidx.core.view.isNotEmpty
 import androidx.core.view.isVisible
 import com.google.android.material.card.MaterialCardView
 import org.lineageos.twelve.R
+import org.lineageos.twelve.ext.use
 
 /**
  * A poor man's Material Design 3 ListItem implementation.
@@ -140,31 +141,27 @@ class ListItem @JvmOverloads constructor(
             )
         }
 
-        context.obtainStyledAttributes(attrs, R.styleable.ListItem, 0, 0).apply {
-            try {
-                leadingIconImage = getDrawable(R.styleable.ListItem_leadingIconImage)
-                leadingText = getString(R.styleable.ListItem_leadingText)
-                getResourceId(R.styleable.ListItem_leadingViewLayout, 0).takeUnless {
-                    it == 0
-                }?.let {
-                    setLeadingView(it)
+        context.obtainStyledAttributes(attrs, R.styleable.ListItem, 0, 0).use {
+            leadingIconImage = it.getDrawable(R.styleable.ListItem_leadingIconImage)
+            leadingText = it.getString(R.styleable.ListItem_leadingText)
+            it.getResourceId(R.styleable.ListItem_leadingViewLayout, 0).let { leadingViewLayout ->
+                if (leadingViewLayout != 0) {
+                    setLeadingView(leadingViewLayout)
                 }
-                leadingViewIsVisible = getBoolean(R.styleable.ListItem_leadingViewIsVisible, true)
-                headlineText = getString(R.styleable.ListItem_headlineText)
-                supportingText = getString(R.styleable.ListItem_supportingText)
-                trailingIconImage = getDrawable(R.styleable.ListItem_trailingIconImage)
-                trailingSupportingText = getString(R.styleable.ListItem_trailingSupportingText)
-                getResourceId(R.styleable.ListItem_trailingViewLayout, 0).takeUnless {
-                    it == 0
-                }?.let {
-                    setTrailingView(it)
-                }
-                trailingViewIsVisible = getBoolean(R.styleable.ListItem_trailingViewIsVisible, true)
-                isDimmed = getBoolean(R.styleable.ListItem_isDimmed, false)
-                hasRoundedCorners = getBoolean(R.styleable.ListItem_hasRoundedCorners, false)
-            } finally {
-                recycle()
             }
+            leadingViewIsVisible = it.getBoolean(R.styleable.ListItem_leadingViewIsVisible, true)
+            headlineText = it.getString(R.styleable.ListItem_headlineText)
+            supportingText = it.getString(R.styleable.ListItem_supportingText)
+            trailingIconImage = it.getDrawable(R.styleable.ListItem_trailingIconImage)
+            trailingSupportingText = it.getString(R.styleable.ListItem_trailingSupportingText)
+            it.getResourceId(R.styleable.ListItem_trailingViewLayout, 0).let { trailingViewLayout ->
+                if (trailingViewLayout != 0) {
+                    setTrailingView(trailingViewLayout)
+                }
+            }
+            trailingViewIsVisible = it.getBoolean(R.styleable.ListItem_trailingViewIsVisible, true)
+            isDimmed = it.getBoolean(R.styleable.ListItem_isDimmed, false)
+            hasRoundedCorners = it.getBoolean(R.styleable.ListItem_hasRoundedCorners, false)
         }
     }
 
