@@ -75,10 +75,12 @@
         android:layout_marginBottom="12dp"
         android:contentDescription="@string/play_random_songs"
         android:text="@string/play_random_songs"
+        android:textColor="?attr/colorOnTertiaryContainer"
         android:tooltipText="@string/play_random_songs"
         app:backgroundTint="?attr/colorTertiaryContainer"
         app:collapsedSize="46dp"
         app:icon="@drawable/ic_shuffle_play"
+        app:iconTint="?attr/colorOnTertiaryContainer"
         app:layout_behavior="@string/hide_bottom_view_on_scroll_behavior"
         app:layout_constraintBottom_toTopOf="@+id/nowPlayingBar"
         app:layout_constraintEnd_toEndOf="parent" />
