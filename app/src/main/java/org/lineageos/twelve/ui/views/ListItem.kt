@@ -123,7 +123,7 @@ class ListItem @JvmOverloads constructor(
 
     init {
         setCardBackgroundColor(
-            resources.getColorStateList(R.color.list_item_background, context.theme)
+            context.getColorStateList(R.color.list_item_background)
         )
         cardElevation = 0f
         radius = 0f
