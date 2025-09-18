@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4de26af7_377ceb2f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 25732
+      },
+      "writtenOn": "2025-09-18T18:35:26Z",
+      "side": 1,
+      "message": "Didn\u0027t understand this one, sorry, need before/after screenshot",
+      "revId": "3e8db6d1bbcfeb2a20eb81efc3d9cc6625a7eaee",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
