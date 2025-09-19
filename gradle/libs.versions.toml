@@ -12,6 +12,7 @@ coil = "3.0.4"
 constraintlayout = "2.2.0-beta01"
 core = "1.16.0-alpha01"
 fragment = "1.8.6"
+kapt = "2.0.21"
 kotlinx-coroutines = "1.8.1"
 kotlinx-serialization = "1.6.1"
 lifecycle = "2.9.0-alpha08"
@@ -59,7 +60,7 @@ okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhtt
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
+kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kapt" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
