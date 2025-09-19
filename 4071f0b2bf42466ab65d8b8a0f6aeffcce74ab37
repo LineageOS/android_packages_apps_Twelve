@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "dc093a19_4d0b96e3",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 25732
+      },
+      "writtenOn": "2025-09-19T12:15:22Z",
+      "side": 1,
+      "message": "I\u0027ll just squash the next commit",
+      "revId": "4071f0b2bf42466ab65d8b8a0f6aeffcce74ab37",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
