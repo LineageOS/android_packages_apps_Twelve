@@ -16,6 +16,24 @@
       "message": "is this still needed",
       "revId": "d94c5865e5495d2ff887d47b48a13972e77fd70c",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "7f4b9c3a_e8b5b16d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 21651
+      },
+      "writtenOn": "2025-09-21T15:45:27Z",
+      "side": 1,
+      "message": "Not sure, but when offloading is disabled, it has a small delay on seekTo(0) and sounds annoying. So a better fix is needed anyways.",
+      "parentUuid": "76745a83_5a8548ed",
+      "revId": "d94c5865e5495d2ff887d47b48a13972e77fd70c",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ],
   "submitRequirementResults": []
