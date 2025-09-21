@@ -5,16 +5,15 @@
 
 [versions]
 agp = "8.13.0"
-kotlin = "1.9.23"
+kotlin = "2.1.10"
 activity = "1.10.0-rc01"
 appcompat = "1.7.0"
 coil = "3.0.4"
 constraintlayout = "2.2.0-beta01"
 core = "1.16.0-alpha01"
 fragment = "1.8.6"
-kapt = "2.0.21"
-kotlinx-coroutines = "1.8.1"
-kotlinx-serialization = "1.6.1"
+kotlinx-coroutines = "1.10.1"
+kotlinx-serialization = "1.7.3"
 lifecycle = "2.9.0-alpha08"
 material = "1.13.0-alpha08"
 media3 = "1.8.0"
@@ -23,7 +22,7 @@ nier-visualizer = "v0.1.3"
 okhttp = "4.12.0"
 preference = "1.2.1"
 recyclerview = "1.4.0"
-room = "2.6.0"
+room = "2.8.0"
 viewpager2 = "1.1.0"
 generateBp = "+"
 
@@ -60,7 +59,7 @@ okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhtt
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kapt" }
+kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
