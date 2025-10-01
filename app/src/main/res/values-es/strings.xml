@@ -10,6 +10,7 @@
     <string name="main_fragment_section_activity">Actividad</string>
     <string name="main_fragment_section_search">Búsqueda</string>
     <string name="main_fragment_section_library">Biblioteca</string>
+    <string name="play_random_songs">Reproducir canciones aleatorias</string>
     <string name="search_hint">Buscar…</string>
     <string name="library_fragment_menu_albums">Álbumes</string>
     <string name="library_fragment_menu_artists">Artistas</string>
