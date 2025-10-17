@@ -16,6 +16,24 @@
       "message": "Nothing to say, navigationx sucks, if it helps go for it",
       "revId": "fa0731786dd7e451f9d8d92697fd850404e58fab",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2e468ff1_bcc0dd52",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 10067
+      },
+      "writtenOn": "2025-10-17T20:42:24Z",
+      "side": 1,
+      "message": "2.9.5 works, downgrading to alpha04 works too, but that\u0027s pointless.",
+      "parentUuid": "d592946c_f82a663a",
+      "revId": "fa0731786dd7e451f9d8d92697fd850404e58fab",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
