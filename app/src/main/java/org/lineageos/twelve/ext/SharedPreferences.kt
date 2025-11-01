@@ -70,6 +70,14 @@ private const val SKIP_SILENCE_DEFAULT = false
 val SharedPreferences.skipSilence: Boolean
     get() = getBoolean(SKIP_SILENCE_KEY, SKIP_SILENCE_DEFAULT)
 
+private const val ENABLE_PLAYBACK_CACHE_KEY = "enable_playback_cache"
+private const val ENABLE_PLAYBACK_CACHE_DEFAULT = true
+var SharedPreferences.enablePlaybackCache: Boolean
+    get() = getBoolean(ENABLE_PLAYBACK_CACHE_KEY, ENABLE_PLAYBACK_CACHE_DEFAULT)
+    set(value) = edit {
+        putBoolean(ENABLE_PLAYBACK_CACHE_KEY, value)
+    }
+
 const val DEFAULT_PROVIDER_KEY = "default_provider"
 var SharedPreferences.defaultProvider: ProviderIdentifier?
     get() = getString(DEFAULT_PROVIDER_KEY, null)?.let {
