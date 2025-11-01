@@ -10,6 +10,7 @@
     <string name="main_fragment_section_activity">فعالیت</string>
     <string name="main_fragment_section_search">جستجو</string>
     <string name="main_fragment_section_library">کتابخانه</string>
+    <string name="play_random_songs">پخش آهنگ‌های تصادفی</string>
     <string name="search_hint">جستجو…</string>
     <string name="library_fragment_menu_albums">آلبوم‌ها</string>
     <string name="library_fragment_menu_artists">هنرمندان</string>

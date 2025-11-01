@@ -10,6 +10,7 @@
     <string name="main_fragment_section_activity">פעילות</string>
     <string name="main_fragment_section_search">חיפוש</string>
     <string name="main_fragment_section_library">ספרייה</string>
+    <string name="play_random_songs">ניגון שירים אקראיים</string>
     <string name="search_hint">חיפוש…</string>
     <string name="library_fragment_menu_albums">אלבומים</string>
     <string name="library_fragment_menu_artists">אמנים</string>

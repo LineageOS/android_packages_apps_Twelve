@@ -10,6 +10,7 @@
     <string name="main_fragment_section_activity">Действия</string>
     <string name="main_fragment_section_search">Поиск</string>
     <string name="main_fragment_section_library">Библиотека</string>
+    <string name="play_random_songs">Проигрывать в случайном порядке</string>
     <string name="search_hint">Поиск…</string>
     <string name="library_fragment_menu_albums">Альбомы</string>
     <string name="library_fragment_menu_artists">Исполнители</string>
@@ -63,6 +64,7 @@
     <string name="playback_speed">Скорость воспроизведения</string>
     <string name="playback_speed_format">%1$s×</string>
     <string name="playback_pitch_slider_description">Тон воспроизведения</string>
+    <string name="playback_pitch_unlock">Разблокировать изменение тона</string>
     <string name="playback_warning">Скорость и тон могут работать некорректно, если включена функция разгрузки воспроизведения. Попробуйте переключить ее в настройках приложения.</string>
     <string name="visualizer">Визуализатор</string>
     <string name="audio_potential_issues">Возможные проблемы</string>
@@ -109,6 +111,10 @@
     <string name="audio_output_issue_downsampling_description">В настоящее время приложение понижает частоту дискретизации аудио, поскольку устройство вывода не поддерживает целевую частоту дискретизации</string>
     <string name="audio_output_issue_pcm_float_mode_disabled">32-битный вывод с плавающей точкой отключен</string>
     <string name="audio_output_issue_pcm_float_mode_disabled_description">Качество звука может быть улучшено благодаря 32-разрядному режиму вывода с плавающей точкой. Вы можете включить его в настройках приложения</string>
+    <string name="audio_output_issue_downmixing">Понижающее микширование</string>
+    <string name="audio_output_issue_downmixing_description">В настоящее время приложение понижает микширование аудио, поскольку устройство вывода не поддерживает целевое количество каналов</string>
+    <string name="audio_output_issue_post_processing_lossy_compression">Постобработка с потерями при сжатии</string>
+    <string name="audio_output_issue_post_processing_lossy_compression_description">Приложение сжимает аудиоданные с потерями. Это может повлиять на качество звука.</string>
     <string name="provider_type_local">Локальный</string>
     <string name="provider_argument_server">Сервер</string>
     <string name="provider_argument_username">Имя пользователя</string>
@@ -176,6 +182,7 @@
     <string name="activity_random_albums">Случайные альбомы</string>
     <string name="activity_random_artists">Случайные исполнители</string>
     <string name="activity_random_genres">Случайные жанры</string>
+    <string name="activity_random_playlists">Случайные плейлисты</string>
     <string name="activity_random_songs">Случайные песни</string>
     <string name="content_description_play_pause">Воспроизведение/пауза</string>
     <string name="content_description_thumbnail">Обложка</string>
