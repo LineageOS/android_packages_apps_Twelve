@@ -3,6 +3,23 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "2353fbbe_684f217f",
+        "filename": "app/src/main/java/org/lineageos/twelve/utils/MediaCache.kt",
+        "patchSetId": 1
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2025-11-01T13:15:38Z",
+      "side": 1,
+      "message": "Also this doesn\u0027t need to be a singleton no?\nCan be easily moved into the PlaybackService I think and inline into the player creation",
+      "revId": "bd512345f2ec06d28477875f4d9a12d7fa3dc27e",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "e7645f81_e283f663",
         "filename": "app/src/main/java/org/lineageos/twelve/utils/MediaCache.kt",
         "patchSetId": 1
