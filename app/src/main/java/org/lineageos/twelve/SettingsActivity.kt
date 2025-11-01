@@ -6,6 +6,7 @@
 package org.lineageos.twelve
 
 import android.os.Bundle
+import android.text.format.Formatter
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
@@ -145,6 +146,8 @@ class SettingsActivity : AppCompatActivity(R.layout.activity_settings) {
 
     class RootSettingsFragment : SettingsFragment(R.xml.root_preferences) {
         // Preferences
+        private val clearPlaybackCache by lazy { findPreference<Preference>("clear_playback_cache")!! }
+        private val enableCache by lazy { findPreference<SwitchPreference>("enable_playback_cache")!! }
         private val enableOffload by lazy { findPreference<SwitchPreference>(ENABLE_OFFLOAD_KEY)!! }
         private val rescanMediaStore by lazy { findPreference<Preference>("rescan_media_store")!! }
         private val resetLocalStats by lazy { findPreference<Preference>("reset_local_stats")!! }
@@ -152,6 +155,36 @@ class SettingsActivity : AppCompatActivity(R.layout.activity_settings) {
 
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
             super.onCreatePreferences(savedInstanceState, rootKey)
+
+            enableCache.setOnPreferenceChangeListener { _, newValue ->
+                lifecycleScope.launch {
+                    val enabled = newValue as Boolean
+                    if (!enabled) {
+                        // We should disable cache as a whole, but that requires restarting
+                        // the playback service. For now, we just clear the existing cache.
+                        viewModel.clearPlaybackCache()
+                    }
+                }
+                true
+            }
+
+            clearPlaybackCache.setOnPreferenceClickListener {
+                lifecycleScope.launch {
+                    val sizeInBytes = viewModel.clearPlaybackCache()
+
+                    val message = resources.getString(
+                        R.string.clear_playback_cache_success,
+                        Formatter.formatFileSize(context, sizeInBytes),
+                    )
+
+                    Toast.makeText(
+                        requireActivity(),
+                        message,
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+                true
+            }
 
             enableOffload.setOnPreferenceChangeListener { _, newValue ->
                 lifecycleScope.launch {
