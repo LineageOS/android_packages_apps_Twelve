@@ -70,7 +70,11 @@ import org.lineageos.twelve.ext.skipSilence
 import org.lineageos.twelve.ext.stopPlaybackOnTaskRemoved
 import org.lineageos.twelve.ext.typedRepeatMode
 import org.lineageos.twelve.models.RepeatMode
+import org.lineageos.twelve.models.Result.Success
+import org.lineageos.twelve.services.PlaybackService.CustomCommand.Companion.ARG_VALUE
+import org.lineageos.twelve.services.PlaybackService.CustomCommand.Companion.RSP_VALUE
 import org.lineageos.twelve.ui.widgets.NowPlayingAppWidgetProvider
+import org.lineageos.twelve.utils.AudioPreloader
 import org.lineageos.twelve.utils.MediaCache
 
 @OptIn(UnstableApi::class)
@@ -506,6 +510,17 @@ class PlaybackService : MediaLibraryService(), LifecycleOwner {
                     lifecycleScope.launch {
                         player.currentMediaItem?.localConfiguration?.uri?.let {
                             mediaRepository.onAudioPlayed(it)
+                        }
+                    }
+
+                    lifecycleScope.launch {
+                        val currentIndex = player.currentMediaItemIndex
+                        val items = player.mediaItems
+                        if (currentIndex >= 0) {
+                            val nextItems = items.drop(currentIndex + 1).take(5)
+                            if (nextItems.isNotEmpty()) {
+                                AudioPreloader.preload(applicationContext, nextItems)
+                            }
                         }
                     }
                 }

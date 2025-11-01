@@ -20,7 +20,7 @@ object MediaCache {
     fun getCache(context: Context): SimpleCache {
         if (cache == null) {
             val cacheDir = File(context.cacheDir, "media_cache")
-            val evictor = LeastRecentlyUsedCacheEvictor(500L * 1024 * 1024)
+            val evictor = LeastRecentlyUsedCacheEvictor(1000L * 1024 * 1024)
             val databaseProvider = StandaloneDatabaseProvider(context)
             cache = SimpleCache(cacheDir, evictor, databaseProvider)
         }
