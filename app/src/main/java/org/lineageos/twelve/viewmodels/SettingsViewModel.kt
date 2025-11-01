@@ -11,10 +11,13 @@ import android.os.storage.StorageManager
 import androidx.annotation.OptIn
 import androidx.core.os.bundleOf
 import androidx.media3.common.util.UnstableApi
+import androidx.media3.exoplayer.offline.DownloadService
 import androidx.media3.session.MediaController
+import org.lineageos.twelve.TwelveApplication
 import org.lineageos.twelve.ext.applicationContext
 import org.lineageos.twelve.services.PlaybackService
 import org.lineageos.twelve.services.PlaybackService.CustomCommand.Companion.sendCustomCommand
+import org.lineageos.twelve.services.TwelveDownloadService
 
 class SettingsViewModel(application: Application) : TwelveViewModel(application) {
     // System services
@@ -57,6 +60,17 @@ class SettingsViewModel(application: Application) : TwelveViewModel(application)
             null,
             null,
         )
+    }
+
+    @OptIn(UnstableApi::class)
+    fun clearPlaybackCache(): Long {
+        val cacheSize = getApplication<TwelveApplication>().downloadCache.cacheSpace
+        DownloadService.sendRemoveAllDownloads(
+            applicationContext,
+            TwelveDownloadService::class.java,
+            false,
+        )
+        return cacheSize
     }
 
     private suspend fun withMediaController(block: suspend MediaController.() -> Unit) {
