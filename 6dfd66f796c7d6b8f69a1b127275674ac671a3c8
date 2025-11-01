@@ -16,6 +16,69 @@
       "message": "This works but the app crashes if all connectivity is lost, so wip in that regard.",
       "revId": "6dfd66f796c7d6b8f69a1b127275674ac671a3c8",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d7df81f2_a2ae4a9c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2025-11-01T13:18:58Z",
+      "side": 1,
+      "message": "As mentioned in the docs this should be a background service, and should come with settings to enable and clean-up via sendRemoveAllDownloads.\n\nI think it\u0027ll look cleaner in that cases",
+      "revId": "6dfd66f796c7d6b8f69a1b127275674ac671a3c8",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5cde9fdf_366bbd5b",
+        "filename": "app/src/main/java/org/lineageos/twelve/utils/AudioPreloader.kt",
+        "patchSetId": 2
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2025-11-01T13:18:58Z",
+      "side": 1,
+      "message": "I\u0027d introduce a new field in Media that gives us a \"contentId\" (unique) per media",
+      "range": {
+        "startLine": 48,
+        "startChar": 0,
+        "endLine": 48,
+        "endChar": 73
+      },
+      "revId": "6dfd66f796c7d6b8f69a1b127275674ac671a3c8",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "33671b27_7989bbbc",
+        "filename": "app/src/main/java/org/lineageos/twelve/utils/MediaCache.kt",
+        "patchSetId": 2
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2025-11-01T13:18:58Z",
+      "side": 1,
+      "message": "I think this should be made configurable somewhere...",
+      "range": {
+        "startLine": 22,
+        "startChar": 0,
+        "endLine": 22,
+        "endChar": 76
+      },
+      "revId": "6dfd66f796c7d6b8f69a1b127275674ac671a3c8",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
