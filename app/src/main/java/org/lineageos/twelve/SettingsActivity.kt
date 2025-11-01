@@ -145,6 +145,7 @@ class SettingsActivity : AppCompatActivity(R.layout.activity_settings) {
 
     class RootSettingsFragment : SettingsFragment(R.xml.root_preferences) {
         // Preferences
+        private val clearPlaybackCache by lazy { findPreference<Preference>("clear_playback_cache")!! }
         private val enableOffload by lazy { findPreference<SwitchPreference>(ENABLE_OFFLOAD_KEY)!! }
         private val rescanMediaStore by lazy { findPreference<Preference>("rescan_media_store")!! }
         private val resetLocalStats by lazy { findPreference<Preference>("reset_local_stats")!! }
@@ -152,6 +153,24 @@ class SettingsActivity : AppCompatActivity(R.layout.activity_settings) {
 
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
             super.onCreatePreferences(savedInstanceState, rootKey)
+
+            clearPlaybackCache.setOnPreferenceClickListener {
+                lifecycleScope.launch {
+                    val sizeInBytes = viewModel.clearPlaybackCache()
+
+                    val message = resources.getString(
+                        R.string.clear_playback_cache_success,
+                        sizeInBytes / 1024 / 1024
+                    )
+
+                    Toast.makeText(
+                        requireActivity(),
+                        message,
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+                true
+            }
 
             enableOffload.setOnPreferenceChangeListener { _, newValue ->
                 lifecycleScope.launch {
