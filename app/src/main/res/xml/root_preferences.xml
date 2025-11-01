@@ -3,7 +3,8 @@
      SPDX-FileCopyrightText: 2024-2025 The LineageOS Project
      SPDX-License-Identifier: Apache-2.0
 -->
-<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <PreferenceCategory
         app:iconSpaceReserved="false"
@@ -46,6 +47,34 @@
             app:iconSpaceReserved="false"
             app:key="rescan_media_store"
             app:title="@string/rescan_media_store" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:iconSpaceReserved="false"
+        app:title="@string/playback_cache_header">
+
+        <SwitchPreference
+            app:defaultValue="true"
+            app:iconSpaceReserved="false"
+            app:key="enable_offline_playback"
+            app:summary="@string/enable_playback_cache_summary"
+            app:title="@string/enable_playback_cache" />
+
+        <SeekBarPreference
+            android:max="500"
+            app:defaultValue="100"
+            app:iconSpaceReserved="false"
+            app:key="playback_cache_size"
+            app:min="50"
+            app:showSeekBarValue="true"
+            app:title="@string/playback_cache_size"
+            app:useSimpleSummaryProvider="true" />
+
+        <Preference
+            app:iconSpaceReserved="false"
+            app:key="clear_playback_cache"
+            app:title="@string/clear_playback_cache" />
 
     </PreferenceCategory>
 

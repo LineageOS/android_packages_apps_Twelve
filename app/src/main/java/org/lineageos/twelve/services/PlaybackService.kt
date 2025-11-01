@@ -28,6 +28,7 @@ import androidx.media3.common.Rating
 import androidx.media3.common.listen
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
 import androidx.media3.session.CommandButton
 import androidx.media3.session.DefaultMediaNotificationProvider
 import androidx.media3.session.LibraryResult
@@ -459,6 +460,11 @@ class PlaybackService : MediaLibraryService(), LifecycleOwner {
             )
             .setSkipSilenceEnabled(sharedPreferences.skipSilence)
             .setWakeMode(C.WAKE_MODE_NETWORK)
+            .setMediaSourceFactory(
+                DefaultMediaSourceFactory(
+                    (application as TwelveApplication).dataSourceFactory
+                )
+            )
             .experimentalSetDynamicSchedulingEnabled(true)
             .build()
             .apply {
