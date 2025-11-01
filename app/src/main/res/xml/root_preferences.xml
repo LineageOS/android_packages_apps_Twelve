@@ -51,6 +51,24 @@
 
     <PreferenceCategory
         app:iconSpaceReserved="false"
+        app:title="@string/playback_cache_header">
+
+        <SwitchPreference
+            app:defaultValue="true"
+            app:iconSpaceReserved="false"
+            app:key="enable_offline_playback"
+            app:summary="@string/enable_playback_cache_summary"
+            app:title="@string/enable_playback_cache" />
+
+        <Preference
+            app:iconSpaceReserved="false"
+            app:key="clear_playback_cache"
+            app:title="@string/clear_playback_cache" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:iconSpaceReserved="false"
         app:title="@string/experimental_header">
 
         <SwitchPreference
