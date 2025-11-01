@@ -37,6 +37,23 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "a967a13e_31cdffed",
+        "filename": "app/src/main/java/org/lineageos/twelve/utils/AudioPreloader.kt",
+        "patchSetId": 2
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 25732
+      },
+      "writtenOn": "2025-11-01T13:29:18Z",
+      "side": 1,
+      "message": "This should ideally accept our `Audio` objects",
+      "revId": "6dfd66f796c7d6b8f69a1b127275674ac671a3c8",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "5cde9fdf_366bbd5b",
         "filename": "app/src/main/java/org/lineageos/twelve/utils/AudioPreloader.kt",
         "patchSetId": 2
@@ -48,6 +65,30 @@
       "writtenOn": "2025-11-01T13:18:58Z",
       "side": 1,
       "message": "I\u0027d introduce a new field in Media that gives us a \"contentId\" (unique) per media",
+      "range": {
+        "startLine": 48,
+        "startChar": 0,
+        "endLine": 48,
+        "endChar": 73
+      },
+      "revId": "6dfd66f796c7d6b8f69a1b127275674ac671a3c8",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a4419a09_a8a69f7d",
+        "filename": "app/src/main/java/org/lineageos/twelve/utils/AudioPreloader.kt",
+        "patchSetId": 2
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 25732
+      },
+      "writtenOn": "2025-11-01T13:29:18Z",
+      "side": 1,
+      "message": "We already have that:\n```suggestion\n                        audio.mediaId.toUri().toString(),\n```",
+      "parentUuid": "5cde9fdf_366bbd5b",
       "range": {
         "startLine": 48,
         "startChar": 0,
