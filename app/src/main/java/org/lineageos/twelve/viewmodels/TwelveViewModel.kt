@@ -31,6 +31,7 @@ import org.lineageos.twelve.ext.typedRepeatMode
 import org.lineageos.twelve.models.Audio
 import org.lineageos.twelve.models.RepeatMode
 import org.lineageos.twelve.services.PlaybackService
+import org.lineageos.twelve.utils.AudioPreloader
 
 /**
  * Base view model for all app view models.
@@ -114,6 +115,10 @@ abstract class TwelveViewModel(application: Application) : AndroidViewModel(appl
             // Initialize shuffle and repeat modes
             shuffleModeEnabled = sharedPreferences.shuffleModeEnabled
             typedRepeatMode = sharedPreferences.typedRepeatMode
+
+            AudioPreloader.preload(
+                applicationContext,
+                audio.take(5).map { it.toMedia3MediaItem(applicationContext.resources) })
 
             setMediaItems(audio.map { it.toMedia3MediaItem(resources) }, true)
             prepare()
