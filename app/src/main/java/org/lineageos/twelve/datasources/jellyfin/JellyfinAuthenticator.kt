@@ -74,7 +74,7 @@ class JellyfinAuthenticator(
         null
     }
 
-    private fun getNewAccessToken() = runBlocking {
+    private fun getNewAccessToken(): String? {
         val response = runCatching {
             okHttpClient.newCall(
                 Request.Builder()
@@ -86,21 +86,21 @@ class JellyfinAuthenticator(
                         ).toRequestBody("application/json".toMediaType())
                     )
                     .build()
-            ).executeAsync()
+            ).execute()
         }.fold(
             onSuccess = { it },
-            onFailure = { return@runBlocking null }
+            onFailure = { return null }
         )
 
         if (!response.isSuccessful) {
-            return@runBlocking null
+            return null
         }
 
         val authResponse = response.body?.use { body ->
             json.decodeFromString<AuthenticateUserResult>(body.string())
-        } ?: return@runBlocking null
+        } ?: return null
 
-        authResponse.accessToken!!
+        return authResponse.accessToken!!
     }
 
     private fun getAuthenticationRequestHeaders() = Headers.Builder().apply {
