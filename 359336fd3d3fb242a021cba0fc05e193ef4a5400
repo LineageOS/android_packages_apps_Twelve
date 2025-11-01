@@ -16,6 +16,24 @@
       "message": "The cache can only be filled via atm\n```\nval downloadRequest \u003d DownloadRequest.Builder(contentId, contentUri).build()\nDownloadService.sendAddDownload(\n  context,\n  TwelveDownloadService::class.java,\n  downloadRequest,\n  /* foreground\u003d */ false\n)```\n\nThe Player sees the cache as read-only, so it won\u0027t ever fill it by itself, this can be changed by removing `.setCacheWriteDataSinkFactory(null)`.\n\nIf we do that we also have to switch DownloadManager to the CacheDataSource otherwise it\u0027ll bypass it and re-download it.\n\nCurrent setup\nPlayback -\u003e Uses cache data source -\u003e no hit download\nDownload -\u003e Bypasses cache data source -\u003e",
       "revId": "359336fd3d3fb242a021cba0fc05e193ef4a5400",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c1724e4d_af659766",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2025-11-01T15:30:31Z",
+      "side": 1,
+      "message": "Messed up the last part\n\nCurrent setup\nPlayback -\u003e Uses cache data source -\u003e no hit download -\u003e won\u0027t save to cache\nDownload -\u003e Uses cache data source -\u003e no hit download -\u003e will save to cache\n\nSo nothing really happens at the moment, we can change that, and it\u0027ll automatically start caching currently played media",
+      "parentUuid": "a4def37f_8f164146",
+      "revId": "359336fd3d3fb242a021cba0fc05e193ef4a5400",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
