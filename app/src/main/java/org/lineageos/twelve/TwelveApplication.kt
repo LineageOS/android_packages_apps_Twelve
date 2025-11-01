@@ -7,6 +7,10 @@ package org.lineageos.twelve
 
 import android.app.Application
 import androidx.media3.common.util.UnstableApi
+import androidx.media3.database.StandaloneDatabaseProvider
+import androidx.media3.datasource.cache.LeastRecentlyUsedCacheEvictor
+import androidx.media3.datasource.cache.NoOpCacheEvictor
+import androidx.media3.datasource.cache.SimpleCache
 import coil3.ImageLoader
 import coil3.PlatformContext
 import coil3.SingletonImageLoader
@@ -18,6 +22,7 @@ import org.lineageos.twelve.repositories.OutputConfigurationRepository
 import org.lineageos.twelve.repositories.ProvidersRepository
 import org.lineageos.twelve.repositories.ResumptionPlaylistRepository
 import org.lineageos.twelve.ui.coil.ThumbnailMapper
+import java.io.File
 
 @androidx.annotation.OptIn(UnstableApi::class)
 class TwelveApplication : Application(), SingletonImageLoader.Factory {
@@ -31,6 +36,13 @@ class TwelveApplication : Application(), SingletonImageLoader.Factory {
     }
     val resumptionPlaylistRepository by lazy { ResumptionPlaylistRepository(database) }
     val outputConfigurationRepository by lazy { OutputConfigurationRepository() }
+
+    val databaseProvider by lazy { StandaloneDatabaseProvider(applicationContext) }
+    val downloadCache by lazy {
+        val cacheDir = File(cacheDir, "media_cache")
+        val evictor = LeastRecentlyUsedCacheEvictor(500L * 1024 * 1024)
+        SimpleCache(cacheDir, evictor, databaseProvider)
+    }
 
     override fun onCreate() {
         super.onCreate()
