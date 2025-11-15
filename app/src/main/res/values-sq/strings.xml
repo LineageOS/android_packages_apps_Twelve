@@ -79,6 +79,9 @@
     <string name="audio_bitrate">Bitrate</string>
     <string name="audio_bitrate_unknown">E panjohur</string>
     <string name="audio_bitrate_format">%1$s kbps</string>
+    <string name="audio_output_device_name">Emri</string>
+    <string name="audio_output_device_name_unknown">I panjohur</string>
+    <string name="audio_output_device_type_unknown">I panjohur</string>
     <string name="provider_type_local">Lokale</string>
     <string name="provider_argument_server">Server</string>
     <string name="provider_argument_username">Emri i përdoruesit</string>
