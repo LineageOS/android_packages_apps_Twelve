@@ -10,6 +10,7 @@
     <string name="main_fragment_section_activity">Активност</string>
     <string name="main_fragment_section_search">Търсене</string>
     <string name="main_fragment_section_library">Библиотека</string>
+    <string name="play_random_songs">Изпълни случайни песни</string>
     <string name="search_hint">Търсене…</string>
     <string name="library_fragment_menu_albums">Албуми</string>
     <string name="library_fragment_menu_artists">Изпълнители</string>
