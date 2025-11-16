@@ -123,9 +123,6 @@ class MediaStoreDataSource(
                         )
                     ).mapEachRowToAlbum()
                 }
-                .mapLatest {
-                    Result.Success<List<Album>, Error>(it)
-                }
 
         fun Flow<Cursor?>.mapEachRowToAlbum() = mapEachRowToAlbum(volumeName)
         fun Flow<Cursor?>.mapEachRowToArtist() = mapEachRowToArtist(volumeName)
@@ -175,15 +172,15 @@ class MediaStoreDataSource(
         ) { mostPlayed, albums, artists, genres ->
             Result.Success(
                 listOf(
-                    mostPlayed.map {
+                    Result.Success(
                         ActivityTab(
                             "most_played_albums",
                             LocalizedString.StringResIdLocalizedString(
                                 R.string.activity_most_played_albums
                             ),
-                            it,
+                            mostPlayed,
                         )
-                    },
+                    ),
                     albums.map {
                         ActivityTab(
                             "random_albums",
@@ -224,29 +221,56 @@ class MediaStoreDataSource(
         providerIdentifier: ProviderIdentifier,
         sortingRule: SortingRule,
     ) = providersManager.flatMapWithInstanceOf(providerIdentifier) {
-        contentResolver.queryFlow(
-            albumsUri,
-            albumsProjection,
-            bundleOf(
-                ContentResolver.QUERY_ARG_SORT_COLUMNS to listOfNotNull(
-                    when (sortingRule.strategy) {
-                        SortingStrategy.ARTIST_NAME -> MediaStore.Audio.AlbumColumns.ARTIST
-                        SortingStrategy.CREATION_DATE -> MediaStore.Audio.AlbumColumns.LAST_YEAR
-                        SortingStrategy.NAME -> MediaStore.Audio.AlbumColumns.ALBUM
-                        else -> null
-                    }?.let { column ->
-                        when (sortingRule.reverse) {
-                            true -> "$column DESC"
-                            false -> column
-                        }
-                    },
-                    MediaStore.Audio.AlbumColumns.ALBUM.takeIf {
-                        sortingRule.strategy != SortingStrategy.NAME
-                    },
-                ).toTypedArray(),
-            )
-        ).mapEachRowToAlbum().mapLatest {
-            Result.Success(it)
+        if (sortingRule.strategy == SortingStrategy.PLAY_COUNT) {
+            combine(
+                mostPlayedAlbums(),
+                contentResolver.queryFlow(
+                    albumsUri,
+                    albumsProjection,
+                    bundleOf(
+                        ContentResolver.QUERY_ARG_SORT_COLUMNS to arrayOf(
+                            "${MediaStore.Audio.AlbumColumns.LAST_YEAR} DESC",
+                            MediaStore.Audio.AlbumColumns.ALBUM,
+                        )
+                    )
+                ).mapEachRowToAlbum()
+            ) { mostPlayed, allAlbums ->
+                val mostPlayedIds = mostPlayed.map { it.uri }.toSet()
+                val rest = allAlbums.filter { it.uri !in mostPlayedIds }
+                val combined = mostPlayed + rest
+
+                Result.Success(
+                    when (sortingRule.reverse) {
+                        true -> combined.reversed()
+                        false -> combined
+                    }
+                )
+            }
+        } else {
+            contentResolver.queryFlow(
+                albumsUri,
+                albumsProjection,
+                bundleOf(
+                    ContentResolver.QUERY_ARG_SORT_COLUMNS to listOfNotNull(
+                        when (sortingRule.strategy) {
+                            SortingStrategy.ARTIST_NAME -> MediaStore.Audio.AlbumColumns.ARTIST
+                            SortingStrategy.CREATION_DATE -> MediaStore.Audio.AlbumColumns.LAST_YEAR
+                            SortingStrategy.NAME -> MediaStore.Audio.AlbumColumns.ALBUM
+                            else -> null
+                        }?.let { column ->
+                            when (sortingRule.reverse) {
+                                true -> "$column DESC"
+                                false -> column
+                            }
+                        },
+                        MediaStore.Audio.AlbumColumns.ALBUM.takeIf {
+                            sortingRule.strategy != SortingStrategy.NAME
+                        },
+                    ).toTypedArray(),
+                )
+            ).mapEachRowToAlbum().mapLatest {
+                Result.Success(it)
+            }
         }
     }
 
