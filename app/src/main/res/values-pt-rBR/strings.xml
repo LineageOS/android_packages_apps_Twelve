@@ -9,7 +9,7 @@
     <string name="visualizer_permissions_toast">Permissão para gravar áudio é necessária para o visualizador.</string>
     <string name="main_fragment_section_activity">Atividade</string>
     <string name="main_fragment_section_search">Pesquisar</string>
-    <string name="main_fragment_section_library">Biblioteca</string>
+    <string name="main_fragment_section_library">Fonoteca</string>
     <string name="play_random_songs">Reproduzir músicas aleatórias</string>
     <string name="search_hint">Pesquisar…</string>
     <string name="library_fragment_menu_albums">Álbuns</string>
@@ -145,11 +145,11 @@
     <string name="stop_playback_on_task_removed_summary">Interromper a reprodução quando o app é removido da lista de recentes</string>
     <string name="skip_silence">Pular silêncio</string>
     <string name="skip_silence_summary">Pular silêncio ao reproduzir áudio</string>
-    <string name="reset_local_stats">Redefinir estatísticas de reprodução de mídia local</string>
-    <string name="reset_local_stats_confirm_title">Redefinir estatísticas locais</string>
-    <string name="reset_local_stats_confirm_message">Tem certeza que deseja redefinir todas as estatísticas de reprodução de mídia local? Essa ação não pode ser desfeita.</string>
-    <string name="reset_local_stats_confirm_positive">Redefinir</string>
-    <string name="reset_local_stats_success">As estatísticas de reprodução de mídia local foram redefinidas</string>
+    <string name="reset_local_stats">Reconfigurar estatísticas de reprodução de mídia local</string>
+    <string name="reset_local_stats_confirm_title">Reconfigurar estatísticas locais</string>
+    <string name="reset_local_stats_confirm_message">Tem certeza que deseja reconfigurar todas as estatísticas de reprodução de mídia local? Essa ação não pode ser desfeita.</string>
+    <string name="reset_local_stats_confirm_positive">Reconfigurar</string>
+    <string name="reset_local_stats_success">As estatísticas de reprodução de mídia local foram reconfiguradas</string>
     <string name="rescan_media_store">Executar uma nova análise do banco de dados do MediaStore</string>
     <string name="rescan_media_store_confirm_title">Analisar banco de dados do MediaStore novamente</string>
     <string name="rescan_media_store_confirm_message">Você gostaria de executar uma análise nova do banco de dados do MediaStore? Isso pode corrigir itens ausentes da mídia local</string>

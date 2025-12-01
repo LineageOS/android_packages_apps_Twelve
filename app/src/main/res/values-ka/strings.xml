@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     SPDX-FileCopyrightText: 2024-2025 The LineageOS Project
+     SPDX-License-Identifier: Apache-2.0
+-->
+<resources>
+    <string name="audio_output_issue_post_processing_lossy_compression_description">პროგრამა უზრუნველყოფს ხმოვან მონაცემთა შეკუმშვას დანაკარგიანი დაშიფვრით. ხმის ხარისხზე შეიძლება იმოქმედოს.</string>
+</resources>
