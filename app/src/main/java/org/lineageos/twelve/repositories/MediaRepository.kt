@@ -347,6 +347,14 @@ class MediaRepository(
         }
 
     /**
+     * Broadcast playback start for a given audio URI.
+     */
+    suspend fun broadcastPlaybackStart(audioUri: Uri, positionTicks: Long = 0L) =
+        withMediaItemsDataSource(audioUri) {
+            broadcastPlaybackStartFromAudio(audioUri, positionTicks)
+        }
+
+    /**
      * Get the [MediaDataSource] associated with the given [Provider].
      *
      * @param providerIdentifier The [ProviderIdentifier]

@@ -230,4 +230,12 @@ interface MediaDataSource {
      * @return [Result.Success] if success, [Result.Error] with an error otherwise
      */
     suspend fun setFavorite(audioUri: Uri, isFavorite: Boolean): MediaRequestStatus<Unit>
+
+    /**
+     * Broadcast that audio playback has started.
+     */
+    suspend fun broadcastPlaybackStartFromAudio(
+        audioUri: Uri,
+        positionTicks: Long = 0L,
+    ): MediaRequestStatus<Unit>
 }
