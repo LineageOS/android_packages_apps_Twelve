@@ -13,7 +13,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerializationException
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.serializer
 import okhttp3.MediaType.Companion.toMediaType
@@ -52,9 +51,10 @@ interface ApiRequestInterface<T> {
  * Base class for common request functionality.
  */
 abstract class BaseRequest {
-    protected fun encodeRequestBody(api: Api, data: Any?) = data?.let {
-        api.json.encodeToString(it)
-    }?.toRequestBody("application/json".toMediaType()) ?: "".toRequestBody()
+    protected fun <T> encodeRequestBody(api: Api, data: T?, serializer: KSerializer<T>) =
+        data?.let {
+            api.json.encodeToString(serializer, it)
+        }?.toRequestBody("application/json".toMediaType()) ?: "".toRequestBody()
 }
 
 /**
@@ -87,12 +87,13 @@ class PostRequestInterface<D, T>(
     private val path: List<String>,
     override val type: KType,
     private val data: D?,
+    private val dataSerializer: KSerializer<D>,
     private val queryParameters: List<Pair<String, Any?>> = emptyList(),
     private val emptyResponse: () -> T
 ) : BaseRequest(), ApiRequestInterface<T> {
     override suspend fun execute(api: Api): MethodResult<T> {
         val url = api.buildUrl(path, queryParameters)
-        val body = encodeRequestBody(api, data)
+        val body = encodeRequestBody(api, data, dataSerializer)
         val request = Request.Builder()
             .url(url)
             .post(body)
@@ -222,7 +223,10 @@ object ApiRequest {
         data: D? = null,
         queryParameters: List<Pair<String, Any?>> = emptyList(),
         noinline emptyResponse: () -> T = { Unit as T }
-    ) = PostRequestInterface(path, typeOf<T>(), data, queryParameters, emptyResponse)
+    ) = PostRequestInterface(
+        path, typeOf<T>(), data,
+        Json.serializersModule.serializer(), queryParameters, emptyResponse
+    )
 
     inline fun <reified T> delete(
         path: List<String>,
