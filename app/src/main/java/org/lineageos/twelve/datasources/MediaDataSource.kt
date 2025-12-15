@@ -248,4 +248,28 @@ interface MediaDataSource {
         providerIdentifier: ProviderIdentifier,
         audioUri: Uri
     ): Flow<MediaRequestStatus<ActivityTab>>
+
+    /**
+     * Broadcast that audio playback has started.
+     */
+    suspend fun broadcastPlaybackStartFromAudio(
+        audioUri: Uri,
+        positionTicks: Long = 0L,
+    ): MediaRequestStatus<Unit>
+
+    /**
+     * Broadcast playback progress for an audio.
+     */
+    suspend fun broadcastPlaybackProgressFromAudio(
+        audioUri: Uri,
+        positionTicks: Long,
+    ): MediaRequestStatus<Unit>
+
+    /**
+     * Broadcast that audio playback has stopped.
+     */
+    suspend fun broadcastPlaybackStopFromAudio(
+        audioUri: Uri,
+        positionTicks: Long,
+    ): MediaRequestStatus<Unit>
 }
