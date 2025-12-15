@@ -75,6 +75,8 @@ import org.lineageos.twelve.ext.typedRepeatMode
 import org.lineageos.twelve.models.Audio
 import org.lineageos.twelve.models.RepeatMode
 import org.lineageos.twelve.models.Result.Success
+import org.lineageos.twelve.services.PlaybackService.CustomCommand.Companion.ARG_VALUE
+import org.lineageos.twelve.services.PlaybackService.CustomCommand.Companion.RSP_VALUE
 import org.lineageos.twelve.ui.widgets.NowPlayingAppWidgetProvider
 import org.lineageos.twelve.utils.AudioPreloader
 
@@ -518,6 +520,12 @@ class PlaybackService : MediaLibraryService(), LifecycleOwner {
                             player.currentMediaItemIndex,
                             player.currentPosition
                         )
+                    }
+
+                    lifecycleScope.launch {
+                        player.currentMediaItem?.mediaId?.let {
+                            mediaRepository.broadcastPlaybackStart(it.toUri())
+                        }
                     }
 
                     lifecycleScope.launch {

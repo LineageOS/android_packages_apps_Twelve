@@ -758,6 +758,11 @@ class MediaStoreDataSource(
             Result.Error<ActivityTab, _>(Error.NOT_IMPLEMENTED)
         )
 
+    override suspend fun broadcastPlaybackStartFromAudio(
+        audioUri: Uri,
+        positionTicks: Long
+    ) = Result.Error<Unit, _>(Error.NOT_IMPLEMENTED)
+
     fun audios() = contentResolver.queryFlow(
         getAudiosUri(MediaStore.VOLUME_EXTERNAL),
         audiosProjection

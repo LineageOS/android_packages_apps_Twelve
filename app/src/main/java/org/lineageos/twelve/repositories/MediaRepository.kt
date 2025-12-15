@@ -354,6 +354,14 @@ class MediaRepository(
         }
 
     /**
+     * Broadcast playback start for a given audio URI.
+     */
+    suspend fun broadcastPlaybackStart(audioUri: Uri, positionTicks: Long = 0L) =
+        withMediaItemsDataSource(audioUri) {
+            broadcastPlaybackStartFromAudio(audioUri, positionTicks)
+        }
+
+    /**
      * @see MediaDataSource.getSuggestionsFromAudio
      */
     fun getSuggestionsFromAudio(audioUri: Uri) = withNavigationDataSourceAndProviderFlow {
