@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2024-2025 The LineageOS Project
+ * SPDX-FileCopyrightText: 2024-2026 The LineageOS Project
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -344,6 +344,14 @@ class MediaRepository(
     suspend fun setFavorite(audioUri: Uri, favorite: Boolean) =
         withMediaItemsDataSource(audioUri) {
             setFavorite(audioUri, favorite)
+        }
+
+    /**
+     * Broadcast playback start for a given audio URI.
+     */
+    suspend fun broadcastPlaybackStart(audioUri: Uri, positionTicks: Long = 0L) =
+        withMediaItemsDataSource(audioUri) {
+            broadcastPlaybackStartFromAudio(audioUri, positionTicks)
         }
 
     /**

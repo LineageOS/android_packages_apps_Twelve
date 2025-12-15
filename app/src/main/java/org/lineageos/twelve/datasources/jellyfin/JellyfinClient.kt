@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2024-2025 The LineageOS Project
+ * SPDX-FileCopyrightText: 2024-2026 The LineageOS Project
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -12,6 +12,7 @@ import org.lineageos.twelve.datasources.jellyfin.models.CreatePlaylist
 import org.lineageos.twelve.datasources.jellyfin.models.CreatePlaylistResult
 import org.lineageos.twelve.datasources.jellyfin.models.Item
 import org.lineageos.twelve.datasources.jellyfin.models.Lyrics
+import org.lineageos.twelve.datasources.jellyfin.models.PlaybackRequest
 import org.lineageos.twelve.datasources.jellyfin.models.PlaylistItems
 import org.lineageos.twelve.datasources.jellyfin.models.QueryResult
 import org.lineageos.twelve.datasources.jellyfin.models.SystemInfo
@@ -309,6 +310,17 @@ class JellyfinClient(
             "Type" to "MusicArtist",
             "Limit" to 10,
         )
+    ).execute(api).mapToError()
+
+    suspend fun broadcastPlaybackStart(
+        itemId: UUID,
+        positionTicks: Long = 0L,
+    ) = ApiRequest.post<PlaybackRequest, Unit>(
+        listOf(
+            "Sessions",
+            "Playing",
+        ),
+        data = PlaybackRequest(itemId.toString(), positionTicks)
     ).execute(api).mapToError()
 
     private suspend fun getItem(id: UUID) = ApiRequest.get<Item>(

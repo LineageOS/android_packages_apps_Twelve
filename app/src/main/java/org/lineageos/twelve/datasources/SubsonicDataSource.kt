@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2024-2025 The LineageOS Project
+ * SPDX-FileCopyrightText: 2024-2026 The LineageOS Project
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -713,6 +713,11 @@ class SubsonicDataSource(
             onFavoritesChanged()
         }
     }
+
+    override suspend fun broadcastPlaybackStartFromAudio(
+        audioUri: Uri,
+        positionTicks: Long
+    ) = Result.Error<Unit, _>(Error.NOT_IMPLEMENTED)
 
     /**
      * Apply [List.asReversed] if [condition] is true.

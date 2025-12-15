@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2024-2025 The LineageOS Project
+ * SPDX-FileCopyrightText: 2024-2026 The LineageOS Project
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -726,6 +726,11 @@ class MediaStoreDataSource(
     }.let {
         Result.Success<_, Error>(Unit)
     }
+
+    override suspend fun broadcastPlaybackStartFromAudio(
+        audioUri: Uri,
+        positionTicks: Long
+    ) = Result.Error<Unit, _>(Error.NOT_IMPLEMENTED)
 
     fun audios() = contentResolver.queryFlow(
         getAudiosUri(MediaStore.VOLUME_EXTERNAL),

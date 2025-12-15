@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2024-2025 The LineageOS Project
+ * SPDX-FileCopyrightText: 2024-2026 The LineageOS Project
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -14,6 +14,7 @@ import android.os.Bundle
 import android.os.IBinder
 import android.util.Log
 import androidx.annotation.OptIn
+import androidx.core.net.toUri
 import androidx.core.os.bundleOf
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
@@ -67,6 +68,8 @@ import org.lineageos.twelve.ext.skipSilence
 import org.lineageos.twelve.ext.stopPlaybackOnTaskRemoved
 import org.lineageos.twelve.ext.typedRepeatMode
 import org.lineageos.twelve.models.RepeatMode
+import org.lineageos.twelve.services.PlaybackService.CustomCommand.Companion.ARG_VALUE
+import org.lineageos.twelve.services.PlaybackService.CustomCommand.Companion.RSP_VALUE
 import org.lineageos.twelve.ui.widgets.NowPlayingAppWidgetProvider
 
 @OptIn(UnstableApi::class)
@@ -490,6 +493,12 @@ class PlaybackService : MediaLibraryService(), LifecycleOwner {
                             player.currentMediaItemIndex,
                             player.currentPosition
                         )
+                    }
+
+                    lifecycleScope.launch {
+                        player.currentMediaItem?.mediaId?.let {
+                            mediaRepository.broadcastPlaybackStart(it.toUri())
+                        }
                     }
 
                     lifecycleScope.launch {

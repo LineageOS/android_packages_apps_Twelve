@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2024-2025 The LineageOS Project
+ * SPDX-FileCopyrightText: 2024-2026 The LineageOS Project
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -622,6 +622,17 @@ class JellyfinDataSource(
         }.map {
             onFavoritesChanged()
         }
+    }
+
+    override suspend fun broadcastPlaybackStartFromAudio(
+        audioUri: Uri,
+        positionTicks: Long,
+    ) = providersManager.doWithInstanceOf(audioUri) {
+        val itemId = UUID.fromString(audioUri.lastPathSegment!!)
+        client.broadcastPlaybackStart(
+            itemId = itemId,
+            positionTicks = positionTicks,
+        )
     }
 
     companion object {
