@@ -714,6 +714,11 @@ class SubsonicDataSource(
         }
     }
 
+    override suspend fun broadcastPlaybackStartFromAudio(
+        audioUri: Uri,
+        positionTicks: Long
+    ) = Result.Error<Unit, _>(Error.NOT_IMPLEMENTED)
+
     /**
      * Apply [List.asReversed] if [condition] is true.
      * Reminder that [List.asReversed] returns a new list view, thus being O(1).
