@@ -663,6 +663,39 @@ class JellyfinDataSource(
         }
     }
 
+    override suspend fun broadcastPlaybackStartFromAudio(
+        audioUri: Uri,
+        positionTicks: Long,
+    ) = providersManager.doWithInstanceOf(audioUri) {
+        val itemId = UUID.fromString(audioUri.lastPathSegment!!)
+        client.broadcastPlaybackStart(
+            itemId = itemId,
+            positionTicks = positionTicks,
+        )
+    }
+
+    override suspend fun broadcastPlaybackProgressFromAudio(
+        audioUri: Uri,
+        positionTicks: Long,
+    ) = providersManager.doWithInstanceOf(audioUri) {
+        val itemId = UUID.fromString(audioUri.lastPathSegment!!)
+        client.broadcastPlaybackProgress(
+            itemId = itemId,
+            positionTicks = positionTicks,
+        )
+    }
+
+    override suspend fun broadcastPlaybackStopFromAudio(
+        audioUri: Uri,
+        positionTicks: Long,
+    ) = providersManager.doWithInstanceOf(audioUri) {
+        val itemId = UUID.fromString(audioUri.lastPathSegment!!)
+        client.broadcastPlaybackStop(
+            itemId = itemId,
+            positionTicks = positionTicks,
+        )
+    }
+
     companion object {
         private const val ALBUMS_PATH = "albums"
         private const val ARTISTS_PATH = "artists"
