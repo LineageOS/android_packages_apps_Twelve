@@ -238,6 +238,21 @@ class FileDataSource(
         Result.Error<ActivityTab, _>(Error.NOT_IMPLEMENTED)
     )
 
+    override suspend fun broadcastPlaybackStartFromAudio(
+        audioUri: Uri,
+        positionTicks: Long
+    ) = Result.Error<Unit, _>(Error.NOT_IMPLEMENTED)
+
+    override suspend fun broadcastPlaybackProgressFromAudio(
+        audioUri: Uri,
+        positionTicks: Long
+    ) = Result.Error<Unit, _>(Error.NOT_IMPLEMENTED)
+
+    override suspend fun broadcastPlaybackStopFromAudio(
+        audioUri: Uri,
+        positionTicks: Long
+    ) = Result.Error<Unit, _>(Error.NOT_IMPLEMENTED)
+
     private suspend fun getMimeType(uri: Uri) = withContext(Dispatchers.IO) {
         when (uri.scheme) {
             SCHEME_FILE -> uri.determineFileMimeType()

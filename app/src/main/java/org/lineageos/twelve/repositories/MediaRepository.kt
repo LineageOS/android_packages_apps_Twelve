@@ -354,6 +354,31 @@ class MediaRepository(
         }
 
     /**
+     * Broadcast playback start for a given audio URI.
+     */
+    suspend fun broadcastPlaybackStart(audioUri: Uri, positionTicks: Long = 0L) =
+        withMediaItemsDataSource(audioUri) {
+            android.util.Log.e("TESTING", "MediaRepository: broadcastPlaybackStart")
+            broadcastPlaybackStartFromAudio(audioUri, positionTicks)
+        }
+
+    /**
+     * Broadcast playback progress for a given audio URI.
+     */
+    suspend fun broadcastPlaybackProgress(audioUri: Uri, positionTicks: Long) =
+        withMediaItemsDataSource(audioUri) {
+            broadcastPlaybackProgressFromAudio(audioUri, positionTicks)
+        }
+
+    /**
+     * Broadcast playback stop for a given audio URI.
+     */
+    suspend fun broadcastPlaybackStop(audioUri: Uri, positionTicks: Long) =
+        withMediaItemsDataSource(audioUri) {
+            broadcastPlaybackStopFromAudio(audioUri, positionTicks)
+        }
+
+    /**
      * @see MediaDataSource.getSuggestionsFromAudio
      */
     fun getSuggestionsFromAudio(audioUri: Uri) = withNavigationDataSourceAndProviderFlow {
