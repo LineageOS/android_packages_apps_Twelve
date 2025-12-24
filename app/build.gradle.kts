@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2024-2025 The LineageOS Project
+ * SPDX-FileCopyrightText: 2024-2026 The LineageOS Project
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -101,6 +101,8 @@ dependencies {
 configure<GenerateBpPluginExtension> {
     targetSdk.set(android.defaultConfig.targetSdk!!)
     minSdk.set(android.defaultConfig.minSdk!!)
+    versionCode.set(android.defaultConfig.versionCode!!)
+    versionName.set(android.defaultConfig.versionName!!)
     availableInAOSP.set { module: Module ->
         when {
             module.group.startsWith("androidx") -> {

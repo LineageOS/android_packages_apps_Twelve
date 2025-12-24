@@ -17,6 +17,14 @@ android_app {
     sdk_version: "36",
     product_specific: true,
 
+    aaptflags: [
+        // DO NOT EDIT THIS SECTION MANUALLY
+        "--version-name",
+        "1.0",
+        "--version-code",
+        "1",
+    ]
+
     use_embedded_native_libs: true,
 
     overrides: [
@@ -67,7 +75,6 @@ android_app {
         "androidx.preference_preference",
         "androidx.recyclerview_recyclerview",
         "androidx.room_room-ktx",
-        "androidx.room_room-runtime",
         "androidx.room_room-runtime",
         "androidx.savedstate_savedstate",
         "androidx.sqlite_sqlite",
