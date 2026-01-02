@@ -9,28 +9,28 @@
         app:iconSpaceReserved="false"
         app:title="@string/general_header">
 
-        <SwitchPreference
+        <SwitchPreferenceCompat
             app:defaultValue="true"
             app:iconSpaceReserved="false"
             app:key="enable_offload"
             app:summary="@string/enable_offload_summary"
             app:title="@string/enable_offload" />
 
-        <SwitchPreference
+        <SwitchPreferenceCompat
             app:defaultValue="true"
             app:iconSpaceReserved="false"
             app:key="enable_float_output"
             app:summary="@string/enable_float_output_summary"
             app:title="@string/enable_float_output" />
 
-        <SwitchPreference
+        <SwitchPreferenceCompat
             app:defaultValue="true"
             app:iconSpaceReserved="false"
             app:key="stop_playback_on_task_removed"
             app:summary="@string/stop_playback_on_task_removed_summary"
             app:title="@string/stop_playback_on_task_removed" />
 
-        <SwitchPreference
+        <SwitchPreferenceCompat
             app:defaultValue="false"
             app:iconSpaceReserved="false"
             app:key="skip_silence"
@@ -53,7 +53,7 @@
         app:iconSpaceReserved="false"
         app:title="@string/experimental_header">
 
-        <SwitchPreference
+        <SwitchPreferenceCompat
             app:defaultValue="false"
             app:iconSpaceReserved="false"
             app:key="split_local_devices"

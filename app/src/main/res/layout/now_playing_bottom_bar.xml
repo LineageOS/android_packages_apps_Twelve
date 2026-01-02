@@ -20,6 +20,7 @@
             android:id="@+id/playbackSpeedMaterialButton"
             style="@style/Theme.Twelve.NowPlayingFragment.BottomBarButton"
             android:tooltipText="@string/playback_speed"
+            android:textAppearance="?attr/textAppearanceLabelLarge"
             tools:text="1×" />
 
         <com.google.android.material.button.MaterialButton
