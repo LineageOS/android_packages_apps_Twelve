@@ -24,25 +24,30 @@
             android:layout_height="wrap_content"
             tools:title="@string/app_name">
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/settingsMaterialButton"
-                style="?attr/materialIconButtonStyle"
+            <com.google.android.material.button.MaterialSplitButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
-                android:layout_marginEnd="16dp"
-                android:contentDescription="@string/title_activity_settings"
-                android:tooltipText="@string/title_activity_settings"
-                app:icon="@drawable/ic_settings" />
+                android:layout_marginEnd="16dp">
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/providerMaterialButton"
-                style="@style/Widget.Material3.Button.TextButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end"
-                tools:icon="@drawable/ic_shelves"
-                tools:text="Pixel 7 Pro" />
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/providerMaterialButton"
+                    style="?attr/materialSplitButtonLeadingFilledTonalStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:icon="@drawable/ic_shelves"
+                    tools:text="Pixel 7 Pro" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/settingsMaterialButton"
+                    style="?attr/materialSplitButtonIconFilledTonalStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@string/title_activity_settings"
+                    android:tooltipText="@string/title_activity_settings"
+                    app:icon="@drawable/ic_settings" />
+
+            </com.google.android.material.button.MaterialSplitButton>
 
         </com.google.android.material.appbar.MaterialToolbar>
 
@@ -74,15 +79,13 @@
         android:layout_marginBottom="12dp"
         android:contentDescription="@string/play_random_songs"
         android:text="@string/play_random_songs"
-        android:textColor="?attr/colorOnTertiaryContainer"
         android:tooltipText="@string/play_random_songs"
-        app:backgroundTint="?attr/colorTertiaryContainer"
         app:collapsedSize="46dp"
         app:icon="@drawable/ic_shuffle_play"
-        app:iconTint="?attr/colorOnTertiaryContainer"
         app:layout_behavior="@string/hide_bottom_view_on_scroll_behavior"
         app:layout_constraintBottom_toTopOf="@+id/nowPlayingBar"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:materialThemeOverlay="@style/ThemeOverlay.Material3Expressive.FloatingActionButton.TertiaryContainer" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/navigationBarView"
