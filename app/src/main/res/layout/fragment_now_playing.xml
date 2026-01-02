@@ -133,22 +133,23 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="40dp"
                 android:layout_marginBottom="24dp"
-                app:layout_constraintBottom_toTopOf="@+id/bottomBarMaterialCardView"
+                app:layout_constraintBottom_toTopOf="@+id/bottomBarMaterialButtonGroup"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/progressSliderLinearLayout"
                 app:layout_constraintVertical_bias="0.5" />
 
             <include
-                android:id="@+id/bottomBarMaterialCardView"
+                android:id="@+id/bottomBarMaterialButtonGroup"
                 layout="@layout/now_playing_bottom_bar"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="24dp"
                 android:layout_marginBottom="24dp"
                 app:layout_constraintBottom_toTopOf="@+id/lyricsMaterialCardView"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintWidth_max="200dp"/>
 
             <include
                 android:id="@+id/lyricsMaterialCardView"

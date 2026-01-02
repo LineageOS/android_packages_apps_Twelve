@@ -24,14 +24,14 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/shuffleMaterialButton"
-            style="@style/Theme.Twelve.NowPlayingFragment.MediaButton.Tertiary"
+            style="@style/Theme.Twelve.NowPlayingFragment.MediaButton.Standard"
             app:icon="@drawable/ic_shuffle" />
 
     </FrameLayout>
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/previousTrackMaterialButton"
-        style="@style/Theme.Twelve.NowPlayingFragment.MediaButton.Secondary"
+        style="@style/Theme.Twelve.NowPlayingFragment.MediaButton.Tertiary"
         app:icon="@drawable/ic_skip_previous"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/playPauseMaterialButton"
@@ -44,11 +44,12 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:materialSizeOverlay="@style/SizeOverlay.Material3Expressive.Button.IconButton.Small.Square"/>
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/nextTrackMaterialButton"
-        style="@style/Theme.Twelve.NowPlayingFragment.MediaButton.Secondary"
+        style="@style/Theme.Twelve.NowPlayingFragment.MediaButton.Tertiary"
         app:icon="@drawable/ic_skip_next"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/playPauseMaterialButton"
@@ -68,7 +69,7 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/repeatMaterialButton"
-            style="@style/Theme.Twelve.NowPlayingFragment.MediaButton.Tertiary"
+            style="@style/Theme.Twelve.NowPlayingFragment.MediaButton.Standard"
             app:icon="@drawable/ic_repeat" />
 
     </FrameLayout>

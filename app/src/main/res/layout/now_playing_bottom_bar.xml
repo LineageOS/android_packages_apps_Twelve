@@ -3,56 +3,62 @@
      SPDX-FileCopyrightText: 2024-2025 The LineageOS Project
      SPDX-License-Identifier: Apache-2.0
 -->
-<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.button.MaterialButtonGroup xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    style="@style/Widget.Material3.CardView.Filled"
+    android:id="@+id/buttonGroup"
+    style="@style/Widget.Material3.MaterialButtonGroup.Connected"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    app:cardBackgroundColor="?attr/colorSecondaryContainer"
-    app:cardCornerRadius="12dp">
+    app:overflowMode="menu">
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+    <Button
+        android:id="@+id/isFavoriteMaterialButton"
+        style="@style/Theme.Twelve.NowPlayingFragment.BottomBarButton"
+        android:tooltipText="@string/add_to_favorites"
+        android:visibility="invisible"
+        android:enabled="false"
+        app:icon="@drawable/ic_heart_unfilled"
+        app:layout_overflowText="@string/add_to_favorites"
+        app:layout_overflowIcon="@drawable/ic_heart_unfilled"/>
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/playbackSpeedMaterialButton"
-            style="@style/Theme.Twelve.NowPlayingFragment.BottomBarButton"
-            android:tooltipText="@string/playback_speed"
-            tools:text="1×" />
+    <Button
+        android:id="@+id/playbackSpeedMaterialButton"
+        style="@style/Theme.Twelve.NowPlayingFragment.BottomBarButton"
+        android:tooltipText="@string/playback_speed"
+        android:textAppearance="?attr/textAppearanceLabelLarge"
+        tools:text="1×" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/audioInformationMaterialButton"
-            style="@style/Theme.Twelve.NowPlayingFragment.BottomBarButton"
-            android:tooltipText="@string/audio_information"
-            app:icon="@drawable/ic_info" />
+    <Button
+        android:id="@+id/audioInformationMaterialButton"
+        style="@style/Theme.Twelve.NowPlayingFragment.BottomBarButton"
+        android:tooltipText="@string/audio_information"
+        app:icon="@drawable/ic_info"
+        app:layout_overflowText="@string/audio_information"
+        app:layout_overflowIcon="@drawable/ic_info"/>
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/equalizerMaterialButton"
-            style="@style/Theme.Twelve.NowPlayingFragment.BottomBarButton"
-            android:tooltipText="@string/audio_effects"
-            app:icon="@drawable/ic_audiofx" />
+    <Button
+        android:id="@+id/equalizerMaterialButton"
+        style="@style/Theme.Twelve.NowPlayingFragment.BottomBarButton"
+        android:tooltipText="@string/audio_effects"
+        app:icon="@drawable/ic_audiofx"
+        app:layout_overflowText="@string/audio_effects"
+        app:layout_overflowIcon="@drawable/ic_audiofx"/>
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/visualizerMaterialButton"
-            style="@style/Theme.Twelve.NowPlayingFragment.BottomBarButton"
-            android:tooltipText="@string/visualizer"
-            app:icon="@drawable/ic_graphic_eq" />
+    <Button
+        android:id="@+id/visualizerMaterialButton"
+        style="@style/Theme.Twelve.NowPlayingFragment.BottomBarButton"
+        android:tooltipText="@string/visualizer"
+        app:icon="@drawable/ic_graphic_eq"
+        app:layout_overflowText="@string/visualizer"
+        app:layout_overflowIcon="@drawable/ic_graphic_eq"/>
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/queueMaterialButton"
-            style="@style/Theme.Twelve.NowPlayingFragment.BottomBarButton"
-            android:tooltipText="@string/queue"
-            app:icon="@drawable/ic_queue_play_next" />
+    <Button
+        android:id="@+id/queueMaterialButton"
+        style="@style/Theme.Twelve.NowPlayingFragment.BottomBarButton"
+        android:tooltipText="@string/queue"
+        app:icon="@drawable/ic_queue_play_next"
+        app:layout_overflowText="@string/queue"
+        app:layout_overflowIcon="@drawable/ic_queue_play_next"/>
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/isFavoriteMaterialButton"
-            style="@style/Theme.Twelve.NowPlayingFragment.BottomBarButton"
-            android:tooltipText="@string/add_to_favorites"
-            android:visibility="gone"
-            app:icon="@drawable/ic_heart_unfilled" />
-
-    </LinearLayout>
-
-</com.google.android.material.card.MaterialCardView>
+</com.google.android.material.button.MaterialButtonGroup>
