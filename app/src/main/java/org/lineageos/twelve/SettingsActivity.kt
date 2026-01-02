@@ -24,7 +24,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
-import androidx.preference.SwitchPreference
+import androidx.preference.SwitchPreferenceCompat
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -145,10 +145,10 @@ class SettingsActivity : AppCompatActivity(R.layout.activity_settings) {
 
     class RootSettingsFragment : SettingsFragment(R.xml.root_preferences) {
         // Preferences
-        private val enableOffload by lazy { findPreference<SwitchPreference>(ENABLE_OFFLOAD_KEY)!! }
+        private val enableOffload by lazy { findPreference<SwitchPreferenceCompat>(ENABLE_OFFLOAD_KEY)!! }
         private val rescanMediaStore by lazy { findPreference<Preference>("rescan_media_store")!! }
         private val resetLocalStats by lazy { findPreference<Preference>("reset_local_stats")!! }
-        private val skipSilence by lazy { findPreference<SwitchPreference>(SKIP_SILENCE_KEY)!! }
+        private val skipSilence by lazy { findPreference<SwitchPreferenceCompat>(SKIP_SILENCE_KEY)!! }
 
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
             super.onCreatePreferences(savedInstanceState, rootKey)

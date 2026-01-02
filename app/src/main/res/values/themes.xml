@@ -5,7 +5,7 @@
 -->
 <resources>
     <!-- Application theme -->
-    <style name="Theme.Twelve" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="Theme.Twelve" parent="Theme.Material3Expressive.DayNight.NoActionBar">
         <item name="android:enforceNavigationBarContrast">true</item>
         <item name="android:navigationBarColor">@android:color/transparent</item>
         <item name="enableEdgeToEdge">true</item>
@@ -47,6 +47,17 @@
         <item name="android:textColor">?attr/colorOnSurface</item>
     </style>
 
+    <style name="Theme.Twelve.FilledButton.Tertiary" parent="Widget.Material3Expressive.Button.IconButton">
+        <item name="iconTint">?attr/colorOnTertiaryContainer</item>
+        <item name="android:backgroundTint">?attr/colorTertiaryContainer</item>
+    </style>
+
+    <style name="Theme.Twelve.TonalButton.Tertiary" parent="Widget.Material3Expressive.Button.TonalButton">
+        <item name="iconTint">?attr/colorOnTertiaryContainer</item>
+        <item name="android:backgroundTint">?attr/colorTertiaryContainer</item>
+        <item name="android:textColor">?attr/colorOnTertiaryContainer</item>
+    </style>
+
     <!-- Now playing bar -->
     <style name="Theme.Twelve.NowPlayingBar.CardView" parent="@style/Widget.Material3.CardView.Filled">
         <item name="shapeAppearanceOverlay">
@@ -61,7 +72,7 @@
     </style>
 
     <!-- Now playing fragment -->
-    <style name="Theme.Twelve.NowPlayingFragment.MediaButton.Primary" parent="Widget.Material3.Button.IconButton.Filled">
+    <style name="Theme.Twelve.NowPlayingFragment.MediaButton.Primary" parent="Widget.Material3Expressive.Button.IconButton">
         <item name="android:layout_width">72dp</item>
         <item name="android:layout_height">72dp</item>
         <item name="android:padding">0dp</item>
@@ -69,19 +80,24 @@
         <item name="iconSize">36dp</item>
     </style>
 
-    <style name="Theme.Twelve.NowPlayingFragment.MediaButton.Secondary" parent="Widget.Material3.Button.IconButton">
+    <style name="Theme.Twelve.NowPlayingFragment.MediaButton.Secondary" parent="Widget.Material3Expressive.Button.IconButton">
         <item name="android:layout_width">72dp</item>
         <item name="android:layout_height">72dp</item>
         <item name="android:padding">0dp</item>
+        <item name="backgroundTint">?attr/colorSecondaryContainer</item>
+        <item name="iconTint">?attr/colorOnSecondaryContainer</item>
         <item name="iconGravity">textStart</item>
         <item name="iconSize">36dp</item>
+        <item name="materialSizeOverlay">@style/SizeOverlay.Material3Expressive.Button.IconButton.Small.Narrow</item>
     </style>
 
-    <style name="Theme.Twelve.NowPlayingFragment.MediaButton.Tertiary" parent="Widget.Material3.Button.IconButton">
+    <style name="Theme.Twelve.NowPlayingFragment.MediaButton.Tertiary" parent="Widget.Material3Expressive.Button.IconButton">
         <item name="android:layout_width">48dp</item>
         <item name="android:layout_height">48dp</item>
         <item name="android:layout_gravity">center</item>
         <item name="android:padding">0dp</item>
+        <item name="backgroundTint">?attr/colorTertiaryContainer</item>
+        <item name="iconTint">?attr/colorOnTertiaryContainer</item>
         <item name="iconGravity">textStart</item>
         <item name="iconSize">24dp</item>
     </style>
@@ -100,19 +116,19 @@
         <item name="tint">?attr/colorPrimary</item>
     </style>
 
-    <style name="Theme.Twelve.NowPlayingFragment.BottomBarButton" parent="Widget.Material3.Button.IconButton">
+    <style name="Theme.Twelve.NowPlayingFragment.BottomBarButton" parent="Widget.Material3Expressive.Button.IconButton.Tonal">
         <item name="android:layout_width">48dp</item>
         <item name="android:layout_height">48dp</item>
         <item name="android:layout_gravity">center</item>
         <item name="android:padding">0dp</item>
-        <item name="android:textColor">?attr/colorOnSecondaryContainer</item>
+        <item name="android:textColor">?attr/colorOnPrimaryContainer</item>
         <item name="iconGravity">textStart</item>
         <item name="iconSize">24dp</item>
-        <item name="iconTint">?attr/colorOnSecondaryContainer</item>
+        <item name="iconTint">?attr/colorOnPrimaryContainer</item>
     </style>
 
     <!-- App widget -->
-    <style name="Theme.Twelve.AppWidgetContainer" parent="Theme.Material3.DynamicColors.DayNight">
+    <style name="Theme.Twelve.AppWidgetContainer" parent="Theme.Material3Expressive.DynamicColors.DayNight">
         <item name="appWidgetRadius">28dp</item>
     </style>
 </resources>
