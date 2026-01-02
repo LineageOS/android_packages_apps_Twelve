@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     SPDX-FileCopyrightText: 2026 The LineageOS Project
+     SPDX-License-Identifier: Apache-2.0
+-->
+<resources>
+    <dimen name="bottom_bar_button_size">56dp</dimen>
+    <dimen name="bottom_bar_icon_size">28dp</dimen>
+</resources>

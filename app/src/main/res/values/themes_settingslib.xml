@@ -27,14 +27,9 @@
         <item name="android:listPreferredItemPaddingStart">32dp</item>
         <item name="android:tint">?attr/colorOnSurface</item>
         <item name="switchPreferenceCompatStyle">@style/Theme.SettingsLib.SwitchPreferenceCompat</item>
-        <item name="switchPreferenceStyle">@style/Theme.SettingsLib.SwitchPreference</item>
-    </style>
-
-    <style name="Theme.SettingsLib.SwitchPreference" parent="@style/Preference.SwitchPreference.Material">
-        <item name="widgetLayout">@layout/settingslib_switch</item>
     </style>
 
     <style name="Theme.SettingsLib.SwitchPreferenceCompat" parent="@style/Preference.SwitchPreferenceCompat.Material">
-        <item name="widgetLayout">@layout/settingslib_switch_compat</item>
+        <item name="widgetLayout">@layout/settingslib_switch</item>
     </style>
 </resources>

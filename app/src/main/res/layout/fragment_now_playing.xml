@@ -133,22 +133,36 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="40dp"
                 android:layout_marginBottom="24dp"
-                app:layout_constraintBottom_toTopOf="@+id/bottomBarMaterialCardView"
+                app:layout_constraintBottom_toTopOf="@+id/bottomBarMaterialButtonGroup"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/progressSliderLinearLayout"
                 app:layout_constraintVertical_bias="0.5" />
 
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guidelineStart"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.20" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guidelineEnd"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.80" />
+
             <include
-                android:id="@+id/bottomBarMaterialCardView"
+                android:id="@+id/bottomBarMaterialButtonGroup"
                 layout="@layout/now_playing_bottom_bar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="24dp"
                 android:layout_marginBottom="24dp"
-                app:layout_constraintBottom_toTopOf="@+id/lyricsMaterialCardView"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
+                app:layout_constrainedWidth="true"
+                app:layout_constraintStart_toStartOf="@id/guidelineStart"
+                app:layout_constraintEnd_toEndOf="@id/guidelineEnd"
+                app:layout_constraintBottom_toTopOf="@+id/lyricsMaterialCardView" />
 
             <include
                 android:id="@+id/lyricsMaterialCardView"
