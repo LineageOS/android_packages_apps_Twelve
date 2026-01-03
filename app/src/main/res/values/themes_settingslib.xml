@@ -31,5 +31,6 @@
 
     <style name="Theme.SettingsLib.SwitchPreferenceCompat" parent="@style/Preference.SwitchPreferenceCompat.Material">
         <item name="widgetLayout">@layout/settingslib_switch</item>
+        <item name="iconSpaceReserved">false</item>
     </style>
 </resources>
