@@ -26,7 +26,8 @@
         <item name="android:listPreferredItemPaddingLeft">32dp</item>
         <item name="android:listPreferredItemPaddingStart">32dp</item>
         <item name="android:tint">?attr/colorOnSurface</item>
-        <item name="switchPreferenceCompatStyle">@style/Theme.SettingsLib.SwitchPreferenceCompat</item>
+        <item name="switchPreferenceCompatStyle">@style/Theme.SettingsLib.SwitchPreferenceCompat
+        </item>
         <item name="switchPreferenceStyle">@style/Theme.SettingsLib.SwitchPreference</item>
     </style>
 
