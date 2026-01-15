@@ -55,7 +55,7 @@ class SubsonicDataSource(
     providersRepository: ProvidersRepository,
     cache: Cache? = null,
 ) : MediaDataSource {
-    private inner class SubsonicInstance(
+    private class SubsonicInstance(
         server: String,
         val subsonicClient: SubsonicClient,
     ) : ProvidersManager.Instance {
