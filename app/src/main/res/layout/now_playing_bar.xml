@@ -22,7 +22,7 @@
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/thumbnailMaterialCardView"
-            style="@style/Widget.Material3.CardView.Filled"
+            style="?attr/materialCardViewFilledStyle"
             android:layout_width="56dp"
             android:layout_height="56dp"
             app:cardBackgroundColor="?attr/colorSecondaryContainer">
@@ -86,7 +86,7 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/playPauseMaterialButton"
-                style="@style/Widget.Material3.Button.IconButton.Filled"
+                style="?attr/materialIconButtonFilledStyle"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:layout_gravity="center"

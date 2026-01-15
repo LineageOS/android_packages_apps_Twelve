@@ -52,7 +52,7 @@
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/albumArtMaterialCardView"
-                style="@style/Widget.Material3.CardView.Filled"
+                style="?attr/materialCardViewFilledStyle"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_gravity="center"
