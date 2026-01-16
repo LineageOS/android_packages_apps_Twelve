@@ -41,6 +41,30 @@
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "460ec3f7_47a1f099",
+        "filename": "app/src/main/res/layout-land/fragment_main.xml",
+        "patchSetId": 4
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 25732
+      },
+      "writtenOn": "2026-01-16T01:14:19Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d218ca28_d5919d63",
+      "range": {
+        "startLine": 27,
+        "startChar": 0,
+        "endLine": 27,
+        "endChar": 67
+      },
+      "revId": "19bd68c7b91702b3e3a172f917469ad896080047",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "64d92da1_65836df8",
@@ -54,6 +78,24 @@
       "writtenOn": "2026-01-13T20:14:00Z",
       "side": 1,
       "message": "I\u0027m not entirely happy how this looks, first of all the label color isn\u0027t readable on dark theme, second I think queue should always be shown there\n\nAlso clicking on the overflowed items does nothing?",
+      "revId": "19bd68c7b91702b3e3a172f917469ad896080047",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4711b333_13d941fa",
+        "filename": "app/src/main/res/layout/now_playing_bottom_bar.xml",
+        "patchSetId": 4
+      },
+      "lineNbr": 6,
+      "author": {
+        "id": 25732
+      },
+      "writtenOn": "2026-01-16T01:14:19Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "64d92da1_65836df8",
       "revId": "19bd68c7b91702b3e3a172f917469ad896080047",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
