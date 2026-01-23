@@ -24,6 +24,30 @@
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "cfda6ea9_40f031be",
+        "filename": "app/src/main/java/org/lineageos/twelve/services/PlaybackService.kt",
+        "patchSetId": 8
+      },
+      "lineNbr": 72,
+      "author": {
+        "id": 21651
+      },
+      "writtenOn": "2026-01-23T12:09:14Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "6d999b00_085b31f8",
+      "range": {
+        "startLine": 71,
+        "startChar": 0,
+        "endLine": 72,
+        "endChar": 86
+      },
+      "revId": "d84968745ff4fa4c85d3d82ee598c67ece40a571",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "11847847_1730f718",
