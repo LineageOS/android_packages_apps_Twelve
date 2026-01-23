@@ -224,7 +224,7 @@ class JellyfinClient(
         ),
     ).execute(api).mapToError()
 
-    suspend fun addItemToPlaylist(id: UUID, audioId: UUID) = ApiRequest.post<Any, Unit>(
+    suspend fun addItemToPlaylist(id: UUID, audioId: UUID) = ApiRequest.post<Unit, Unit>(
         listOf(
             "Playlists",
             id.toString(),
@@ -254,7 +254,7 @@ class JellyfinClient(
         ),
     ).execute(api).mapToError()
 
-    suspend fun addToFavorites(id: UUID) = ApiRequest.post<Any, Unit>(
+    suspend fun addToFavorites(id: UUID) = ApiRequest.post<Unit, Unit>(
         listOf(
             "UserFavoriteItems",
             id.toString(),
