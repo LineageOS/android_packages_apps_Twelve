@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6d999b00_085b31f8",
+        "filename": "app/src/main/java/org/lineageos/twelve/services/PlaybackService.kt",
+        "patchSetId": 8
+      },
+      "lineNbr": 72,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2026-01-23T10:21:25Z",
+      "side": 1,
+      "message": "don\u0027t ask me why this stuff gets imported, it\u0027s not needed",
+      "range": {
+        "startLine": 71,
+        "startChar": 0,
+        "endLine": 72,
+        "endChar": 86
+      },
+      "revId": "d84968745ff4fa4c85d3d82ee598c67ece40a571",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "11847847_1730f718",
+        "filename": "app/src/main/java/org/lineageos/twelve/services/PlaybackService.kt",
+        "patchSetId": 8
+      },
+      "lineNbr": 500,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2026-01-23T10:21:25Z",
+      "side": 1,
+      "message": "I don\u0027t think that\u0027s entirely correct\nI don\u0027t remember how mediaId is defined but I kinda expect the mediaId to be converted into the expected format by the data source?\n\nOr generally I\u0027d expect the currentMedia item to have a proper \"uri\" already in it as we build it no?",
+      "revId": "d84968745ff4fa4c85d3d82ee598c67ece40a571",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
