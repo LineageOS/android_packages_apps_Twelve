@@ -299,6 +299,16 @@ class JellyfinDataSource(
     override fun activity(
         providerIdentifier: ProviderIdentifier,
     ) = providersManager.mapWithInstanceOf(providerIdentifier) {
+        val frequentlyPlayedSongs = client.frequentlyPlayedAudio().map { queryResult ->
+            ActivityTab(
+                "frequently_played_songs",
+                LocalizedString.StringResIdLocalizedString(
+                    R.string.activity_most_played_songs,
+                ),
+                queryResult.items.map { it.toMediaItemAudio() }
+            )
+        }
+
         val randomSongs = client.audioSuggestions().map { queryResult ->
             ActivityTab(
                 "random_songs",
@@ -341,6 +351,7 @@ class JellyfinDataSource(
 
         Result.Success(
             listOf(
+                frequentlyPlayedSongs,
                 randomSongs,
                 randomAlbums,
                 randomArtists,
