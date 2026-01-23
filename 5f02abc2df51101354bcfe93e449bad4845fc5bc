@@ -16,6 +16,24 @@
       "message": "I added Recursive\u003dtrue to all endpoints as seen in the web ui, but maybe there\u0027s saner ways to do it, maybe see if the always add a limit\u003dx in it and also update the rest?",
       "revId": "5f02abc2df51101354bcfe93e449bad4845fc5bc",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "242ae77a_609d0cd4",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 21651
+      },
+      "writtenOn": "2026-01-23T12:08:28Z",
+      "side": 1,
+      "message": "I think recursive is mandatory. I just have too many albums for the fragment to even make sense. Propably later it should have some pagination along with the artist fragment.",
+      "parentUuid": "1a623e41_85dafbf8",
+      "revId": "5f02abc2df51101354bcfe93e449bad4845fc5bc",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
