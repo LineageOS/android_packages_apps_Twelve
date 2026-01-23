@@ -79,6 +79,7 @@ class JellyfinClient(
         queryParameters = listOf(
             "IncludeItemTypes" to "MusicAlbum",
             "Recursive" to true,
+            "Limit" to 50,
         ) + getSortParameter(sortingRule),
     ).execute(api).mapToError()
 
