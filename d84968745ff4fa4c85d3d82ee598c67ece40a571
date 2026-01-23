@@ -63,6 +63,24 @@
       "message": "I don\u0027t think that\u0027s entirely correct\nI don\u0027t remember how mediaId is defined but I kinda expect the mediaId to be converted into the expected format by the data source?\n\nOr generally I\u0027d expect the currentMedia item to have a proper \"uri\" already in it as we build it no?",
       "revId": "d84968745ff4fa4c85d3d82ee598c67ece40a571",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ebb5712f_ee7e5eb3",
+        "filename": "app/src/main/java/org/lineageos/twelve/services/PlaybackService.kt",
+        "patchSetId": 8
+      },
+      "lineNbr": 500,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2026-01-23T12:11:10Z",
+      "side": 1,
+      "message": "Acknowledged\n\nAs we can\u0027t get the Uri out of the media item using mediaId is the only way",
+      "parentUuid": "11847847_1730f718",
+      "revId": "d84968745ff4fa4c85d3d82ee598c67ece40a571",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
