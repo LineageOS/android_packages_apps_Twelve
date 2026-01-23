@@ -268,6 +268,16 @@ class JellyfinClient(
         ),
     ).execute(api).mapToError()
 
+    suspend fun frequentlyPlayedAudio() = ApiRequest.get<QueryResult>(
+        listOf("Items"), queryParameters = listOf(
+            "SortBy" to "PlayCount",
+            "SortOrder" to "Descending",
+            "Type" to "Audio",
+            "Recursive" to true,
+            "Limit" to 12,
+        )
+    ).execute(api).mapToError()
+
     suspend fun audioSuggestions() = ApiRequest.get<QueryResult>(
         listOf(
             "Items",
