@@ -409,7 +409,7 @@ class JellyfinDataSource(
                 buildList {
                     add(favoritesPlaylist)
 
-                    queryResult.items.forEach { add(it.toMediaItemPlaylist()) }
+                    addAll(queryResult.items.map { it.toMediaItemPlaylist() })
                 }
             }
         }
