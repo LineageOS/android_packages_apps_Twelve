@@ -10,7 +10,7 @@ import kotlinx.serialization.Serializable
 
 @Suppress("PROVIDED_RUNTIME_TOO_LOW")
 @Serializable
-data class PlaybackRequest(
+data class PlaybackStartInfo(
     @SerialName("ItemId") val itemId: String,
     @SerialName("PositionTicks") val positionTicks: Long,
 )

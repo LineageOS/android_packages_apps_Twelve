@@ -12,7 +12,7 @@ import org.lineageos.twelve.datasources.jellyfin.models.CreatePlaylist
 import org.lineageos.twelve.datasources.jellyfin.models.CreatePlaylistResult
 import org.lineageos.twelve.datasources.jellyfin.models.Item
 import org.lineageos.twelve.datasources.jellyfin.models.Lyrics
-import org.lineageos.twelve.datasources.jellyfin.models.PlaybackRequest
+import org.lineageos.twelve.datasources.jellyfin.models.PlaybackStartInfo
 import org.lineageos.twelve.datasources.jellyfin.models.PlaylistItems
 import org.lineageos.twelve.datasources.jellyfin.models.QueryResult
 import org.lineageos.twelve.datasources.jellyfin.models.SystemInfo
@@ -326,12 +326,12 @@ class JellyfinClient(
     suspend fun broadcastPlaybackStart(
         itemId: UUID,
         positionTicks: Long = 0L,
-    ) = ApiRequest.post<PlaybackRequest, Unit>(
+    ) = ApiRequest.post<PlaybackStartInfo, Unit>(
         listOf(
             "Sessions",
             "Playing",
         ),
-        data = PlaybackRequest(itemId.toString(), positionTicks)
+        data = PlaybackStartInfo(itemId.toString(), positionTicks)
     ).execute(api).mapToError()
 
     private suspend fun getItem(id: UUID) = ApiRequest.get<Item>(
