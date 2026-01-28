@@ -13,6 +13,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.LinearLayout
 import androidx.activity.BackEventCompat
 import androidx.activity.OnBackPressedCallback
+import androidx.core.graphics.Insets
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.get
@@ -42,6 +43,7 @@ import org.lineageos.twelve.R
 import org.lineageos.twelve.SettingsActivity
 import org.lineageos.twelve.ext.getViewProperty
 import org.lineageos.twelve.ext.isLandscape
+import org.lineageos.twelve.ext.isRtl
 import org.lineageos.twelve.ext.navigateSafe
 import org.lineageos.twelve.ext.scheduleHideSoftInput
 import org.lineageos.twelve.ext.setProgressCompat
@@ -220,15 +222,37 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         }
 
         ViewCompat.setOnApplyWindowInsetsListener(viewPager2) { v, windowInsets ->
-            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.displayCutout())
+            val displayCutoutInsets = windowInsets.getInsets(
+                WindowInsetsCompat.Type.displayCutout()
+            )
+            val systemBarsInsets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
 
-            v.updatePadding(
-                insets,
-                start = !resources.configuration.isLandscape,
-                end = true,
+            fun adjustInsets(insets: Insets) = Insets.of(
+                when (!v.isRtl && resources.configuration.isLandscape) {
+                    true -> 0
+                    false -> insets.left
+                },
+                insets.top,
+                when (v.isRtl && resources.configuration.isLandscape) {
+                    true -> 0
+                    false -> insets.right
+                },
+                when (resources.configuration.isLandscape) {
+                    true -> insets.bottom
+                    false -> 0
+                },
             )
 
-            windowInsets
+            WindowInsetsCompat.Builder(windowInsets)
+                .setInsets(
+                    WindowInsetsCompat.Type.systemBars(),
+                    adjustInsets(systemBarsInsets),
+                )
+                .setInsets(
+                    WindowInsetsCompat.Type.displayCutout(),
+                    adjustInsets(displayCutoutInsets),
+                )
+                .build()
         }
 
         ViewCompat.setOnApplyWindowInsetsListener(searchRecyclerView) { v, windowInsets ->
