@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2024-2025 The LineageOS Project
+ * SPDX-FileCopyrightText: 2024-2026 The LineageOS Project
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -53,13 +53,11 @@ import org.lineageos.twelve.models.FlowResult
 import org.lineageos.twelve.models.Genre
 import org.lineageos.twelve.models.MediaItem
 import org.lineageos.twelve.models.Playlist
-import org.lineageos.twelve.models.Result
 import org.lineageos.twelve.models.Result.Companion.onError
 import org.lineageos.twelve.models.areContentsTheSame
 import org.lineageos.twelve.models.areItemsTheSame
 import org.lineageos.twelve.ui.recyclerview.SimpleListAdapter
 import org.lineageos.twelve.ui.views.ListItem
-import org.lineageos.twelve.ui.views.NowPlayingBar
 import org.lineageos.twelve.viewmodels.MainViewModel
 
 /**
@@ -71,7 +69,6 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
     // Views
     private val navigationBarView by getViewProperty<NavigationBarView>(R.id.navigationBarView)
-    private val nowPlayingBar by getViewProperty<NowPlayingBar>(R.id.nowPlayingBar)
     private val playRandomSongsExtendedFloatingActionButton by getViewProperty<ExtendedFloatingActionButton>(
         R.id.playRandomSongsExtendedFloatingActionButton
     )
@@ -207,22 +204,19 @@ class MainFragment : Fragment(R.layout.fragment_main) {
             windowInsets
         }
 
-        if (resources.configuration.isLandscape) {
-            ViewCompat.setOnApplyWindowInsetsListener(navigationBarView) { v, windowInsets ->
-                // This is a navigation rail
-                val insets = windowInsets.getInsets(
-                    WindowInsetsCompat.Type.systemBars() or WindowInsetsCompat.Type.displayCutout()
-                )
+        ViewCompat.setOnApplyWindowInsetsListener(navigationBarView) { v, windowInsets ->
+            val insets = windowInsets.getInsets(
+                WindowInsetsCompat.Type.systemBars() or WindowInsetsCompat.Type.displayCutout()
+            )
 
-                v.updatePadding(
-                    insets,
-                    start = true,
-                    top = true,
-                    bottom = true,
-                )
+            v.updatePadding(
+                insets,
+                start = resources.configuration.isLandscape,
+                top = resources.configuration.isLandscape,
+                bottom = true,
+            )
 
-                windowInsets
-            }
+            windowInsets
         }
 
         ViewCompat.setOnApplyWindowInsetsListener(viewPager2) { v, windowInsets ->
@@ -363,15 +357,6 @@ class MainFragment : Fragment(R.layout.fragment_main) {
             }
         }
 
-        // Now playing bar
-        nowPlayingBar.setOnPlayPauseClickListener {
-            viewModel.togglePlayPause()
-        }
-
-        nowPlayingBar.setOnNowPlayingClickListener {
-            findNavController().navigateSafe(R.id.action_mainFragment_to_fragment_now_playing)
-        }
-
         // Search
         searchRecyclerView.adapter = searchAdapter
 
@@ -395,52 +380,6 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                         } ?: run {
                             providerMaterialButton.setText(R.string.no_provider)
                             providerMaterialButton.setIconResource(R.drawable.ic_warning)
-                        }
-                    }
-                }
-
-                launch {
-                    viewModel.durationCurrentPositionMs.collectLatest {
-                        nowPlayingBar.updateDurationCurrentPositionMs(it.first, it.second)
-                    }
-                }
-
-                launch {
-                    viewModel.isPlaying.collectLatest {
-                        nowPlayingBar.updateIsPlaying(it)
-                    }
-                }
-
-                launch {
-                    viewModel.mediaItem.collectLatest {
-                        nowPlayingBar.updateMediaItem(it)
-                    }
-                }
-
-                launch {
-                    viewModel.mediaMetadata.collectLatest {
-                        nowPlayingBar.updateMediaMetadata(it)
-                    }
-                }
-
-                launch {
-                    viewModel.mediaArtwork.collectLatest {
-                        when (it) {
-                            null -> {
-                                // Do nothing
-                            }
-
-                            is Result.Success -> {
-                                nowPlayingBar.updateMediaArtwork(it.data)
-                            }
-
-                            is Result.Error -> {
-                                Log.e(
-                                    LOG_TAG,
-                                    "Error while getting media artwork: ${it.error}",
-                                    it.throwable
-                                )
-                            }
                         }
                     }
                 }
