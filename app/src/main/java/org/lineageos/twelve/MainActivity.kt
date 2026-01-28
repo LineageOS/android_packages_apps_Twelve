@@ -109,7 +109,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
         // Now playing bar
         nowPlayingBar.setOnClickListener {
-            navController.navigate(R.id.fragment_now_playing)
+            navigateToNowPlayingFragment()
         }
 
         nowPlayingBar.setOnPlayPauseClickListener {
@@ -139,12 +139,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
                         }
 
                         IntentsViewModel.ParsedIntent.Action.OPEN_NOW_PLAYING -> {
-                            navController.navigateSafe(
-                                R.id.action_mainFragment_to_fragment_now_playing,
-                                navOptions = NavOptions.Builder()
-                                    .setPopUpTo(R.id.fragment_main, false)
-                                    .build(),
-                            )
+                            navigateToNowPlayingFragment()
                         }
 
                         IntentsViewModel.ParsedIntent.Action.VIEW -> {
@@ -276,6 +271,14 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
             }
         }
     }
+
+    private fun navigateToNowPlayingFragment() = navController.navigate(
+        R.id.fragment_now_playing,
+        null,
+        NavOptions.Builder()
+            .setPopUpTo(R.id.fragment_now_playing, true)
+            .build(),
+    )
 
     companion object {
         private val LOG_TAG = MainActivity::class.simpleName!!
