@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "225e5eae_167e53e7",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2026-01-28T13:50:50Z",
+      "side": 1,
+      "message": "I completely forgot about that, it worked just fine iirc\nCan you check when you have time seba?",
+      "revId": "54e201e5c8f2694d24403e4833e5a64a29cce6c6",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
