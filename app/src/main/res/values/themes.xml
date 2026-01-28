@@ -47,19 +47,6 @@
         <item name="android:textColor">?attr/colorOnSurface</item>
     </style>
 
-    <!-- Now playing bar -->
-    <style name="Theme.Twelve.NowPlayingBar.CardView" parent="@style/Widget.Material3.CardView.Filled">
-        <item name="shapeAppearanceOverlay">
-            @style/Theme.Twelve.NowPlayingBar.CardView.ShapeAppearanceOverlay
-        </item>
-    </style>
-
-    <style name="Theme.Twelve.NowPlayingBar.CardView.ShapeAppearanceOverlay" parent="@style/ShapeAppearanceOverlay.Material3.Corner.Top">
-        <item name="cornerFamily">rounded</item>
-        <item name="cornerSizeTopLeft">12dp</item>
-        <item name="cornerSizeTopRight">12dp</item>
-    </style>
-
     <!-- Now playing fragment -->
     <style name="Theme.Twelve.NowPlayingFragment.MediaButton.Primary" parent="Widget.Material3.Button.IconButton.Filled">
         <item name="android:layout_width">72dp</item>

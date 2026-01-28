@@ -10,6 +10,8 @@ import androidx.annotation.IdRes
 import androidx.navigation.NavController
 import androidx.navigation.NavOptions
 import androidx.navigation.Navigator
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.callbackFlow
 
 fun NavController.navigateSafe(
     @IdRes id: Int,
@@ -19,5 +21,21 @@ fun NavController.navigateSafe(
 ) {
     currentDestination?.getAction(id)?.run {
         navigate(id, args, navOptions, navigatorExtras)
+    }
+}
+
+/**
+ * @see NavController.OnDestinationChangedListener.onDestinationChanged
+ */
+fun NavController.onDestinationChangedFlow() = callbackFlow {
+    val onDestinationChangedListener =
+        NavController.OnDestinationChangedListener { controller, destination, arguments ->
+            trySend(Triple(controller, destination, arguments))
+        }
+
+    addOnDestinationChangedListener(onDestinationChangedListener)
+
+    awaitClose {
+        removeOnDestinationChangedListener(onDestinationChangedListener)
     }
 }
