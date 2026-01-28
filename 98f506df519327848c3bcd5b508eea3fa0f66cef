@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "7a9e9923_12b38bb8",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 21
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2026-01-28T13:48:17Z",
+      "side": 1,
+      "message": "Shall we revice these changes or not worth it? @seba@sebaubuntu.dev",
+      "revId": "98f506df519327848c3bcd5b508eea3fa0f66cef",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
