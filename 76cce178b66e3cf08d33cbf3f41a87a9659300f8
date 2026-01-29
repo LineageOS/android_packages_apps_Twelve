@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a81099a0_f3af06c2",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 25732
+      },
+      "writtenOn": "2026-01-29T10:07:49Z",
+      "side": 1,
+      "message": "Hi, thanks for the contribution!\nCan this issue be reproduced in a demo server? I would like to take a look at this",
+      "revId": "76cce178b66e3cf08d33cbf3f41a87a9659300f8",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
