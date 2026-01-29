@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a02e5c34_1bb018d8",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 25732
+      },
+      "writtenOn": "2026-01-29T19:57:06Z",
+      "side": 1,
+      "message": "If 23.2 is cool with this change lgtm",
+      "revId": "0a30b6780bf444e1c83215b281b37e6ac2561135",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
