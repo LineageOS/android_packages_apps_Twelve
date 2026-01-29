@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5f3f3975_e6349f2e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2026-01-29T19:48:05Z",
+      "side": 1,
+      "message": "I don\u0027t know how to feel about this, I wish we could just have a sane playing bar on top of the navigation, but we didn\u0027t really plan this whole thing properly to allow that",
+      "revId": "21b67c8ef9cb747a020262073516df07fb5b848f",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
