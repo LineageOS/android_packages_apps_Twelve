@@ -101,11 +101,10 @@ configure<GenerateBpPluginExtension> {
         when {
             module.group.startsWith("androidx") -> {
                 // We provide our own androidx.media3 and androidx.navigation
-                !module.group.startsWith("androidx.media3") &&
-                !module.group.startsWith("androidx.navigation")
+                !module.group.startsWith("androidx.media3")
             }
             module.group.startsWith("org.jetbrains") -> true
-            module.group == "com.google.android.material" -> true
+            module.group == "com.google.errorprone" -> true
             module.group == "com.google.guava" -> true
             else -> false
         }

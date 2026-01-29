@@ -239,158 +239,6 @@ android_library_import {
     ],
 }
 
-java_library_static {
-    name: "Twelve_androidx.navigation_navigation-common",
-    sdk_version: "36",
-    min_sdk_version: "30",
-    apex_available: [
-        "//apex_available:platform",
-        "//apex_available:anyapex",
-    ],
-    static_libs: [
-        "Twelve_androidx.navigation_navigation-common-android",
-    ],
-}
-
-android_library_import {
-    name: "Twelve_androidx.navigation_navigation-common-android",
-    aars: ["androidx/navigation/navigation-common-android/2.9.5/navigation-common-release.aar"],
-    sdk_version: "36",
-    min_sdk_version: "30",
-    apex_available: [
-        "//apex_available:platform",
-        "//apex_available:anyapex",
-    ],
-    static_libs: [
-        "androidx.annotation_annotation",
-        "androidx.collection_collection",
-        "androidx.core_core-ktx",
-        "androidx.lifecycle_lifecycle-common",
-        "androidx.lifecycle_lifecycle-runtime",
-        "androidx.lifecycle_lifecycle-viewmodel",
-        "androidx.lifecycle_lifecycle-viewmodel-savedstate",
-        "androidx.profileinstaller_profileinstaller",
-        "androidx.savedstate_savedstate",
-        "kotlin-stdlib",
-        "kotlinx_serialization_core",
-    ],
-}
-
-android_library_import {
-    name: "Twelve_androidx.navigation_navigation-fragment",
-    aars: ["androidx/navigation/navigation-fragment/2.9.5/navigation-fragment-2.9.5.aar"],
-    sdk_version: "36",
-    min_sdk_version: "30",
-    apex_available: [
-        "//apex_available:platform",
-        "//apex_available:anyapex",
-    ],
-    static_libs: [
-        "androidx.activity_activity",
-        "androidx.core_core-ktx",
-        "androidx.fragment_fragment-ktx",
-        "androidx.lifecycle_lifecycle-common",
-        "androidx.lifecycle_lifecycle-livedata-core",
-        "androidx.lifecycle_lifecycle-viewmodel",
-        "Twelve_androidx.navigation_navigation-common",
-        "Twelve_androidx.navigation_navigation-runtime",
-        "androidx.savedstate_savedstate",
-        "androidx.slidingpanelayout_slidingpanelayout",
-        "kotlin-stdlib",
-        "kotlinx-coroutines-core",
-        "kotlinx_serialization_core",
-    ],
-}
-
-android_library_import {
-    name: "Twelve_androidx.navigation_navigation-fragment-ktx",
-    aars: ["androidx/navigation/navigation-fragment-ktx/2.9.5/navigation-fragment-ktx-2.9.5.aar"],
-    sdk_version: "36",
-    min_sdk_version: "30",
-    apex_available: [
-        "//apex_available:platform",
-        "//apex_available:anyapex",
-    ],
-    static_libs: [
-        "Twelve_androidx.navigation_navigation-fragment",
-    ],
-}
-
-java_library_static {
-    name: "Twelve_androidx.navigation_navigation-runtime",
-    sdk_version: "36",
-    min_sdk_version: "30",
-    apex_available: [
-        "//apex_available:platform",
-        "//apex_available:anyapex",
-    ],
-    static_libs: [
-        "Twelve_androidx.navigation_navigation-runtime-android",
-    ],
-}
-
-android_library_import {
-    name: "Twelve_androidx.navigation_navigation-runtime-android",
-    aars: ["androidx/navigation/navigation-runtime-android/2.9.5/navigation-runtime-release.aar"],
-    sdk_version: "36",
-    min_sdk_version: "30",
-    apex_available: [
-        "//apex_available:platform",
-        "//apex_available:anyapex",
-    ],
-    static_libs: [
-        "androidx.activity_activity-ktx",
-        "androidx.annotation_annotation-experimental",
-        "androidx.collection_collection",
-        "androidx.core_core-ktx",
-        "androidx.lifecycle_lifecycle-common",
-        "androidx.lifecycle_lifecycle-runtime",
-        "androidx.lifecycle_lifecycle-runtime-ktx",
-        "androidx.lifecycle_lifecycle-viewmodel",
-        "androidx.lifecycle_lifecycle-viewmodel-ktx",
-        "Twelve_androidx.navigation_navigation-common",
-        "kotlin-stdlib",
-        "kotlinx-coroutines-core",
-        "kotlinx_serialization_core",
-    ],
-}
-
-android_library_import {
-    name: "Twelve_androidx.navigation_navigation-ui",
-    aars: ["androidx/navigation/navigation-ui/2.9.5/navigation-ui-2.9.5.aar"],
-    sdk_version: "36",
-    min_sdk_version: "30",
-    apex_available: [
-        "//apex_available:platform",
-        "//apex_available:anyapex",
-    ],
-    static_libs: [
-        "androidx.appcompat_appcompat",
-        "androidx.coordinatorlayout_coordinatorlayout",
-        "androidx.core_core-ktx",
-        "androidx.customview_customview",
-        "androidx.drawerlayout_drawerlayout",
-        "Twelve_androidx.navigation_navigation-common",
-        "Twelve_androidx.navigation_navigation-runtime",
-        "androidx.transition_transition",
-        "com.google.android.material_material",
-    ],
-}
-
-android_library_import {
-    name: "Twelve_androidx.navigation_navigation-ui-ktx",
-    aars: ["androidx/navigation/navigation-ui-ktx/2.9.5/navigation-ui-ktx-2.9.5.aar"],
-    sdk_version: "36",
-    min_sdk_version: "30",
-    apex_available: [
-        "//apex_available:platform",
-        "//apex_available:anyapex",
-    ],
-    static_libs: [
-        "Twelve_androidx.navigation_navigation-ui",
-    ],
-}
-
 android_library_import {
     name: "Twelve_com.github.bogerchan_Nier-Visualizer",
     aars: ["com/github/bogerchan/Nier-Visualizer/v0.1.3/Nier-Visualizer-v0.1.3.aar"],
@@ -415,6 +263,39 @@ java_import {
         "//apex_available:anyapex",
     ],
     static_libs: [
+    ],
+}
+
+android_library_import {
+    name: "Twelve_com.google.android.material_material",
+    aars: ["com/google/android/material/material/1.14.0-alpha09/material-1.14.0-alpha09.aar"],
+    sdk_version: "36",
+    min_sdk_version: "30",
+    apex_available: [
+        "//apex_available:platform",
+        "//apex_available:anyapex",
+    ],
+    static_libs: [
+        "androidx.activity_activity",
+        "androidx.annotation_annotation",
+        "androidx.annotation_annotation-experimental",
+        "androidx.appcompat_appcompat",
+        "androidx.cardview_cardview",
+        "androidx-constraintlayout_constraintlayout",
+        "androidx.coordinatorlayout_coordinatorlayout",
+        "androidx.core_core",
+        "androidx.customview_customview",
+        "androidx.drawerlayout_drawerlayout",
+        "androidx.dynamicanimation_dynamicanimation",
+        "androidx.fragment_fragment",
+        "androidx.graphics_graphics-shapes",
+        "androidx.lifecycle_lifecycle-runtime",
+        "androidx.recyclerview_recyclerview",
+        "androidx.resourceinspection_resourceinspection-annotation",
+        "androidx.transition_transition",
+        "androidx.vectordrawable_vectordrawable",
+        "androidx.viewpager2_viewpager2",
+        "error_prone_annotations",
     ],
 }
 
