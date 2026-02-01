@@ -3,9 +3,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import org.lineageos.generatebp.GenerateBpPluginExtension
-import org.lineageos.generatebp.models.Module
-
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -98,12 +95,12 @@ dependencies {
     implementation(libs.okhttp)
 }
 
-configure<GenerateBpPluginExtension> {
-    targetSdk.set(android.defaultConfig.targetSdk!!)
-    minSdk.set(android.defaultConfig.minSdk!!)
-    versionCode.set(android.defaultConfig.versionCode!!)
-    versionName.set(android.defaultConfig.versionName!!)
-    availableInAOSP.set { module: Module ->
+generateBp {
+    targetSdk = android.defaultConfig.targetSdk!!
+    minSdk = android.defaultConfig.minSdk!!
+    versionCode = android.defaultConfig.versionCode!!
+    versionName = android.defaultConfig.versionName!!
+    availableInAOSP = { module ->
         when {
             module.group.startsWith("androidx") -> {
                 // We provide our own androidx.media3 and androidx.navigation
