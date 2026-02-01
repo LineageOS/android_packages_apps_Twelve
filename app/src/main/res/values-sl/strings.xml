@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-     SPDX-FileCopyrightText: 2024-2025 The LineageOS Project
+     SPDX-FileCopyrightText: 2024-2026 The LineageOS Project
      SPDX-License-Identifier: Apache-2.0
 -->
 <resources>
@@ -179,6 +179,7 @@
     <string name="sort_by_title">Naslov</string>
     <string name="sort_by_unknown">Neznano</string>
     <string name="activity_most_played_albums">Največkrat predvajani albumi</string>
+    <string name="activity_most_played_songs">Največkrat predvajane skladbe</string>
     <string name="activity_random_albums">Naključni albumi</string>
     <string name="activity_random_artists">Naključni izvajalci</string>
     <string name="activity_random_genres">Naključne zvrsti</string>

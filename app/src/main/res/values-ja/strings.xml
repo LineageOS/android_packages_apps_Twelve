@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-     SPDX-FileCopyrightText: 2024-2025 The LineageOS Project
+     SPDX-FileCopyrightText: 2024-2026 The LineageOS Project
      SPDX-License-Identifier: Apache-2.0
 -->
 <resources>
@@ -173,6 +173,7 @@
     <string name="sort_by_title">タイトル</string>
     <string name="sort_by_unknown">不明</string>
     <string name="activity_most_played_albums">最も再生されたアルバム</string>
+    <string name="activity_most_played_songs">最も再生された曲</string>
     <string name="activity_random_albums">ランダム アルバム</string>
     <string name="activity_random_artists">ランダム アーティスト</string>
     <string name="activity_random_genres">ランダム ジャンル</string>

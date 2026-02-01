@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-     SPDX-FileCopyrightText: 2024-2025 The LineageOS Project
+     SPDX-FileCopyrightText: 2024-2026 The LineageOS Project
      SPDX-License-Identifier: Apache-2.0
 -->
 <resources>
@@ -173,6 +173,7 @@
     <string name="sort_by_title">Tiêu đề</string>
     <string name="sort_by_unknown">Không rõ</string>
     <string name="activity_most_played_albums">Album được phát nhiều nhất</string>
+    <string name="activity_most_played_songs">Bài hát được phát nhiều nhất</string>
     <string name="activity_random_albums">Album ngẫu nhiên</string>
     <string name="activity_random_artists">Nghệ sĩ ngẫu nhiên</string>
     <string name="activity_random_genres">Thể loại ngẫu nhiên</string>
