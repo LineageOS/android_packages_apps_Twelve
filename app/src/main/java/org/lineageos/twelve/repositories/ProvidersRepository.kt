@@ -99,6 +99,7 @@ class ProvidersRepository(
 
     // Subsonic
     private val subsonicProviders = database.getSubsonicProviderDao().getAll()
+        .distinctUntilChanged()
         .mapLatest {
             it.map { provider ->
                 Provider(
@@ -117,6 +118,7 @@ class ProvidersRepository(
 
     // Jellyfin
     private val jellyfinProviders = database.getJellyfinProviderDao().getAll()
+        .distinctUntilChanged()
         .mapLatest {
             it.map { provider ->
                 Provider(
