@@ -71,5 +71,21 @@ enum class ProviderType(
             JellyfinDataSource.ARG_PASSWORD,
         ),
         true,
-    )
+    ),
+
+    /**
+     * Ampache provider.
+     *
+     * [Home page](https://ampache.org)
+     */
+    AMPACHE(
+        R.string.provider_type_ampache,
+        R.drawable.ic_hdr_auto,
+        listOf(
+            JellyfinDataSource.ARG_SERVER,
+            JellyfinDataSource.ARG_USERNAME,
+            JellyfinDataSource.ARG_PASSWORD,
+        ),
+        true,
+    ),
 }
