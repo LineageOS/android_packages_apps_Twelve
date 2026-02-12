@@ -25,6 +25,7 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.shareIn
 import org.lineageos.twelve.database.TwelveDatabase
+import org.lineageos.twelve.datasources.AmpacheDataSource
 import org.lineageos.twelve.datasources.JellyfinDataSource
 import org.lineageos.twelve.datasources.MediaStoreDataSource
 import org.lineageos.twelve.datasources.SubsonicDataSource
@@ -133,11 +134,29 @@ class ProvidersRepository(
             }
         }
 
+    // Ampache
+    private val ampacheProviders = database.getAmpacheProviderDao().getAll()
+        .distinctUntilChanged()
+        .mapLatest {
+            it.map { provider ->
+                Provider(
+                    ProviderType.AMPACHE,
+                    provider.id,
+                    provider.name,
+                ) to bundleOf(
+                    AmpacheDataSource.ARG_SERVER.key to provider.url,
+                    AmpacheDataSource.ARG_USERNAME.key to provider.username,
+                    AmpacheDataSource.ARG_PASSWORD.key to provider.password,
+                )
+            }
+        }
+
     // All providers
     val allProvidersToArguments = combine(
         mediaStoreProviders,
         subsonicProviders,
         jellyfinProviders,
+        ampacheProviders,
     ) { it ->
         buildList {
             it.forEach {
@@ -224,6 +243,18 @@ class ProvidersRepository(
 
             providerType to typeId
         }
+
+        ProviderType.AMPACHE -> {
+            val server = arguments.requireArgument(AmpacheDataSource.ARG_SERVER)
+            val username = arguments.requireArgument(AmpacheDataSource.ARG_USERNAME)
+            val password = arguments.requireArgument(AmpacheDataSource.ARG_PASSWORD)
+
+            val typeId = database.getAmpacheProviderDao().create(
+                name, server, username, password
+            )
+
+            providerType to typeId
+        }
     }
 
     /**
@@ -272,6 +303,20 @@ class ProvidersRepository(
                     password
                 )
             }
+
+            ProviderType.AMPACHE -> {
+                val server = arguments.requireArgument(AmpacheDataSource.ARG_SERVER)
+                val username = arguments.requireArgument(AmpacheDataSource.ARG_USERNAME)
+                val password = arguments.requireArgument(AmpacheDataSource.ARG_PASSWORD)
+
+                database.getAmpacheProviderDao().update(
+                    providerIdentifier.typeId,
+                    name,
+                    server,
+                    username,
+                    password
+                )
+            }
         }
     }
 
@@ -289,6 +334,10 @@ class ProvidersRepository(
             )
 
             ProviderType.JELLYFIN -> database.getJellyfinProviderDao().delete(
+                providerIdentifier.typeId
+            )
+
+            ProviderType.AMPACHE -> database.getAmpacheProviderDao().delete(
                 providerIdentifier.typeId
             )
         }
