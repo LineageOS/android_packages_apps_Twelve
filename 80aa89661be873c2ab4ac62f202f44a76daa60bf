@@ -16,6 +16,24 @@
       "message": "No clue on this one, if someone wanna have fun diffing APKs",
       "revId": "80aa89661be873c2ab4ac62f202f44a76daa60bf",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8ca6a6ab_dc622388",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2026-02-13T08:17:33Z",
+      "side": 1,
+      "message": "I remember having this exact issue, and it was probably fixed by the parcelize plugin for whatever reason.",
+      "parentUuid": "47d01517_b6343c55",
+      "revId": "80aa89661be873c2ab4ac62f202f44a76daa60bf",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
