@@ -16,6 +16,24 @@
       "message": "Doesn\u0027t this get put in a bundle?",
       "revId": "4bfd9cc6d160155e9eae81a578780f77783242ee",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d004fd09_03ac9b93",
+        "filename": "app/src/main/java/org/lineageos/twelve/fragments/MainFragment.kt",
+        "patchSetId": 1
+      },
+      "lineNbr": 331,
+      "author": {
+        "id": 25732
+      },
+      "writtenOn": "2026-02-13T12:45:44Z",
+      "side": 1,
+      "message": "Yes, but ProviderIdentifier is the thing that gets parcelized, it\u0027s the bare minimum data class needed to identify a provider\n\nProvider is instead the user facing object (it also includes the user facing name)",
+      "parentUuid": "9606fc10_35b74e11",
+      "revId": "4bfd9cc6d160155e9eae81a578780f77783242ee",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
