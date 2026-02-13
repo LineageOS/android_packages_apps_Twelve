@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9606fc10_35b74e11",
+        "filename": "app/src/main/java/org/lineageos/twelve/fragments/MainFragment.kt",
+        "patchSetId": 1
+      },
+      "lineNbr": 331,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2026-02-13T08:19:26Z",
+      "side": 1,
+      "message": "Doesn\u0027t this get put in a bundle?",
+      "revId": "4bfd9cc6d160155e9eae81a578780f77783242ee",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
