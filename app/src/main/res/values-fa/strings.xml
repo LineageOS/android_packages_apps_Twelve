@@ -175,6 +175,7 @@
     <string name="sort_by_title">عنوان</string>
     <string name="sort_by_unknown">ناشناخته</string>
     <string name="activity_most_played_albums">بیشترین آلبوم های پخش شده</string>
+    <string name="activity_most_played_songs">آهنگ‌های پر پخش</string>
     <string name="activity_random_albums">آلبوم های تصادفی</string>
     <string name="activity_random_artists">هنرمندان تصادفی</string>
     <string name="activity_random_genres">سبک های تصادفی</string>
