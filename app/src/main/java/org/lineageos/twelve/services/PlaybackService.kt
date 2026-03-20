@@ -40,6 +40,7 @@ import androidx.media3.session.SessionError
 import androidx.media3.session.SessionResult
 import androidx.preference.PreferenceManager
 import com.google.common.util.concurrent.Futures
+import com.google.common.util.concurrent.ListenableFuture
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -296,9 +297,11 @@ class PlaybackService : MediaLibraryService(), LifecycleOwner {
             onSetRating(session, controller, it.mediaId, rating)
         } ?: Futures.immediateFuture(SessionResult(SessionError.ERROR_INVALID_STATE))
 
+        @OptIn(UnstableApi::class)
         override fun onPlaybackResumption(
             mediaSession: MediaSession,
-            controller: MediaSession.ControllerInfo
+            controller: MediaSession.ControllerInfo,
+            isForPlayback: Boolean
         ) = lifecycleScope.future {
             getResumptionPlaylist()
         }
