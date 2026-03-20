@@ -13,7 +13,6 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.coordinatorlayout.widget.CoordinatorLayout
-import androidx.core.os.bundleOf
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
@@ -316,8 +315,8 @@ class GenreFragment : CollapsingToolbarLayoutFragment(R.layout.fragment_genre) {
          */
         fun createBundle(
             genreUri: Uri,
-        ) = bundleOf(
-            ARG_GENRE_URI to genreUri,
-        )
+        ) = Bundle().apply {
+            putParcelable(ARG_GENRE_URI, genreUri)
+        }
     }
 }

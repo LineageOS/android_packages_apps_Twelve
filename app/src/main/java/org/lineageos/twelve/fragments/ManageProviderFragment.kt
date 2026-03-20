@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2024-2025 The LineageOS Project
+ * SPDX-FileCopyrightText: 2024-2026 The LineageOS Project
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -8,7 +8,6 @@ package org.lineageos.twelve.fragments
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
@@ -366,9 +365,9 @@ class ManageProviderFragment : Fragment(R.layout.fragment_manage_provider) {
         fun createBundle(
             providerIdentifier: ProviderIdentifier? = null,
             providerType: ProviderType? = null,
-        ) = bundleOf(
-            ARG_PROVIDER_IDENTIFIER to providerIdentifier,
-            ARG_PROVIDER_TYPE to providerType,
-        )
+        ) = Bundle().apply {
+            putParcelable(ARG_PROVIDER_IDENTIFIER, providerIdentifier)
+            putSerializable(ARG_PROVIDER_TYPE, providerType)
+        }
     }
 }

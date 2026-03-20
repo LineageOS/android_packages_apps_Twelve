@@ -13,7 +13,6 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.coordinatorlayout.widget.CoordinatorLayout
-import androidx.core.os.bundleOf
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
@@ -381,8 +380,8 @@ class PlaylistFragment : CollapsingToolbarLayoutFragment(R.layout.fragment_playl
          */
         fun createBundle(
             playlistUri: Uri,
-        ) = bundleOf(
-            ARG_PLAYLIST_URI to playlistUri,
-        )
+        ) = Bundle().apply {
+            putParcelable(ARG_PLAYLIST_URI, playlistUri)
+        }
     }
 }

@@ -15,7 +15,6 @@ import android.os.IBinder
 import android.util.Log
 import androidx.annotation.OptIn
 import androidx.core.net.toUri
-import androidx.core.os.bundleOf
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ServiceLifecycleDispatcher
@@ -118,7 +117,9 @@ class PlaybackService : MediaLibraryService(), LifecycleOwner {
                     .setSessionCommand(
                         SessionCommand(
                             name,
-                            bundleOf(ARG_VALUE to !shuffleModeEnabled),
+                            Bundle().apply {
+                                putBoolean(ARG_VALUE, !shuffleModeEnabled)
+                            },
                         )
                     )
                     .build()
@@ -147,7 +148,9 @@ class PlaybackService : MediaLibraryService(), LifecycleOwner {
                     .setSessionCommand(
                         SessionCommand(
                             name,
-                            bundleOf(ARG_VALUE to repeatMode.next().name),
+                            Bundle().apply {
+                                putString(ARG_VALUE, repeatMode.next().name)
+                            },
                         )
                     )
                     .build()
@@ -415,7 +418,9 @@ class PlaybackService : MediaLibraryService(), LifecycleOwner {
                 CustomCommand.GET_AUDIO_SESSION_ID -> {
                     SessionResult(
                         SessionResult.RESULT_SUCCESS,
-                        bundleOf(CustomCommand.RSP_VALUE to player.audioSessionId),
+                        Bundle().apply {
+                            putInt(CustomCommand.RSP_VALUE, player.audioSessionId)
+                        },
                     )
                 }
 

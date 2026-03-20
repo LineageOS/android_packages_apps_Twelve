@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2025 The LineageOS Project
+ * SPDX-FileCopyrightText: 2025-2026 The LineageOS Project
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -11,7 +11,6 @@ import android.view.View
 import android.widget.HorizontalScrollView
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -204,8 +203,8 @@ class ProviderInformationBottomSheetDialogFragment : TwelveBottomSheetDialogFrag
          */
         fun createBundle(
             providerIdentifier: ProviderIdentifier,
-        ) = bundleOf(
-            ARG_PROVIDER_IDENTIFIER to providerIdentifier,
-        )
+        ) = Bundle().apply {
+            putParcelable(ARG_PROVIDER_IDENTIFIER, providerIdentifier)
+        }
     }
 }

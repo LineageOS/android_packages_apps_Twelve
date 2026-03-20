@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2024-2025 The LineageOS Project
+ * SPDX-FileCopyrightText: 2024-2026 The LineageOS Project
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -11,7 +11,6 @@ import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.LinearLayout
-import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -220,8 +219,8 @@ class AddOrRemoveFromPlaylistsFragment : Fragment(R.layout.fragment_add_or_remov
          */
         fun createBundle(
             audioUri: Uri,
-        ) = bundleOf(
-            ARG_AUDIO_URI to audioUri,
-        )
+        ) = Bundle().apply {
+            putParcelable(ARG_AUDIO_URI, audioUri)
+        }
     }
 }

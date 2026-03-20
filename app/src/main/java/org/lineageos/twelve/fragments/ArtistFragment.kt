@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2024 The LineageOS Project
+ * SPDX-FileCopyrightText: 2024-2026 The LineageOS Project
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -13,7 +13,6 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.coordinatorlayout.widget.CoordinatorLayout
-import androidx.core.os.bundleOf
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
@@ -291,8 +290,8 @@ class ArtistFragment : CollapsingToolbarLayoutFragment(R.layout.fragment_artist)
          */
         fun createBundle(
             artistUri: Uri,
-        ) = bundleOf(
-            ARG_ARTIST_URI to artistUri,
-        )
+        ) = Bundle().apply {
+            putParcelable(ARG_ARTIST_URI, artistUri)
+        }
     }
 }
