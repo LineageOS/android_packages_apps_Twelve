@@ -8,7 +8,6 @@ package org.lineageos.twelve.services
 import android.app.PendingIntent
 import android.content.Intent
 import android.content.res.Resources
-import android.media.AudioDeviceInfo
 import android.media.audiofx.AudioEffect
 import android.os.Bundle
 import android.os.IBinder
@@ -29,7 +28,6 @@ import androidx.media3.common.listen
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.analytics.AnalyticsListener
-import androidx.media3.exoplayer.audio.AudioSink
 import androidx.media3.session.CommandButton
 import androidx.media3.session.DefaultMediaNotificationProvider
 import androidx.media3.session.LibraryResult
@@ -42,8 +40,6 @@ import androidx.media3.session.SessionResult
 import androidx.preference.PreferenceManager
 import com.google.common.util.concurrent.Futures
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.guava.await
 import kotlinx.coroutines.guava.future
 import kotlinx.coroutines.launch
@@ -177,9 +173,6 @@ class PlaybackService : MediaLibraryService(), LifecycleOwner {
 
     private lateinit var player: ExoPlayer
     private lateinit var mediaLibrarySession: MediaLibrarySession
-
-    private val audioDeviceInfo = MutableStateFlow<AudioDeviceInfo?>(null)
-    private val audioTrackConfig = MutableStateFlow<AudioSink.AudioTrackConfig?>(null)
 
     private val mediaRepositoryTree by lazy {
         MediaRepositoryTree(
@@ -449,8 +442,12 @@ class PlaybackService : MediaLibraryService(), LifecycleOwner {
                 TwelveRenderersFactory(
                     this,
                     sharedPreferences.enableFloatOutput,
-                    onAudioDeviceInfoChanged = { audioDeviceInfo.value = it },
-                    onAudioTrackConfigChanged = { audioTrackConfig.value = it }
+                    onAudioDeviceInfoChanged = {
+                        outputConfigurationRepository.updateAudioDeviceInfo(it)
+                    },
+                    onAudioTrackConfigChanged = {
+                        outputConfigurationRepository.updateAudioTrackConfig(it)
+                    },
                 )
             )
             .setSkipSilenceEnabled(sharedPreferences.skipSilence)
@@ -524,18 +521,6 @@ class PlaybackService : MediaLibraryService(), LifecycleOwner {
                 if (events.contains(Player.EVENT_AUDIO_SESSION_ID)) {
                     openAudioEffectSession()
                 }
-            }
-        }
-
-        lifecycleScope.launch {
-            audioDeviceInfo.collectLatest { audioDeviceInfo ->
-                outputConfigurationRepository.updateAudioDeviceInfo(audioDeviceInfo)
-            }
-        }
-
-        lifecycleScope.launch {
-            audioTrackConfig.collectLatest { audioTrackConfig ->
-                outputConfigurationRepository.updateAudioTrackConfig(audioTrackConfig)
             }
         }
     }
