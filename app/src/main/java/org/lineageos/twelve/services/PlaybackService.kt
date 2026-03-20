@@ -8,7 +8,7 @@ package org.lineageos.twelve.services
 import android.app.PendingIntent
 import android.content.Intent
 import android.content.res.Resources
-import android.media.AudioTrack
+import android.media.AudioDeviceInfo
 import android.media.audiofx.AudioEffect
 import android.os.Bundle
 import android.os.IBinder
@@ -41,14 +41,8 @@ import androidx.media3.session.SessionResult
 import androidx.preference.PreferenceManager
 import com.google.common.util.concurrent.Futures
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.guava.await
 import kotlinx.coroutines.guava.future
 import kotlinx.coroutines.launch
@@ -62,7 +56,6 @@ import org.lineageos.twelve.ext.enableOffload
 import org.lineageos.twelve.ext.mapAsync
 import org.lineageos.twelve.ext.mediaItems
 import org.lineageos.twelve.ext.next
-import org.lineageos.twelve.ext.routedDeviceFlow
 import org.lineageos.twelve.ext.setOffloadEnabled
 import org.lineageos.twelve.ext.skipSilence
 import org.lineageos.twelve.ext.stopPlaybackOnTaskRemoved
@@ -184,19 +177,7 @@ class PlaybackService : MediaLibraryService(), LifecycleOwner {
     private lateinit var player: ExoPlayer
     private lateinit var mediaLibrarySession: MediaLibrarySession
 
-    private val audioTrackFlow = MutableStateFlow<AudioTrack?>(null)
-
-    @kotlin.OptIn(ExperimentalCoroutinesApi::class)
-    private val routedDevice = audioTrackFlow
-        .flatMapLatest { audioTrack ->
-            audioTrack?.routedDeviceFlow() ?: flowOf(null)
-        }
-        .flowOn(Dispatchers.IO)
-        .shareIn(
-            scope = lifecycleScope,
-            started = SharingStarted.WhileSubscribed(),
-            replay = 1,
-        )
+    private val audioDeviceInfo = MutableStateFlow<AudioDeviceInfo?>(null)
 
     private val mediaRepositoryTree by lazy {
         MediaRepositoryTree(
@@ -466,7 +447,7 @@ class PlaybackService : MediaLibraryService(), LifecycleOwner {
                 TwelveRenderersFactory(
                     this,
                     sharedPreferences.enableFloatOutput
-                ) { audioTrackFlow.value = it }
+                ) { audioDeviceInfo.value = it }
             )
             .setSkipSilenceEnabled(sharedPreferences.skipSilence)
             .setWakeMode(C.WAKE_MODE_NETWORK)
@@ -543,7 +524,7 @@ class PlaybackService : MediaLibraryService(), LifecycleOwner {
         }
 
         lifecycleScope.launch {
-            routedDevice.collectLatest { audioDeviceInfo ->
+            audioDeviceInfo.collectLatest { audioDeviceInfo ->
                 outputConfigurationRepository.updateAudioDeviceInfo(audioDeviceInfo)
             }
         }
