@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2025 The LineageOS Project
+ * SPDX-FileCopyrightText: 2025-2026 The LineageOS Project
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -98,7 +98,7 @@ object OutputConfigurationUtils {
 
     fun buildOutputTranscoding(
         transcodingData: ProxyDefaultAudioTrackBufferSizeProvider.TranscodingData?,
-        audioFormat: AudioFormat?,
+        format: Format?,
     ): OutputConfiguration.Transcoding? {
         return transcodingData?.let {
             OutputConfiguration.Transcoding(
@@ -106,10 +106,10 @@ object OutputConfigurationUtils {
                     it.outputMode ?: return null
                 ) ?: return null,
                 encoding = it.encoding?.let { encoding -> encodingFromMedia3Encoding(encoding) },
-                sampleRateHz = audioFormat?.sampleRate?.takeIf { sampleRate ->
+                sampleRateHz = format?.sampleRate?.takeIf { sampleRate ->
                     sampleRate != AudioFormat.SAMPLE_RATE_UNSPECIFIED
                 },
-                channelCount = audioFormat?.channelCount?.takeIf { channelCount ->
+                channelCount = format?.channelCount?.takeIf { channelCount ->
                     channelCount != 0
                 },
                 bitrateBps = it.bitrateBps.takeIf { bitrateBps -> bitrateBps != Format.NO_VALUE },
