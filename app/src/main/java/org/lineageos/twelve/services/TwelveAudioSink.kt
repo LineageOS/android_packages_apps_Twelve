@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2025 The LineageOS Project
+ * SPDX-FileCopyrightText: 2025-2026 The LineageOS Project
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -11,7 +11,9 @@ import androidx.media3.common.Format
 import androidx.media3.common.util.Clock
 import androidx.media3.exoplayer.analytics.PlayerId
 import androidx.media3.exoplayer.audio.AudioOffloadSupport
+import androidx.media3.exoplayer.audio.AudioOutputProvider
 import androidx.media3.exoplayer.audio.AudioSink
+import androidx.media3.exoplayer.audio.AudioTrackAudioOutput
 import androidx.media3.exoplayer.audio.DefaultAudioSink
 import java.nio.ByteBuffer
 
@@ -24,11 +26,21 @@ class TwelveAudioSink(
     private val defaultAudioSink: DefaultAudioSink,
     private val onAudioTrackUpdate: (AudioTrack?) -> Unit,
 ) : AudioSink by defaultAudioSink {
-    private val audioTrackField = DefaultAudioSink::class.java.getDeclaredField(
+    private val audioOutputField = DefaultAudioSink::class.java.getDeclaredField(
+        "audioOutput"
+    ).apply {
+        isAccessible = true
+    }
+    private val audioTrackField = AudioTrackAudioOutput::class.java.getDeclaredField(
         "audioTrack"
     ).apply {
         isAccessible = true
     }
+
+    private val audioTrack
+        get() = audioOutputField.get(defaultAudioSink)?.let {
+            audioTrackField.get(it) as AudioTrack?
+        }
 
     override fun setPlayerId(playerId: PlayerId?) {
         defaultAudioSink.setPlayerId(playerId)
@@ -49,11 +61,15 @@ class TwelveAudioSink(
     ) = try {
         defaultAudioSink.handleBuffer(buffer, presentationTimeUs, encodedAccessUnitCount)
     } finally {
-        onAudioTrackUpdate(audioTrackField.get(defaultAudioSink) as? AudioTrack)
+        onAudioTrackUpdate(audioTrack)
     }
 
     override fun setPreferredDevice(audioDeviceInfo: AudioDeviceInfo?) {
         defaultAudioSink.setPreferredDevice(audioDeviceInfo)
+    }
+
+    override fun setVirtualDeviceId(virtualDeviceId: Int) {
+        defaultAudioSink.setVirtualDeviceId(virtualDeviceId)
     }
 
     override fun setOffloadMode(offloadMode: Int) {
@@ -62,6 +78,10 @@ class TwelveAudioSink(
 
     override fun setOffloadDelayPadding(delayInFrames: Int, paddingInFrames: Int) {
         defaultAudioSink.setOffloadDelayPadding(delayInFrames, paddingInFrames)
+    }
+
+    override fun setAudioOutputProvider(audioOutputProvider: AudioOutputProvider) {
+        defaultAudioSink.setAudioOutputProvider(audioOutputProvider)
     }
 
     override fun flush() = try {
