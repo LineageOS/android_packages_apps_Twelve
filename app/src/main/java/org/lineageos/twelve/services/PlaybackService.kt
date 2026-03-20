@@ -29,6 +29,7 @@ import androidx.media3.common.listen
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.analytics.AnalyticsListener
+import androidx.media3.exoplayer.audio.AudioSink
 import androidx.media3.session.CommandButton
 import androidx.media3.session.DefaultMediaNotificationProvider
 import androidx.media3.session.LibraryResult
@@ -178,6 +179,7 @@ class PlaybackService : MediaLibraryService(), LifecycleOwner {
     private lateinit var mediaLibrarySession: MediaLibrarySession
 
     private val audioDeviceInfo = MutableStateFlow<AudioDeviceInfo?>(null)
+    private val audioTrackConfig = MutableStateFlow<AudioSink.AudioTrackConfig?>(null)
 
     private val mediaRepositoryTree by lazy {
         MediaRepositoryTree(
@@ -446,8 +448,10 @@ class PlaybackService : MediaLibraryService(), LifecycleOwner {
             .setRenderersFactory(
                 TwelveRenderersFactory(
                     this,
-                    sharedPreferences.enableFloatOutput
-                ) { audioDeviceInfo.value = it }
+                    sharedPreferences.enableFloatOutput,
+                    onAudioDeviceInfoChanged = { audioDeviceInfo.value = it },
+                    onAudioTrackConfigChanged = { audioTrackConfig.value = it }
+                )
             )
             .setSkipSilenceEnabled(sharedPreferences.skipSilence)
             .setWakeMode(C.WAKE_MODE_NETWORK)
@@ -526,6 +530,12 @@ class PlaybackService : MediaLibraryService(), LifecycleOwner {
         lifecycleScope.launch {
             audioDeviceInfo.collectLatest { audioDeviceInfo ->
                 outputConfigurationRepository.updateAudioDeviceInfo(audioDeviceInfo)
+            }
+        }
+
+        lifecycleScope.launch {
+            audioTrackConfig.collectLatest { audioTrackConfig ->
+                outputConfigurationRepository.updateAudioTrackConfig(audioTrackConfig)
             }
         }
     }
