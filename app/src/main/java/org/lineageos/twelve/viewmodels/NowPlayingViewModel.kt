@@ -60,7 +60,6 @@ import org.lineageos.twelve.models.RepeatMode
 import org.lineageos.twelve.models.Result
 import org.lineageos.twelve.services.PlaybackService
 import org.lineageos.twelve.services.PlaybackService.CustomCommand.Companion.sendCustomCommand
-import org.lineageos.twelve.services.ProxyDefaultAudioTrackBufferSizeProvider
 import org.lineageos.twelve.utils.MimeUtils
 import org.lineageos.twelve.utils.OutputConfigurationUtils
 import org.lineageos.twelve.utils.OutputConfigurationUtils.toModel
@@ -410,11 +409,11 @@ open class NowPlayingViewModel(application: Application) : TwelveViewModel(appli
         )
 
     private val outputTranscoding = combine(
-        ProxyDefaultAudioTrackBufferSizeProvider.transcodingData,
+        outputConfigurationRepository.audioTrackConfig,
         outputConfigurationRepository.format,
-    ) { transcodingData, format ->
+    ) { audioTrackConfig, format ->
         OutputConfigurationUtils.buildOutputTranscoding(
-            transcodingData = transcodingData,
+            audioTrackConfig = audioTrackConfig,
             format = format,
         )
     }

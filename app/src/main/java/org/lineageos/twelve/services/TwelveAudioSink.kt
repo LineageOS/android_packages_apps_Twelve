@@ -27,6 +27,7 @@ import androidx.media3.exoplayer.audio.DefaultAudioSink
 class TwelveAudioSink(
     private val defaultAudioSink: DefaultAudioSink,
     private val onAudioDeviceInfoChanged: (AudioDeviceInfo?) -> Unit,
+    private val onAudioTrackConfigChanged: (AudioSink.AudioTrackConfig?) -> Unit,
 ) : AudioSink by defaultAudioSink {
     private val audioOutputField = DefaultAudioSink::class.java.getDeclaredField(
         "audioOutput"
@@ -53,12 +54,14 @@ class TwelveAudioSink(
     init {
         defaultAudioSink.setListener(object : AudioSink.Listener {
             override fun onAudioTrackInitialized(audioTrackConfig: AudioSink.AudioTrackConfig) {
+                onAudioTrackConfigChanged(audioTrackConfig)
                 audioTrack?.addOnRoutingChangedListener(routingListener, handler)
                 onAudioDeviceInfoChanged(audioTrack?.routedDevice)
                 externalListener?.onAudioTrackInitialized(audioTrackConfig)
             }
 
             override fun onAudioTrackReleased(audioTrackConfig: AudioSink.AudioTrackConfig) {
+                onAudioTrackConfigChanged(null)
                 audioTrack?.removeOnRoutingChangedListener(routingListener)
                 onAudioDeviceInfoChanged(null)
                 externalListener?.onAudioTrackReleased(audioTrackConfig)
