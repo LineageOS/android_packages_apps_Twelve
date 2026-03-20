@@ -431,8 +431,12 @@ class PlaybackService : MediaLibraryService(), LifecycleOwner {
                 TwelveRenderersFactory(
                     this,
                     sharedPreferences.enableFloatOutput,
-                    onAudioDeviceInfoChanged = { audioDeviceInfo.value = it },
-                    onAudioTrackConfigChanged = { audioTrackConfig.value = it }
+                    onAudioDeviceInfoChanged = {
+                        outputConfigurationRepository.updateAudioDeviceInfo(it)
+                    },
+                    onAudioTrackConfigChanged = {
+                        outputConfigurationRepository.updateAudioTrackConfig(it)
+                    },
                 )
             )
             .setSkipSilenceEnabled(sharedPreferences.skipSilence)
@@ -514,18 +518,6 @@ class PlaybackService : MediaLibraryService(), LifecycleOwner {
                 if (events.contains(Player.EVENT_AUDIO_SESSION_ID)) {
                     openAudioEffectSession()
                 }
-            }
-        }
-
-        lifecycleScope.launch {
-            audioDeviceInfo.collectLatest { audioDeviceInfo ->
-                outputConfigurationRepository.updateAudioDeviceInfo(audioDeviceInfo)
-            }
-        }
-
-        lifecycleScope.launch {
-            audioTrackConfig.collectLatest { audioTrackConfig ->
-                outputConfigurationRepository.updateAudioTrackConfig(audioTrackConfig)
             }
         }
     }
