@@ -28,6 +28,7 @@ import java.lang.Exception
 class TwelveAudioSink(
     private val defaultAudioSink: DefaultAudioSink,
     private val onAudioDeviceInfoChanged: (AudioDeviceInfo?) -> Unit,
+    private val onAudioTrackConfigChanged: (AudioSink.AudioTrackConfig?) -> Unit,
 ) : AudioSink by defaultAudioSink {
     private val audioOutputField = DefaultAudioSink::class.java.getDeclaredField(
         "audioOutput"
@@ -98,6 +99,7 @@ class TwelveAudioSink(
             val track = audioTrack
             currentAudioTrack = track
 
+            onAudioTrackConfigChanged(audioTrackConfig)
             track?.addOnRoutingChangedListener(routingListener, handler)
             onAudioDeviceInfoChanged(track?.routedDevice)
 
@@ -106,6 +108,7 @@ class TwelveAudioSink(
 
         override fun onAudioTrackReleased(audioTrackConfig: AudioSink.AudioTrackConfig) {
             if (currentAudioTrack == null) {
+                onAudioTrackConfigChanged(null)
                 onAudioDeviceInfoChanged(null)
             }
 
