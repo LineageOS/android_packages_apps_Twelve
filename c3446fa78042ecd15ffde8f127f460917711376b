@@ -22,6 +22,30 @@
       },
       "revId": "c3446fa78042ecd15ffde8f127f460917711376b",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8965d71f_28e2dd6a",
+        "filename": "app/Android.bp",
+        "patchSetId": 7
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2026-03-20T20:13:32Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5f2abf6a_a8e7ec9d",
+      "range": {
+        "startLine": 26,
+        "startChar": 0,
+        "endLine": 26,
+        "endChar": 5
+      },
+      "revId": "c3446fa78042ecd15ffde8f127f460917711376b",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
