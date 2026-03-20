@@ -296,9 +296,11 @@ class PlaybackService : MediaLibraryService(), LifecycleOwner {
             onSetRating(session, controller, it.mediaId, rating)
         } ?: Futures.immediateFuture(SessionResult(SessionError.ERROR_INVALID_STATE))
 
+        @OptIn(UnstableApi::class)
         override fun onPlaybackResumption(
             mediaSession: MediaSession,
-            controller: MediaSession.ControllerInfo
+            controller: MediaSession.ControllerInfo,
+            isForPlayback: Boolean
         ) = lifecycleScope.future {
             getResumptionPlaylist()
         }
