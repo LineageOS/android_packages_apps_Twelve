@@ -29,6 +29,7 @@ import androidx.media3.common.Rating
 import androidx.media3.common.listen
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.exoplayer.analytics.AnalyticsListener
 import androidx.media3.session.CommandButton
 import androidx.media3.session.DefaultMediaNotificationProvider
 import androidx.media3.session.LibraryResult
@@ -48,7 +49,6 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.guava.await
 import kotlinx.coroutines.guava.future
@@ -181,16 +181,6 @@ class PlaybackService : MediaLibraryService(), LifecycleOwner {
     private lateinit var mediaLibrarySession: MediaLibrarySession
 
     private val audioTrackFlow = MutableStateFlow<AudioTrack?>(null)
-
-    @kotlin.OptIn(ExperimentalCoroutinesApi::class)
-    private val audioFormat = audioTrackFlow
-        .mapLatest { it?.format }
-        .flowOn(Dispatchers.IO)
-        .shareIn(
-            scope = lifecycleScope,
-            started = SharingStarted.WhileSubscribed(),
-            replay = 1,
-        )
 
     @kotlin.OptIn(ExperimentalCoroutinesApi::class)
     private val routedDevice = audioTrackFlow
@@ -484,6 +474,16 @@ class PlaybackService : MediaLibraryService(), LifecycleOwner {
                 }
         )
 
+        player.addAnalyticsListener(object : AnalyticsListener {
+            override fun onEvents(player: Player, events: AnalyticsListener.Events) {
+                if (events.contains(AnalyticsListener.EVENT_AUDIO_INPUT_FORMAT_CHANGED)) {
+                    outputConfigurationRepository.updateFormat(
+                        this@PlaybackService.player.audioFormat
+                    )
+                }
+            }
+        })
+
         lifecycleScope.launch {
             player.listen { events ->
                 // Update startIndex and startPositionMs in resumption playlist.
@@ -529,12 +529,6 @@ class PlaybackService : MediaLibraryService(), LifecycleOwner {
                 if (events.contains(Player.EVENT_AUDIO_SESSION_ID)) {
                     openAudioEffectSession()
                 }
-            }
-        }
-
-        lifecycleScope.launch {
-            audioFormat.collectLatest {
-                outputConfigurationRepository.updateAudioFormat(it)
             }
         }
 
