@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2024-2025 The LineageOS Project
+ * SPDX-FileCopyrightText: 2024-2026 The LineageOS Project
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -411,11 +411,11 @@ open class NowPlayingViewModel(application: Application) : TwelveViewModel(appli
 
     private val outputTranscoding = combine(
         ProxyDefaultAudioTrackBufferSizeProvider.transcodingData,
-        outputConfigurationRepository.audioFormat,
-    ) { transcodingData, audioFormat ->
+        outputConfigurationRepository.format,
+    ) { transcodingData, format ->
         OutputConfigurationUtils.buildOutputTranscoding(
             transcodingData = transcodingData,
-            audioFormat = audioFormat,
+            format = format,
         )
     }
         .flowOn(Dispatchers.IO)
