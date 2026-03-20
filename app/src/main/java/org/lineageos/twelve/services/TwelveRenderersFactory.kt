@@ -6,7 +6,7 @@
 package org.lineageos.twelve.services
 
 import android.content.Context
-import android.media.AudioTrack
+import android.media.AudioDeviceInfo
 import androidx.annotation.OptIn
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.DefaultRenderersFactory
@@ -18,7 +18,7 @@ import androidx.media3.exoplayer.audio.DefaultAudioSink
 class TwelveRenderersFactory(
     context: Context,
     enableAudioFloatOutput: Boolean,
-    private val onAudioTrackUpdate: (AudioTrack?) -> Unit,
+    private val onAudioDeviceInfoChanged: (AudioDeviceInfo?) -> Unit,
 ) : DefaultRenderersFactory(context) {
     init {
         setEnableAudioFloatOutput(enableAudioFloatOutput)
@@ -41,6 +41,6 @@ class TwelveRenderersFactory(
                     .build()
             )
             .build(),
-        onAudioTrackUpdate,
+        onAudioDeviceInfoChanged,
     )
 }
