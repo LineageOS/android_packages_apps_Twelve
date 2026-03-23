@@ -379,11 +379,30 @@ class SubsonicDataSource(
         providerIdentifier: ProviderIdentifier,
         sortingRule: SortingRule,
     ) = providersManager.mapWithInstanceOf(providerIdentifier) {
-        subsonicClient.getAlbumList2(
-            "alphabeticalByName",
-            500
-        ).map { albumList2 ->
-            albumList2.album.maybeSortedBy(
+        val pageSize = 500
+        val allAlbums = mutableListOf<AlbumID3>()
+        var offset = 0
+        var errorResult: Result<List<Album>, Error>? = null
+
+        while (errorResult == null) {
+            val result = subsonicClient.getAlbumList2(
+                "alphabeticalByName",
+                pageSize,
+                offset = offset,
+            )
+            when (result) {
+                is Result.Success -> {
+                    val page = result.data.album
+                    allAlbums.addAll(page)
+                    if (page.size < pageSize) break
+                    offset += pageSize
+                }
+                is Result.Error -> errorResult = result.map { emptyList() }
+            }
+        }
+
+        errorResult ?: Result.Success(
+            allAlbums.maybeSortedBy(
                 sortingRule.reverse,
                 when (sortingRule.strategy) {
                     SortingStrategy.ARTIST_NAME -> { album -> album.artist }
@@ -393,7 +412,7 @@ class SubsonicDataSource(
                     else -> null
                 }
             ).map { it.toMediaItem() }
-        }
+        )
     }
 
     override fun artists(
