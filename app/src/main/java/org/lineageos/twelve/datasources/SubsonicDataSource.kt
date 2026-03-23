@@ -380,7 +380,7 @@ class SubsonicDataSource(
         sortingRule: SortingRule,
     ) = providersManager.mapWithInstanceOf(providerIdentifier) {
         subsonicClient.getAlbumList2(
-            "alphabeticalByName",
+            "recent",
             500
         ).map { albumList2 ->
             albumList2.album.maybeSortedBy(
