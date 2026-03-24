@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2024-2025 The LineageOS Project
+ * SPDX-FileCopyrightText: 2024-2026 The LineageOS Project
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -44,6 +44,24 @@ fun Player.mediaItemFlow(eventsFlow: Flow<Player.Events>) = eventsFlow
     .filter { it.containsAny(Player.EVENT_MEDIA_ITEM_TRANSITION) }
     .map { currentMediaItem }
     .onStart { emit(currentMediaItem) }
+
+fun Player.previousMediaItemIndexFlow(eventsFlow: Flow<Player.Events>) = eventsFlow
+    .filter {
+        it.containsAny(
+            Player.EVENT_MEDIA_ITEM_TRANSITION,
+            Player.EVENT_TIMELINE_CHANGED
+        )
+    }.map { previousMediaItemIndex }
+    .onStart { emit(previousMediaItemIndex) }
+
+fun Player.nextMediaItemIndexFlow(eventsFlow: Flow<Player.Events>) = eventsFlow
+    .filter {
+        it.containsAny(
+            Player.EVENT_MEDIA_ITEM_TRANSITION,
+            Player.EVENT_TIMELINE_CHANGED
+        )
+    }.map { nextMediaItemIndex }
+    .onStart { emit(nextMediaItemIndex) }
 
 fun Player.playbackStateFlow(eventsFlow: Flow<Player.Events>) = eventsFlow
     .filter { it.containsAny(Player.EVENT_PLAYBACK_STATE_CHANGED) }

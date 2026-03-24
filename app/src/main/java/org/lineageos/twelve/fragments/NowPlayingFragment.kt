@@ -13,8 +13,10 @@ import android.icu.text.DecimalFormatSymbols
 import android.media.audiofx.AudioEffect
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.SurfaceView
 import android.view.View
+import android.view.ViewGroup
 import android.view.animation.LinearInterpolator
 import android.widget.ImageView
 import android.widget.TextView
@@ -31,6 +33,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.media3.common.Player
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
@@ -50,7 +54,7 @@ import org.lineageos.twelve.models.FlowResult.Companion.getOrNull
 import org.lineageos.twelve.models.OutputConfiguration
 import org.lineageos.twelve.models.PlaybackState
 import org.lineageos.twelve.models.RepeatMode
-import org.lineageos.twelve.models.Result
+import org.lineageos.twelve.models.Thumbnail
 import org.lineageos.twelve.ui.visualizer.VisualizerNVDataSource
 import org.lineageos.twelve.utils.PermissionsChecker
 import org.lineageos.twelve.utils.PermissionsUtils
@@ -68,7 +72,7 @@ class NowPlayingFragment : Fragment(R.layout.fragment_now_playing) {
 
     // Views
     private val albumArtConstraintLayout by getViewProperty<ConstraintLayout?>(R.id.albumArtConstraintLayout)
-    private val albumArtImageView by getViewProperty<ImageView>(R.id.albumArtImageView)
+    private val albumArtViewPager by getViewProperty<ViewPager2>(R.id.albumArtViewPager)
     private val albumTitleTextView by getViewProperty<TextView>(R.id.albumTitleTextView)
     private val audioInformationMaterialButton by getViewProperty<MaterialButton>(R.id.audioInformationMaterialButton)
     private val audioTitleTextView by getViewProperty<TextView>(R.id.audioTitleTextView)
@@ -106,6 +110,23 @@ class NowPlayingFragment : Fragment(R.layout.fragment_now_playing) {
     // Progress slider state
     private var isProgressSliderDragging = false
     private var animator: ValueAnimator? = null
+
+    // Artwork pager
+    private val artworkPagerAdapter = ArtworkPagerAdapter()
+
+    private enum class ArtworkPagerState {
+        IDLE,
+        SETTLING,
+    }
+
+    private var artworkPagerState = ArtworkPagerState.IDLE
+
+    data class SeekAvailability(
+        val canSeekToPrevious: Boolean = false,
+        val canSeekToNext: Boolean = false,
+    )
+
+    private var seekAvailability = SeekAvailability()
 
     // AudioFX
     private val audioEffectsStartForResult =
@@ -191,6 +212,8 @@ class NowPlayingFragment : Fragment(R.layout.fragment_now_playing) {
         audioTitleTextView.isSelected = true
         artistNameTextView.isSelected = true
         albumTitleTextView.isSelected = true
+
+        setupArtworkPager()
 
         // Media controls
         progressSlider.setLabelFormatter {
@@ -365,27 +388,8 @@ class NowPlayingFragment : Fragment(R.layout.fragment_now_playing) {
                 }
 
                 launch {
-                    viewModel.mediaArtwork.collectLatest {
-                        when (it) {
-                            null -> {
-                                // Do nothing
-                            }
-
-                            is Result.Success -> {
-                                albumArtImageView.loadThumbnail(
-                                    it.data,
-                                    placeholder = R.drawable.ic_music_note,
-                                )
-                            }
-
-                            is Result.Error -> {
-                                Log.e(
-                                    LOG_TAG,
-                                    "Error while getting media artwork: ${it.error}",
-                                    it.throwable
-                                )
-                            }
-                        }
+                    viewModel.carouselArtwork.collectLatest { artwork ->
+                        artworkPagerAdapter.updateArtwork(artwork)
                     }
                 }
 
@@ -516,6 +520,11 @@ class NowPlayingFragment : Fragment(R.layout.fragment_now_playing) {
 
                 launch {
                     viewModel.availableCommands.collectLatest {
+                        seekAvailability = SeekAvailability(
+                            canSeekToPrevious = it.contains(Player.COMMAND_SEEK_TO_PREVIOUS),
+                            canSeekToNext = it.contains(Player.COMMAND_SEEK_TO_NEXT),
+                        )
+
                         shuffleMaterialButton.isEnabled = it.contains(
                             Player.COMMAND_SET_SHUFFLE_MODE
                         )
@@ -635,6 +644,7 @@ class NowPlayingFragment : Fragment(R.layout.fragment_now_playing) {
     override fun onDestroyView() {
         animator?.cancel()
         animator = null
+        albumArtViewPager.adapter = null
 
         if (isVisualizerStarted) {
             visualizerManager.stop()
@@ -656,5 +666,71 @@ class NowPlayingFragment : Fragment(R.layout.fragment_now_playing) {
         private val decimalFormatSymbols = DecimalFormatSymbols(Locale.ROOT)
 
         private val playbackSpeedFormatter = DecimalFormat("0.#", decimalFormatSymbols)
+    }
+
+    private fun setupArtworkPager() {
+        albumArtViewPager.adapter = artworkPagerAdapter
+        albumArtViewPager.offscreenPageLimit = 1
+
+        albumArtViewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                if (artworkPagerState == ArtworkPagerState.SETTLING) {
+                    artworkPagerState = ArtworkPagerState.IDLE
+                    return
+                }
+
+                val center = artworkPagerAdapter.getCenterIndex()
+
+                when {
+                    position < center && seekAvailability.canSeekToPrevious ->
+                        viewModel.seekToPrevious()
+
+                    position > center && seekAvailability.canSeekToNext ->
+                        viewModel.seekToNext()
+                }
+
+                artworkPagerState = ArtworkPagerState.SETTLING
+            }
+        })
+
+        artworkPagerState = ArtworkPagerState.SETTLING
+        albumArtViewPager.setCurrentItem(artworkPagerAdapter.getCenterIndex(), false)
+    }
+
+    private inner class ArtworkPagerAdapter :
+        RecyclerView.Adapter<ArtworkPagerAdapter.ViewHolder>() {
+        private var artworkPages = listOf<Thumbnail>()
+
+        fun updateArtwork(carouselArtwork: NowPlayingViewModel.CarouselArtwork?) {
+            artworkPages = listOfNotNull(
+                carouselArtwork?.previous,
+                carouselArtwork?.current,
+                carouselArtwork?.next,
+            )
+
+            notifyDataSetChanged()
+        }
+
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+            val view = LayoutInflater.from(parent.context).inflate(
+                R.layout.item_now_playing_artwork_page,
+                parent,
+                false,
+            ) as ImageView
+            return ViewHolder(view)
+        }
+
+        override fun getItemCount() = artworkPages.size
+
+        override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+            holder.imageView.loadThumbnail(
+                artworkPages[position],
+                placeholder = R.drawable.ic_music_note,
+            )
+        }
+
+        fun getCenterIndex() = artworkPages.size / 2
+
+        inner class ViewHolder(val imageView: ImageView) : RecyclerView.ViewHolder(imageView)
     }
 }
