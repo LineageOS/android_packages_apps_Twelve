@@ -14,6 +14,7 @@ import androidx.media3.common.MediaMetadata
 import androidx.media3.common.PlaybackParameters
 import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
+import androidx.media3.session.MediaController
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
@@ -42,9 +43,11 @@ import org.lineageos.twelve.ext.isPlayingFlow
 import org.lineageos.twelve.ext.mediaItemFlow
 import org.lineageos.twelve.ext.mediaMetadataFlow
 import org.lineageos.twelve.ext.next
+import org.lineageos.twelve.ext.nextMediaItemIndexFlow
 import org.lineageos.twelve.ext.playbackParametersFlow
 import org.lineageos.twelve.ext.playbackProgressFlow
 import org.lineageos.twelve.ext.playbackStateFlow
+import org.lineageos.twelve.ext.previousMediaItemIndexFlow
 import org.lineageos.twelve.ext.repeatModeFlow
 import org.lineageos.twelve.ext.shuffleModeFlow
 import org.lineageos.twelve.ext.toThumbnail
@@ -58,6 +61,8 @@ import org.lineageos.twelve.models.PlaybackProgress
 import org.lineageos.twelve.models.PlaybackState
 import org.lineageos.twelve.models.RepeatMode
 import org.lineageos.twelve.models.Result
+import org.lineageos.twelve.models.Result.Companion.getOrNull
+import org.lineageos.twelve.models.Thumbnail
 import org.lineageos.twelve.services.PlaybackService
 import org.lineageos.twelve.services.PlaybackService.CustomCommand.Companion.sendCustomCommand
 import org.lineageos.twelve.utils.MimeUtils
@@ -65,6 +70,12 @@ import org.lineageos.twelve.utils.OutputConfigurationUtils
 import org.lineageos.twelve.utils.OutputConfigurationUtils.toModel
 
 open class NowPlayingViewModel(application: Application) : TwelveViewModel(application) {
+    data class CarouselArtwork(
+        val previous: Thumbnail?,
+        val current: Thumbnail?,
+        val next: Thumbnail?,
+    )
+
     enum class VisualizerType(val factory: () -> Array<IRenderer>?) {
         NONE({ null }),
         TYPE_1({ arrayOf(ColumnarType1Renderer()) }),
@@ -206,6 +217,60 @@ open class NowPlayingViewModel(application: Application) : TwelveViewModel(appli
                 Result.Success(it)
             } ?: Result.Error(Error.NOT_FOUND)
         }
+    }
+        .flowOn(Dispatchers.IO)
+        .stateIn(
+            viewModelScope,
+            started = SharingStarted.WhileSubscribed(),
+            initialValue = null
+        )
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private val previousMediaItemIndex = mediaControllerFlow
+        .flatMapLatest { it.previousMediaItemIndexFlow(eventsFlow) }
+        .flowOn(Dispatchers.Main)
+        .stateIn(
+            viewModelScope,
+            started = SharingStarted.WhileSubscribed(),
+            initialValue = C.INDEX_UNSET
+        )
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private val nextMediaItemIndex = mediaControllerFlow
+        .flatMapLatest { it.nextMediaItemIndexFlow(eventsFlow) }
+        .flowOn(Dispatchers.Main)
+        .stateIn(
+            viewModelScope,
+            started = SharingStarted.WhileSubscribed(),
+            initialValue = C.INDEX_UNSET
+        )
+
+    private suspend fun MediaController.thumbnailAt(index: Int): Thumbnail? {
+        if (index != C.INDEX_UNSET) {
+            val mediaItem = withContext(Dispatchers.Main) {
+                getMediaItemAt(index)
+            }
+            return withContext(Dispatchers.IO) {
+                mediaItem.toThumbnail(applicationContext)
+            }
+        }
+
+        return null
+    }
+
+    val carouselArtwork = combine(
+        mediaArtwork,
+        previousMediaItemIndex,
+        nextMediaItemIndex,
+        playbackState,
+    ) { mediaArtwork, previousIndex, nextIndex, playbackState ->
+        if (playbackState == PlaybackState.BUFFERING) return@combine null
+
+        CarouselArtwork(
+            previous = mediaController.value?.thumbnailAt(previousIndex),
+            current = mediaArtwork?.getOrNull(),
+            next = mediaController.value?.thumbnailAt(nextIndex),
+        )
     }
         .flowOn(Dispatchers.IO)
         .stateIn(

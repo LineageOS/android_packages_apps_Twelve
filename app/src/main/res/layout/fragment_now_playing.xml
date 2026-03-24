@@ -77,8 +77,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
-                    <ImageView
-                        android:id="@+id/albumArtImageView"
+                    <androidx.viewpager2.widget.ViewPager2
+                        android:id="@+id/albumArtViewPager"
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
                         android:contentDescription="@string/content_description_thumbnail"
@@ -93,10 +93,10 @@
                         android:layout_height="0dp"
                         android:background="#55000000"
                         android:visibility="visible"
-                        app:layout_constraintBottom_toBottomOf="@+id/albumArtImageView"
+                        app:layout_constraintBottom_toBottomOf="@+id/albumArtViewPager"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:layout_constraintTop_toTopOf="@+id/albumArtViewPager" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
