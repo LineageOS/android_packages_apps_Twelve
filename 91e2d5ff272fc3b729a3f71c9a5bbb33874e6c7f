@@ -51,6 +51,24 @@
       "parentUuid": "6c95a398_ee097a20",
       "revId": "91e2d5ff272fc3b729a3f71c9a5bbb33874e6c7f",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0808fcef_e3189fed",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 25732
+      },
+      "writtenOn": "2026-04-01T16:51:02Z",
+      "side": 1,
+      "message": "Well, supposedly this method should return all albums, make sure that happens",
+      "parentUuid": "d8c5edc9_5073b498",
+      "revId": "91e2d5ff272fc3b729a3f71c9a5bbb33874e6c7f",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
