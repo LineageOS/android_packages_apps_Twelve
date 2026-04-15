@@ -20,7 +20,7 @@
     <string name="no_playlists_comma">Nincs lejátszólista,</string>
     <string name="create_playlist_suggestion">Létrehoz egy újat?</string>
     <string name="create_playlist_confirm">Létrehozás</string>
-    <string name="no_activity">Ne történjen semmi</string>
+    <string name="no_activity">Nincs aktivitás</string>
     <string name="no_albums">Nincsenek albumok</string>
     <string name="no_artists">Nincsenek előadók</string>
     <string name="no_genres">Nincsenek műfajok</string>
