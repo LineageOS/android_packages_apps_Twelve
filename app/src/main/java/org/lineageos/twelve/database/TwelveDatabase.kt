@@ -27,6 +27,7 @@ import org.lineageos.twelve.database.dao.PlaylistDao
 import org.lineageos.twelve.database.dao.PlaylistItemCrossRefDao
 import org.lineageos.twelve.database.dao.PlaylistWithItemsDao
 import org.lineageos.twelve.database.dao.ResumptionPlaylistDao
+import org.lineageos.twelve.database.dao.SearchHistoryDao
 import org.lineageos.twelve.database.dao.SubsonicProviderDao
 import org.lineageos.twelve.database.entities.AmpacheProvider
 import org.lineageos.twelve.database.entities.Favorite
@@ -36,6 +37,7 @@ import org.lineageos.twelve.database.entities.Playlist
 import org.lineageos.twelve.database.entities.PlaylistItemCrossRef
 import org.lineageos.twelve.database.entities.ResumptionItem
 import org.lineageos.twelve.database.entities.ResumptionPlaylist
+import org.lineageos.twelve.database.entities.SearchHistory
 import org.lineageos.twelve.database.entities.SubsonicProvider
 
 @Database(
@@ -58,8 +60,11 @@ import org.lineageos.twelve.database.entities.SubsonicProvider
 
         /* Local Media Stats */
         LocalMediaStats::class,
+
+        /* Search history */
+        SearchHistory::class,
     ],
-    version = 9,
+    version = 10,
     autoMigrations = [
         AutoMigration(from = 1, to = 2),
         AutoMigration(from = 2, to = 3),
@@ -69,6 +74,7 @@ import org.lineageos.twelve.database.entities.SubsonicProvider
         AutoMigration(from = 6, to = 7, spec = TwelveDatabase.Companion.MigrationSpec6To7::class),
         // 7 to 8 is done manually
         AutoMigration(from = 8, to = 9),
+        AutoMigration(from = 9, to = 10),
     ],
 )
 @TypeConverters(
@@ -85,6 +91,7 @@ abstract class TwelveDatabase : RoomDatabase() {
     abstract fun getPlaylistWithItemsDao(): PlaylistWithItemsDao
     abstract fun getResumptionPlaylistDao(): ResumptionPlaylistDao
     abstract fun getSubsonicProviderDao(): SubsonicProviderDao
+    abstract fun getSearchHistoryDao(): SearchHistoryDao
 
     companion object {
         @DeleteColumn.Entries(

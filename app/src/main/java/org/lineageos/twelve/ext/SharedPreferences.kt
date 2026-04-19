@@ -190,3 +190,28 @@ var SharedPreferences.playlistsSortingRule: SortingRule
         PLAYLISTS_SORTING_REVERSE_KEY,
         value
     )
+
+const val SEARCH_HISTORY_KEY = "search_history"
+const val SEARCH_HISTORY_DEFAULT = "[]"
+const val SEARCH_HISTORY_LIMIT = 10
+var SharedPreferences.searchHistory: List<String>
+    get() = getString(SEARCH_HISTORY_KEY, SEARCH_HISTORY_DEFAULT)?.let {
+        runCatching {
+            Json.decodeFromString(serializer<List<String>>(), it)
+        }.getOrElse { emptyList() }
+    } ?: emptyList()
+    set(value) = edit(commit = true) {
+        putString(
+            SEARCH_HISTORY_KEY,
+            Json.encodeToString(serializer<List<String>>(), value)
+        )
+    }
+
+fun SharedPreferences.addSearchQuery(query: String) {
+    val trimmed = query.trim()
+    if (trimmed.isEmpty()) return
+
+    searchHistory = (listOf(trimmed) + searchHistory)
+        .distinct()
+        .take(SEARCH_HISTORY_LIMIT)
+}
