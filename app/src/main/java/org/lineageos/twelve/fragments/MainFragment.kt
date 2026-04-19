@@ -6,14 +6,20 @@
 package org.lineageos.twelve.fragments
 
 import android.content.Intent
+import android.content.res.Resources
+import android.graphics.Canvas
 import android.os.Bundle
 import android.util.Log
+import android.util.TypedValue
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.LinearLayout
 import androidx.activity.BackEventCompat
 import androidx.activity.OnBackPressedCallback
+import androidx.core.content.ContextCompat
 import androidx.core.graphics.Insets
+import androidx.core.graphics.drawable.toDrawable
+import androidx.core.graphics.withClip
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.get
@@ -27,6 +33,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
 import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
@@ -414,6 +421,95 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         // Search
         searchRecyclerView.adapter = historyAdapter
 
+        val swipeToDelete = object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
+            private val deleteIcon =
+                ContextCompat.getDrawable(requireContext(), R.drawable.ic_delete)!!.also {
+                    it.setTint(requireContext().theme.resolveAttr(android.R.attr.colorBackground))
+            }
+            private val background =
+                requireContext().getColor(com.google.android.material.R.color.design_error)
+                    .toDrawable()
+
+            override fun onMove(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                target: RecyclerView.ViewHolder
+            ): Boolean = false
+
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                val item = historyAdapter.currentList[viewHolder.absoluteAdapterPosition]
+                viewModel.removeSearchQuery(item)
+            }
+
+            override fun onChildDraw(
+                c: Canvas,
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                dX: Float,
+                dY: Float,
+                actionState: Int,
+                isCurrentlyActive: Boolean
+            ) {
+                val itemView = viewHolder.itemView
+                val iconMargin = (itemView.height - deleteIcon.intrinsicHeight) / 2
+                val iconTop = itemView.top + iconMargin
+                val iconBottom = iconTop + deleteIcon.intrinsicHeight
+
+                if (dX > 0) {
+                    background.setBounds(
+                        itemView.left,
+                        itemView.top,
+                        itemView.left + dX.toInt(),
+                        itemView.bottom
+                    )
+                    deleteIcon.setBounds(
+                        itemView.left + iconMargin,
+                        iconTop,
+                        itemView.left + iconMargin + deleteIcon.intrinsicWidth,
+                        iconBottom
+                    )
+                } else {
+                    background.setBounds(
+                        itemView.right + dX.toInt(),
+                        itemView.top,
+                        itemView.right,
+                        itemView.bottom
+                    )
+                    deleteIcon.setBounds(
+                        itemView.right - iconMargin - deleteIcon.intrinsicWidth,
+                        iconTop,
+                        itemView.right - iconMargin,
+                        iconBottom
+                    )
+                }
+
+                background.draw(c)
+                c.withClip(background.bounds) {
+                    deleteIcon.draw(this)
+                }
+
+                super.onChildDraw(
+                    c,
+                    recyclerView,
+                    viewHolder,
+                    dX,
+                    dY,
+                    actionState,
+                    isCurrentlyActive
+                )
+            }
+
+            override fun getSwipeDirs(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder): Int {
+                // Only allow swipe when showing history
+                return if (searchRecyclerView.adapter == historyAdapter) {
+                    super.getSwipeDirs(recyclerView, viewHolder)
+                } else {
+                    0
+                }
+            }
+        }
+        ItemTouchHelper(swipeToDelete).attachToRecyclerView(searchRecyclerView)
+
         searchView.editText.addTextChangedListener { text ->
             viewModel.setSearchQuery(text.toString())
 
@@ -514,6 +610,12 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         searchRecyclerView.adapter = null
 
         super.onDestroyView()
+    }
+
+    private fun Resources.Theme.resolveAttr(attr: Int): Int {
+        val typedValue = TypedValue()
+        resolveAttribute(attr, typedValue, true)
+        return typedValue.data
     }
 
     companion object {
