@@ -16,13 +16,18 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
+import org.lineageos.twelve.database.TwelveDatabase
+import org.lineageos.twelve.database.entities.SearchHistory
 import org.lineageos.twelve.models.Error
 import org.lineageos.twelve.models.FlowResult
 import org.lineageos.twelve.models.FlowResult.Companion.asFlowResult
 import org.lineageos.twelve.models.Result
 import org.lineageos.twelve.models.Result.Companion.map
+import java.time.Instant
 
 /**
  * Home page view model.
@@ -61,9 +66,35 @@ class MainViewModel(application: Application) : TwelveViewModel(application) {
 
     fun setSearchQuery(query: String, immediate: Boolean = false) {
         searchQuery.value = query to immediate
+
+        if (immediate) {
+            addHistoryItem(query)
+        }
     }
 
     suspend fun playAllAudios() = mediaRepository.audios().firstOrNull()?.map { audios ->
         playAudio(audios.shuffled(), 0)
     } ?: Result.Error(Error.INVALID_RESPONSE)
+
+    private val searchHistoryDao = TwelveDatabase.get(application).getSearchHistoryDao()
+
+    val searchHistory = searchHistoryDao.getAll()
+        .map { items -> items.map { it.query } }
+        .stateIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(),
+            listOf(),
+        )
+
+    fun addHistoryItem(query: String) {
+        viewModelScope.launch {
+            searchHistoryDao.insert(SearchHistory(query, Instant.now()))
+        }
+    }
+
+    fun removeSearchQuery(query: String) {
+        viewModelScope.launch {
+            searchHistoryDao.delete(SearchHistory(query, Instant.now()))
+        }
+    }
 }
