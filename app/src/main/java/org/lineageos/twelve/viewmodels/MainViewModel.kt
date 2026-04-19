@@ -20,6 +20,8 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 import org.lineageos.twelve.ext.addSearchQuery
+import org.lineageos.twelve.ext.preferenceFlow
+import org.lineageos.twelve.ext.removeSearchQuery
 import org.lineageos.twelve.ext.searchHistory
 import org.lineageos.twelve.models.Error
 import org.lineageos.twelve.models.FlowResult
@@ -72,6 +74,12 @@ class MainViewModel(application: Application) : TwelveViewModel(application) {
 
     fun addHistoryItem(item: String) {
         sharedPreferences.addSearchQuery(item)
+        val newHistory = sharedPreferences.searchHistory
+        _searchHistory.value = newHistory
+    }
+
+    fun removeSearchQuery(item: String) {
+        sharedPreferences.removeSearchQuery(item)
         val newHistory = sharedPreferences.searchHistory
         _searchHistory.value = newHistory
     }
