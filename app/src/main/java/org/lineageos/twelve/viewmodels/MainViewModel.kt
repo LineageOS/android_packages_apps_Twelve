@@ -12,12 +12,15 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
+import org.lineageos.twelve.ext.addSearchQuery
+import org.lineageos.twelve.ext.searchHistory
 import org.lineageos.twelve.models.Error
 import org.lineageos.twelve.models.FlowResult
 import org.lineageos.twelve.models.FlowResult.Companion.asFlowResult
@@ -61,9 +64,22 @@ class MainViewModel(application: Application) : TwelveViewModel(application) {
 
     fun setSearchQuery(query: String, immediate: Boolean = false) {
         searchQuery.value = query to immediate
+
+        if (immediate) {
+            addHistoryItem(query)
+        }
+    }
+
+    fun addHistoryItem(item: String) {
+        sharedPreferences.addSearchQuery(item)
+        val newHistory = sharedPreferences.searchHistory
+        _searchHistory.value = newHistory
     }
 
     suspend fun playAllAudios() = mediaRepository.audios().firstOrNull()?.map { audios ->
         playAudio(audios.shuffled(), 0)
     } ?: Result.Error(Error.INVALID_RESPONSE)
+
+    private val _searchHistory = MutableStateFlow(sharedPreferences.searchHistory)
+    val searchHistory = _searchHistory.asStateFlow()
 }
