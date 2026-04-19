@@ -18,6 +18,7 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import org.lineageos.twelve.ext.addSearchQuery
 import org.lineageos.twelve.ext.preferenceFlow
@@ -54,9 +55,10 @@ class MainViewModel(application: Application) : TwelveViewModel(application) {
         .flatMapLatest { query ->
             query.trim().takeIf { it.isNotEmpty() }?.let {
                 mediaRepository.search("%${it}%")
-            } ?: flowOf(Result.Success(listOf()))
+                    .asFlowResult()
+                    .onStart { emit(FlowResult.Loading()) }
+            } ?: flowOf(FlowResult.Success(listOf()))
         }
-        .asFlowResult()
         .flowOn(Dispatchers.IO)
         .stateIn(
             viewModelScope,
