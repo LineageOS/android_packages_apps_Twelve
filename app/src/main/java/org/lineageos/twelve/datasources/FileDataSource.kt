@@ -9,6 +9,10 @@ import android.content.ContentResolver
 import android.net.Uri
 import android.provider.OpenableColumns
 import android.webkit.MimeTypeMap
+import java.io.File
+import java.net.URLConnection
+import java.nio.file.Files
+import java.nio.file.Paths
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.asFlow
@@ -40,237 +44,205 @@ import org.lineageos.twelve.models.ProviderIdentifier
 import org.lineageos.twelve.models.Result
 import org.lineageos.twelve.models.SortingRule
 import org.lineageos.twelve.utils.MimeUtils
-import java.io.File
-import java.net.URLConnection
-import java.nio.file.Files
-import java.nio.file.Paths
 
 /**
- * Generic file data source.
- * Supported protocols:
+ * Generic file data source. Supported protocols:
  * - `file`
  * - `content`
  * - `http`
  * - `https`
  * - `rtsp`
  */
-class FileDataSource(
-    private val contentResolver: ContentResolver,
-    cache: Cache? = null,
-) : MediaDataSource {
-    private val okHttpClient = OkHttpClient.Builder()
-        .cache(cache)
-        .build()
+class FileDataSource(private val contentResolver: ContentResolver, cache: Cache? = null) :
+    MediaDataSource {
+    private val okHttpClient = OkHttpClient.Builder().cache(cache).build()
 
-    override fun status(
-        providerIdentifier: ProviderIdentifier,
-    ) = flowOf(Result.Success<_, Error>(listOf<DataSourceInformation>()))
+    override fun status(providerIdentifier: ProviderIdentifier) =
+        flowOf(Result.Success<_, Error>(listOf<DataSourceInformation>()))
 
-    override suspend fun mediaTypeOf(mediaItemUri: Uri) = getMimeType(mediaItemUri)?.let {
-        MimeUtils.mimeTypeToMediaType(it)
-    }
+    override suspend fun mediaTypeOf(mediaItemUri: Uri) =
+        getMimeType(mediaItemUri)?.let { MimeUtils.mimeTypeToMediaType(it) }
 
-    override fun providerOf(
-        mediaItemUri: Uri
-    ) = flowOf(Result.Error<ProviderIdentifier, _>(Error.NOT_FOUND))
+    override fun providerOf(mediaItemUri: Uri) =
+        flowOf(Result.Error<ProviderIdentifier, _>(Error.NOT_FOUND))
 
-    override fun activity(
-        providerIdentifier: ProviderIdentifier,
-    ) = flowOf(Result.Error<List<ActivityTab>, _>(Error.NOT_IMPLEMENTED))
+    override fun activity(providerIdentifier: ProviderIdentifier) =
+        flowOf(Result.Error<List<ActivityTab>, _>(Error.NOT_IMPLEMENTED))
 
-    override fun albums(
-        providerIdentifier: ProviderIdentifier,
-        sortingRule: SortingRule,
-    ) = flowOf(Result.Error<List<Album>, _>(Error.NOT_IMPLEMENTED))
+    override fun albums(providerIdentifier: ProviderIdentifier, sortingRule: SortingRule) =
+        flowOf(Result.Error<List<Album>, _>(Error.NOT_IMPLEMENTED))
 
-    override fun artists(
-        providerIdentifier: ProviderIdentifier,
-        sortingRule: SortingRule,
-    ) = flowOf(Result.Error<List<Artist>, _>(Error.NOT_IMPLEMENTED))
+    override fun artists(providerIdentifier: ProviderIdentifier, sortingRule: SortingRule) =
+        flowOf(Result.Error<List<Artist>, _>(Error.NOT_IMPLEMENTED))
 
-    override fun audios(
-        providerIdentifier: ProviderIdentifier,
-        sortingRule: SortingRule,
-    ) = flowOf(Result.Error<List<Audio>, _>(Error.NOT_IMPLEMENTED))
+    override fun audios(providerIdentifier: ProviderIdentifier, sortingRule: SortingRule) =
+        flowOf(Result.Error<List<Audio>, _>(Error.NOT_IMPLEMENTED))
 
-    override fun genres(
-        providerIdentifier: ProviderIdentifier,
-        sortingRule: SortingRule,
-    ) = flowOf(Result.Error<List<Genre>, _>(Error.NOT_IMPLEMENTED))
+    override fun genres(providerIdentifier: ProviderIdentifier, sortingRule: SortingRule) =
+        flowOf(Result.Error<List<Genre>, _>(Error.NOT_IMPLEMENTED))
 
-    override fun playlists(
-        providerIdentifier: ProviderIdentifier,
-        sortingRule: SortingRule,
-    ) = flowOf(Result.Error<List<Playlist>, _>(Error.NOT_IMPLEMENTED))
+    override fun playlists(providerIdentifier: ProviderIdentifier, sortingRule: SortingRule) =
+        flowOf(Result.Error<List<Playlist>, _>(Error.NOT_IMPLEMENTED))
 
-    override fun search(
-        providerIdentifier: ProviderIdentifier,
-        query: String,
-    ) = flowOf(Result.Error<List<MediaItem<*>>, _>(Error.NOT_IMPLEMENTED))
+    override fun search(providerIdentifier: ProviderIdentifier, query: String) =
+        flowOf(Result.Error<List<MediaItem<*>>, _>(Error.NOT_IMPLEMENTED))
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    override fun audio(audioUri: Uri) = when (audioUri.scheme) {
-        SCHEME_FILE -> suspend {
-            Result.Success<_, Error>(
-                Audio.Builder(audioUri)
-                    .setPlaybackUri(audioUri)
-                    .setMimeType(audioUri.determineFileMimeType())
-                    .build()
-            )
-        }.asFlow()
+    override fun audio(audioUri: Uri) =
+        when (audioUri.scheme) {
+            SCHEME_FILE ->
+                suspend {
+                        Result.Success<_, Error>(
+                            Audio.Builder(audioUri)
+                                .setPlaybackUri(audioUri)
+                                .setMimeType(audioUri.determineFileMimeType())
+                                .build()
+                        )
+                    }
+                    .asFlow()
 
-        SCHEME_CONTENT -> contentResolver.queryFlow(
-            audioUri,
-            contentQueryProjection,
-            Bundle {
-                putInt(ContentResolver.QUERY_ARG_SQL_LIMIT, 1)
-            },
-        ).mapEachRow { columnIndexCache ->
-            val displayName = columnIndexCache.getString(OpenableColumns.DISPLAY_NAME)
+            SCHEME_CONTENT ->
+                contentResolver
+                    .queryFlow(
+                        audioUri,
+                        contentQueryProjection,
+                        Bundle { putInt(ContentResolver.QUERY_ARG_SQL_LIMIT, 1) },
+                    )
+                    .mapEachRow { columnIndexCache ->
+                        val displayName = columnIndexCache.getString(OpenableColumns.DISPLAY_NAME)
 
-            Audio.Builder(audioUri)
-                .setPlaybackUri(audioUri)
-                .setMimeType(contentResolver.getCompatibleType(audioUri))
-                .setTitle(displayName)
-                .build()
-        }.mapLatest { audios ->
-            audios.firstOrNull()?.let {
-                Result.Success(it)
-            } ?: Result.Error(Error.NOT_FOUND)
-        }
-
-        SCHEME_HTTP, SCHEME_HTTPS -> suspend {
-            val request = Request.Builder()
-                .url(audioUri.toString())
-                .get() // Could use HEAD, but we want to peek the body
-                .build()
-
-            okHttpClient.newCall(request).executeAsync().use { response ->
-                when (response.isSuccessful) {
-                    true -> Result.Success<_, Error>(
                         Audio.Builder(audioUri)
                             .setPlaybackUri(audioUri)
-                            .setMimeType(response.getContentType())
-                            .setTitle(audioUri.lastPathSegment)
+                            .setMimeType(contentResolver.getCompatibleType(audioUri))
+                            .setTitle(displayName)
                             .build()
-                    )
+                    }
+                    .mapLatest { audios ->
+                        audios.firstOrNull()?.let { Result.Success(it) }
+                            ?: Result.Error(Error.NOT_FOUND)
+                    }
 
-                    false -> Result.Error(Error.IO)
-                }
-            }
-        }.asFlow()
+            SCHEME_HTTP,
+            SCHEME_HTTPS ->
+                suspend {
+                        val request =
+                            Request.Builder()
+                                .url(audioUri.toString())
+                                .get() // Could use HEAD, but we want to peek the body
+                                .build()
 
-        SCHEME_RTSP -> suspend {
-            Result.Success<_, Error>(
-                Audio.Builder(audioUri)
-                    .setPlaybackUri(audioUri)
-                    .build()
-            )
-        }.asFlow()
+                        okHttpClient.newCall(request).executeAsync().use { response ->
+                            when (response.isSuccessful) {
+                                true ->
+                                    Result.Success<_, Error>(
+                                        Audio.Builder(audioUri)
+                                            .setPlaybackUri(audioUri)
+                                            .setMimeType(response.getContentType())
+                                            .setTitle(audioUri.lastPathSegment)
+                                            .build()
+                                    )
 
-        else -> flowOf(Result.Error(Error.NOT_FOUND))
-    }
+                                false -> Result.Error(Error.IO)
+                            }
+                        }
+                    }
+                    .asFlow()
 
-    override fun album(albumUri: Uri) = flowOf(
-        Result.Error<Pair<Album, List<Audio>>, _>(Error.NOT_FOUND)
-    )
+            SCHEME_RTSP ->
+                suspend {
+                        Result.Success<_, Error>(
+                            Audio.Builder(audioUri).setPlaybackUri(audioUri).build()
+                        )
+                    }
+                    .asFlow()
 
-    override fun artist(artistUri: Uri) = flowOf(
-        Result.Error<Pair<Artist, ArtistWorks>, _>(Error.NOT_FOUND)
-    )
+            else -> flowOf(Result.Error(Error.NOT_FOUND))
+        }
 
-    override fun genre(genreUri: Uri) = flowOf(
-        Result.Error<Pair<Genre, GenreContent>, _>(Error.NOT_FOUND)
-    )
+    override fun album(albumUri: Uri) =
+        flowOf(Result.Error<Pair<Album, List<Audio>>, _>(Error.NOT_FOUND))
 
-    override fun playlist(playlistUri: Uri) = flowOf(
-        Result.Error<Pair<Playlist, List<Audio>>, _>(Error.NOT_FOUND)
-    )
+    override fun artist(artistUri: Uri) =
+        flowOf(Result.Error<Pair<Artist, ArtistWorks>, _>(Error.NOT_FOUND))
 
-    override fun audioPlaylistsStatus(audioUri: Uri) = flowOf(
-        Result.Error<List<Pair<Playlist, Boolean>>, _>(Error.NOT_FOUND)
-    )
+    override fun genre(genreUri: Uri) =
+        flowOf(Result.Error<Pair<Genre, GenreContent>, _>(Error.NOT_FOUND))
+
+    override fun playlist(playlistUri: Uri) =
+        flowOf(Result.Error<Pair<Playlist, List<Audio>>, _>(Error.NOT_FOUND))
+
+    override fun audioPlaylistsStatus(audioUri: Uri) =
+        flowOf(Result.Error<List<Pair<Playlist, Boolean>>, _>(Error.NOT_FOUND))
 
     override fun lyrics(audioUri: Uri) = flowOf(Result.Error<Lyrics, _>(Error.NOT_FOUND))
 
-    override suspend fun createPlaylist(
-        providerIdentifier: ProviderIdentifier,
-        name: String,
-    ) = Result.Error<Uri, _>(Error.NOT_IMPLEMENTED)
+    override suspend fun createPlaylist(providerIdentifier: ProviderIdentifier, name: String) =
+        Result.Error<Uri, _>(Error.NOT_IMPLEMENTED)
 
-    override suspend fun renamePlaylist(
-        playlistUri: Uri,
-        name: String,
-    ) = Result.Error<Unit, _>(Error.NOT_FOUND)
+    override suspend fun renamePlaylist(playlistUri: Uri, name: String) =
+        Result.Error<Unit, _>(Error.NOT_FOUND)
 
-    override suspend fun deletePlaylist(
-        playlistUri: Uri,
-    ) = Result.Error<Unit, _>(Error.NOT_FOUND)
+    override suspend fun deletePlaylist(playlistUri: Uri) = Result.Error<Unit, _>(Error.NOT_FOUND)
 
-    override suspend fun addAudioToPlaylist(
-        playlistUri: Uri,
-        audioUri: Uri,
-    ) = Result.Error<Unit, _>(Error.NOT_FOUND)
+    override suspend fun addAudioToPlaylist(playlistUri: Uri, audioUri: Uri) =
+        Result.Error<Unit, _>(Error.NOT_FOUND)
 
-    override suspend fun removeAudioFromPlaylist(
-        playlistUri: Uri,
-        audioUri: Uri,
-    ) = Result.Error<Unit, _>(Error.NOT_FOUND)
+    override suspend fun removeAudioFromPlaylist(playlistUri: Uri, audioUri: Uri) =
+        Result.Error<Unit, _>(Error.NOT_FOUND)
 
-    override suspend fun onAudioPlayed(
-        audioUri: Uri,
-        positionMs: Long,
-    ): MediaRequestStatus<Unit> = Result.Success<_, Error>(Unit)
+    override suspend fun onAudioPlayed(audioUri: Uri, positionMs: Long): MediaRequestStatus<Unit> =
+        Result.Success<_, Error>(Unit)
 
-    override suspend fun setFavorite(
-        audioUri: Uri,
-        isFavorite: Boolean,
-    ) = Result.Error<Unit, _>(Error.NOT_IMPLEMENTED)
+    override suspend fun setFavorite(audioUri: Uri, isFavorite: Boolean) =
+        Result.Error<Unit, _>(Error.NOT_IMPLEMENTED)
 
-    private suspend fun getMimeType(uri: Uri) = withContext(Dispatchers.IO) {
-        when (uri.scheme) {
-            SCHEME_FILE -> uri.determineFileMimeType()
+    private suspend fun getMimeType(uri: Uri) =
+        withContext(Dispatchers.IO) {
+            when (uri.scheme) {
+                SCHEME_FILE -> uri.determineFileMimeType()
 
-            SCHEME_CONTENT -> contentResolver.getCompatibleType(uri)
+                SCHEME_CONTENT -> contentResolver.getCompatibleType(uri)
 
-            SCHEME_HTTP, SCHEME_HTTPS -> {
-                val request = Request.Builder()
-                    .url(uri.toString())
-                    .get() // Could use HEAD, but we want to peek the body
-                    .build()
+                SCHEME_HTTP,
+                SCHEME_HTTPS -> {
+                    val request =
+                        Request.Builder()
+                            .url(uri.toString())
+                            .get() // Could use HEAD, but we want to peek the body
+                            .build()
 
-                okHttpClient.newCall(request).executeAsync().use { response ->
-                    response.getContentType()
+                    okHttpClient.newCall(request).executeAsync().use { response ->
+                        response.getContentType()
+                    }
                 }
+
+                SCHEME_RTSP -> "audio/*" // This is either audio-only or A/V, fine either way
+
+                else -> null
             }
-
-            SCHEME_RTSP -> "audio/*" // This is either audio-only or A/V, fine either way
-
-            else -> null
-        }
-    }
-
-    private fun Uri.determineFileMimeType() = path?.let { path ->
-        MimeTypeMap.getSingleton().getMimeTypeFromExtension(
-            MimeTypeMap.getFileExtensionFromUrl(
-                Uri.fromFile(File(path)).toString()
-            )
-        ) ?: Files.probeContentType(Paths.get(path))
-    }
-
-    private fun ContentResolver.getCompatibleType(
-        url: Uri,
-    ) = getStreamTypes(url, "*/*")?.firstOrNull {
-        MimeUtils.mimeTypeToMediaType(it) == MediaType.AUDIO
-    }
-
-    private fun Response.getContentType() = when (isSuccessful) {
-        true -> header("Content-Type") ?: body?.let {
-            URLConnection.guessContentTypeFromStream(it.byteStream())
         }
 
-        false -> null
-    }
+    private fun Uri.determineFileMimeType() =
+        path?.let { path ->
+            MimeTypeMap.getSingleton()
+                .getMimeTypeFromExtension(
+                    MimeTypeMap.getFileExtensionFromUrl(Uri.fromFile(File(path)).toString())
+                ) ?: Files.probeContentType(Paths.get(path))
+        }
+
+    private fun ContentResolver.getCompatibleType(url: Uri) =
+        getStreamTypes(url, "*/*")?.firstOrNull {
+            MimeUtils.mimeTypeToMediaType(it) == MediaType.AUDIO
+        }
+
+    private fun Response.getContentType() =
+        when (isSuccessful) {
+            true ->
+                header("Content-Type")
+                    ?: body?.let { URLConnection.guessContentTypeFromStream(it.byteStream()) }
+
+            false -> null
+        }
 
     companion object {
         private const val SCHEME_FILE = ContentResolver.SCHEME_FILE
@@ -279,8 +251,6 @@ class FileDataSource(
         private const val SCHEME_HTTPS = "https"
         private const val SCHEME_RTSP = "rtsp"
 
-        private val contentQueryProjection = arrayOf(
-            OpenableColumns.DISPLAY_NAME,
-        )
+        private val contentQueryProjection = arrayOf(OpenableColumns.DISPLAY_NAME)
     }
 }

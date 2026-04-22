@@ -28,68 +28,43 @@ import org.lineageos.twelve.models.ProviderIdentifier
 open class ProviderViewModel(application: Application) : TwelveViewModel(application) {
     private val _providerIdentifier = MutableStateFlow<ProviderIdentifier?>(null)
 
-    /**
-     * The provider identifiers to manage.
-     */
+    /** The provider identifiers to manage. */
     protected val providerIdentifier = _providerIdentifier.asStateFlow()
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val provider = providerIdentifier
-        .flatMapLatest {
-            it?.let { providerIdentifier ->
-                providersRepository.provider(providerIdentifier).mapLatest { maybeProvider ->
-                    maybeProvider?.let { provider ->
-                        FlowResult.Success<_, Error>(provider)
-                    } ?: FlowResult.Error(Error.NOT_FOUND)
-                }
-            } ?: flowOf(FlowResult.Loading())
-        }
-        .flowOn(Dispatchers.IO)
-        .stateIn(
-            viewModelScope,
-            SharingStarted.WhileSubscribed(),
-            FlowResult.Loading()
-        )
+    val provider =
+        providerIdentifier
+            .flatMapLatest {
+                it?.let { providerIdentifier ->
+                    providersRepository.provider(providerIdentifier).mapLatest { maybeProvider ->
+                        maybeProvider?.let { provider -> FlowResult.Success<_, Error>(provider) }
+                            ?: FlowResult.Error(Error.NOT_FOUND)
+                    }
+                } ?: flowOf(FlowResult.Loading())
+            }
+            .flowOn(Dispatchers.IO)
+            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), FlowResult.Loading())
 
-    val canBeManaged = provider
-        .foldLatest(
-            onSuccess = {
-                it.type.canBeManaged
-            },
-            onError = { _, _ ->
-                false
-            },
-        )
-        .flowOn(Dispatchers.IO)
-        .stateIn(
-            viewModelScope,
-            SharingStarted.WhileSubscribed(),
-            false
-        )
+    val canBeManaged =
+        provider
+            .foldLatest(onSuccess = { it.type.canBeManaged }, onError = { _, _ -> false })
+            .flowOn(Dispatchers.IO)
+            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), false)
 
-    val status = provider
-        .flatMapLatestData {
-            mediaRepository.status(it.identifier).asFlowResult()
-        }
-        .flowOn(Dispatchers.IO)
-        .stateIn(
-            viewModelScope,
-            SharingStarted.WhileSubscribed(),
-            FlowResult.Loading()
-        )
+    val status =
+        provider
+            .flatMapLatestData { mediaRepository.status(it.identifier).asFlowResult() }
+            .flowOn(Dispatchers.IO)
+            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), FlowResult.Loading())
 
     fun setProviderIdentifier(providerIdentifier: ProviderIdentifier?) {
         _providerIdentifier.value = providerIdentifier
     }
 
-    /**
-     * Delete the provider.
-     */
+    /** Delete the provider. */
     suspend fun deleteProvider() {
         val providerIdentifier = providerIdentifier.value ?: return
 
-        withContext(Dispatchers.IO) {
-            providersRepository.deleteProvider(providerIdentifier)
-        }
+        withContext(Dispatchers.IO) { providersRepository.deleteProvider(providerIdentifier) }
     }
 }

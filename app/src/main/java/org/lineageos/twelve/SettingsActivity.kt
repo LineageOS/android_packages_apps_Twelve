@@ -28,16 +28,18 @@ import androidx.preference.SwitchPreference
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import kotlin.reflect.safeCast
 import kotlinx.coroutines.launch
 import org.lineageos.twelve.ext.ENABLE_OFFLOAD_KEY
 import org.lineageos.twelve.ext.SKIP_SILENCE_KEY
 import org.lineageos.twelve.ext.setOffset
 import org.lineageos.twelve.viewmodels.SettingsViewModel
-import kotlin.reflect.safeCast
 
 class SettingsActivity : AppCompatActivity(R.layout.activity_settings) {
     private val appBarLayout by lazy { findViewById<AppBarLayout>(R.id.appBarLayout) }
-    private val coordinatorLayout by lazy { findViewById<CoordinatorLayout>(R.id.coordinatorLayout) }
+    private val coordinatorLayout by lazy {
+        findViewById<CoordinatorLayout>(R.id.coordinatorLayout)
+    }
     private val toolbar by lazy { findViewById<MaterialToolbar>(R.id.toolbar) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -60,32 +62,30 @@ class SettingsActivity : AppCompatActivity(R.layout.activity_settings) {
         }
     }
 
-    override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
-        android.R.id.home -> {
-            onBackPressedDispatcher.onBackPressed()
-            true
+    override fun onOptionsItemSelected(item: MenuItem) =
+        when (item.itemId) {
+            android.R.id.home -> {
+                onBackPressedDispatcher.onBackPressed()
+                true
+            }
+
+            else -> {
+                super.onOptionsItemSelected(item)
+            }
         }
 
-        else -> {
-            super.onOptionsItemSelected(item)
-        }
-    }
-
-    abstract class SettingsFragment(
-        @XmlRes private val preferencesResId: Int,
-    ) : PreferenceFragmentCompat() {
+    abstract class SettingsFragment(@XmlRes private val preferencesResId: Int) :
+        PreferenceFragmentCompat() {
         // View model
         protected val viewModel by viewModels<SettingsViewModel>()
 
         private val settingsActivity
             get() = SettingsActivity::class.safeCast(activity)
 
-        @Px
-        private var appBarOffset = -1
+        @Px private var appBarOffset = -1
 
-        private val offsetChangedListener = AppBarLayout.OnOffsetChangedListener { _, i ->
-            appBarOffset = -i
-        }
+        private val offsetChangedListener =
+            AppBarLayout.OnOffsetChangedListener { _, i -> appBarOffset = -i }
 
         override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
             super.onViewCreated(view, savedInstanceState)
@@ -124,23 +124,20 @@ class SettingsActivity : AppCompatActivity(R.layout.activity_settings) {
         override fun onCreateRecyclerView(
             inflater: LayoutInflater,
             parent: ViewGroup,
-            savedInstanceState: Bundle?
-        ) = super.onCreateRecyclerView(inflater, parent, savedInstanceState).apply {
-            clipToPadding = false
-            isVerticalScrollBarEnabled = false
+            savedInstanceState: Bundle?,
+        ) =
+            super.onCreateRecyclerView(inflater, parent, savedInstanceState).apply {
+                clipToPadding = false
+                isVerticalScrollBarEnabled = false
 
-            ViewCompat.setOnApplyWindowInsetsListener(this) { _, windowInsets ->
-                val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+                ViewCompat.setOnApplyWindowInsetsListener(this) { _, windowInsets ->
+                    val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
 
-                updatePadding(
-                    bottom = insets.bottom,
-                    left = insets.left,
-                    right = insets.right,
-                )
+                    updatePadding(bottom = insets.bottom, left = insets.left, right = insets.right)
 
-                windowInsets
+                    windowInsets
+                }
             }
-        }
     }
 
     class RootSettingsFragment : SettingsFragment(R.xml.root_preferences) {
@@ -154,16 +151,12 @@ class SettingsActivity : AppCompatActivity(R.layout.activity_settings) {
             super.onCreatePreferences(savedInstanceState, rootKey)
 
             enableOffload.setOnPreferenceChangeListener { _, newValue ->
-                lifecycleScope.launch {
-                    viewModel.toggleOffload(newValue as Boolean)
-                }
+                lifecycleScope.launch { viewModel.toggleOffload(newValue as Boolean) }
                 true
             }
 
             skipSilence.setOnPreferenceChangeListener { _, newValue ->
-                lifecycleScope.launch {
-                    viewModel.toggleSkipSilence(newValue as Boolean)
-                }
+                lifecycleScope.launch { viewModel.toggleSkipSilence(newValue as Boolean) }
                 true
             }
 
@@ -188,10 +181,11 @@ class SettingsActivity : AppCompatActivity(R.layout.activity_settings) {
                         viewModel.resetLocalStats()
 
                         Toast.makeText(
-                            context,
-                            R.string.reset_local_stats_success,
-                            Toast.LENGTH_SHORT
-                        ).show()
+                                context,
+                                R.string.reset_local_stats_success,
+                                Toast.LENGTH_SHORT,
+                            )
+                            .show()
                     }
                 }
                 .setNegativeButton(android.R.string.cancel) { _, _ -> /* Do nothing */ }
@@ -206,11 +200,8 @@ class SettingsActivity : AppCompatActivity(R.layout.activity_settings) {
                 .setPositiveButton(R.string.rescan_media_store_confirm_positive) { _, _ ->
                     viewModel.rescanMediaStore()
 
-                    Toast.makeText(
-                        context,
-                        R.string.rescan_media_store_started,
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    Toast.makeText(context, R.string.rescan_media_store_started, Toast.LENGTH_SHORT)
+                        .show()
                 }
                 .setNegativeButton(android.R.string.cancel) { _, _ -> /* Do nothing */ }
                 .show()

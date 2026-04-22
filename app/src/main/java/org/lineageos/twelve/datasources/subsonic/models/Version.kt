@@ -13,19 +13,13 @@ import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 
 @Serializable(with = Version.Serializer::class)
-data class Version(
-    val major: Int,
-    val minor: Int,
-    val revision: Int,
-) {
+data class Version(val major: Int, val minor: Int, val revision: Int) {
     val value = "$major.$minor.$revision"
 
     override fun toString() = value
 
     class Serializer : KSerializer<Version> {
-        override val descriptor = PrimitiveSerialDescriptor(
-            "Version", PrimitiveKind.STRING
-        )
+        override val descriptor = PrimitiveSerialDescriptor("Version", PrimitiveKind.STRING)
 
         override fun deserialize(decoder: Decoder) = fromValue(decoder.decodeString())
 
@@ -35,8 +29,10 @@ data class Version(
     }
 
     companion object {
-        fun fromValue(value: String) = value.split('.')
-            .map { it.toInt() }
-            .let { (major, minor, revision) -> Version(major, minor, revision) }
+        fun fromValue(value: String) =
+            value
+                .split('.')
+                .map { it.toInt() }
+                .let { (major, minor, revision) -> Version(major, minor, revision) }
     }
 }

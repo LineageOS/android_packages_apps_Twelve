@@ -13,7 +13,4 @@ import kotlinx.serialization.UseSerializers
 import org.lineageos.twelve.datasources.jellyfin.serializers.UUIDSerializer
 
 @Serializable
-data class LyricLine(
-    @SerialName("Start") val start: Long,
-    @SerialName("Text") val text: String
-)
+data class LyricLine(@SerialName("Start") val start: Long, @SerialName("Text") val text: String)

@@ -40,27 +40,28 @@ import org.lineageos.twelve.viewmodels.NowPlayingViewModel
 
 typealias LineToState = Pair<Lyrics.Line, NowPlayingViewModel.LyricsLineState>
 
-/**
- * Show lyrics of currently playing audio.
- */
+/** Show lyrics of currently playing audio. */
 class LyricsFragment : Fragment(R.layout.fragment_lyrics) {
     // View models
     private val viewModel by viewModels<LyricsViewModel>()
 
     // Views
-    private val followCurrentLineExtendedFloatingActionButton by getViewProperty<ExtendedFloatingActionButton>(
-        R.id.followCurrentLineExtendedFloatingActionButton
-    )
-    private val noElementsNestedScrollView by getViewProperty<NestedScrollView>(R.id.noElementsNestedScrollView)
+    private val followCurrentLineExtendedFloatingActionButton by
+        getViewProperty<ExtendedFloatingActionButton>(
+            R.id.followCurrentLineExtendedFloatingActionButton
+        )
+    private val noElementsNestedScrollView by
+        getViewProperty<NestedScrollView>(R.id.noElementsNestedScrollView)
     private val recyclerView by getViewProperty<RecyclerView>(R.id.recyclerView)
     private val toolbar by getViewProperty<MaterialToolbar>(R.id.toolbar)
 
     // RecyclerView
     private val adapter by lazy {
-        object : SimpleListAdapter<LineToState, TextView>(
-            diffCallback,
-            { layoutInflater.inflate(R.layout.lyrics_line, null, false) as TextView }
-        ) {
+        object :
+            SimpleListAdapter<LineToState, TextView>(
+                diffCallback,
+                { layoutInflater.inflate(R.layout.lyrics_line, null, false) as TextView },
+            ) {
             override fun ViewHolder.onBindView(item: LineToState) {
                 val (line, lineState) = item
 
@@ -68,17 +69,16 @@ class LyricsFragment : Fragment(R.layout.fragment_lyrics) {
                 view.isSelected = lineState == NowPlayingViewModel.LyricsLineState.ACTIVE
                 view.isActivated = lineState != NowPlayingViewModel.LyricsLineState.PAST
 
-                view.setOnClickListener {
-                    viewModel.seekToLine(line)
-                }
+                view.setOnClickListener { viewModel.seekToLine(line) }
             }
         }
     }
     private val scrollListener by lazy {
         object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                val isScrolling = newState == RecyclerView.SCROLL_STATE_DRAGGING
-                        || newState == RecyclerView.SCROLL_STATE_SETTLING
+                val isScrolling =
+                    newState == RecyclerView.SCROLL_STATE_DRAGGING ||
+                        newState == RecyclerView.SCROLL_STATE_SETTLING
 
                 if (isScrolling && recyclerView.layoutManager?.isSmoothScrolling == false) {
                     viewModel.setPositionSynced(false)
@@ -94,11 +94,7 @@ class LyricsFragment : Fragment(R.layout.fragment_lyrics) {
         ViewCompat.setOnApplyWindowInsetsListener(toolbar) { v, windowInsets ->
             val insets = windowInsets.getInsets(WindowInsetsCompat.Type.displayCutout())
 
-            v.updatePadding(
-                insets,
-                start = true,
-                end = true,
-            )
+            v.updatePadding(insets, start = true, end = true)
 
             windowInsets
         }
@@ -106,10 +102,7 @@ class LyricsFragment : Fragment(R.layout.fragment_lyrics) {
         ViewCompat.setOnApplyWindowInsetsListener(recyclerView) { v, windowInsets ->
             val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
 
-            v.updatePadding(
-                insets,
-                bottom = true,
-            )
+            v.updatePadding(insets, bottom = true)
 
             windowInsets
         }
@@ -117,23 +110,17 @@ class LyricsFragment : Fragment(R.layout.fragment_lyrics) {
         ViewCompat.setOnApplyWindowInsetsListener(noElementsNestedScrollView) { v, windowInsets ->
             val insets = windowInsets.getInsets(WindowInsetsCompat.Type.displayCutout())
 
-            v.updatePadding(
-                insets,
-                bottom = true,
-            )
+            v.updatePadding(insets, bottom = true)
 
             windowInsets
         }
 
-        ViewCompat.setOnApplyWindowInsetsListener(
-            followCurrentLineExtendedFloatingActionButton
-        ) { v, windowInsets ->
+        ViewCompat.setOnApplyWindowInsetsListener(followCurrentLineExtendedFloatingActionButton) {
+            v,
+            windowInsets ->
             val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
 
-            v.updateMargin(
-                insets,
-                bottom = true,
-            )
+            v.updateMargin(insets, bottom = true)
 
             windowInsets
         }
@@ -148,9 +135,7 @@ class LyricsFragment : Fragment(R.layout.fragment_lyrics) {
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                loadData()
-            }
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) { loadData() }
         }
     }
 
@@ -173,13 +158,17 @@ class LyricsFragment : Fragment(R.layout.fragment_lyrics) {
                         val (lyricsWithState, currentIndex) = it.data
 
                         adapter.submitList(lyricsWithState)
-                        currentIndex.takeIf { viewModel.positionSynced.value }?.let { index ->
-                            CenterSmoothScroller(recyclerView.context).apply {
-                                targetPosition = index
-                            }.also { smoothScroller ->
-                                recyclerView.layoutManager?.startSmoothScroll(smoothScroller)
+                        currentIndex
+                            .takeIf { viewModel.positionSynced.value }
+                            ?.let { index ->
+                                CenterSmoothScroller(recyclerView.context)
+                                    .apply { targetPosition = index }
+                                    .also { smoothScroller ->
+                                        recyclerView.layoutManager?.startSmoothScroll(
+                                            smoothScroller
+                                        )
+                                    }
                             }
-                        }
 
                         val isEmpty = lyricsWithState.isEmpty()
 
@@ -191,7 +180,7 @@ class LyricsFragment : Fragment(R.layout.fragment_lyrics) {
                         Log.e(
                             LOG_TAG,
                             "Error while loading lyrics, error: ${it.error}",
-                            it.throwable
+                            it.throwable,
                         )
 
                         adapter.submitList(null)
@@ -213,16 +202,13 @@ class LyricsFragment : Fragment(R.layout.fragment_lyrics) {
     companion object {
         private val LOG_TAG = LyricsFragment::class.simpleName!!
 
-        private val diffCallback = object : DiffUtil.ItemCallback<LineToState>() {
-            override fun areItemsTheSame(
-                oldItem: LineToState,
-                newItem: LineToState
-            ) = oldItem.first === newItem.first
+        private val diffCallback =
+            object : DiffUtil.ItemCallback<LineToState>() {
+                override fun areItemsTheSame(oldItem: LineToState, newItem: LineToState) =
+                    oldItem.first === newItem.first
 
-            override fun areContentsTheSame(
-                oldItem: LineToState,
-                newItem: LineToState
-            ) = oldItem.second == newItem.second
-        }
+                override fun areContentsTheSame(oldItem: LineToState, newItem: LineToState) =
+                    oldItem.second == newItem.second
+            }
     }
 }

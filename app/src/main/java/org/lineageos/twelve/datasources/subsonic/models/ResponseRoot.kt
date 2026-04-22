@@ -9,6 +9,5 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class ResponseRoot(
-    @kotlinx.serialization.SerialName("subsonic-response")
-    val subsonicResponse: SubsonicResponse,
+    @kotlinx.serialization.SerialName("subsonic-response") val subsonicResponse: SubsonicResponse
 )

@@ -25,6 +25,9 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.media3.common.Player
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.slider.Slider
+import java.util.Locale
+import kotlin.math.roundToLong
+import kotlin.reflect.safeCast
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.lineageos.twelve.ext.loadThumbnail
@@ -34,13 +37,8 @@ import org.lineageos.twelve.models.RepeatMode
 import org.lineageos.twelve.utils.TimestampFormatter
 import org.lineageos.twelve.viewmodels.IntentsViewModel
 import org.lineageos.twelve.viewmodels.LocalPlayerViewModel
-import java.util.Locale
-import kotlin.math.roundToLong
-import kotlin.reflect.safeCast
 
-/**
- * An activity used to handle view intents.
- */
+/** An activity used to handle view intents. */
 class ViewActivity : AppCompatActivity(R.layout.activity_view) {
     // View models
     private val intentsViewModel by viewModels<IntentsViewModel>()
@@ -50,18 +48,40 @@ class ViewActivity : AppCompatActivity(R.layout.activity_view) {
     private val albumTitleTextView by lazy { findViewById<TextView>(R.id.albumTitleTextView) }
     private val artistNameTextView by lazy { findViewById<TextView>(R.id.artistNameTextView) }
     private val audioTitleTextView by lazy { findViewById<TextView>(R.id.audioTitleTextView) }
-    private val currentTimestampTextView by lazy { findViewById<TextView>(R.id.currentTimestampTextView) }
-    private val dummyThumbnailImageView by lazy { findViewById<ImageView>(R.id.dummyThumbnailImageView) }
-    private val durationTimestampTextView by lazy { findViewById<TextView>(R.id.durationTimestampTextView) }
-    private val nextTrackMaterialButton by lazy { findViewById<MaterialButton>(R.id.nextTrackMaterialButton) }
-    private val playPauseMaterialButton by lazy { findViewById<MaterialButton>(R.id.playPauseMaterialButton) }
-    private val playbackSpeedMaterialButton by lazy { findViewById<MaterialButton>(R.id.playbackSpeedMaterialButton) }
-    private val previousTrackMaterialButton by lazy { findViewById<MaterialButton>(R.id.previousTrackMaterialButton) }
+    private val currentTimestampTextView by lazy {
+        findViewById<TextView>(R.id.currentTimestampTextView)
+    }
+    private val dummyThumbnailImageView by lazy {
+        findViewById<ImageView>(R.id.dummyThumbnailImageView)
+    }
+    private val durationTimestampTextView by lazy {
+        findViewById<TextView>(R.id.durationTimestampTextView)
+    }
+    private val nextTrackMaterialButton by lazy {
+        findViewById<MaterialButton>(R.id.nextTrackMaterialButton)
+    }
+    private val playPauseMaterialButton by lazy {
+        findViewById<MaterialButton>(R.id.playPauseMaterialButton)
+    }
+    private val playbackSpeedMaterialButton by lazy {
+        findViewById<MaterialButton>(R.id.playbackSpeedMaterialButton)
+    }
+    private val previousTrackMaterialButton by lazy {
+        findViewById<MaterialButton>(R.id.previousTrackMaterialButton)
+    }
     private val progressSlider by lazy { findViewById<Slider>(R.id.progressSlider) }
-    private val repeatMarkerImageView by lazy { findViewById<ImageView>(R.id.repeatMarkerImageView) }
-    private val repeatMaterialButton by lazy { findViewById<MaterialButton>(R.id.repeatMaterialButton) }
-    private val shuffleMarkerImageView by lazy { findViewById<ImageView>(R.id.shuffleMarkerImageView) }
-    private val shuffleMaterialButton by lazy { findViewById<MaterialButton>(R.id.shuffleMaterialButton) }
+    private val repeatMarkerImageView by lazy {
+        findViewById<ImageView>(R.id.repeatMarkerImageView)
+    }
+    private val repeatMaterialButton by lazy {
+        findViewById<MaterialButton>(R.id.repeatMaterialButton)
+    }
+    private val shuffleMarkerImageView by lazy {
+        findViewById<ImageView>(R.id.shuffleMarkerImageView)
+    }
+    private val shuffleMaterialButton by lazy {
+        findViewById<MaterialButton>(R.id.shuffleMaterialButton)
+    }
     private val thumbnailImageView by lazy { findViewById<ImageView>(R.id.thumbnailImageView) }
 
     // Progress slider state
@@ -80,9 +100,7 @@ class ViewActivity : AppCompatActivity(R.layout.activity_view) {
         albumTitleTextView.isSelected = true
 
         // Media controls
-        progressSlider.setLabelFormatter {
-            TimestampFormatter.formatTimestampMillis(it)
-        }
+        progressSlider.setLabelFormatter { TimestampFormatter.formatTimestampMillis(it) }
         progressSlider.addOnSliderTouchListener(
             object : Slider.OnSliderTouchListener {
                 override fun onStartTrackingTouch(slider: Slider) {
@@ -97,29 +115,19 @@ class ViewActivity : AppCompatActivity(R.layout.activity_view) {
             }
         )
 
-        playPauseMaterialButton.setOnClickListener {
-            localPlayerViewModel.togglePlayPause()
-        }
+        playPauseMaterialButton.setOnClickListener { localPlayerViewModel.togglePlayPause() }
 
         playbackSpeedMaterialButton.setOnClickListener {
             localPlayerViewModel.shufflePlaybackSpeed()
         }
 
-        repeatMaterialButton.setOnClickListener {
-            localPlayerViewModel.toggleRepeatMode()
-        }
+        repeatMaterialButton.setOnClickListener { localPlayerViewModel.toggleRepeatMode() }
 
-        shuffleMaterialButton.setOnClickListener {
-            localPlayerViewModel.toggleShuffleMode()
-        }
+        shuffleMaterialButton.setOnClickListener { localPlayerViewModel.toggleShuffleMode() }
 
-        previousTrackMaterialButton.setOnClickListener {
-            localPlayerViewModel.seekToPrevious()
-        }
+        previousTrackMaterialButton.setOnClickListener { localPlayerViewModel.seekToPrevious() }
 
-        nextTrackMaterialButton.setOnClickListener {
-            localPlayerViewModel.seekToNext()
-        }
+        nextTrackMaterialButton.setOnClickListener { localPlayerViewModel.seekToNext() }
 
         intentsViewModel.onIntent(intent)
         addOnNewIntentListener(intentListener)
@@ -133,27 +141,21 @@ class ViewActivity : AppCompatActivity(R.layout.activity_view) {
                                 albumTitleTextView.text = it
                             }
                             albumTitleTextView.isVisible = true
-                        } ?: run {
-                            albumTitleTextView.isVisible = false
-                        }
+                        } ?: run { albumTitleTextView.isVisible = false }
 
                         mediaMetadata.artist?.also {
                             if (artistNameTextView.text != it) {
                                 artistNameTextView.text = it
                             }
                             artistNameTextView.isVisible = true
-                        } ?: run {
-                            artistNameTextView.isVisible = false
-                        }
+                        } ?: run { artistNameTextView.isVisible = false }
 
                         mediaMetadata.title?.also {
                             if (audioTitleTextView.text != it) {
                                 audioTitleTextView.text = it
                             }
                             audioTitleTextView.isVisible = true
-                        } ?: run {
-                            audioTitleTextView.isVisible = false
-                        }
+                        } ?: run { audioTitleTextView.isVisible = false }
                     }
                 }
 
@@ -165,9 +167,8 @@ class ViewActivity : AppCompatActivity(R.layout.activity_view) {
                                 false -> R.drawable.avd_pause_to_play
                             }
                         )
-                        AnimatedVectorDrawable::class.safeCast(
-                            playPauseMaterialButton.icon
-                        )?.start()
+                        AnimatedVectorDrawable::class.safeCast(playPauseMaterialButton.icon)
+                            ?.start()
                     }
                 }
 
@@ -219,38 +220,42 @@ class ViewActivity : AppCompatActivity(R.layout.activity_view) {
                             currentTimestampTextView.text =
                                 TimestampFormatter.formatTimestampMillis(currentPositionMs)
                         } else {
-                            ValueAnimator.ofFloat(newValue, newValueTo).apply {
-                                interpolator = LinearInterpolator()
-                                duration = (newValueTo - newValue).toLong()
-                                    .div(playbackProgress.playbackSpeed.roundToLong())
-                                addUpdateListener {
-                                    val value = it.animatedValue as Float
+                            ValueAnimator.ofFloat(newValue, newValueTo)
+                                .apply {
+                                    interpolator = LinearInterpolator()
+                                    duration =
+                                        (newValueTo - newValue)
+                                            .toLong()
+                                            .div(playbackProgress.playbackSpeed.roundToLong())
+                                    addUpdateListener {
+                                        val value = it.animatedValue as Float
 
-                                    if (!isProgressSliderDragging) {
-                                        progressSlider.value = value
+                                        if (!isProgressSliderDragging) {
+                                            progressSlider.value = value
+                                        }
+
+                                        currentTimestampTextView.text =
+                                            TimestampFormatter.formatTimestampMillis(value)
                                     }
-
-                                    currentTimestampTextView.text =
-                                        TimestampFormatter.formatTimestampMillis(value)
                                 }
-                            }.also {
-                                animator = it
-                                it.start()
-                            }
+                                .also {
+                                    animator = it
+                                    it.start()
+                                }
                         }
 
-                        durationTimestampTextView.text = TimestampFormatter.formatTimestampMillis(
-                            durationMs
-                        )
+                        durationTimestampTextView.text =
+                            TimestampFormatter.formatTimestampMillis(durationMs)
                     }
                 }
 
                 launch {
                     localPlayerViewModel.playbackParameters.collectLatest {
-                        playbackSpeedMaterialButton.text = getString(
-                            R.string.playback_speed_format,
-                            playbackSpeedFormatter.format(it.speed),
-                        )
+                        playbackSpeedMaterialButton.text =
+                            getString(
+                                R.string.playback_speed_format,
+                                playbackSpeedFormatter.format(it.speed),
+                            )
                     }
                 }
 
@@ -311,29 +316,20 @@ class ViewActivity : AppCompatActivity(R.layout.activity_view) {
 
                 launch {
                     localPlayerViewModel.availableCommands.collectLatest {
-                        playPauseMaterialButton.isEnabled = it.contains(
-                            Player.COMMAND_PLAY_PAUSE
-                        )
+                        playPauseMaterialButton.isEnabled = it.contains(Player.COMMAND_PLAY_PAUSE)
 
-                        playbackSpeedMaterialButton.isEnabled = it.contains(
-                            Player.COMMAND_SET_SPEED_AND_PITCH
-                        )
+                        playbackSpeedMaterialButton.isEnabled =
+                            it.contains(Player.COMMAND_SET_SPEED_AND_PITCH)
 
-                        shuffleMaterialButton.isEnabled = it.contains(
-                            Player.COMMAND_SET_SHUFFLE_MODE
-                        )
+                        shuffleMaterialButton.isEnabled =
+                            it.contains(Player.COMMAND_SET_SHUFFLE_MODE)
 
-                        repeatMaterialButton.isEnabled = it.contains(
-                            Player.COMMAND_SET_REPEAT_MODE
-                        )
+                        repeatMaterialButton.isEnabled = it.contains(Player.COMMAND_SET_REPEAT_MODE)
 
-                        previousTrackMaterialButton.isEnabled = it.contains(
-                            Player.COMMAND_SEEK_TO_PREVIOUS
-                        )
+                        previousTrackMaterialButton.isEnabled =
+                            it.contains(Player.COMMAND_SEEK_TO_PREVIOUS)
 
-                        nextTrackMaterialButton.isEnabled = it.contains(
-                            Player.COMMAND_SEEK_TO_NEXT
-                        )
+                        nextTrackMaterialButton.isEnabled = it.contains(Player.COMMAND_SEEK_TO_NEXT)
                     }
                 }
             }

@@ -15,8 +15,7 @@ fun <T : Parcelable> Parcel.readParcelable(clazz: KClass<T>) =
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
         readParcelable(clazz.java.classLoader, clazz.java)
     } else {
-        @Suppress("DEPRECATION")
-        readParcelable(clazz.java.classLoader)
+        @Suppress("DEPRECATION") readParcelable(clazz.java.classLoader)
     }
 
 fun <T : Serializable> Parcel.readSerializable(clazz: KClass<T>) =

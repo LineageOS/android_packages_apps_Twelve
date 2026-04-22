@@ -5,7 +5,7 @@
 
 package org.lineageos.twelve.datasources.subsonic.models
 
-import kotlinx.serialization.Serializable
 import java.time.Instant
+import kotlinx.serialization.Serializable
 
 typealias InstantAsString = @Serializable(with = InstantSerializer::class) Instant

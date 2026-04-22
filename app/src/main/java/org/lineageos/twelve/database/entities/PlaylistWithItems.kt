@@ -22,5 +22,6 @@ data class PlaylistWithItems(
         entity = PlaylistItemCrossRef::class,
         entityColumn = "playlist_id",
         projection = ["audio_uri"],
-    ) val items: List<Uri>,
+    )
+    val items: List<Uri>,
 )

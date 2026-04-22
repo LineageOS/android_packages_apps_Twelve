@@ -15,7 +15,4 @@ import kotlinx.serialization.Serializable
  * @param structuredLyrics Structured lyrics. There can be multiple lyrics of the same type with the
  *   same language
  */
-@Serializable
-data class LyricsList(
-    val structuredLyrics: List<StructuredLyrics>,
-)
+@Serializable data class LyricsList(val structuredLyrics: List<StructuredLyrics>)

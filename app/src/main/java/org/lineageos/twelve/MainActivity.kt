@@ -23,6 +23,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.DialogFragmentNavigator
 import androidx.navigation.fragment.NavHostFragment
+import kotlin.reflect.cast
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
@@ -44,7 +45,6 @@ import org.lineageos.twelve.ui.views.NowPlayingBar
 import org.lineageos.twelve.viewmodels.FullscreenViewModel
 import org.lineageos.twelve.viewmodels.IntentsViewModel
 import org.lineageos.twelve.viewmodels.NowPlayingViewModel
-import kotlin.reflect.cast
 
 class MainActivity : AppCompatActivity(R.layout.activity_main) {
     // View models
@@ -58,9 +58,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
     // NavController
     private val navHostFragment by lazy {
-        NavHostFragment::class.cast(
-            supportFragmentManager.findFragmentById(R.id.navHostFragment)
-        )
+        NavHostFragment::class.cast(supportFragmentManager.findFragmentById(R.id.navHostFragment))
     }
     private val navController by lazy { navHostFragment.navController }
 
@@ -75,19 +73,13 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
         // Insets
         ViewCompat.setOnApplyWindowInsetsListener(frameLayout) { _, windowInsets ->
-            val insets = windowInsets.getInsets(
-                WindowInsetsCompat.Type.systemBars() or WindowInsetsCompat.Type.displayCutout()
-            )
-            val systemBarsInsets = windowInsets.getInsets(
-                WindowInsetsCompat.Type.systemBars()
-            )
+            val insets =
+                windowInsets.getInsets(
+                    WindowInsetsCompat.Type.systemBars() or WindowInsetsCompat.Type.displayCutout()
+                )
+            val systemBarsInsets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
 
-            nowPlayingBar.setContentPadding(
-                insets.left,
-                0,
-                insets.right,
-                systemBarsInsets.bottom,
-            )
+            nowPlayingBar.setContentPadding(insets.left, 0, insets.right, systemBarsInsets.bottom)
 
             // This translates to bottom padding + now playing bar height
             WindowInsetsCompat.Builder(windowInsets)
@@ -100,8 +92,8 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
                         when (nowPlayingBar.isVisible) {
                             true -> nowPlayingBar.measuredHeight
                             false -> insets.bottom
-                        }
-                    )
+                        },
+                    ),
                 )
                 .build()
         }
@@ -111,18 +103,12 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         addOnNewIntentListener(intentListener)
 
         // Now playing bar
-        nowPlayingBar.setOnClickListener {
-            navigateToNowPlayingFragment()
-        }
+        nowPlayingBar.setOnClickListener { navigateToNowPlayingFragment() }
 
-        nowPlayingBar.setOnPlayPauseClickListener {
-            nowPlayingViewModel.togglePlayPause()
-        }
+        nowPlayingBar.setOnPlayPauseClickListener { nowPlayingViewModel.togglePlayPause() }
 
         lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                loadData()
-            }
+            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) { loadData() }
         }
     }
 
@@ -166,39 +152,43 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
                             val content = it.contents.first()
 
                             when (content.type) {
-                                MediaType.ALBUM -> navController.navigateSafe(
-                                    R.id.action_mainFragment_to_fragment_album,
-                                    AlbumFragment.createBundle(content.uri),
-                                    NavOptions.Builder()
-                                        .setPopUpTo(R.id.fragment_main, false)
-                                        .build(),
-                                )
+                                MediaType.ALBUM ->
+                                    navController.navigateSafe(
+                                        R.id.action_mainFragment_to_fragment_album,
+                                        AlbumFragment.createBundle(content.uri),
+                                        NavOptions.Builder()
+                                            .setPopUpTo(R.id.fragment_main, false)
+                                            .build(),
+                                    )
 
-                                MediaType.ARTIST -> navController.navigateSafe(
-                                    R.id.action_mainFragment_to_fragment_artist,
-                                    ArtistFragment.createBundle(content.uri),
-                                    NavOptions.Builder()
-                                        .setPopUpTo(R.id.fragment_main, false)
-                                        .build(),
-                                )
+                                MediaType.ARTIST ->
+                                    navController.navigateSafe(
+                                        R.id.action_mainFragment_to_fragment_artist,
+                                        ArtistFragment.createBundle(content.uri),
+                                        NavOptions.Builder()
+                                            .setPopUpTo(R.id.fragment_main, false)
+                                            .build(),
+                                    )
 
                                 MediaType.AUDIO -> Log.i(LOG_TAG, "Audio not supported")
 
-                                MediaType.GENRE -> navController.navigateSafe(
-                                    R.id.action_mainFragment_to_fragment_genre,
-                                    GenreFragment.createBundle(content.uri),
-                                    NavOptions.Builder()
-                                        .setPopUpTo(R.id.fragment_main, false)
-                                        .build(),
-                                )
+                                MediaType.GENRE ->
+                                    navController.navigateSafe(
+                                        R.id.action_mainFragment_to_fragment_genre,
+                                        GenreFragment.createBundle(content.uri),
+                                        NavOptions.Builder()
+                                            .setPopUpTo(R.id.fragment_main, false)
+                                            .build(),
+                                    )
 
-                                MediaType.PLAYLIST -> navController.navigateSafe(
-                                    R.id.action_mainFragment_to_fragment_playlist,
-                                    PlaylistFragment.createBundle(content.uri),
-                                    NavOptions.Builder()
-                                        .setPopUpTo(R.id.fragment_main, false)
-                                        .build(),
-                                )
+                                MediaType.PLAYLIST ->
+                                    navController.navigateSafe(
+                                        R.id.action_mainFragment_to_fragment_playlist,
+                                        PlaylistFragment.createBundle(content.uri),
+                                        NavOptions.Builder()
+                                            .setPopUpTo(R.id.fragment_main, false)
+                                            .build(),
+                                    )
                             }
                         }
                     }
@@ -212,34 +202,31 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
             }
         }
 
-        launch {
-            nowPlayingViewModel.isPlaying.collectLatest {
-                nowPlayingBar.updateIsPlaying(it)
-            }
-        }
+        launch { nowPlayingViewModel.isPlaying.collectLatest { nowPlayingBar.updateIsPlaying(it) } }
 
         launch {
-            combine(
-                nowPlayingViewModel.mediaItem,
-                navController.visibleEntries,
-            ) { mediaItem, visibleEntries ->
-                mediaItem != null && run {
-                    var shouldBeVisible = true
+            combine(nowPlayingViewModel.mediaItem, navController.visibleEntries) {
+                    mediaItem,
+                    visibleEntries ->
+                    mediaItem != null &&
+                        run {
+                            var shouldBeVisible = true
 
-                    for (i in visibleEntries.lastIndex downTo 0) {
-                        when (val destination = visibleEntries[i].destination) {
-                            is DialogFragmentNavigator.Destination -> continue
+                            for (i in visibleEntries.lastIndex downTo 0) {
+                                when (val destination = visibleEntries[i].destination) {
+                                    is DialogFragmentNavigator.Destination -> continue
 
-                            else -> {
-                                shouldBeVisible = destination.id !in nowPlayingRelatedRouteIds
-                                break
+                                    else -> {
+                                        shouldBeVisible =
+                                            destination.id !in nowPlayingRelatedRouteIds
+                                        break
+                                    }
+                                }
                             }
-                        }
-                    }
 
-                    shouldBeVisible
+                            shouldBeVisible
+                        }
                 }
-            }
                 .distinctUntilChanged()
                 .flowOn(Dispatchers.IO)
                 .collectLatest { shouldBeVisible ->
@@ -273,7 +260,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
                         Log.e(
                             LOG_TAG,
                             "Error while getting media artwork: ${it.error}",
-                            it.throwable
+                            it.throwable,
                         )
                     }
                 }
@@ -281,30 +268,21 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         }
     }
 
-    private fun navigateToNowPlayingFragment() = navController.navigate(
-        R.id.fragment_now_playing,
-        null,
-        NavOptions.Builder()
-            .setPopUpTo(R.id.fragment_now_playing, true)
-            .build(),
-    )
+    private fun navigateToNowPlayingFragment() =
+        navController.navigate(
+            R.id.fragment_now_playing,
+            null,
+            NavOptions.Builder().setPopUpTo(R.id.fragment_now_playing, true).build(),
+        )
 
     companion object {
         private val LOG_TAG = MainActivity::class.simpleName!!
 
-        /**
-         * Now playing related route IDs.
-         */
-        private val nowPlayingRelatedRouteIds = setOf(
-            R.id.lyricsFragment,
-            R.id.nowPlayingFragment,
-            R.id.queueFragment,
-        )
+        /** Now playing related route IDs. */
+        private val nowPlayingRelatedRouteIds =
+            setOf(R.id.lyricsFragment, R.id.nowPlayingFragment, R.id.queueFragment)
 
-        /**
-         * Open now playing fragment.
-         * Type: [Boolean]
-         */
+        /** Open now playing fragment. Type: [Boolean] */
         const val EXTRA_OPEN_NOW_PLAYING = "extra_now_playing"
     }
 }

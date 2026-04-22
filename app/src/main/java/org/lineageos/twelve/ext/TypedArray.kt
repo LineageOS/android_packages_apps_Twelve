@@ -12,9 +12,7 @@ import kotlin.contracts.contract
 
 @OptIn(ExperimentalContracts::class)
 inline fun <T : TypedArray?, R> T.use(block: (T) -> R): R {
-    contract {
-        callsInPlace(block, InvocationKind.EXACTLY_ONCE)
-    }
+    contract { callsInPlace(block, InvocationKind.EXACTLY_ONCE) }
     var exception: Throwable? = null
     try {
         return block(this)
@@ -25,9 +23,7 @@ inline fun <T : TypedArray?, R> T.use(block: (T) -> R): R {
         try {
             this?.close()
         } catch (closeException: Throwable) {
-            exception?.apply {
-                addSuppressed(closeException)
-            } ?: throw closeException
+            exception?.apply { addSuppressed(closeException) } ?: throw closeException
         }
     }
 }

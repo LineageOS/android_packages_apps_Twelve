@@ -15,7 +15,6 @@ class InstantConverter {
     fun fromString(value: String?) = value?.let { OffsetDateTime.parse(it).toInstant() }
 
     @TypeConverter
-    fun toString(value: Instant?) = value?.let {
-        OffsetDateTime.ofInstant(value, ZoneId.of("Z")).toString()
-    }
+    fun toString(value: Instant?) =
+        value?.let { OffsetDateTime.ofInstant(value, ZoneId.of("Z")).toString() }
 }

@@ -17,30 +17,24 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.guava.future
 
-/**
- * A [BitmapLoader] that uses Coil.
- */
+/** A [BitmapLoader] that uses Coil. */
 @OptIn(androidx.media3.common.util.UnstableApi::class)
-class CoilBitmapLoader(
-    private val context: Context,
-    private val scope: CoroutineScope,
-) : BitmapLoader {
+class CoilBitmapLoader(private val context: Context, private val scope: CoroutineScope) :
+    BitmapLoader {
     override fun supportsMimeType(mimeType: String) = true
 
     override fun decodeBitmap(data: ByteArray) = getImage(data)
 
     override fun loadBitmap(uri: Uri) = getImage(uri)
 
-    private fun getImage(data: Any?) = scope.future(Dispatchers.IO) {
-        val imageRequest = ImageRequest.Builder(context)
-            .data(data)
-            .allowHardware(false)
-            .build()
+    private fun getImage(data: Any?) =
+        scope.future(Dispatchers.IO) {
+            val imageRequest = ImageRequest.Builder(context).data(data).allowHardware(false).build()
 
-        val imageResult = context.imageLoader.execute(imageRequest)
+            val imageResult = context.imageLoader.execute(imageRequest)
 
-        val image = imageResult.image ?: error("Cannot decode the image")
+            val image = imageResult.image ?: error("Cannot decode the image")
 
-        image.toBitmap()
-    }
+            image.toBitmap()
+        }
 }

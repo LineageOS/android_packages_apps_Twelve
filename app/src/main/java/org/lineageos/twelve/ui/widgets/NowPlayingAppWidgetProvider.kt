@@ -21,22 +21,24 @@ import org.lineageos.twelve.models.PlaybackState
 import org.lineageos.twelve.services.PlaybackService
 
 class NowPlayingAppWidgetProvider : BaseAppWidgetProvider<NowPlayingAppWidgetProvider>(Companion) {
-    companion object : AppWidgetUpdater<NowPlayingAppWidgetProvider>(
-        NowPlayingAppWidgetProvider::class,
-        R.layout.app_widget_now_playing,
-    ) {
+    companion object :
+        AppWidgetUpdater<NowPlayingAppWidgetProvider>(
+            NowPlayingAppWidgetProvider::class,
+            R.layout.app_widget_now_playing,
+        ) {
         override suspend fun RemoteViews.update(context: Context) {
             withMediaController(context) { mediaController ->
                 val mediaMetadata = mediaController.mediaMetadata
 
-                val openNowPlayingPendingIntent = PendingIntent.getActivity(
-                    context,
-                    0,
-                    Intent(context, MainActivity::class.java).apply {
-                        putExtra(MainActivity.EXTRA_OPEN_NOW_PLAYING, true)
-                    },
-                    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-                )
+                val openNowPlayingPendingIntent =
+                    PendingIntent.getActivity(
+                        context,
+                        0,
+                        Intent(context, MainActivity::class.java).apply {
+                            putExtra(MainActivity.EXTRA_OPEN_NOW_PLAYING, true)
+                        },
+                        PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
+                    )
 
                 setOnClickPendingIntent(R.id.linearLayout, openNowPlayingPendingIntent)
 
@@ -50,22 +52,24 @@ class NowPlayingAppWidgetProvider : BaseAppWidgetProvider<NowPlayingAppWidgetPro
                         0,
                         Intent(context, PlaybackService::class.java).apply {
                             action = PlaybackService.ACTION_TOGGLE_PLAY_PAUSE
-                        }, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-                    )
+                        },
+                        PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
+                    ),
                 )
                 setImageViewResource(
                     R.id.playPauseImageButton,
                     when (mediaController.playWhenReady) {
                         true -> R.drawable.ic_pause
                         false -> R.drawable.ic_play_arrow
-                    }
+                    },
                 )
 
                 setViewVisibility(
-                    R.id.bufferingProgressBar, when (mediaController.typedPlaybackState) {
+                    R.id.bufferingProgressBar,
+                    when (mediaController.typedPlaybackState) {
                         PlaybackState.BUFFERING -> View.VISIBLE
                         else -> View.GONE
-                    }
+                    },
                 )
 
                 when (mediaController.typedPlaybackState) {
@@ -73,13 +77,19 @@ class NowPlayingAppWidgetProvider : BaseAppWidgetProvider<NowPlayingAppWidgetPro
                         // Do nothing
                     }
 
-                    else -> mediaMetadata.artworkData?.let {
-                        fetchImage(context, it, R.id.thumbnailImageView)
-                    } ?: mediaMetadata.artworkUri?.let {
-                        fetchImage(context, it, R.id.thumbnailImageView)
-                    } ?: run {
-                        setImageViewResource(R.id.thumbnailImageView, R.drawable.ic_music_note)
-                    }
+                    else ->
+                        mediaMetadata.artworkData?.let {
+                            fetchImage(context, it, R.id.thumbnailImageView)
+                        }
+                            ?: mediaMetadata.artworkUri?.let {
+                                fetchImage(context, it, R.id.thumbnailImageView)
+                            }
+                            ?: run {
+                                setImageViewResource(
+                                    R.id.thumbnailImageView,
+                                    R.drawable.ic_music_note,
+                                )
+                            }
                 }
             }
         }
@@ -88,17 +98,13 @@ class NowPlayingAppWidgetProvider : BaseAppWidgetProvider<NowPlayingAppWidgetPro
             context: Context,
             block: suspend (MediaController) -> Unit,
         ) {
-            val sessionToken = SessionToken(
-                context,
-                ComponentName(context, PlaybackService::class.java)
-            )
+            val sessionToken =
+                SessionToken(context, ComponentName(context, PlaybackService::class.java))
 
-            val mediaController = MediaController.Builder(
-                context.applicationContext,
-                sessionToken
-            )
-                .buildAsync()
-                .await()
+            val mediaController =
+                MediaController.Builder(context.applicationContext, sessionToken)
+                    .buildAsync()
+                    .await()
 
             block(mediaController)
 

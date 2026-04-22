@@ -43,9 +43,7 @@ import org.lineageos.twelve.ui.recyclerview.SimpleListAdapter
 import org.lineageos.twelve.ui.views.FullscreenLoadingProgressBar
 import org.lineageos.twelve.viewmodels.ManageProviderViewModel
 
-/**
- * Fragment used to add, modify or delete a provider.
- */
+/** Fragment used to add, modify or delete a provider. */
 class ManageProviderFragment : Fragment(R.layout.fragment_manage_provider) {
     // View models
     private val viewModel by viewModels<ManageProviderViewModel>()
@@ -54,15 +52,20 @@ class ManageProviderFragment : Fragment(R.layout.fragment_manage_provider) {
     private val argumentsRecyclerView by getViewProperty<RecyclerView>(R.id.argumentsRecyclerView)
     private val confirmMaterialButton by getViewProperty<MaterialButton>(R.id.confirmMaterialButton)
     private val deleteMaterialButton by getViewProperty<MaterialButton>(R.id.deleteMaterialButton)
-    private val fullscreenLoadingProgressBar by getViewProperty<FullscreenLoadingProgressBar>(R.id.fullscreenLoadingProgressBar)
-    private val providerNameTextInputLayout by getViewProperty<TextInputLayout>(R.id.providerNameTextInputLayout)
-    private val providerTypeAutoCompleteTextView by getViewProperty<MaterialAutoCompleteTextView>(R.id.providerTypeAutoCompleteTextView)
-    private val providerTypeTextInputLayout by getViewProperty<TextInputLayout>(R.id.providerTypeTextInputLayout)
+    private val fullscreenLoadingProgressBar by
+        getViewProperty<FullscreenLoadingProgressBar>(R.id.fullscreenLoadingProgressBar)
+    private val providerNameTextInputLayout by
+        getViewProperty<TextInputLayout>(R.id.providerNameTextInputLayout)
+    private val providerTypeAutoCompleteTextView by
+        getViewProperty<MaterialAutoCompleteTextView>(R.id.providerTypeAutoCompleteTextView)
+    private val providerTypeTextInputLayout by
+        getViewProperty<TextInputLayout>(R.id.providerTypeTextInputLayout)
     private val toolbar by getViewProperty<MaterialToolbar>(R.id.toolbar)
 
     // Arguments
     private val providerIdentifier: ProviderIdentifier?
         get() = arguments?.getParcelable(ARG_PROVIDER_IDENTIFIER, ProviderIdentifier::class)
+
     private val providerType: ProviderType?
         get() = arguments?.getSerializable(ARG_PROVIDER_TYPE, ProviderType::class)
 
@@ -71,69 +74,80 @@ class ManageProviderFragment : Fragment(R.layout.fragment_manage_provider) {
     private val providerArguments = Bundle()
 
     // Recyclerview
-    private val argumentsAdapter = object : SimpleListAdapter<ProviderArgument<*>, View>(
-        argumentsDiffCallback,
-        { layoutInflater.inflate(R.layout.argument_item, null) }
-    ) {
-        // Views
-        private val ViewHolder.booleanCheckBox
-            get() = view.findViewById<MaterialCheckBox>(R.id.booleanMaterialCheckBox)!!
-        private val ViewHolder.stringTextInputLayout
-            get() = view.findViewById<TextInputLayout>(R.id.stringTextInputLayout)!!
+    private val argumentsAdapter =
+        object :
+            SimpleListAdapter<ProviderArgument<*>, View>(
+                argumentsDiffCallback,
+                { layoutInflater.inflate(R.layout.argument_item, null) },
+            ) {
+            // Views
+            private val ViewHolder.booleanCheckBox
+                get() = view.findViewById<MaterialCheckBox>(R.id.booleanMaterialCheckBox)!!
 
-        override fun ViewHolder.onBindView(item: ProviderArgument<*>) {
-            booleanCheckBox.setOnCheckedChangeListener { _, isChecked ->
-                providerArguments.putBoolean(item.key, isChecked)
-            }
-            stringTextInputLayout.editText?.doAfterTextChanged { inputText ->
-                inputText.toString().takeIf { it.isNotBlank() }?.also {
-                    providerArguments.putString(item.key, it)
-                } ?: providerArguments.remove(item.key)
-            }
+            private val ViewHolder.stringTextInputLayout
+                get() = view.findViewById<TextInputLayout>(R.id.stringTextInputLayout)!!
 
-            booleanCheckBox.isVisible = false
-            stringTextInputLayout.isVisible = false
-
-            when (item.type) {
-                Boolean::class -> {
-                    val value = providerArguments.getBoolean(
-                        item.key, (item.defaultValue as? Boolean) ?: false
-                    )
-
-                    booleanCheckBox.setText(item.nameStringResId)
-                    booleanCheckBox.isChecked = value
-                    booleanCheckBox.isVisible = true
+            override fun ViewHolder.onBindView(item: ProviderArgument<*>) {
+                booleanCheckBox.setOnCheckedChangeListener { _, isChecked ->
+                    providerArguments.putBoolean(item.key, isChecked)
+                }
+                stringTextInputLayout.editText?.doAfterTextChanged { inputText ->
+                    inputText
+                        .toString()
+                        .takeIf { it.isNotBlank() }
+                        ?.also { providerArguments.putString(item.key, it) }
+                        ?: providerArguments.remove(item.key)
                 }
 
-                String::class -> {
-                    val value = providerArguments.getString(item.key)
+                booleanCheckBox.isVisible = false
+                stringTextInputLayout.isVisible = false
 
-                    stringTextInputLayout.setHint(item.nameStringResId)
-                    stringTextInputLayout.editText?.setText(value)
-                    stringTextInputLayout.endIconMode = when (item.hidden) {
-                        true -> TextInputLayout.END_ICON_PASSWORD_TOGGLE
-                        false -> TextInputLayout.END_ICON_CLEAR_TEXT
-                    }
-                    stringTextInputLayout.editText?.inputType = when (item.hidden) {
-                        true -> android.text.InputType.TYPE_CLASS_TEXT or
-                                android.text.InputType.TYPE_TEXT_VARIATION_PASSWORD
+                when (item.type) {
+                    Boolean::class -> {
+                        val value =
+                            providerArguments.getBoolean(
+                                item.key,
+                                (item.defaultValue as? Boolean) ?: false,
+                            )
 
-                        false -> android.text.InputType.TYPE_CLASS_TEXT
+                        booleanCheckBox.setText(item.nameStringResId)
+                        booleanCheckBox.isChecked = value
+                        booleanCheckBox.isVisible = true
                     }
-                    stringTextInputLayout.isVisible = true
+
+                    String::class -> {
+                        val value = providerArguments.getString(item.key)
+
+                        stringTextInputLayout.setHint(item.nameStringResId)
+                        stringTextInputLayout.editText?.setText(value)
+                        stringTextInputLayout.endIconMode =
+                            when (item.hidden) {
+                                true -> TextInputLayout.END_ICON_PASSWORD_TOGGLE
+                                false -> TextInputLayout.END_ICON_CLEAR_TEXT
+                            }
+                        stringTextInputLayout.editText?.inputType =
+                            when (item.hidden) {
+                                true ->
+                                    android.text.InputType.TYPE_CLASS_TEXT or
+                                        android.text.InputType.TYPE_TEXT_VARIATION_PASSWORD
+
+                                false -> android.text.InputType.TYPE_CLASS_TEXT
+                            }
+                        stringTextInputLayout.isVisible = true
+                    }
                 }
             }
         }
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         viewModel.setProviderIdentifier(providerIdentifier)
 
-        selectedProviderType = providerType?.also {
-            require(manageableProviderTypes.contains(it)) { "Invalid provider type: $it" }
-        }
+        selectedProviderType =
+            providerType?.also {
+                require(manageableProviderTypes.contains(it)) { "Invalid provider type: $it" }
+            }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -144,27 +158,28 @@ class ManageProviderFragment : Fragment(R.layout.fragment_manage_provider) {
         argumentsRecyclerView.adapter = argumentsAdapter
 
         confirmMaterialButton.setOnClickListener {
-            val name = providerNameTextInputLayout.editText?.text?.toString()?.takeIf {
-                it.isNotBlank()
-            }?.also {
-                providerNameTextInputLayout.error = null
-            } ?: run {
-                providerNameTextInputLayout.error = getString(R.string.provider_name_error)
-                return@setOnClickListener
-            }
+            val name =
+                providerNameTextInputLayout.editText
+                    ?.text
+                    ?.toString()
+                    ?.takeIf { it.isNotBlank() }
+                    ?.also { providerNameTextInputLayout.error = null }
+                    ?: run {
+                        providerNameTextInputLayout.error = getString(R.string.provider_name_error)
+                        return@setOnClickListener
+                    }
 
-            val providerType = selectedProviderType?.also {
-                providerTypeTextInputLayout.error = null
-            } ?: run {
-                providerTypeTextInputLayout.error = getString(R.string.provider_type_error)
-                return@setOnClickListener
-            }
+            val providerType =
+                selectedProviderType?.also { providerTypeTextInputLayout.error = null }
+                    ?: run {
+                        providerTypeTextInputLayout.error = getString(R.string.provider_type_error)
+                        return@setOnClickListener
+                    }
 
-            val wrongArguments = providerType.arguments.mapNotNull { argument ->
-                providerArguments.validateArgument(argument)?.let {
-                    argument to it
+            val wrongArguments =
+                providerType.arguments.mapNotNull { argument ->
+                    providerArguments.validateArgument(argument)?.let { argument to it }
                 }
-            }
 
             if (wrongArguments.isNotEmpty()) {
                 showArgumentValidationErrorDialog(wrongArguments)
@@ -184,14 +199,10 @@ class ManageProviderFragment : Fragment(R.layout.fragment_manage_provider) {
             }
         }
 
-        deleteMaterialButton.setOnClickListener {
-            showDeleteDialog()
-        }
+        deleteMaterialButton.setOnClickListener { showDeleteDialog() }
 
         providerTypeAutoCompleteTextView.setSimpleItems(
-            manageableProviderTypes.map {
-                getString(it.nameStringResId)
-            }.toTypedArray()
+            manageableProviderTypes.map { getString(it.nameStringResId) }.toTypedArray()
         )
 
         providerTypeAutoCompleteTextView.setOnItemClickListener { _, _, position, _ ->
@@ -209,12 +220,13 @@ class ManageProviderFragment : Fragment(R.layout.fragment_manage_provider) {
                             }
                         )
 
-                        confirmMaterialButton.contentDescription = getString(
-                            when (inEditMode) {
-                                true -> R.string.save_provider_action
-                                false -> R.string.add_provider_action
-                            }
-                        )
+                        confirmMaterialButton.contentDescription =
+                            getString(
+                                when (inEditMode) {
+                                    true -> R.string.save_provider_action
+                                    false -> R.string.add_provider_action
+                                }
+                            )
 
                         deleteMaterialButton.isVisible = inEditMode
 
@@ -239,7 +251,7 @@ class ManageProviderFragment : Fragment(R.layout.fragment_manage_provider) {
                                 Log.e(
                                     LOG_TAG,
                                     "Failed to load provider, error: ${it.error}",
-                                    it.throwable
+                                    it.throwable,
                                 )
 
                                 if (it.error == Error.NOT_FOUND) {
@@ -280,11 +292,12 @@ class ManageProviderFragment : Fragment(R.layout.fragment_manage_provider) {
                                 )
 
                                 argumentsAdapter.submitList(it.arguments)
-                            } ?: run {
-                                providerTypeTextInputLayout.startIconDrawable = null
-
-                                argumentsAdapter.submitList(listOf())
                             }
+                                ?: run {
+                                    providerTypeTextInputLayout.startIconDrawable = null
+
+                                    argumentsAdapter.submitList(listOf())
+                                }
                         }
                     }
                 }
@@ -312,7 +325,7 @@ class ManageProviderFragment : Fragment(R.layout.fragment_manage_provider) {
                             getString(it.first.nameStringResId),
                             getString(it.second.messageStringResId),
                         )
-                    }
+                    },
                 )
             )
             .setPositiveButton(android.R.string.ok) { _, _ ->
@@ -326,9 +339,7 @@ class ManageProviderFragment : Fragment(R.layout.fragment_manage_provider) {
             .setMessage(R.string.delete_provider_confirmation)
             .setPositiveButton(android.R.string.ok) { _, _ ->
                 viewLifecycleOwner.lifecycleScope.launch {
-                    fullscreenLoadingProgressBar.withProgress {
-                        viewModel.deleteProvider()
-                    }
+                    fullscreenLoadingProgressBar.withProgress { viewModel.deleteProvider() }
                 }
             }
             .setNegativeButton(android.R.string.cancel) { _, _ ->
@@ -343,22 +354,24 @@ class ManageProviderFragment : Fragment(R.layout.fragment_manage_provider) {
         private const val ARG_PROVIDER_IDENTIFIER = "provider_identifier"
         private const val ARG_PROVIDER_TYPE = "provider_type"
 
-        private val argumentsDiffCallback = object : DiffUtil.ItemCallback<ProviderArgument<*>>() {
-            override fun areItemsTheSame(
-                oldItem: ProviderArgument<*>,
-                newItem: ProviderArgument<*>
-            ) = oldItem.key == newItem.key && oldItem.type == newItem.type
+        private val argumentsDiffCallback =
+            object : DiffUtil.ItemCallback<ProviderArgument<*>>() {
+                override fun areItemsTheSame(
+                    oldItem: ProviderArgument<*>,
+                    newItem: ProviderArgument<*>,
+                ) = oldItem.key == newItem.key && oldItem.type == newItem.type
 
-            override fun areContentsTheSame(
-                oldItem: ProviderArgument<*>,
-                newItem: ProviderArgument<*>
-            ) = false // Reload all items
-        }
+                override fun areContentsTheSame(
+                    oldItem: ProviderArgument<*>,
+                    newItem: ProviderArgument<*>,
+                ) = false // Reload all items
+            }
 
         private val manageableProviderTypes = ProviderType.entries.filter { it.canBeManaged }
 
         /**
          * Create a [Bundle] to use as the arguments for this fragment.
+         *
          * @param providerIdentifier The identifier of the provider to edit or delete
          * @param providerType A [ProviderType] to use as an hint for the creation of a new
          *   instance, ignored when [providerIdentifier] is provided

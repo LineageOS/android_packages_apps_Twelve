@@ -15,20 +15,15 @@ import kotlinx.coroutines.flow.onStart
 fun Context.permissionGranted(permission: String) =
     ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED
 
-fun Context.permissionsGranted(permissions: Array<String>) = permissions.all {
-    permissionGranted(it)
-}
+fun Context.permissionsGranted(permissions: Array<String>) =
+    permissions.all { permissionGranted(it) }
 
-fun Context.permissionsStatus(permissions: Array<String>) = permissions.partition {
-    permissionGranted(it)
-}
+fun Context.permissionsStatus(permissions: Array<String>) =
+    permissions.partition { permissionGranted(it) }
 
-/**
- * Flow of permissions granted/denied.
- */
+/** Flow of permissions granted/denied. */
 fun Context.permissionsFlow(lifecycle: Lifecycle, permissions: Array<String>) =
-    lifecycle.eventFlow(Lifecycle.Event.ON_RESUME)
+    lifecycle
+        .eventFlow(Lifecycle.Event.ON_RESUME)
         .onStart { emit(Unit) }
-        .map {
-            permissionsStatus(permissions)
-        }
+        .map { permissionsStatus(permissions) }

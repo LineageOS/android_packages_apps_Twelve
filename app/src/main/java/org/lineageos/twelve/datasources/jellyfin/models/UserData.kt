@@ -12,7 +12,4 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.UseSerializers
 import org.lineageos.twelve.datasources.jellyfin.serializers.UUIDSerializer
 
-@Serializable
-data class UserData(
-    @SerialName("IsFavorite") val isFavorite: Boolean? = null,
-)
+@Serializable data class UserData(@SerialName("IsFavorite") val isFavorite: Boolean? = null)

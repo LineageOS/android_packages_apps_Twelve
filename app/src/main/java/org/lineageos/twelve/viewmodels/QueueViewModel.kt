@@ -17,14 +17,11 @@ import org.lineageos.twelve.ext.queueFlow
 
 class QueueViewModel(application: Application) : TwelveViewModel(application) {
     @OptIn(ExperimentalCoroutinesApi::class)
-    val queue = mediaControllerFlow
-        .flatMapLatest { it.queueFlow(eventsFlow) }
-        .flowOn(Dispatchers.Main)
-        .stateIn(
-            viewModelScope,
-            SharingStarted.WhileSubscribed(),
-            listOf()
-        )
+    val queue =
+        mediaControllerFlow
+            .flatMapLatest { it.queueFlow(eventsFlow) }
+            .flowOn(Dispatchers.Main)
+            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), listOf())
 
     fun moveItem(from: Int, to: Int) {
         mediaController.value?.moveMediaItem(from, to)

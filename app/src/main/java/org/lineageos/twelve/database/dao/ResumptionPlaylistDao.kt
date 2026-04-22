@@ -13,15 +13,10 @@ import org.lineageos.twelve.database.entities.ResumptionPlaylistWithMediaItems
 @Dao
 @Suppress("FunctionName")
 interface ResumptionPlaylistDao {
-    /**
-     * Clear all resumption playlists.
-     */
-    @Query("DELETE FROM ResumptionPlaylist")
-    suspend fun clearResumptionPlaylist()
+    /** Clear all resumption playlists. */
+    @Query("DELETE FROM ResumptionPlaylist") suspend fun clearResumptionPlaylist()
 
-    /**
-     * Insert a resumption playlist.
-     */
+    /** Insert a resumption playlist. */
     @Query(
         """
             INSERT INTO ResumptionPlaylist (start_index, start_position_ms)
@@ -30,9 +25,7 @@ interface ResumptionPlaylistDao {
     )
     suspend fun _createResumptionPlaylist(startIndex: Int, startPositionMs: Long): Long
 
-    /**
-     * Add an item to a resumption playlist.
-     */
+    /** Add an item to a resumption playlist. */
     @Query(
         """
             INSERT INTO ResumptionItem (playlist_index, resumption_playlist_id, media_id)
@@ -42,17 +35,15 @@ interface ResumptionPlaylistDao {
     suspend fun _addItemToResumptionPlaylist(
         index: Long,
         resumptionPlaylistId: Long,
-        mediaItem: String
+        mediaItem: String,
     )
 
-    /**
-     * Creates a new resumption playlist given a list of media items.
-     */
+    /** Creates a new resumption playlist given a list of media items. */
     @Transaction
     suspend fun createResumptionPlaylist(
         startIndex: Int,
         startPositionMs: Long,
-        mediaItems: List<String>
+        mediaItems: List<String>,
     ) {
         clearResumptionPlaylist()
 
@@ -63,16 +54,14 @@ interface ResumptionPlaylistDao {
         }
     }
 
-    /**
-     * Get resumption playlist with items
-     */
+    /** Get resumption playlist with items */
     @Transaction
     @Query("SELECT * FROM ResumptionPlaylist LIMIT 1")
     suspend fun getResumptionPlaylistWithItems(): ResumptionPlaylistWithMediaItems?
 
-    /**
-     * Update resumption playlist.
-     */
-    @Query("UPDATE ResumptionPlaylist SET start_index = :currentMediaItemIndex, start_position_ms = :currentPosition")
+    /** Update resumption playlist. */
+    @Query(
+        "UPDATE ResumptionPlaylist SET start_index = :currentMediaItemIndex, start_position_ms = :currentPosition"
+    )
     suspend fun updateResumptionPlaylist(currentMediaItemIndex: Int, currentPosition: Long): Int
 }

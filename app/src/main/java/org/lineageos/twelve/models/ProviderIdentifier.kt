@@ -17,15 +17,10 @@ import org.lineageos.twelve.ext.readSerializable
  * @param typeId The ID of the provider relative to the [ProviderType]
  */
 @Serializable
-data class ProviderIdentifier(
-    val type: ProviderType,
-    val typeId: Long,
-) : Comparable<ProviderIdentifier>, Parcelable {
-    override fun compareTo(other: ProviderIdentifier) = compareValuesBy(
-        this, other,
-        ProviderIdentifier::type,
-        ProviderIdentifier::typeId,
-    )
+data class ProviderIdentifier(val type: ProviderType, val typeId: Long) :
+    Comparable<ProviderIdentifier>, Parcelable {
+    override fun compareTo(other: ProviderIdentifier) =
+        compareValuesBy(this, other, ProviderIdentifier::type, ProviderIdentifier::typeId)
 
     override fun describeContents() = 0
 
@@ -35,12 +30,13 @@ data class ProviderIdentifier(
     }
 
     companion object CREATOR : Parcelable.Creator<ProviderIdentifier> {
-        override fun createFromParcel(source: Parcel?) = source?.let {
-            ProviderIdentifier(
-                type = it.readSerializable(ProviderType::class)!!,
-                typeId = it.readLong(),
-            )
-        }
+        override fun createFromParcel(source: Parcel?) =
+            source?.let {
+                ProviderIdentifier(
+                    type = it.readSerializable(ProviderType::class)!!,
+                    typeId = it.readLong(),
+                )
+            }
 
         override fun newArray(size: Int) = arrayOfNulls<ProviderIdentifier>(size)
     }

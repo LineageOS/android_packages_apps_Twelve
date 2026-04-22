@@ -16,8 +16,8 @@ private fun InputMethodManager.scheduleShowSoftInput(
     runnable: Runnable,
     showRequestTime: Long,
 ) {
-    if (!view.hasFocus()
-        || (showRequestTime + SHOW_REQUEST_TIMEOUT) <= System.currentTimeMillis()
+    if (
+        !view.hasFocus() || (showRequestTime + SHOW_REQUEST_TIMEOUT) <= System.currentTimeMillis()
     ) {
         return
     }
@@ -48,32 +48,30 @@ private fun InputMethodManager.scheduleHideSoftInput(
     }
 }
 
-/**
- * @see InputMethodManager.showSoftInput
- */
+/** @see InputMethodManager.showSoftInput */
 fun InputMethodManager.scheduleShowSoftInput(view: View, flags: Int) {
     val currentTimeMillis = System.currentTimeMillis()
 
-    val runnable = object : Runnable {
-        override fun run() {
-            scheduleShowSoftInput(view, flags, this, currentTimeMillis)
+    val runnable =
+        object : Runnable {
+            override fun run() {
+                scheduleShowSoftInput(view, flags, this, currentTimeMillis)
+            }
         }
-    }
 
     runnable.run()
 }
 
-/**
- * @see InputMethodManager.hideSoftInputFromWindow
- */
+/** @see InputMethodManager.hideSoftInputFromWindow */
 fun InputMethodManager.scheduleHideSoftInput(view: View, flags: Int) {
     val currentTimeMillis = System.currentTimeMillis()
 
-    val runnable = object : Runnable {
-        override fun run() {
-            scheduleHideSoftInput(view, flags, this, currentTimeMillis)
+    val runnable =
+        object : Runnable {
+            override fun run() {
+                scheduleHideSoftInput(view, flags, this, currentTimeMillis)
+            }
         }
-    }
 
     runnable.run()
 }

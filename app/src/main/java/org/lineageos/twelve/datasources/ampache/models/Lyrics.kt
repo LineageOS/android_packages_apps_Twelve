@@ -15,7 +15,4 @@ import kotlinx.serialization.Serializable
  * @param url The URL
  */
 @Serializable
-data class Lyrics(
-    @SerialName("text") val text: String,
-    @SerialName("url") val url: String,
-)
+data class Lyrics(@SerialName("text") val text: String, @SerialName("url") val url: String)

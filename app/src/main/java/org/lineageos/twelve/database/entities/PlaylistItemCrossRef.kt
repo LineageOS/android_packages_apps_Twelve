@@ -20,19 +20,17 @@ import androidx.room.Index
  */
 @Entity(
     primaryKeys = ["playlist_id", "audio_uri"],
-    indices = [
-        Index(value = ["playlist_id"]),
-        Index(value = ["audio_uri"]),
-    ],
-    foreignKeys = [
-        ForeignKey(
-            entity = Playlist::class,
-            parentColumns = ["playlist_id"],
-            childColumns = ["playlist_id"],
-            onDelete = ForeignKey.CASCADE,
-            onUpdate = ForeignKey.CASCADE,
-        ),
-    ]
+    indices = [Index(value = ["playlist_id"]), Index(value = ["audio_uri"])],
+    foreignKeys =
+        [
+            ForeignKey(
+                entity = Playlist::class,
+                parentColumns = ["playlist_id"],
+                childColumns = ["playlist_id"],
+                onDelete = ForeignKey.CASCADE,
+                onUpdate = ForeignKey.CASCADE,
+            )
+        ],
 )
 data class PlaylistItemCrossRef(
     @ColumnInfo(name = "playlist_id") val playlistId: Long,

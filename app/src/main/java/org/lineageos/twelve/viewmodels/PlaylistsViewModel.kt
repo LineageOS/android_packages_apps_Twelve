@@ -23,29 +23,23 @@ import org.lineageos.twelve.models.FlowResult.Companion.asFlowResult
 import org.lineageos.twelve.models.SortingRule
 
 class PlaylistsViewModel(application: Application) : TwelveViewModel(application) {
-    val navigationProvider = mediaRepository.navigationProvider
-        .stateIn(
-            viewModelScope,
-            SharingStarted.Eagerly,
-            null,
-        )
+    val navigationProvider =
+        mediaRepository.navigationProvider.stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
-    val sortingRule = sharedPreferences.preferenceFlow(
-        PLAYLISTS_SORTING_STRATEGY_KEY,
-        PLAYLISTS_SORTING_REVERSE_KEY,
-        getter = SharedPreferences::playlistsSortingRule,
-    )
+    val sortingRule =
+        sharedPreferences.preferenceFlow(
+            PLAYLISTS_SORTING_STRATEGY_KEY,
+            PLAYLISTS_SORTING_REVERSE_KEY,
+            getter = SharedPreferences::playlistsSortingRule,
+        )
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val playlists = sortingRule
-        .flatMapLatest { mediaRepository.playlists(it) }
-        .asFlowResult()
-        .flowOn(Dispatchers.IO)
-        .stateIn(
-            viewModelScope,
-            SharingStarted.WhileSubscribed(),
-            FlowResult.Loading()
-        )
+    val playlists =
+        sortingRule
+            .flatMapLatest { mediaRepository.playlists(it) }
+            .asFlowResult()
+            .flowOn(Dispatchers.IO)
+            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), FlowResult.Loading())
 
     fun setSortingRule(sortingRule: SortingRule) {
         sharedPreferences.playlistsSortingRule = sortingRule

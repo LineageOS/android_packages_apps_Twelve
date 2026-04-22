@@ -24,30 +24,28 @@ class CreatePlaylistViewModel(application: Application) : TwelveViewModel(applic
 
     private val playlistName = MutableStateFlow("")
 
-    val providersWithSelection = combine(
-        providersRepository.allProviders,
-        providerIdentifier
-    ) { allProviders, providerIdentifier ->
-        allProviders to providerIdentifier?.let {
-            allProviders.indexOfFirst { provider ->
-                provider.type == it.type && provider.typeId == it.typeId
-            }.takeIf { it != -1 }
-        }
-    }
-        .flowOn(Dispatchers.IO)
-        .stateIn(
-            viewModelScope,
-            SharingStarted.WhileSubscribed(),
-            listOf<Provider>() to null
-        )
+    val providersWithSelection =
+        combine(providersRepository.allProviders, providerIdentifier) {
+                allProviders,
+                providerIdentifier ->
+                allProviders to
+                    providerIdentifier?.let {
+                        allProviders
+                            .indexOfFirst { provider ->
+                                provider.type == it.type && provider.typeId == it.typeId
+                            }
+                            .takeIf { it != -1 }
+                    }
+            }
+            .flowOn(Dispatchers.IO)
+            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), listOf<Provider>() to null)
 
     fun setProviderIdentifier(providerIdentifier: ProviderIdentifier?) {
         this.providerIdentifier.value = providerIdentifier
     }
 
-    fun setProviderPosition(position: Int) = setProviderIdentifier(
-        providersWithSelection.value.first[position].identifier
-    )
+    fun setProviderPosition(position: Int) =
+        setProviderIdentifier(providersWithSelection.value.first[position].identifier)
 
     fun getPlaylistName() = playlistName.value
 
@@ -57,9 +55,8 @@ class CreatePlaylistViewModel(application: Application) : TwelveViewModel(applic
 
     fun isPlaylistNameEmpty() = playlistName.value.isEmpty()
 
-    suspend fun createPlaylist() = providerIdentifier.value?.let {
-        withContext(Dispatchers.IO) {
-            mediaRepository.createPlaylist(it, playlistName.value)
-        }
-    } ?: Result.Error(Error.IO)
+    suspend fun createPlaylist() =
+        providerIdentifier.value?.let {
+            withContext(Dispatchers.IO) { mediaRepository.createPlaylist(it, playlistName.value) }
+        } ?: Result.Error(Error.IO)
 }

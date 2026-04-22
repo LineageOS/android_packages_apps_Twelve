@@ -39,71 +39,61 @@ import org.lineageos.twelve.utils.PermissionsChecker
 import org.lineageos.twelve.utils.PermissionsUtils
 import org.lineageos.twelve.viewmodels.GenresViewModel
 
-/**
- * View all music genres.
- */
+/** View all music genres. */
 class GenresFragment : Fragment(R.layout.fragment_genres) {
     // View models
     private val viewModel by viewModels<GenresViewModel>()
 
     // Views
-    private val linearProgressIndicator by getViewProperty<LinearProgressIndicator>(R.id.linearProgressIndicator)
+    private val linearProgressIndicator by
+        getViewProperty<LinearProgressIndicator>(R.id.linearProgressIndicator)
     private val noElementsLinearLayout by getViewProperty<LinearLayout>(R.id.noElementsLinearLayout)
     private val recyclerView by getViewProperty<RecyclerView>(R.id.recyclerView)
     private val sortingChip by getViewProperty<SortingChip>(R.id.sortingChip)
 
     // Recyclerview
     private val adapter by lazy {
-        object : SimpleListAdapter<Genre, ListItem>(
-            UniqueItemDiffCallback(),
-            ::ListItem,
-        ) {
+        object : SimpleListAdapter<Genre, ListItem>(UniqueItemDiffCallback(), ::ListItem) {
             override fun ViewHolder.onPrepareView() {
                 view.setLeadingIconImage(R.drawable.ic_genres)
             }
 
             override fun ViewHolder.onBindView(item: Genre) {
                 view.setOnClickListener {
-                    findNavController().navigateSafe(
-                        R.id.action_mainFragment_to_fragment_genre,
-                        GenreFragment.createBundle(item.uri)
-                    )
+                    findNavController()
+                        .navigateSafe(
+                            R.id.action_mainFragment_to_fragment_genre,
+                            GenreFragment.createBundle(item.uri),
+                        )
                 }
                 view.setOnLongClickListener {
-                    findNavController().navigateSafe(
-                        R.id.action_mainFragment_to_fragment_media_item_bottom_sheet_dialog,
-                        MediaItemBottomSheetDialogFragment.createBundle(item.uri)
-                    )
+                    findNavController()
+                        .navigateSafe(
+                            R.id.action_mainFragment_to_fragment_media_item_bottom_sheet_dialog,
+                            MediaItemBottomSheetDialogFragment.createBundle(item.uri),
+                        )
                     true
                 }
 
-                item.name?.also {
-                    view.headlineText = it
-                } ?: view.setHeadlineText(R.string.unknown)
+                item.name?.also { view.headlineText = it } ?: view.setHeadlineText(R.string.unknown)
             }
         }
     }
 
     // Permissions
-    private val permissionsChecker = PermissionsChecker(
-        this, PermissionsUtils.mainPermissions
-    )
+    private val permissionsChecker = PermissionsChecker(this, PermissionsUtils.mainPermissions)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         // Insets
         ViewCompat.setOnApplyWindowInsetsListener(recyclerView) { v, windowInsets ->
-            val insets = windowInsets.getInsets(
-                WindowInsetsCompat.Type.systemBars() or WindowInsetsCompat.Type.displayCutout()
-            )
+            val insets =
+                windowInsets.getInsets(
+                    WindowInsetsCompat.Type.systemBars() or WindowInsetsCompat.Type.displayCutout()
+                )
 
-            v.updatePadding(
-                insets,
-                start = true,
-                end = true,
-                bottom = true,
-            )
+            v.updatePadding(insets, start = true, end = true, bottom = true)
 
             windowInsets
         }
@@ -114,17 +104,13 @@ class GenresFragment : Fragment(R.layout.fragment_genres) {
                 SortingStrategy.PLAY_COUNT to R.string.sort_by_play_count,
             )
         )
-        sortingChip.setOnSortingRuleSelectedListener {
-            viewModel.setSortingRule(it)
-        }
+        sortingChip.setOnSortingRuleSelectedListener { viewModel.setSortingRule(it) }
 
         recyclerView.adapter = adapter
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                permissionsChecker.withPermissionsGranted {
-                    loadData()
-                }
+                permissionsChecker.withPermissionsGranted { loadData() }
             }
         }
     }
@@ -158,7 +144,7 @@ class GenresFragment : Fragment(R.layout.fragment_genres) {
                             Log.e(
                                 LOG_TAG,
                                 "Failed to load genres, error: ${it.error}",
-                                it.throwable
+                                it.throwable,
                             )
 
                             adapter.submitList(emptyList())
@@ -170,11 +156,7 @@ class GenresFragment : Fragment(R.layout.fragment_genres) {
                 }
             }
 
-            launch {
-                viewModel.sortingRule.collectLatest {
-                    sortingChip.setSortingRule(it)
-                }
-            }
+            launch { viewModel.sortingRule.collectLatest { sortingChip.setSortingRule(it) } }
         }
     }
 

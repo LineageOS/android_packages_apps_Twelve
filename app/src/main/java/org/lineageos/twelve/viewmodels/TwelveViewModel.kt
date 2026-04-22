@@ -33,9 +33,8 @@ import org.lineageos.twelve.models.RepeatMode
 import org.lineageos.twelve.services.PlaybackService
 
 /**
- * Base view model for all app view models.
- * Here we keep the shared stuff every fragment could use, like access to the repository and
- * the media controller to interact with the playback service.
+ * Base view model for all app view models. Here we keep the shared stuff every fragment could use,
+ * like access to the repository and the media controller to interact with the playback service.
  */
 abstract class TwelveViewModel(application: Application) : AndroidViewModel(application) {
     protected val mediaRepository = getApplication<TwelveApplication>().mediaRepository
@@ -53,43 +52,34 @@ abstract class TwelveViewModel(application: Application) : AndroidViewModel(appl
     private val sessionToken by lazy {
         SessionToken(
             applicationContext,
-            ComponentName(applicationContext, PlaybackService::class.java)
+            ComponentName(applicationContext, PlaybackService::class.java),
         )
     }
 
-    protected val mediaControllerFlow = channelFlow {
-        val mediaController = MediaController.Builder(applicationContext, sessionToken)
-            .buildAsync()
-            .await()
+    protected val mediaControllerFlow =
+        channelFlow {
+                val mediaController =
+                    MediaController.Builder(applicationContext, sessionToken).buildAsync().await()
 
-        trySend(mediaController)
+                trySend(mediaController)
 
-        awaitClose {
-            mediaController.release()
-        }
-    }
-        .flowOn(Dispatchers.Main)
-        .shareIn(
-            viewModelScope,
-            SharingStarted.Eagerly,
-            replay = 1
-        )
+                awaitClose { mediaController.release() }
+            }
+            .flowOn(Dispatchers.Main)
+            .shareIn(viewModelScope, SharingStarted.Eagerly, replay = 1)
 
-    protected val mediaController = mediaControllerFlow
-        .stateIn(
+    protected val mediaController =
+        mediaControllerFlow.stateIn(
             viewModelScope,
             started = SharingStarted.Eagerly,
-            initialValue = null
+            initialValue = null,
         )
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    protected val eventsFlow = mediaControllerFlow
-        .flatMapLatest { it.eventsFlow() }
-        .shareIn(
-            viewModelScope,
-            SharingStarted.Eagerly,
-            replay = 1
-        )
+    protected val eventsFlow =
+        mediaControllerFlow
+            .flatMapLatest { it.eventsFlow() }
+            .shareIn(viewModelScope, SharingStarted.Eagerly, replay = 1)
 
     protected var shuffleModeEnabled: Boolean
         get() = mediaController.value?.shuffleModeEnabled ?: false

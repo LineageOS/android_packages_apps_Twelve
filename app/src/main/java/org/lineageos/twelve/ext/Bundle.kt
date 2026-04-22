@@ -16,21 +16,22 @@ fun <T : Parcelable> Bundle.getParcelable(key: String?, clazz: KClass<T>) =
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
         getParcelable(key, clazz.java)
     } else {
-        @Suppress("DEPRECATION")
-        getParcelable(key)
+        @Suppress("DEPRECATION") getParcelable(key)
     }
 
 inline fun <reified T : Parcelable> Bundle.getParcelableArray(
-    key: String?, clazz: KClass<T>
+    key: String?,
+    clazz: KClass<T>,
 ): Array<T>? =
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
         getParcelableArray(key, clazz.java)
     } else {
         @Suppress("DEPRECATION")
         getParcelableArray(key)?.let { parcelableArray ->
-            parcelableArray.mapNotNull { parcelable ->
-                T::class.safeCast(parcelable)
-            }.toTypedArray().takeIf { it.size == parcelableArray.size }
+            parcelableArray
+                .mapNotNull { parcelable -> T::class.safeCast(parcelable) }
+                .toTypedArray()
+                .takeIf { it.size == parcelableArray.size }
         }
     }
 
@@ -38,11 +39,8 @@ inline fun <reified T : Serializable> Bundle.getSerializable(key: String?, clazz
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
         getSerializable(key, clazz.java)
     } else {
-        @Suppress("DEPRECATION")
-        T::class.safeCast(getSerializable(key))
+        @Suppress("DEPRECATION") T::class.safeCast(getSerializable(key))
     }
 
-/**
- * [Bundle] DSL builder.
- */
+/** [Bundle] DSL builder. */
 fun Bundle(block: Bundle.() -> Unit) = Bundle().apply(block)

@@ -31,18 +31,19 @@ class TwelveRenderersFactory(
     override fun buildAudioSink(
         context: Context,
         enableFloatOutput: Boolean,
-        enableAudioTrackPlaybackParams: Boolean
-    ) = TwelveAudioSink(
-        DefaultAudioSink.Builder(context)
-            .setEnableFloatOutput(enableFloatOutput)
-            .setEnableAudioOutputPlaybackParameters(enableAudioTrackPlaybackParams)
-            .setAudioOutputProvider(
-                AudioTrackAudioOutputProvider.Builder(context)
-                    .setAudioOffloadSupportProvider(DefaultAudioOffloadSupportProvider(context))
-                    .build()
-            )
-            .build(),
-        onAudioDeviceInfoChanged,
-        onAudioTrackConfigChanged,
-    )
+        enableAudioTrackPlaybackParams: Boolean,
+    ) =
+        TwelveAudioSink(
+            DefaultAudioSink.Builder(context)
+                .setEnableFloatOutput(enableFloatOutput)
+                .setEnableAudioOutputPlaybackParameters(enableAudioTrackPlaybackParams)
+                .setAudioOutputProvider(
+                    AudioTrackAudioOutputProvider.Builder(context)
+                        .setAudioOffloadSupportProvider(DefaultAudioOffloadSupportProvider(context))
+                        .build()
+                )
+                .build(),
+            onAudioDeviceInfoChanged,
+            onAudioTrackConfigChanged,
+        )
 }

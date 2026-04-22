@@ -25,17 +25,18 @@ data class PlaylistWithSongs(
 
     val entry: List<Child>? = null,
 ) {
-    fun toPlaylist() = Playlist(
-        allowedUser = allowedUser,
-        id = id,
-        name = name,
-        comment = comment,
-        owner = owner,
-        public = public,
-        songCount = songCount,
-        duration = duration ?: 0,
-        created = created,
-        changed = changed,
-        coverArt = coverArt,
-    )
+    fun toPlaylist() =
+        Playlist(
+            allowedUser = allowedUser,
+            id = id,
+            name = name,
+            comment = comment,
+            owner = owner,
+            public = public,
+            songCount = songCount,
+            duration = duration ?: 0,
+            created = created,
+            changed = changed,
+            coverArt = coverArt,
+        )
 }

@@ -27,11 +27,13 @@ import org.lineageos.twelve.models.MediaItem
 import org.lineageos.twelve.models.Playlist
 import org.lineageos.twelve.models.Thumbnail
 
-abstract class BaseMediaItemView @JvmOverloads constructor(
+abstract class BaseMediaItemView
+@JvmOverloads
+constructor(
     context: Context,
     attrs: AttributeSet? = null,
     @AttrRes defStyleAttr: Int = com.google.android.material.R.attr.materialCardViewStyle,
-    @LayoutRes private val layoutResId: Int
+    @LayoutRes private val layoutResId: Int,
 ) : MaterialCardView(context, attrs, defStyleAttr) {
     // Views
     private val headlineTextView by lazy { findViewById<TextView>(R.id.headlineTextView) }
@@ -96,26 +98,23 @@ abstract class BaseMediaItemView @JvmOverloads constructor(
                 is Artist -> R.drawable.ic_person
                 is Audio -> R.drawable.ic_music_note
                 is Genre -> R.drawable.ic_genres
-                is Playlist -> when (item.type) {
-                    Playlist.Type.PLAYLIST -> R.drawable.ic_playlist_play
-                    Playlist.Type.FAVORITES -> R.drawable.ic_favorite
-                }
-            }
+                is Playlist ->
+                    when (item.type) {
+                        Playlist.Type.PLAYLIST -> R.drawable.ic_playlist_play
+                        Playlist.Type.FAVORITES -> R.drawable.ic_favorite
+                    }
+            },
         )
 
         when (item) {
             is Album -> {
-                item.title?.let {
-                    headlineText = it
-                } ?: setHeadlineText(R.string.album_unknown)
+                item.title?.let { headlineText = it } ?: setHeadlineText(R.string.album_unknown)
                 subheadText = item.artistName
                 supportingText = item.year?.toString()
             }
 
             is Artist -> {
-                item.name?.let {
-                    headlineText = it
-                } ?: setHeadlineText(R.string.artist_unknown)
+                item.name?.let { headlineText = it } ?: setHeadlineText(R.string.artist_unknown)
                 subheadText = null
                 supportingText = null
             }
@@ -127,29 +126,30 @@ abstract class BaseMediaItemView @JvmOverloads constructor(
             }
 
             is Genre -> {
-                item.name?.let {
-                    headlineText = it
-                } ?: setHeadlineText(R.string.genre_unknown)
+                item.name?.let { headlineText = it } ?: setHeadlineText(R.string.genre_unknown)
                 subheadText = null
                 supportingText = null
             }
 
             is Playlist -> {
-                headlineText = item.name ?: resources.getString(
-                    when (item.type) {
-                        Playlist.Type.PLAYLIST -> R.string.playlist_unknown
-                        Playlist.Type.FAVORITES -> R.string.favorites_playlist
-                    }
-                )
+                headlineText =
+                    item.name
+                        ?: resources.getString(
+                            when (item.type) {
+                                Playlist.Type.PLAYLIST -> R.string.playlist_unknown
+                                Playlist.Type.FAVORITES -> R.string.favorites_playlist
+                            }
+                        )
                 subheadText = null
                 supportingText = null
             }
         }
 
-        isDimmed = when (item) {
-            is Audio -> item.playbackUri == null
-            else -> false
-        }
+        isDimmed =
+            when (item) {
+                is Audio -> item.playbackUri == null
+                else -> false
+            }
     }
 
     private fun loadThumbnailImage(data: Thumbnail?, @DrawableRes placeholder: Int) {
@@ -172,7 +172,7 @@ abstract class BaseMediaItemView @JvmOverloads constructor(
                         thumbnailImageView.isVisible = true
                     },
                 )
-            }
+            },
         )
     }
 
@@ -185,10 +185,7 @@ abstract class BaseMediaItemView @JvmOverloads constructor(
     private fun setSupportingText(@StringRes resId: Int) =
         supportingTextView.setTextAndUpdateVisibility(resId)
 
-    private inline fun <T> setViewsProperty(
-        setter: View.(T) -> Unit,
-        value: T,
-    ) {
+    private inline fun <T> setViewsProperty(setter: View.(T) -> Unit, value: T) {
         headlineTextView.setter(value)
         placeholderImageView.setter(value)
         subheadTextView.setter(value)
@@ -198,9 +195,7 @@ abstract class BaseMediaItemView @JvmOverloads constructor(
     // TextView utils
 
     private fun TextView.setTextAndUpdateVisibility(text: CharSequence?) {
-        this.text = text.also {
-            isVisible = it != null
-        }
+        this.text = text.also { isVisible = it != null }
     }
 
     private fun TextView.setTextAndUpdateVisibility(@StringRes resId: Int) =

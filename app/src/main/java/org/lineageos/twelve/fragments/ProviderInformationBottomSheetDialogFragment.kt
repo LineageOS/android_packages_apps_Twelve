@@ -39,32 +39,35 @@ import org.lineageos.twelve.ui.views.FullscreenLoadingProgressBar
 import org.lineageos.twelve.ui.views.ListItem
 import org.lineageos.twelve.viewmodels.ProviderViewModel
 
-/**
- * Fragment used to show useful information regarding a provider.
- */
-class ProviderInformationBottomSheetDialogFragment : TwelveBottomSheetDialogFragment(
-    R.layout.fragment_provider_information_bottom_sheet_dialog
-) {
+/** Fragment used to show useful information regarding a provider. */
+class ProviderInformationBottomSheetDialogFragment :
+    TwelveBottomSheetDialogFragment(R.layout.fragment_provider_information_bottom_sheet_dialog) {
     // View models
     private val viewModel by viewModels<ProviderViewModel>()
 
     // Views
-    private val deleteProviderMaterialButton by getViewProperty<MaterialButton>(R.id.deleteProviderMaterialButton)
-    private val fullscreenLoadingProgressBar by getViewProperty<FullscreenLoadingProgressBar>(R.id.fullscreenLoadingProgressBar)
-    private val manageButtonsHorizontalScrollView by getViewProperty<HorizontalScrollView>(R.id.manageButtonsHorizontalScrollView)
-    private val manageProviderMaterialButton by getViewProperty<MaterialButton>(R.id.manageProviderMaterialButton)
+    private val deleteProviderMaterialButton by
+        getViewProperty<MaterialButton>(R.id.deleteProviderMaterialButton)
+    private val fullscreenLoadingProgressBar by
+        getViewProperty<FullscreenLoadingProgressBar>(R.id.fullscreenLoadingProgressBar)
+    private val manageButtonsHorizontalScrollView by
+        getViewProperty<HorizontalScrollView>(R.id.manageButtonsHorizontalScrollView)
+    private val manageProviderMaterialButton by
+        getViewProperty<MaterialButton>(R.id.manageProviderMaterialButton)
     private val providerIconImageView by getViewProperty<ImageView>(R.id.providerIconImageView)
     private val providerTypeTextView by getViewProperty<TextView>(R.id.providerTypeTextView)
-    private val statusMaterialDivider by getViewProperty<MaterialDivider>(R.id.statusMaterialDivider)
+    private val statusMaterialDivider by
+        getViewProperty<MaterialDivider>(R.id.statusMaterialDivider)
     private val statusRecyclerView by getViewProperty<RecyclerView>(R.id.statusRecyclerView)
     private val titleTextView by getViewProperty<TextView>(R.id.titleTextView)
 
     // RecyclerView
     private val statusAdapter by lazy {
-        object : SimpleListAdapter<DataSourceInformation, ListItem>(
-            UniqueItemDiffCallback(),
-            { context -> ListItem(context) }
-        ) {
+        object :
+            SimpleListAdapter<DataSourceInformation, ListItem>(
+                UniqueItemDiffCallback(),
+                { context -> ListItem(context) },
+            ) {
             override fun ViewHolder.onBindView(item: DataSourceInformation) {
                 view.headlineText = item.keyLocalizedString.getString(view.resources)
                 view.supportingText = item.value.getString(view.resources)
@@ -74,36 +77,31 @@ class ProviderInformationBottomSheetDialogFragment : TwelveBottomSheetDialogFrag
 
     // Arguments
     private val providerIdentifier: ProviderIdentifier
-        get() = requireArguments().getParcelable(
-            ARG_PROVIDER_IDENTIFIER, ProviderIdentifier::class
-        )!!
+        get() =
+            requireArguments().getParcelable(ARG_PROVIDER_IDENTIFIER, ProviderIdentifier::class)!!
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         manageProviderMaterialButton.setOnClickListener {
             viewModel.provider.value.getOrNull()?.let {
-                findNavController().navigateSafe(
-                    R.id.action_providerInformationBottomSheetDialogFragment_to_fragment_manage_provider,
-                    ManageProviderFragment.createBundle(
-                        providerIdentifier = providerIdentifier
-                    ),
-                )
+                findNavController()
+                    .navigateSafe(
+                        R.id
+                            .action_providerInformationBottomSheetDialogFragment_to_fragment_manage_provider,
+                        ManageProviderFragment.createBundle(providerIdentifier = providerIdentifier),
+                    )
             }
         }
 
-        deleteProviderMaterialButton.setOnClickListener {
-            showDeleteDialog()
-        }
+        deleteProviderMaterialButton.setOnClickListener { showDeleteDialog() }
 
         statusRecyclerView.adapter = statusAdapter
 
         viewModel.setProviderIdentifier(providerIdentifier)
 
         viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                loadData()
-            }
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) { loadData() }
         }
     }
 
@@ -182,9 +180,7 @@ class ProviderInformationBottomSheetDialogFragment : TwelveBottomSheetDialogFrag
             .setMessage(R.string.delete_provider_confirmation)
             .setPositiveButton(android.R.string.ok) { _, _ ->
                 viewLifecycleOwner.lifecycleScope.launch {
-                    fullscreenLoadingProgressBar.withProgress {
-                        viewModel.deleteProvider()
-                    }
+                    fullscreenLoadingProgressBar.withProgress { viewModel.deleteProvider() }
                 }
             }
             .setNegativeButton(android.R.string.cancel) { _, _ ->
@@ -200,11 +196,10 @@ class ProviderInformationBottomSheetDialogFragment : TwelveBottomSheetDialogFrag
 
         /**
          * Create a [Bundle] to use as the arguments for this fragment.
+         *
          * @param providerIdentifier The [ProviderIdentifier] of the provider to manage
          */
-        fun createBundle(
-            providerIdentifier: ProviderIdentifier,
-        ) = Bundle {
+        fun createBundle(providerIdentifier: ProviderIdentifier) = Bundle {
             putParcelable(ARG_PROVIDER_IDENTIFIER, providerIdentifier)
         }
     }

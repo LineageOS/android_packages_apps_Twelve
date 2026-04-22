@@ -10,9 +10,7 @@ package org.lineageos.twelve.models
  *
  * @param lines A list of [Line]
  */
-data class Lyrics(
-    val lines: List<Line>,
-) {
+data class Lyrics(val lines: List<Line>) {
     /**
      * Represents a single lyric line with the lyric text and the duration time.
      *
@@ -20,17 +18,10 @@ data class Lyrics(
      * @param durationMs A range that defines the start and end time of the line, in milliseconds.
      *   When only the start time is specified, it is assumed to be the same as the end time
      */
-    data class Line(
-        val text: String,
-        val durationMs: LongRange?,
-    )
+    data class Line(val text: String, val durationMs: LongRange?)
 
     class Builder {
-        private data class TempLine(
-            val text: String,
-            val startMs: Long?,
-            val endMs: Long?,
-        )
+        private data class TempLine(val text: String, val startMs: Long?, val endMs: Long?)
 
         private val lines = mutableListOf<TempLine>()
 
@@ -41,44 +32,40 @@ data class Lyrics(
          * @param startMs [Line.durationMs]
          * @param endMs [Line.durationMs]
          */
-        fun addLine(
-            text: String,
-            startMs: Long? = null,
-            endMs: Long? = null,
-        ) = apply {
-            lines.add(
-                TempLine(
-                    text = text,
-                    startMs = startMs,
-                    endMs = endMs,
-                )
-            )
+        fun addLine(text: String, startMs: Long? = null, endMs: Long? = null) = apply {
+            lines.add(TempLine(text = text, startMs = startMs, endMs = endMs))
         }
 
-        /**
-         * Build the [Lyrics].
-         */
-        fun build() = Lyrics(
-            lines = lines.sortedBy { it.startMs }.let { sortedLines ->
-                val startDurations = sortedLines.mapNotNull { it.startMs }.toSortedSet()
+        /** Build the [Lyrics]. */
+        fun build() =
+            Lyrics(
+                lines =
+                    lines
+                        .sortedBy { it.startMs }
+                        .let { sortedLines ->
+                            val startDurations = sortedLines.mapNotNull { it.startMs }.toSortedSet()
 
-                sortedLines.map { line ->
-                    val endMs = when {
-                        line.endMs != null -> line.endMs
+                            sortedLines.map { line ->
+                                val endMs =
+                                    when {
+                                        line.endMs != null -> line.endMs
 
-                        line.startMs != null -> startDurations
-                            .tailSet(line.startMs + 1L)
-                            .firstOrNull()?.minus(1L)
+                                        line.startMs != null ->
+                                            startDurations
+                                                .tailSet(line.startMs + 1L)
+                                                .firstOrNull()
+                                                ?.minus(1L)
 
-                        else -> null
-                    }
+                                        else -> null
+                                    }
 
-                    Line(
-                        text = line.text,
-                        durationMs = line.startMs?.let { startMs -> startMs..(endMs ?: startMs) },
-                    )
-                }
-            },
-        )
+                                Line(
+                                    text = line.text,
+                                    durationMs =
+                                        line.startMs?.let { startMs -> startMs..(endMs ?: startMs) },
+                                )
+                            }
+                        }
+            )
     }
 }

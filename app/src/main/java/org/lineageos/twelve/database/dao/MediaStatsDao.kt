@@ -14,21 +14,14 @@ import org.lineageos.twelve.database.entities.LocalMediaStats
 @Dao
 interface MediaStatsDao {
 
-    /**
-     * Delete an entry.
-     */
+    /** Delete an entry. */
     @Query("DELETE FROM LocalMediaStats WHERE audio_uri IN (:mediaUris)")
     suspend fun delete(mediaUris: List<Uri>)
 
-    /**
-     * Delete all entries.
-     */
-    @Query("DELETE FROM LocalMediaStats")
-    suspend fun deleteAll()
+    /** Delete all entries. */
+    @Query("DELETE FROM LocalMediaStats") suspend fun deleteAll()
 
-    /**
-     * Increase the play count of an entry by 1.
-     */
+    /** Increase the play count of an entry by 1. */
     @Query(
         """
             INSERT OR REPLACE
@@ -43,15 +36,10 @@ interface MediaStatsDao {
     )
     suspend fun increasePlayCount(audioUri: Uri)
 
-    /**
-     * Fetch all entries.
-     */
-    @Query("SELECT * FROM LocalMediaStats")
-    suspend fun getAll(): List<LocalMediaStats>
+    /** Fetch all entries. */
+    @Query("SELECT * FROM LocalMediaStats") suspend fun getAll(): List<LocalMediaStats>
 
-    /**
-     * Fetch all entries sorted by play count.
-     */
+    /** Fetch all entries sorted by play count. */
     @Query("SELECT * FROM LocalMediaStats ORDER BY play_count DESC LIMIT :limit")
     fun getAllByPlayCount(limit: Int): Flow<List<LocalMediaStats>>
 }

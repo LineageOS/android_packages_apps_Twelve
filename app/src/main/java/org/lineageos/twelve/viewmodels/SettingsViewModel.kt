@@ -27,9 +27,7 @@ class SettingsViewModel(application: Application) : TwelveViewModel(application)
         withMediaController {
             sendCustomCommand(
                 PlaybackService.CustomCommand.TOGGLE_OFFLOAD,
-                Bundle {
-                    putBoolean(PlaybackService.CustomCommand.ARG_VALUE, offload)
-                }
+                Bundle { putBoolean(PlaybackService.CustomCommand.ARG_VALUE, offload) },
             )
         }
     }
@@ -39,9 +37,7 @@ class SettingsViewModel(application: Application) : TwelveViewModel(application)
         withMediaController {
             sendCustomCommand(
                 PlaybackService.CustomCommand.TOGGLE_SKIP_SILENCE,
-                Bundle {
-                    putBoolean(PlaybackService.CustomCommand.ARG_VALUE, skipSilence)
-                }
+                Bundle { putBoolean(PlaybackService.CustomCommand.ARG_VALUE, skipSilence) },
             )
         }
     }
@@ -60,8 +56,6 @@ class SettingsViewModel(application: Application) : TwelveViewModel(application)
     }
 
     private suspend fun withMediaController(block: suspend MediaController.() -> Unit) {
-        mediaController.value?.let {
-            block(it)
-        }
+        mediaController.value?.let { block(it) }
     }
 }

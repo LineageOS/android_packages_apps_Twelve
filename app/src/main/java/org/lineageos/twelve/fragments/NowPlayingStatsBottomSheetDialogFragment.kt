@@ -15,6 +15,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import java.util.Locale
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.lineageos.twelve.R
@@ -22,43 +23,59 @@ import org.lineageos.twelve.ext.getViewProperty
 import org.lineageos.twelve.models.OutputConfiguration
 import org.lineageos.twelve.ui.views.ListItem
 import org.lineageos.twelve.viewmodels.NowPlayingViewModel
-import java.util.Locale
 
 /**
- * A fragment showing playback statistics for nerds and audiophiles thinking that audio files
- * with a sample rate higher than 48 kHz is better.
+ * A fragment showing playback statistics for nerds and audiophiles thinking that audio files with a
+ * sample rate higher than 48 kHz is better.
  */
-class NowPlayingStatsBottomSheetDialogFragment : TwelveBottomSheetDialogFragment(
-    R.layout.fragment_now_playing_stats_bottom_sheet_dialog
-) {
+class NowPlayingStatsBottomSheetDialogFragment :
+    TwelveBottomSheetDialogFragment(R.layout.fragment_now_playing_stats_bottom_sheet_dialog) {
     // View models
     private val viewModel by viewModels<NowPlayingViewModel>()
 
     // Views
-    private val deviceMaxChannelCountListItem by getViewProperty<ListItem>(R.id.deviceMaxChannelCountListItem)
+    private val deviceMaxChannelCountListItem by
+        getViewProperty<ListItem>(R.id.deviceMaxChannelCountListItem)
     private val deviceNameListItem by getViewProperty<ListItem>(R.id.deviceNameListItem)
     private val deviceTypeListItem by getViewProperty<ListItem>(R.id.deviceTypeListItem)
     private val deviceHeaderListItem by getViewProperty<ListItem>(R.id.deviceHeaderListItem)
-    private val deviceMaxSampleRateListItem by getViewProperty<ListItem>(R.id.deviceMaxSampleRateListItem)
-    private val potentialIssueDownmixingListItem by getViewProperty<ListItem>(R.id.potentialIssueDownmixingListItem)
-    private val potentialIssueDownsamplingListItem by getViewProperty<ListItem>(R.id.potentialIssueDownsamplingListItem)
-    private val potentialIssuePcmFloatModeDisabledListItem by getViewProperty<ListItem>(R.id.potentialIssuePcmFloatModeDisabledListItem)
-    private val potentialIssuePostProcessingLossyCompressionListItem by getViewProperty<ListItem>(R.id.potentialIssuePostProcessingLossyCompressionListItem)
-    private val potentialIssuesHeaderListItem by getViewProperty<ListItem>(R.id.potentialIssuesHeaderListItem)
-    private val sourceAverageBitrateListItem by getViewProperty<ListItem>(R.id.sourceAverageBitrateListItem)
-    private val sourceChannelCountListItem by getViewProperty<ListItem>(R.id.sourceChannelCountListItem)
-    private val sourceCompressionListItem by getViewProperty<ListItem>(R.id.sourceCompressionListItem)
+    private val deviceMaxSampleRateListItem by
+        getViewProperty<ListItem>(R.id.deviceMaxSampleRateListItem)
+    private val potentialIssueDownmixingListItem by
+        getViewProperty<ListItem>(R.id.potentialIssueDownmixingListItem)
+    private val potentialIssueDownsamplingListItem by
+        getViewProperty<ListItem>(R.id.potentialIssueDownsamplingListItem)
+    private val potentialIssuePcmFloatModeDisabledListItem by
+        getViewProperty<ListItem>(R.id.potentialIssuePcmFloatModeDisabledListItem)
+    private val potentialIssuePostProcessingLossyCompressionListItem by
+        getViewProperty<ListItem>(R.id.potentialIssuePostProcessingLossyCompressionListItem)
+    private val potentialIssuesHeaderListItem by
+        getViewProperty<ListItem>(R.id.potentialIssuesHeaderListItem)
+    private val sourceAverageBitrateListItem by
+        getViewProperty<ListItem>(R.id.sourceAverageBitrateListItem)
+    private val sourceChannelCountListItem by
+        getViewProperty<ListItem>(R.id.sourceChannelCountListItem)
+    private val sourceCompressionListItem by
+        getViewProperty<ListItem>(R.id.sourceCompressionListItem)
     private val sourceEncodingListItem by getViewProperty<ListItem>(R.id.sourceEncodingListItem)
     private val sourceFileTypeListItem by getViewProperty<ListItem>(R.id.sourceFileTypeListItem)
-    private val sourcePeakBitrateListItem by getViewProperty<ListItem>(R.id.sourcePeakBitrateListItem)
+    private val sourcePeakBitrateListItem by
+        getViewProperty<ListItem>(R.id.sourcePeakBitrateListItem)
     private val sourceSampleRateListItem by getViewProperty<ListItem>(R.id.sourceSampleRateListItem)
-    private val transcodingBitrateListItem by getViewProperty<ListItem>(R.id.transcodingBitrateListItem)
-    private val transcodingChannelCountListItem by getViewProperty<ListItem>(R.id.transcodingChannelCountListItem)
-    private val transcodingCompressionListItem by getViewProperty<ListItem>(R.id.transcodingCompressionListItem)
-    private val transcodingEncodingListItem by getViewProperty<ListItem>(R.id.transcodingEncodingListItem)
-    private val transcodingHeaderListItem by getViewProperty<ListItem>(R.id.transcodingHeaderListItem)
-    private val transcodingOutputModeListItem by getViewProperty<ListItem>(R.id.transcodingOutputModeListItem)
-    private val transcodingSampleRateListItem by getViewProperty<ListItem>(R.id.transcodingSampleRateListItem)
+    private val transcodingBitrateListItem by
+        getViewProperty<ListItem>(R.id.transcodingBitrateListItem)
+    private val transcodingChannelCountListItem by
+        getViewProperty<ListItem>(R.id.transcodingChannelCountListItem)
+    private val transcodingCompressionListItem by
+        getViewProperty<ListItem>(R.id.transcodingCompressionListItem)
+    private val transcodingEncodingListItem by
+        getViewProperty<ListItem>(R.id.transcodingEncodingListItem)
+    private val transcodingHeaderListItem by
+        getViewProperty<ListItem>(R.id.transcodingHeaderListItem)
+    private val transcodingOutputModeListItem by
+        getViewProperty<ListItem>(R.id.transcodingOutputModeListItem)
+    private val transcodingSampleRateListItem by
+        getViewProperty<ListItem>(R.id.transcodingSampleRateListItem)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -71,18 +88,18 @@ class NowPlayingStatsBottomSheetDialogFragment : TwelveBottomSheetDialogFragment
                         outputConfiguration?.verdict?.potentialIssues.orEmpty().also {
                             potentialIssuesHeaderListItem.isVisible = it.isNotEmpty()
 
-                            potentialIssueDownsamplingListItem.isVisible = it.contains(
-                                OutputConfiguration.Verdict.Issue.DOWNSAMPLING
-                            )
-                            potentialIssuePcmFloatModeDisabledListItem.isVisible = it.contains(
-                                OutputConfiguration.Verdict.Issue.PCM_FLOAT_MODE_DISABLED
-                            )
-                            potentialIssueDownmixingListItem.isVisible = it.contains(
-                                OutputConfiguration.Verdict.Issue.DOWNMIXING
-                            )
+                            potentialIssueDownsamplingListItem.isVisible =
+                                it.contains(OutputConfiguration.Verdict.Issue.DOWNSAMPLING)
+                            potentialIssuePcmFloatModeDisabledListItem.isVisible =
+                                it.contains(
+                                    OutputConfiguration.Verdict.Issue.PCM_FLOAT_MODE_DISABLED
+                                )
+                            potentialIssueDownmixingListItem.isVisible =
+                                it.contains(OutputConfiguration.Verdict.Issue.DOWNMIXING)
                             potentialIssuePostProcessingLossyCompressionListItem.isVisible =
                                 it.contains(
-                                    OutputConfiguration.Verdict.Issue.POST_PROCESSING_LOSSY_COMPRESSION
+                                    OutputConfiguration.Verdict.Issue
+                                        .POST_PROCESSING_LOSSY_COMPRESSION
                                 )
                         }
 
@@ -237,17 +254,14 @@ class NowPlayingStatsBottomSheetDialogFragment : TwelveBottomSheetDialogFragment
                                 OutputConfiguration.Device.Type.EXTERNAL_SPEAKERS ->
                                     R.drawable.ic_speaker_group
 
-                                OutputConfiguration.Device.Type.BLUETOOTH ->
-                                    R.drawable.ic_bluetooth
+                                OutputConfiguration.Device.Type.BLUETOOTH -> R.drawable.ic_bluetooth
 
                                 OutputConfiguration.Device.Type.HDMI ->
                                     R.drawable.ic_settings_input_hdmi
 
-                                OutputConfiguration.Device.Type.USB ->
-                                    R.drawable.ic_usb
+                                OutputConfiguration.Device.Type.USB -> R.drawable.ic_usb
 
-                                OutputConfiguration.Device.Type.REMOTE ->
-                                    R.drawable.ic_cast
+                                OutputConfiguration.Device.Type.REMOTE -> R.drawable.ic_cast
 
                                 OutputConfiguration.Device.Type.HEARING_AID ->
                                     R.drawable.ic_hearing_aid
@@ -258,7 +272,7 @@ class NowPlayingStatsBottomSheetDialogFragment : TwelveBottomSheetDialogFragment
 
                         deviceNameListItem.setSupportingTextOrUnknown(
                             outputConfiguration?.device?.name,
-                            R.string.audio_output_device_name_unknown
+                            R.string.audio_output_device_name_unknown,
                         )
 
                         deviceTypeListItem.setSupportingText(
@@ -299,7 +313,7 @@ class NowPlayingStatsBottomSheetDialogFragment : TwelveBottomSheetDialogFragment
                         )
 
                         deviceMaxChannelCountListItem.setSupportingTextOrUnknown(
-                            outputConfiguration?.device?.channelCounts?.maxOrNull()?.toString(),
+                            outputConfiguration?.device?.channelCounts?.maxOrNull()?.toString()
                         )
                     }
                 }
@@ -314,14 +328,13 @@ class NowPlayingStatsBottomSheetDialogFragment : TwelveBottomSheetDialogFragment
         value?.also {
             supportingText = it
             isVisible = true
-        } ?: run {
-            unknownStringResId?.also {
-                setSupportingText(it)
-                isVisible = true
-            } ?: run {
-                isVisible = false
-            }
         }
+            ?: run {
+                unknownStringResId?.also {
+                    setSupportingText(it)
+                    isVisible = true
+                } ?: run { isVisible = false }
+            }
     }
 
     private fun ListItem.setSupportingTextOrUnknown(
@@ -332,14 +345,13 @@ class NowPlayingStatsBottomSheetDialogFragment : TwelveBottomSheetDialogFragment
         value?.also {
             setSupportingText(stringResId, it)
             isVisible = true
-        } ?: run {
-            unknownStringResId?.also {
-                setSupportingText(it)
-                isVisible = true
-            } ?: run {
-                isVisible = false
-            }
         }
+            ?: run {
+                unknownStringResId?.also {
+                    setSupportingText(it)
+                    isVisible = true
+                } ?: run { isVisible = false }
+            }
     }
 
     companion object {

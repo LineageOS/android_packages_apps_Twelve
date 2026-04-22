@@ -7,9 +7,9 @@ package org.lineageos.twelve.models
 
 import android.os.Bundle
 import androidx.annotation.StringRes
-import org.lineageos.twelve.R
 import kotlin.reflect.KClass
 import kotlin.reflect.cast
+import org.lineageos.twelve.R
 
 /**
  * Argument of a provider.
@@ -39,68 +39,58 @@ data class ProviderArgument<T : Any>(
      * @param message The error message
      * @param messageStringResId The localized error message string resource ID
      */
-    data class ValidationError(
-        val message: String,
-        @StringRes val messageStringResId: Int,
-    )
+    data class ValidationError(val message: String, @StringRes val messageStringResId: Int)
 
     companion object {
-        private val requiredValidationError = ValidationError(
-            "A value is required",
-            R.string.provider_argument_validation_error_required,
-        )
+        private val requiredValidationError =
+            ValidationError(
+                "A value is required",
+                R.string.provider_argument_validation_error_required,
+            )
 
-        /**
-         * Get the argument value from a [Bundle] or the default value if it is not present.
-         */
-        private fun <T : Any> Bundle.getArgumentValue(
-            providerArguments: ProviderArgument<T>
-        ) = when (containsKey(providerArguments.key)) {
-            true -> when (providerArguments.type) {
-                String::class -> getString(providerArguments.key)
-                Boolean::class -> getBoolean(providerArguments.key)
-                else -> throw Exception("Unsupported type")
-            }?.let {
-                providerArguments.type.cast(it)
+        /** Get the argument value from a [Bundle] or the default value if it is not present. */
+        private fun <T : Any> Bundle.getArgumentValue(providerArguments: ProviderArgument<T>) =
+            when (containsKey(providerArguments.key)) {
+                true ->
+                    when (providerArguments.type) {
+                        String::class -> getString(providerArguments.key)
+                        Boolean::class -> getBoolean(providerArguments.key)
+                        else -> throw Exception("Unsupported type")
+                    }?.let { providerArguments.type.cast(it) }
+
+                false -> providerArguments.defaultValue
             }
 
-            false -> providerArguments.defaultValue
-        }
-
         /**
-         * Get the optional argument from a [Bundle]. This will also validate the value and throw
-         * an exception if the value is invalid.
+         * Get the optional argument from a [Bundle]. This will also validate the value and throw an
+         * exception if the value is invalid.
          */
-        fun <T : Any> Bundle.getArgument(
-            providerArguments: ProviderArgument<T>
-        ) = getArgumentValue(providerArguments)?.also { argumentValue ->
-            providerArguments.validate(argumentValue)?.let {
-                throw Exception(
-                    "Validation error for argument ${providerArguments.key}: ${it.message}"
-                )
+        fun <T : Any> Bundle.getArgument(providerArguments: ProviderArgument<T>) =
+            getArgumentValue(providerArguments)?.also { argumentValue ->
+                providerArguments.validate(argumentValue)?.let {
+                    throw Exception(
+                        "Validation error for argument ${providerArguments.key}: ${it.message}"
+                    )
+                }
             }
-        }
 
         /**
-         * Get the required argument from a [Bundle]. This will also validate the value and throw
-         * an exception if the value is invalid.
+         * Get the required argument from a [Bundle]. This will also validate the value and throw an
+         * exception if the value is invalid.
          */
-        fun <T : Any> Bundle.requireArgument(
-            providerArguments: ProviderArgument<T>
-        ) = getArgument(providerArguments) ?: throw Exception("Argument not found")
+        fun <T : Any> Bundle.requireArgument(providerArguments: ProviderArgument<T>) =
+            getArgument(providerArguments) ?: throw Exception("Argument not found")
 
         /**
          * Validate the argument in this [Bundle] and return a [ValidationError] if it is invalid.
          * Will also check if the argument is required.
          */
-        fun <T : Any> Bundle.validateArgument(
-            providerArguments: ProviderArgument<T>
-        ) = getArgumentValue(providerArguments).let { argumentValue ->
-            argumentValue?.let {
-                providerArguments.validate(it)
-            } ?: requiredValidationError.takeIf {
-                providerArguments.required && argumentValue == null
+        fun <T : Any> Bundle.validateArgument(providerArguments: ProviderArgument<T>) =
+            getArgumentValue(providerArguments).let { argumentValue ->
+                argumentValue?.let { providerArguments.validate(it) }
+                    ?: requiredValidationError.takeIf {
+                        providerArguments.required && argumentValue == null
+                    }
             }
-        }
     }
 }

@@ -16,5 +16,5 @@ data class SystemInfo(
     @SerialName("ProductName") val productName: String?,
     @SerialName("OperatingSystem") val operatingSystem: String?,
     @SerialName("Id") val id: String?,
-    @SerialName("StartupWizardCompleted") val startupWizardCompleted: Boolean?
+    @SerialName("StartupWizardCompleted") val startupWizardCompleted: Boolean?,
 )

@@ -21,10 +21,9 @@ import org.lineageos.twelve.R
 import org.lineageos.twelve.ext.permissionsFlow
 import org.lineageos.twelve.ext.permissionsGranted
 
-/**
- * A coroutine-based class that checks main app permissions.
- */
-class PermissionsChecker private constructor(
+/** A coroutine-based class that checks main app permissions. */
+class PermissionsChecker
+private constructor(
     caller: ActivityResultCaller,
     private val getContext: () -> Context,
     private val getActivity: () -> Activity,
@@ -65,40 +64,38 @@ class PermissionsChecker private constructor(
 
     private val channel = Channel<Unit>(1)
 
-    private val activityResultLauncher = caller.registerForActivityResult(
-        ActivityResultContracts.RequestMultiplePermissions()
-    ) {
-        val context = getContext()
+    private val activityResultLauncher =
+        caller.registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
+            val context = getContext()
 
-        if (it.isNotEmpty()) {
-            if (!context.permissionsGranted(permissions)) {
-                permissionsDeniedStringResId?.let { permissionsDeniedStringResId ->
-                    Toast.makeText(
-                        context,
-                        permissionsDeniedStringResId,
-                        Toast.LENGTH_SHORT
-                    ).show()
+            if (it.isNotEmpty()) {
+                if (!context.permissionsGranted(permissions)) {
+                    permissionsDeniedStringResId?.let { permissionsDeniedStringResId ->
+                        Toast.makeText(context, permissionsDeniedStringResId, Toast.LENGTH_SHORT)
+                            .show()
+                    }
+                    if (!optional) {
+                        getActivity().finish()
+                    }
+                } else {
+                    channel.trySend(Unit)
                 }
-                if (!optional) {
-                    getActivity().finish()
-                }
-            } else {
-                channel.trySend(Unit)
             }
         }
-    }
 
-    suspend fun withPermissionsGranted(unit: suspend () -> Unit) = getContext().permissionsFlow(
-        getLifecycle(), permissions
-    ).distinctUntilChanged().collectLatest {
-        val (_, denied) = it
+    suspend fun withPermissionsGranted(unit: suspend () -> Unit) =
+        getContext()
+            .permissionsFlow(getLifecycle(), permissions)
+            .distinctUntilChanged()
+            .collectLatest {
+                val (_, denied) = it
 
-        if (denied.isNotEmpty()) {
-            checkPermissions()
-        } else {
-            unit()
-        }
-    }
+                if (denied.isNotEmpty()) {
+                    checkPermissions()
+                } else {
+                    unit()
+                }
+            }
 
     private suspend fun checkPermissions() {
         activityResultLauncher.launch(permissions)

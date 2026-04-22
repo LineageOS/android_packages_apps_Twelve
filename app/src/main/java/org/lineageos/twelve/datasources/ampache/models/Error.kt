@@ -19,9 +19,7 @@ import kotlinx.serialization.encoding.Encoder
  * @param error The [Error.Information]
  */
 @Serializable
-data class Error(
-    @SerialName("error") val error: Information,
-) {
+data class Error(@SerialName("error") val error: Information) {
     /**
      * Error information.
      *
@@ -57,8 +55,8 @@ data class Error(
             /**
              * Access Denied.
              *
-             * The requested method is not available.
-             * You can check the error message for details about which feature is disabled.
+             * The requested method is not available. You can check the error message for details
+             * about which feature is disabled.
              */
             data object AccessDenied : Code(4703)
 
@@ -88,9 +86,8 @@ data class Error(
              * Bad Request.
              *
              * Used when you have specified a valid method but something about the input is
-             * incorrect, invalid or missing.
-             * You can check the error message for details, but do not re-attempt the exact same
-             * request.
+             * incorrect, invalid or missing. You can check the error message for details, but do
+             * not re-attempt the exact same request.
              */
             data object BadRequest : Code(4710)
 
@@ -101,38 +98,34 @@ data class Error(
              */
             data object FailedAccessCheck : Code(4742)
 
-            /**
-             * Unknown error.
-             */
+            /** Unknown error. */
             data class Other(override val value: Int) : Code(value)
 
             class Serializer : KSerializer<Code> {
-                override val descriptor = PrimitiveSerialDescriptor(
-                    Serializer::class.qualifiedName!!, PrimitiveKind.STRING
-                )
+                override val descriptor =
+                    PrimitiveSerialDescriptor(
+                        Serializer::class.qualifiedName!!,
+                        PrimitiveKind.STRING,
+                    )
 
-                override fun serialize(
-                    encoder: Encoder,
-                    value: Code,
-                ) {
+                override fun serialize(encoder: Encoder, value: Code) {
                     encoder.encodeString(value.value.toString())
                 }
 
-                override fun deserialize(
-                    decoder: Decoder,
-                ) = decoder.decodeString().toInt().let { value ->
-                    when (value) {
-                        AccessControlNotEnabled.value -> AccessControlNotEnabled
-                        InvalidHandshake.value -> InvalidHandshake
-                        AccessDenied.value -> AccessDenied
-                        NotFound.value -> NotFound
-                        Missing.value -> Missing
-                        Deprecated.value -> Deprecated
-                        BadRequest.value -> BadRequest
-                        FailedAccessCheck.value -> FailedAccessCheck
-                        else -> Other(value)
+                override fun deserialize(decoder: Decoder) =
+                    decoder.decodeString().toInt().let { value ->
+                        when (value) {
+                            AccessControlNotEnabled.value -> AccessControlNotEnabled
+                            InvalidHandshake.value -> InvalidHandshake
+                            AccessDenied.value -> AccessDenied
+                            NotFound.value -> NotFound
+                            Missing.value -> Missing
+                            Deprecated.value -> Deprecated
+                            BadRequest.value -> BadRequest
+                            FailedAccessCheck.value -> FailedAccessCheck
+                            else -> Other(value)
+                        }
                     }
-                }
             }
         }
 
@@ -157,24 +150,22 @@ data class Error(
             data class Other(override val value: String) : Type(value)
 
             class Serializer : KSerializer<Type> {
-                override val descriptor = PrimitiveSerialDescriptor(
-                    Serializer::class.qualifiedName!!, PrimitiveKind.STRING
-                )
+                override val descriptor =
+                    PrimitiveSerialDescriptor(
+                        Serializer::class.qualifiedName!!,
+                        PrimitiveKind.STRING,
+                    )
 
-                override fun serialize(
-                    encoder: Encoder,
-                    value: Type,
-                ) {
+                override fun serialize(encoder: Encoder, value: Type) {
                     encoder.encodeString(value.value)
                 }
 
-                override fun deserialize(
-                    decoder: Decoder,
-                ) = when (val value = decoder.decodeString()) {
-                    Account.value -> Account
-                    System.value -> System
-                    else -> Other(value)
-                }
+                override fun deserialize(decoder: Decoder) =
+                    when (val value = decoder.decodeString()) {
+                        Account.value -> Account
+                        System.value -> System
+                        else -> Other(value)
+                    }
             }
         }
     }

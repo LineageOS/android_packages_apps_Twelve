@@ -24,12 +24,10 @@ import org.lineageos.twelve.models.FlowResult.Companion.asFlowResult
 import org.lineageos.twelve.models.Result
 import org.lineageos.twelve.models.Result.Companion.map
 
-/**
- * Home page view model.
- */
+/** Home page view model. */
 class MainViewModel(application: Application) : TwelveViewModel(application) {
-    val navigationProvider = mediaRepository.navigationProvider
-        .stateIn(
+    val navigationProvider =
+        mediaRepository.navigationProvider.stateIn(
             viewModelScope,
             SharingStarted.WhileSubscribed(),
             null,
@@ -38,32 +36,28 @@ class MainViewModel(application: Application) : TwelveViewModel(application) {
     private val searchQuery = MutableStateFlow("" to false)
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val searchResults = searchQuery
-        .mapLatest {
-            val (query, immediate) = it
-            if (!immediate && query.isNotEmpty()) {
-                delay(500)
+    val searchResults =
+        searchQuery
+            .mapLatest {
+                val (query, immediate) = it
+                if (!immediate && query.isNotEmpty()) {
+                    delay(500)
+                }
+                query
             }
-            query
-        }
-        .flatMapLatest { query ->
-            query.trim().takeIf { it.isNotEmpty() }?.let {
-                mediaRepository.search("%${it}%")
-            } ?: flowOf(Result.Success(listOf()))
-        }
-        .asFlowResult()
-        .flowOn(Dispatchers.IO)
-        .stateIn(
-            viewModelScope,
-            SharingStarted.WhileSubscribed(),
-            FlowResult.Loading()
-        )
+            .flatMapLatest { query ->
+                query.trim().takeIf { it.isNotEmpty() }?.let { mediaRepository.search("%${it}%") }
+                    ?: flowOf(Result.Success(listOf()))
+            }
+            .asFlowResult()
+            .flowOn(Dispatchers.IO)
+            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), FlowResult.Loading())
 
     fun setSearchQuery(query: String, immediate: Boolean = false) {
         searchQuery.value = query to immediate
     }
 
-    suspend fun playAllAudios() = mediaRepository.audios().firstOrNull()?.map { audios ->
-        playAudio(audios.shuffled(), 0)
-    } ?: Result.Error(Error.INVALID_RESPONSE)
+    suspend fun playAllAudios() =
+        mediaRepository.audios().firstOrNull()?.map { audios -> playAudio(audios.shuffled(), 0) }
+            ?: Result.Error(Error.INVALID_RESPONSE)
 }

@@ -48,9 +48,7 @@ fun buildMediaItem(
             .setDiscNumber(discNumber)
             .setTrackNumber(trackNumber)
             .setDurationMs(durationMs)
-            .setUserRating(
-                isFavorite?.let { HeartRating(it) }
-            )
+            .setUserRating(isFavorite?.let { HeartRating(it) })
             .build()
 
     return MediaItem.Builder()

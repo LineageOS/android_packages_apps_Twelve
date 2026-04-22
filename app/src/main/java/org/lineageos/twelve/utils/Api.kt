@@ -6,6 +6,9 @@
 package org.lineageos.twelve.utils
 
 import android.net.Uri
+import java.net.SocketTimeoutException
+import kotlin.reflect.KType
+import kotlin.reflect.typeOf
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -22,9 +25,6 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import org.lineageos.twelve.ext.executeAsync
 import org.lineageos.twelve.models.Error
 import org.lineageos.twelve.models.Result
-import java.net.SocketTimeoutException
-import kotlin.reflect.KType
-import kotlin.reflect.typeOf
 
 typealias MethodResult<T> = Result<T, ApiError>
 
@@ -34,9 +34,7 @@ typealias MethodResult<T> = Result<T, ApiError>
  * @param T The return type
  */
 interface ApiRequestInterface<T> {
-    /**
-     * The [KType] of [T], used for serialization.
-     */
+    /** The [KType] of [T], used for serialization. */
     val type: KType
 
     /**
@@ -47,14 +45,12 @@ interface ApiRequestInterface<T> {
     suspend fun execute(api: Api): MethodResult<T>
 }
 
-/**
- * Base class for common request functionality.
- */
+/** Base class for common request functionality. */
 abstract class BaseRequest {
     protected fun <T> encodeRequestBody(api: Api, data: T?, serializer: KSerializer<T>) =
-        data?.let {
-            api.json.encodeToString(serializer, it)
-        }?.toRequestBody("application/json".toMediaType()) ?: "".toRequestBody()
+        data
+            ?.let { api.json.encodeToString(serializer, it) }
+            ?.toRequestBody("application/json".toMediaType()) ?: "".toRequestBody()
 }
 
 /**
@@ -65,14 +61,11 @@ abstract class BaseRequest {
 class GetRequestInterface<T>(
     private val path: List<String>,
     override val type: KType,
-    private val queryParameters: List<Pair<String, Any?>> = emptyList()
+    private val queryParameters: List<Pair<String, Any?>> = emptyList(),
 ) : BaseRequest(), ApiRequestInterface<T> {
     override suspend fun execute(api: Api): MethodResult<T> {
         val url = api.buildUrl(path, queryParameters)
-        val request = Request.Builder()
-            .url(url)
-            .get()
-            .build()
+        val request = Request.Builder().url(url).get().build()
         return api.executeRequest(request, type)
     }
 }
@@ -89,15 +82,12 @@ class PostRequestInterface<D, T>(
     private val data: D?,
     private val dataSerializer: KSerializer<D>,
     private val queryParameters: List<Pair<String, Any?>> = emptyList(),
-    private val emptyResponse: () -> T
+    private val emptyResponse: () -> T,
 ) : BaseRequest(), ApiRequestInterface<T> {
     override suspend fun execute(api: Api): MethodResult<T> {
         val url = api.buildUrl(path, queryParameters)
         val body = encodeRequestBody(api, data, dataSerializer)
-        val request = Request.Builder()
-            .url(url)
-            .post(body)
-            .build()
+        val request = Request.Builder().url(url).post(body).build()
         return api.executeRequest(request, type, emptyResponse)
     }
 }
@@ -110,14 +100,11 @@ class PostRequestInterface<D, T>(
 class DeleteRequestInterface<T>(
     private val path: List<String>,
     override val type: KType,
-    private val queryParameters: List<Pair<String, Any?>> = emptyList()
+    private val queryParameters: List<Pair<String, Any?>> = emptyList(),
 ) : BaseRequest(), ApiRequestInterface<T> {
     override suspend fun execute(api: Api): MethodResult<T> {
         val url = api.buildUrl(path, queryParameters)
-        val request = Request.Builder()
-            .url(url)
-            .delete()
-            .build()
+        val request = Request.Builder().url(url).delete().build()
         return api.executeRequest(request, type)
     }
 }
@@ -126,137 +113,153 @@ class Api(
     private val okHttpClient: OkHttpClient,
     private val serverUri: Uri,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
-    val json: Json = Json {
-        ignoreUnknownKeys = true
-    },
+    val json: Json = Json { ignoreUnknownKeys = true },
 ) {
-    fun buildUrl(
-        path: List<String>,
-        queryParameters: List<Pair<String, Any?>> = emptyList()
-    ) = serverUri.buildUpon().apply {
-        path.forEach { appendPath(it) }
-        queryParameters.forEach { (key, value) ->
-            value?.let { appendQueryParameter(key, it.toString()) }
-        }
-    }.build().toString()
+    fun buildUrl(path: List<String>, queryParameters: List<Pair<String, Any?>> = emptyList()) =
+        serverUri
+            .buildUpon()
+            .apply {
+                path.forEach { appendPath(it) }
+                queryParameters.forEach { (key, value) ->
+                    value?.let { appendQueryParameter(key, it.toString()) }
+                }
+            }
+            .build()
+            .toString()
 
     suspend fun <T> executeRequest(
         request: Request,
         type: KType,
         onEmptyResponse: () -> T = {
             throw IllegalStateException("No onEmptyResponse() provided, but response is empty")
-        }
-    ) = withContext(dispatcher) {
-        withRetry(maxAttempts = 3) {
-            runCatching {
-                okHttpClient.newCall(request).executeAsync().use { response ->
-                    if (response.isSuccessful) {
-                        response.body?.use { body ->
-                            val string = body.string()
-                            if (string.isEmpty()) {
-                                Result.Success(onEmptyResponse())
+        },
+    ) =
+        withContext(dispatcher) {
+            withRetry(maxAttempts = 3) {
+                runCatching {
+                        okHttpClient.newCall(request).executeAsync().use { response ->
+                            if (response.isSuccessful) {
+                                response.body?.use { body ->
+                                    val string = body.string()
+                                    if (string.isEmpty()) {
+                                        Result.Success(onEmptyResponse())
+                                    } else {
+                                        @Suppress("UNCHECKED_CAST")
+                                        val serializer =
+                                            json.serializersModule.serializer(type)
+                                                as KSerializer<T>
+                                        Result.Success(json.decodeFromString(serializer, string))
+                                    }
+                                } ?: Result.Success(onEmptyResponse())
                             } else {
-                                @Suppress("UNCHECKED_CAST")
-                                val serializer =
-                                    json.serializersModule.serializer(type) as KSerializer<T>
-                                Result.Success(json.decodeFromString(serializer, string))
+                                Result.Error<T, ApiError>(
+                                    ApiError.HttpError(response.code),
+                                    Throwable(response.message),
+                                )
                             }
-                        } ?: Result.Success(onEmptyResponse())
-                    } else {
-                        Result.Error<T, ApiError>(
-                            ApiError.HttpError(response.code),
-                            Throwable(response.message)
-                        )
+                        }
                     }
-                }
-            }.fold(
-                onSuccess = { it },
-                onFailure = { e -> Result.Error(handleError(e), e) }
-            )
+                    .fold(onSuccess = { it }, onFailure = { e -> Result.Error(handleError(e), e) })
+            }
         }
-    }
 
     private suspend fun <T> withRetry(
         maxAttempts: Int,
         initialDelay: Long = 100,
         maxDelay: Long = 1000,
         factor: Double = 2.0,
-        block: suspend () -> MethodResult<T>
+        block: suspend () -> MethodResult<T>,
     ): MethodResult<T> {
         var currentDelay = initialDelay
         repeat(maxAttempts - 1) { _ ->
             when (val result = block()) {
                 is Result.Success -> return result
-                is Result.Error -> when (result.error) {
-                    is ApiError.HttpError -> when (result.error.code) {
-                        in 500..599 -> {
-                            delay(currentDelay)
-                            currentDelay = (currentDelay * factor).toLong().coerceAtMost(maxDelay)
-                        }
+                is Result.Error ->
+                    when (result.error) {
+                        is ApiError.HttpError ->
+                            when (result.error.code) {
+                                in 500..599 -> {
+                                    delay(currentDelay)
+                                    currentDelay =
+                                        (currentDelay * factor).toLong().coerceAtMost(maxDelay)
+                                }
+
+                                else -> return result
+                            }
 
                         else -> return result
                     }
-
-                    else -> return result
-                }
             }
         }
         return block()
     }
 
-    private fun handleError(e: Throwable): ApiError = when (e) {
-        is SocketTimeoutException -> ApiError.HttpError(408)
-        is SerializationException -> ApiError.DeserializationError
-        is CancellationException -> ApiError.CancellationError
-        else -> ApiError.GenericError
-    }
+    private fun handleError(e: Throwable): ApiError =
+        when (e) {
+            is SocketTimeoutException -> ApiError.HttpError(408)
+            is SerializationException -> ApiError.DeserializationError
+            is CancellationException -> ApiError.CancellationError
+            else -> ApiError.GenericError
+        }
 }
 
 object ApiRequest {
     inline fun <reified T> get(
         path: List<String>,
-        queryParameters: List<Pair<String, Any?>> = emptyList()
+        queryParameters: List<Pair<String, Any?>> = emptyList(),
     ) = GetRequestInterface<T>(path, typeOf<T>(), queryParameters)
 
     inline fun <reified D, reified T> post(
         path: List<String>,
         data: D? = null,
         queryParameters: List<Pair<String, Any?>> = emptyList(),
-        noinline emptyResponse: () -> T = { Unit as T }
-    ) = PostRequestInterface(
-        path, typeOf<T>(), data,
-        Json.serializersModule.serializer(), queryParameters, emptyResponse
-    )
+        noinline emptyResponse: () -> T = { Unit as T },
+    ) =
+        PostRequestInterface(
+            path,
+            typeOf<T>(),
+            data,
+            Json.serializersModule.serializer(),
+            queryParameters,
+            emptyResponse,
+        )
 
     inline fun <reified T> delete(
         path: List<String>,
-        queryParameters: List<Pair<String, Any?>> = emptyList()
+        queryParameters: List<Pair<String, Any?>> = emptyList(),
     ) = DeleteRequestInterface<T>(path, typeOf<T>(), queryParameters)
 }
 
 sealed interface ApiError {
     data class HttpError(val code: Int) : ApiError
+
     data object GenericError : ApiError
+
     data object DeserializationError : ApiError
+
     data object CancellationError : ApiError
+
     data object InvalidResponse : ApiError
 }
 
-fun ApiError.toError() = when (this) {
-    is ApiError.HttpError -> when (code) {
-        401 -> Error.AUTHENTICATION_REQUIRED
-        403 -> Error.INVALID_CREDENTIALS
-        404 -> Error.NOT_FOUND
-        else -> Error.IO
+fun ApiError.toError() =
+    when (this) {
+        is ApiError.HttpError ->
+            when (code) {
+                401 -> Error.AUTHENTICATION_REQUIRED
+                403 -> Error.INVALID_CREDENTIALS
+                404 -> Error.NOT_FOUND
+                else -> Error.IO
+            }
+
+        is ApiError.GenericError -> Error.IO
+        is ApiError.DeserializationError -> Error.DESERIALIZATION
+        is ApiError.CancellationError -> Error.CANCELLED
+        is ApiError.InvalidResponse -> Error.INVALID_RESPONSE
     }
 
-    is ApiError.GenericError -> Error.IO
-    is ApiError.DeserializationError -> Error.DESERIALIZATION
-    is ApiError.CancellationError -> Error.CANCELLED
-    is ApiError.InvalidResponse -> Error.INVALID_RESPONSE
-}
-
-fun <T> MethodResult<T>.mapToError() = when (this) {
-    is Result.Success -> Result.Success<T, Error>(data)
-    is Result.Error -> Result.Error(error.toError(), throwable)
-}
+fun <T> MethodResult<T>.mapToError() =
+    when (this) {
+        is Result.Success -> Result.Success<T, Error>(data)
+        is Result.Error -> Result.Error(error.toError(), throwable)
+    }

@@ -14,7 +14,4 @@ import kotlinx.serialization.Serializable
  *
  * @param name The record label name
  */
-@Serializable
-data class RecordLabel(
-    val name: String,
-)
+@Serializable data class RecordLabel(val name: String)

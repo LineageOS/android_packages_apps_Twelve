@@ -23,18 +23,13 @@ class ArtistViewModel(application: Application) : TwelveViewModel(application) {
     private val artistUri = MutableStateFlow<Uri?>(null)
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val artist = artistUri
-        .filterNotNull()
-        .flatMapLatest {
-            mediaRepository.artist(it)
-        }
-        .asFlowResult()
-        .flowOn(Dispatchers.IO)
-        .stateIn(
-            viewModelScope,
-            SharingStarted.WhileSubscribed(),
-            FlowResult.Loading()
-        )
+    val artist =
+        artistUri
+            .filterNotNull()
+            .flatMapLatest { mediaRepository.artist(it) }
+            .asFlowResult()
+            .flowOn(Dispatchers.IO)
+            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), FlowResult.Loading())
 
     fun loadAlbum(artistUri: Uri) {
         this.artistUri.value = artistUri

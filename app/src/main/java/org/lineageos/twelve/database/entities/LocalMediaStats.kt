@@ -17,11 +17,7 @@ import androidx.room.PrimaryKey
  * @param audioUri The [Uri] of the audio
  * @param playCount The number of times the media has been played
  */
-@Entity(
-    indices = [
-        Index(value = ["audio_uri"], unique = true),
-    ],
-)
+@Entity(indices = [Index(value = ["audio_uri"], unique = true)])
 data class LocalMediaStats(
     @PrimaryKey @ColumnInfo(name = "audio_uri") val audioUri: Uri,
     @ColumnInfo(name = "play_count", defaultValue = "1") val playCount: Long,

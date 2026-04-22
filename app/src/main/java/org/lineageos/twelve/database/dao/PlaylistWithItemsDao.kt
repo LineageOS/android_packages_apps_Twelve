@@ -14,9 +14,7 @@ abstract class PlaylistWithItemsDao(database: TwelveDatabase) {
     private val playlistDao = database.getPlaylistDao()
     private val playlistItemCrossRefDao = database.getPlaylistItemCrossRefDao()
 
-    /**
-     * Add an item to a playlist (creates a cross-reference).
-     */
+    /** Add an item to a playlist (creates a cross-reference). */
     open suspend fun addItemToPlaylist(playlistId: Long, audioUri: Uri) =
         playlistItemCrossRefDao._addItemToPlaylist(playlistId, audioUri)
 
@@ -27,9 +25,7 @@ abstract class PlaylistWithItemsDao(database: TwelveDatabase) {
     open suspend fun removeItemFromPlaylist(playlistId: Long, audioUri: Uri) =
         playlistItemCrossRefDao._removeItemFromPlaylist(playlistId, audioUri)
 
-    /**
-     * Get a flow of the playlists that includes (or not) the given item.
-     */
+    /** Get a flow of the playlists that includes (or not) the given item. */
     fun getPlaylistsWithItemStatus(audioUri: Uri) =
         playlistDao._getPlaylistsWithItemStatus(audioUri)
 }

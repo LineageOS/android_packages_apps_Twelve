@@ -22,93 +22,57 @@ data class Thumbnail(
     val bitmap: Bitmap? = null,
     val type: Type = Type.OTHER,
 ) : Comparable<Thumbnail> {
-    /**
-     * ID3-like picture types.
-     */
+    /** ID3-like picture types. */
     enum class Type(val media3Value: @MediaMetadata.PictureType Int) {
-        /**
-         * Other.
-         */
+        /** Other. */
         OTHER(MediaMetadata.PICTURE_TYPE_OTHER),
 
-        /**
-         * 32x32 pixels 'file icon' (PNG only).
-         */
+        /** 32x32 pixels 'file icon' (PNG only). */
         FILE_ICON(MediaMetadata.PICTURE_TYPE_FILE_ICON),
 
-        /**
-         * Other file icon.
-         */
+        /** Other file icon. */
         FILE_ICON_OTHER(MediaMetadata.PICTURE_TYPE_FILE_ICON_OTHER),
 
-        /**
-         * Cover (front).
-         */
+        /** Cover (front). */
         FRONT_COVER(MediaMetadata.PICTURE_TYPE_FRONT_COVER),
 
-        /**
-         * Cover (back).
-         */
+        /** Cover (back). */
         BACK_COVER(MediaMetadata.PICTURE_TYPE_BACK_COVER),
 
-        /**
-         * Leaflet page.
-         */
+        /** Leaflet page. */
         LEAFLET_PAGE(MediaMetadata.PICTURE_TYPE_LEAFLET_PAGE),
 
-        /**
-         * Media (e.g. label side of CD).
-         */
+        /** Media (e.g. label side of CD). */
         MEDIA(MediaMetadata.PICTURE_TYPE_MEDIA),
 
-        /**
-         * Lead artist/lead performer/soloist.
-         */
+        /** Lead artist/lead performer/soloist. */
         LEAD_ARTIST_PERFORMER(MediaMetadata.PICTURE_TYPE_LEAD_ARTIST_PERFORMER),
 
-        /**
-         * Artist/performer.
-         */
+        /** Artist/performer. */
         ARTIST_PERFORMER(MediaMetadata.PICTURE_TYPE_ARTIST_PERFORMER),
 
-        /**
-         * Conductor.
-         */
+        /** Conductor. */
         CONDUCTOR(MediaMetadata.PICTURE_TYPE_CONDUCTOR),
 
-        /**
-         * Band/Orchestra.
-         */
+        /** Band/Orchestra. */
         BAND_ORCHESTRA(MediaMetadata.PICTURE_TYPE_BAND_ORCHESTRA),
 
-        /**
-         * Composer.
-         */
+        /** Composer. */
         COMPOSER(MediaMetadata.PICTURE_TYPE_COMPOSER),
 
-        /**
-         * Lyricist/text writer.
-         */
+        /** Lyricist/text writer. */
         LYRICIST(MediaMetadata.PICTURE_TYPE_LYRICIST),
 
-        /**
-         * Recording Location.
-         */
+        /** Recording Location. */
         RECORDING_LOCATION(MediaMetadata.PICTURE_TYPE_RECORDING_LOCATION),
 
-        /**
-         * During recording.
-         */
+        /** During recording. */
         DURING_RECORDING(MediaMetadata.PICTURE_TYPE_DURING_RECORDING),
 
-        /**
-         * During performance.
-         */
+        /** During performance. */
         DURING_PERFORMANCE(MediaMetadata.PICTURE_TYPE_DURING_PERFORMANCE),
 
-        /**
-         * Movie/video screen capture.
-         */
+        /** Movie/video screen capture. */
         MOVIE_VIDEO_SCREEN_CAPTURE(MediaMetadata.PICTURE_TYPE_MOVIE_VIDEO_SCREEN_CAPTURE),
 
         /**
@@ -117,89 +81,62 @@ data class Thumbnail(
          */
         A_BRIGHT_COLORED_FISH(MediaMetadata.PICTURE_TYPE_A_BRIGHT_COLORED_FISH),
 
-        /**
-         * Illustration.
-         */
+        /** Illustration. */
         ILLUSTRATION(MediaMetadata.PICTURE_TYPE_ILLUSTRATION),
 
-        /**
-         * Band/artist logotype.
-         */
+        /** Band/artist logotype. */
         BAND_ARTIST_LOGO(MediaMetadata.PICTURE_TYPE_BAND_ARTIST_LOGO),
 
-        /**
-         * Publisher/Studio logotype.
-         */
+        /** Publisher/Studio logotype. */
         PUBLISHER_STUDIO_LOGO(MediaMetadata.PICTURE_TYPE_PUBLISHER_STUDIO_LOGO);
 
         companion object {
-            fun fromMedia3Value(value: @MediaMetadata.PictureType Int?) = value?.let {
-                entries.firstOrNull { entry ->
-                    entry.media3Value == it
-                } ?: throw Exception("Unknown picture type $value")
-            }
+            fun fromMedia3Value(value: @MediaMetadata.PictureType Int?) =
+                value?.let {
+                    entries.firstOrNull { entry -> entry.media3Value == it }
+                        ?: throw Exception("Unknown picture type $value")
+                }
         }
     }
 
     init {
-        require(uri != null || bitmap != null) {
-            "At least one of the fields should be non-null"
-        }
+        require(uri != null || bitmap != null) { "At least one of the fields should be non-null" }
     }
 
-    override fun compareTo(other: Thumbnail) = compareValuesBy(
-        this, other,
-        Thumbnail::uri,
-        Thumbnail::type,
-    ).let {
-        when {
-            it != 0 -> it
-            this.bitmap == null && other.bitmap == null -> 0
-            this.bitmap == null -> -1
-            other.bitmap == null -> 1
-            else -> when (this.bitmap.sameAs(other.bitmap)) {
-                true -> 0
-                false -> 1
+    override fun compareTo(other: Thumbnail) =
+        compareValuesBy(this, other, Thumbnail::uri, Thumbnail::type).let {
+            when {
+                it != 0 -> it
+                this.bitmap == null && other.bitmap == null -> 0
+                this.bitmap == null -> -1
+                other.bitmap == null -> 1
+                else ->
+                    when (this.bitmap.sameAs(other.bitmap)) {
+                        true -> 0
+                        false -> 1
+                    }
             }
         }
-    }
 
     class Builder {
         private var uri: Uri? = null
         private var bitmap: Bitmap? = null
         private var type: Type? = null
 
-        /**
-         * @see Thumbnail.uri
-         */
-        fun setUri(uri: Uri?) = apply {
-            this.uri = uri
-        }
+        /** @see Thumbnail.uri */
+        fun setUri(uri: Uri?) = apply { this.uri = uri }
 
-        /**
-         * @see Thumbnail.bitmap
-         */
-        fun setBitmap(bitmap: Bitmap?) = apply {
-            this.bitmap = bitmap
-        }
+        /** @see Thumbnail.bitmap */
+        fun setBitmap(bitmap: Bitmap?) = apply { this.bitmap = bitmap }
 
-        /**
-         * @see Thumbnail.type
-         */
-        fun setType(type: Type?) = apply {
-            this.type = type
-        }
+        /** @see Thumbnail.type */
+        fun setType(type: Type?) = apply { this.type = type }
 
-        /**
-         * Build the [Thumbnail] if we have at least one source, else will return null.
-         */
-        fun build() = when {
-            uri == null && bitmap == null -> null
-            else -> Thumbnail(
-                uri = uri,
-                bitmap = bitmap,
-                type = type ?: Type.OTHER,
-            )
-        }
+        /** Build the [Thumbnail] if we have at least one source, else will return null. */
+        fun build() =
+            when {
+                uri == null && bitmap == null -> null
+                else -> Thumbnail(uri = uri, bitmap = bitmap, type = type ?: Type.OTHER)
+            }
     }
 }

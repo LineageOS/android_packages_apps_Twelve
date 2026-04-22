@@ -12,9 +12,7 @@ import org.lineageos.twelve.database.entities.SubsonicProvider
 
 @Dao
 interface SubsonicProviderDao {
-    /**
-     * Add a new subsonic provider to the database.
-     */
+    /** Add a new subsonic provider to the database. */
     @Query(
         """
             INSERT INTO SubsonicProvider (name, url, username, password, use_legacy_authentication)
@@ -29,9 +27,7 @@ interface SubsonicProviderDao {
         useLegacyAuthentication: Boolean,
     ): Long
 
-    /**
-     * Update a subsonic provider.
-     */
+    /** Update a subsonic provider. */
     @Query(
         """
             UPDATE SubsonicProvider
@@ -52,21 +48,14 @@ interface SubsonicProviderDao {
         useLegacyAuthentication: Boolean,
     )
 
-    /**
-     * Delete a subsonic provider from the database.
-     */
+    /** Delete a subsonic provider from the database. */
     @Query("DELETE FROM SubsonicProvider WHERE subsonic_provider_id = :subsonicProviderId")
     suspend fun delete(subsonicProviderId: Long)
 
-    /**
-     * Fetch all subsonic providers from the database.
-     */
-    @Query("SELECT * FROM SubsonicProvider")
-    fun getAll(): Flow<List<SubsonicProvider>>
+    /** Fetch all subsonic providers from the database. */
+    @Query("SELECT * FROM SubsonicProvider") fun getAll(): Flow<List<SubsonicProvider>>
 
-    /**
-     * Fetch a subsonic provider by its ID from the database.
-     */
+    /** Fetch a subsonic provider by its ID from the database. */
     @Query("SELECT * FROM SubsonicProvider WHERE subsonic_provider_id = :subsonicProviderId")
     fun getById(subsonicProviderId: Long): Flow<SubsonicProvider?>
 }

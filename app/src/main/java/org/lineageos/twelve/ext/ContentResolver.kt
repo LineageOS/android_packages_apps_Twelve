@@ -33,31 +33,25 @@ fun ContentResolver.queryFlow(
     // access to the cancellationSignal is synchronized.
     val mutex = Mutex()
 
-    val observer = object : ContentObserver(Handler(Looper.getMainLooper())) {
-        override fun onChange(selfChange: Boolean) {
-            launch(Dispatchers.IO) {
-                mutex.withLock {
-                    cancellationSignal.cancel()
-                    cancellationSignal = CancellationSignal()
-                }
-                runCatching {
-                    trySend(query(uri, projection, queryArgs, cancellationSignal))
+    val observer =
+        object : ContentObserver(Handler(Looper.getMainLooper())) {
+            override fun onChange(selfChange: Boolean) {
+                launch(Dispatchers.IO) {
+                    mutex.withLock {
+                        cancellationSignal.cancel()
+                        cancellationSignal = CancellationSignal()
+                    }
+                    runCatching { trySend(query(uri, projection, queryArgs, cancellationSignal)) }
                 }
             }
         }
-    }
 
     registerContentObserver(uri, true, observer)
 
     // The first set of values must always be generated and cannot (shouldn't) be cancelled.
     launch(Dispatchers.IO) {
-        runCatching {
-            trySend(
-                query(uri, projection, queryArgs, null)
-            )
-        }.onFailure {
-            Log.e("ContentResolver", "Failed to query $uri", it)
-        }
+        runCatching { trySend(query(uri, projection, queryArgs, null)) }
+            .onFailure { Log.e("ContentResolver", "Failed to query $uri", it) }
     }
 
     awaitClose {

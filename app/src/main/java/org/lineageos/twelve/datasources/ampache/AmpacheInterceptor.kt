@@ -6,6 +6,8 @@
 package org.lineageos.twelve.datasources.ampache
 
 import android.util.Log
+import java.time.Instant
+import kotlin.reflect.KMutableProperty0
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -21,8 +23,6 @@ import okhttp3.internal.readBomAsCharset
 import org.lineageos.twelve.datasources.ampache.models.Error
 import org.lineageos.twelve.datasources.ampache.models.Handshake
 import org.lineageos.twelve.models.Result
-import java.time.Instant
-import kotlin.reflect.KMutableProperty0
 
 /**
  * Interceptor for Ampache that handles authentication and convert error responses to HTTP errors.
@@ -33,29 +33,24 @@ class AmpacheInterceptor(
     applicationName: String,
     tokenProperty: KMutableProperty0<Pair<String, Instant>?>,
 ) : Interceptor {
-    private val baseParameters = listOf(
-        "version" to AmpacheClient.API_VERSION,
-        "client" to applicationName,
-    )
+    private val baseParameters =
+        listOf("version" to AmpacheClient.API_VERSION, "client" to applicationName)
 
     private var token by tokenProperty
 
-    private val json = Json {
-        ignoreUnknownKeys = true
-    }
+    private val json = Json { ignoreUnknownKeys = true }
 
     private val okHttpClient = OkHttpClient()
     private val handshakeMutex: Mutex = Mutex()
 
     override fun intercept(chain: Interceptor.Chain): Response {
         // Inject the basic auth parameters
-        val request = chain.request().newBuilder()
-            .url(
-                chain.request().url.newBuilder()
-                    .addQueryParameters(baseParameters)
-                    .build()
-            )
-            .build()
+        val request =
+            chain
+                .request()
+                .newBuilder()
+                .url(chain.request().url.newBuilder().addQueryParameters(baseParameters).build())
+                .build()
 
         // Get the token, or make a new one if missing or expired
         val (token, isNewToken) = getToken(request) ?: return makeTokenFailureResponse(request)
@@ -71,10 +66,7 @@ class AmpacheInterceptor(
             is Error.Information.Code.InvalidHandshake -> {
                 // Do not retry the request with a recent invalid token
                 if (isNewToken) {
-                    Log.i(
-                        LOG_TAG,
-                        "Despite getting a new token, the server still rejected it"
-                    )
+                    Log.i(LOG_TAG, "Despite getting a new token, the server still rejected it")
                     return response
                 }
 
@@ -99,37 +91,38 @@ class AmpacheInterceptor(
         }
     }
 
-    private fun makeTokenFailureResponse(request: Request) = Response.Builder()
-        .request(request)
-        .protocol(Protocol.HTTP_1_1)
-        .code(401)
-        .message("Authentication required")
-        .body("Failed getting a token".toResponseBody(null))
-        .build()
+    private fun makeTokenFailureResponse(request: Request) =
+        Response.Builder()
+            .request(request)
+            .protocol(Protocol.HTTP_1_1)
+            .code(401)
+            .message("Authentication required")
+            .body("Failed getting a token".toResponseBody(null))
+            .build()
 
-    private fun makeErrorResponse(request: Request, error: Error) = Response.Builder()
-        .request(request)
-        .protocol(Protocol.HTTP_1_1)
-        .code(
-            when (error.error.errorCode) {
-                is Error.Information.Code.AccessControlNotEnabled -> 405
-                is Error.Information.Code.InvalidHandshake -> 401
-                is Error.Information.Code.AccessDenied -> 403
-                is Error.Information.Code.NotFound -> 404
-                is Error.Information.Code.Missing -> 405
-                is Error.Information.Code.Deprecated -> 410
-                is Error.Information.Code.BadRequest -> 400
-                is Error.Information.Code.FailedAccessCheck -> 403
-                is Error.Information.Code.Other -> 500
-            }
-        )
-        .message("API error")
-        .body(error.error.errorMessage.toResponseBody(null))
-        .build()
+    private fun makeErrorResponse(request: Request, error: Error) =
+        Response.Builder()
+            .request(request)
+            .protocol(Protocol.HTTP_1_1)
+            .code(
+                when (error.error.errorCode) {
+                    is Error.Information.Code.AccessControlNotEnabled -> 405
+                    is Error.Information.Code.InvalidHandshake -> 401
+                    is Error.Information.Code.AccessDenied -> 403
+                    is Error.Information.Code.NotFound -> 404
+                    is Error.Information.Code.Missing -> 405
+                    is Error.Information.Code.Deprecated -> 410
+                    is Error.Information.Code.BadRequest -> 400
+                    is Error.Information.Code.FailedAccessCheck -> 403
+                    is Error.Information.Code.Other -> 500
+                }
+            )
+            .message("API error")
+            .body(error.error.errorMessage.toResponseBody(null))
+            .build()
 
-    private fun Request.injectToken(token: String) = newBuilder()
-        .url(url.newBuilder().setQueryParameter("auth", token).build())
-        .build()
+    private fun Request.injectToken(token: String) =
+        newBuilder().url(url.newBuilder().setQueryParameter("auth", token).build()).build()
 
     /**
      * Get the token, or make a new one if missing or expired.
@@ -162,18 +155,16 @@ class AmpacheInterceptor(
             try {
                 token = null
 
-                val url = request.url.newBuilder()
-                    .query(null)
-                    .addQueryParameter("action", "handshake")
-                    .addQueryParameters(baseParameters)
-                    .addQueryParameters(getHandshakeParameters())
-                    .build()
-
-                val response = okHttpClient.newCall(
-                    request.newBuilder()
-                        .url(url)
+                val url =
+                    request.url
+                        .newBuilder()
+                        .query(null)
+                        .addQueryParameter("action", "handshake")
+                        .addQueryParameters(baseParameters)
+                        .addQueryParameters(getHandshakeParameters())
                         .build()
-                ).execute()
+
+                val response = okHttpClient.newCall(request.newBuilder().url(url).build()).execute()
 
                 // Handle "{"error":""}" responses
                 when (val result = parseError(response)) {
@@ -214,9 +205,7 @@ class AmpacheInterceptor(
         }
     }
 
-    /**
-     * Get the base parameters.
-     */
+    /** Get the base parameters. */
     private fun getHandshakeParameters() = buildList {
         val instant = Instant.now()
         val passphrase = AmpacheClient.calculatePassphrase(password, instant)
@@ -226,9 +215,7 @@ class AmpacheInterceptor(
         add("user" to username)
     }
 
-    /**
-     * Parse the response and return [Result.Error] if the response contains an [Error] object.
-     */
+    /** Parse the response and return [Result.Error] if the response contains an [Error] object. */
     private fun parseError(response: Response): Result<String, Error> {
         if (!response.isSuccessful) {
             return Result.Error(
@@ -237,27 +224,30 @@ class AmpacheInterceptor(
                         Error.Information.Code.Other(response.code),
                         null,
                         Error.Information.Type.Other("${response.code}"),
-                        response.message
+                        response.message,
                     )
                 )
             )
         }
 
-        val body = response.body ?: return Result.Error(
-            Error(
-                Error.Information(
-                    Error.Information.Code.Other(response.code),
-                    null,
-                    Error.Information.Type.Other("${response.code}"),
-                    "Empty body"
+        val body =
+            response.body
+                ?: return Result.Error(
+                    Error(
+                        Error.Information(
+                            Error.Information.Code.Other(response.code),
+                            null,
+                            Error.Information.Type.Other("${response.code}"),
+                            "Empty body",
+                        )
+                    )
                 )
-            )
-        )
 
         // Do not consume the response
-        val string = body.source().let { source ->
-            source.peek().readString(charset = source.readBomAsCharset(Charsets.UTF_8))
-        }
+        val string =
+            body.source().let { source ->
+                source.peek().readString(charset = source.readBomAsCharset(Charsets.UTF_8))
+            }
 
         runCatching {
             val error = json.decodeFromString<Error>(string)
@@ -268,13 +258,10 @@ class AmpacheInterceptor(
         return Result.Success(string)
     }
 
-    private fun HttpUrl.Builder.addQueryParameters(
-        queryParameters: List<Pair<String, Any>>
-    ) = apply {
-        queryParameters.forEach { (key, value) ->
-            addQueryParameter(key, value.toString())
+    private fun HttpUrl.Builder.addQueryParameters(queryParameters: List<Pair<String, Any>>) =
+        apply {
+            queryParameters.forEach { (key, value) -> addQueryParameter(key, value.toString()) }
         }
-    }
 
     companion object {
         private val LOG_TAG = AmpacheInterceptor::class.simpleName!!

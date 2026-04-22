@@ -23,18 +23,13 @@ class GenreViewModel(application: Application) : TwelveViewModel(application) {
     private val genreUri = MutableStateFlow<Uri?>(null)
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val genre = genreUri
-        .filterNotNull()
-        .flatMapLatest {
-            mediaRepository.genre(it)
-        }
-        .asFlowResult()
-        .flowOn(Dispatchers.IO)
-        .stateIn(
-            viewModelScope,
-            SharingStarted.WhileSubscribed(),
-            FlowResult.Loading()
-        )
+    val genre =
+        genreUri
+            .filterNotNull()
+            .flatMapLatest { mediaRepository.genre(it) }
+            .asFlowResult()
+            .flowOn(Dispatchers.IO)
+            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), FlowResult.Loading())
 
     fun loadGenre(genreUri: Uri) {
         this.genreUri.value = genreUri

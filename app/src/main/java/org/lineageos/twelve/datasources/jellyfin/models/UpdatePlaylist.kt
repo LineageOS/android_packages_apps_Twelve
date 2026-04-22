@@ -8,7 +8,4 @@ package org.lineageos.twelve.datasources.jellyfin.models
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
-@Serializable
-data class UpdatePlaylist(
-    @SerialName("Name") val name: String,
-)
+@Serializable data class UpdatePlaylist(@SerialName("Name") val name: String)

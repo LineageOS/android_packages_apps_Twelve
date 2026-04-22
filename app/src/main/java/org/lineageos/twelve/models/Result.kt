@@ -5,9 +5,7 @@
 
 package org.lineageos.twelve.models
 
-/**
- * Result status. This is very similar to Arrow's `Either<A, B>`
- */
+/** Result status. This is very similar to Arrow's `Either<A, B>` */
 sealed interface Result<T, E> {
     /**
      * The result is ready.
@@ -25,59 +23,54 @@ sealed interface Result<T, E> {
     class Error<T, E>(val error: E, val throwable: Throwable? = null) : Result<T, E>
 
     companion object {
-        /**
-         * Get the data if the result is [Success], null otherwise.
-         */
-        fun <T, E> Result<T, E>.getOrNull() = when (this) {
-            is Success -> data
-            is Error -> null
-        }
+        /** Get the data if the result is [Success], null otherwise. */
+        fun <T, E> Result<T, E>.getOrNull() =
+            when (this) {
+                is Success -> data
+                is Error -> null
+            }
 
         /**
-         * Map the successful result to another [Result] object.
-         * On [Error], the original [Result] is returned.
+         * Map the successful result to another [Result] object. On [Error], the original [Result]
+         * is returned.
          */
-        inline fun <T, E, R> Result<T, E>.flatMap(
-            mapping: (T) -> Result<R, E>
-        ): Result<R, E> = when (this) {
-            is Success -> mapping(data)
-            is Error -> Error(error, throwable)
-        }
+        inline fun <T, E, R> Result<T, E>.flatMap(mapping: (T) -> Result<R, E>): Result<R, E> =
+            when (this) {
+                is Success -> mapping(data)
+                is Error -> Error(error, throwable)
+            }
 
         /**
-         * Map the successful result to another type.
-         * On [Error], the original [Result] is returned.
+         * Map the successful result to another type. On [Error], the original [Result] is returned.
          */
-        inline fun <T, E, R> Result<T, E>.map(
-            mapping: (T) -> R
-        ): Result<R, E> = flatMap { Success(mapping(it)) }
+        inline fun <T, E, R> Result<T, E>.map(mapping: (T) -> R): Result<R, E> = flatMap {
+            Success(mapping(it))
+        }
 
         /**
          * Execute a block if the result is [Success].
          *
          * @param block The block to execute
          */
-        inline fun <R : Result<T, E>, reified T, E> R.onSuccess(
-            block: (T) -> Unit,
-        ): R = this.also {
-            when (this) {
-                is Success<*, *> -> block(data as T)
-                is Error<*, *> -> Unit
+        inline fun <R : Result<T, E>, reified T, E> R.onSuccess(block: (T) -> Unit): R =
+            this.also {
+                when (this) {
+                    is Success<*, *> -> block(data as T)
+                    is Error<*, *> -> Unit
+                }
             }
-        }
 
         /**
          * Execute a block if the result is [Error].
          *
          * @param block The block to execute
          */
-        inline fun <R : Result<T, E>, T, reified E> R.onError(
-            block: (E) -> Unit,
-        ): R = this.also {
-            when (this) {
-                is Success<*, *> -> Unit
-                is Error<*, *> -> block(error as E)
+        inline fun <R : Result<T, E>, T, reified E> R.onError(block: (E) -> Unit): R =
+            this.also {
+                when (this) {
+                    is Success<*, *> -> Unit
+                    is Error<*, *> -> block(error as E)
+                }
             }
-        }
     }
 }

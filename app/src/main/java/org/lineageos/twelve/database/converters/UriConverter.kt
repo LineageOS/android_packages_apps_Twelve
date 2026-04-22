@@ -10,9 +10,7 @@ import androidx.core.net.toUri
 import androidx.room.TypeConverter
 
 class UriConverter {
-    @TypeConverter
-    fun fromString(value: String?) = value?.toUri()
+    @TypeConverter fun fromString(value: String?) = value?.toUri()
 
-    @TypeConverter
-    fun toString(uri: Uri?) = uri?.toString()
+    @TypeConverter fun toString(uri: Uri?) = uri?.toString()
 }

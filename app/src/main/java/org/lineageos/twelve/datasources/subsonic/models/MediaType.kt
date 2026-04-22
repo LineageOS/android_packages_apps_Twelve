@@ -21,13 +21,12 @@ enum class MediaType(val value: String) {
     VIDEO("video");
 
     class Serializer : KSerializer<MediaType> {
-        override val descriptor = PrimitiveSerialDescriptor(
-            "ResponseStatus", PrimitiveKind.STRING
-        )
+        override val descriptor = PrimitiveSerialDescriptor("ResponseStatus", PrimitiveKind.STRING)
 
-        override fun deserialize(decoder: Decoder) = decoder.decodeString().let {
-            fromValue(it) ?: throw SerializationException("Unknown MediaType value $it")
-        }
+        override fun deserialize(decoder: Decoder) =
+            decoder.decodeString().let {
+                fromValue(it) ?: throw SerializationException("Unknown MediaType value $it")
+            }
 
         override fun serialize(encoder: Encoder, value: MediaType) {
             encoder.encodeString(value.value)

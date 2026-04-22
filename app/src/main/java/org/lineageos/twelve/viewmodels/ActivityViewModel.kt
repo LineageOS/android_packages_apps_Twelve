@@ -15,12 +15,10 @@ import org.lineageos.twelve.models.FlowResult
 import org.lineageos.twelve.models.FlowResult.Companion.asFlowResult
 
 class ActivityViewModel(application: Application) : TwelveViewModel(application) {
-    val activity = mediaRepository.activity()
-        .asFlowResult()
-        .flowOn(Dispatchers.IO)
-        .stateIn(
-            viewModelScope,
-            SharingStarted.WhileSubscribed(),
-            FlowResult.Loading(),
-        )
+    val activity =
+        mediaRepository
+            .activity()
+            .asFlowResult()
+            .flowOn(Dispatchers.IO)
+            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), FlowResult.Loading())
 }

@@ -15,8 +15,4 @@ import kotlinx.serialization.Serializable
  * @param disc The disc number
  * @param title The name of the disc
  */
-@Serializable
-data class DiscTitle(
-    val disc: Int,
-    val title: String,
-)
+@Serializable data class DiscTitle(val disc: Int, val title: String)

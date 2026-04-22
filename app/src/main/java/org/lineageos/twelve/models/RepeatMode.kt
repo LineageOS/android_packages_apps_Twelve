@@ -5,9 +5,7 @@
 
 package org.lineageos.twelve.models
 
-/**
- * Playback repeat mode.
- */
+/** Playback repeat mode. */
 enum class RepeatMode {
     NONE,
     ALL,

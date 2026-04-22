@@ -19,22 +19,19 @@ import org.lineageos.twelve.ext.applicationContext
 import org.lineageos.twelve.ext.fullscreenMode
 import org.lineageos.twelve.ext.preferenceFlow
 
-/**
- * View model for the main activity.
- */
+/** View model for the main activity. */
 class FullscreenViewModel(application: Application) : AndroidViewModel(application) {
     private val sharedPreferences by lazy {
         PreferenceManager.getDefaultSharedPreferences(applicationContext)!!
     }
 
-    val fullscreenMode = sharedPreferences.preferenceFlow(
-        FULLSCREEN_MODE_KEY,
-        getter = SharedPreferences::fullscreenMode,
-    )
-        .flowOn(Dispatchers.IO)
-        .stateIn(
-            viewModelScope,
-            started = SharingStarted.WhileSubscribed(),
-            initialValue = false
-        )
+    val fullscreenMode =
+        sharedPreferences
+            .preferenceFlow(FULLSCREEN_MODE_KEY, getter = SharedPreferences::fullscreenMode)
+            .flowOn(Dispatchers.IO)
+            .stateIn(
+                viewModelScope,
+                started = SharingStarted.WhileSubscribed(),
+                initialValue = false,
+            )
 }

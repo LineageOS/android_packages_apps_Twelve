@@ -5,52 +5,32 @@
 
 package org.lineageos.twelve.models
 
-/**
- * Generic errors definitions for operations result.
- */
+/** Generic errors definitions for operations result. */
 enum class Error {
-    /**
-     * This feature isn't implemented.
-     */
+    /** This feature isn't implemented. */
     NOT_IMPLEMENTED,
 
-    /**
-     * I/O error, can also be network.
-     */
+    /** I/O error, can also be network. */
     IO,
 
-    /**
-     * Authentication error.
-     */
+    /** Authentication error. */
     AUTHENTICATION_REQUIRED,
 
-    /**
-     * Invalid credentials.
-     */
+    /** Invalid credentials. */
     INVALID_CREDENTIALS,
 
-    /**
-     * The item was not found.
-     */
+    /** The item was not found. */
     NOT_FOUND,
 
-    /**
-     * Value returned on write requests: The value already exists.
-     */
+    /** Value returned on write requests: The value already exists. */
     ALREADY_EXISTS,
 
-    /**
-     * Response deserialization error.
-     */
+    /** Response deserialization error. */
     DESERIALIZATION,
 
-    /**
-     * The request was cancelled.
-     */
+    /** The request was cancelled. */
     CANCELLED,
 
-    /**
-     * The server returned an invalid response.
-     */
+    /** The server returned an invalid response. */
     INVALID_RESPONSE,
 }

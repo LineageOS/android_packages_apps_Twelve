@@ -10,7 +10,9 @@ import android.util.AttributeSet
 import androidx.annotation.AttrRes
 import org.lineageos.twelve.R
 
-class HorizontalMediaItemView @JvmOverloads constructor(
+class HorizontalMediaItemView
+@JvmOverloads
+constructor(
     context: Context,
     attrs: AttributeSet? = null,
     @AttrRes defStyleAttr: Int = com.google.android.material.R.attr.materialCardViewStyle,

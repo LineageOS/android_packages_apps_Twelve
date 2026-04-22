@@ -25,88 +25,66 @@ import org.lineageos.twelve.models.ProviderType
 @OptIn(ExperimentalCoroutinesApi::class)
 class ManageProviderViewModel(application: Application) : ProviderViewModel(application) {
     /**
-     * The user defined provider type. The one in [providerIdentifier] will always take
-     * precedence over this.
+     * The user defined provider type. The one in [providerIdentifier] will always take precedence
+     * over this.
      */
     private val _selectedProviderType = MutableStateFlow<ProviderType?>(null)
 
-    /**
-     * Whether we're managing an existing provider or adding a new one.
-     */
-    val inEditMode = providerIdentifier
-        .mapLatest { it != null }
-        .flowOn(Dispatchers.IO)
-        .stateIn(
-            viewModelScope,
-            started = SharingStarted.Eagerly,
-            initialValue = false
-        )
+    /** Whether we're managing an existing provider or adding a new one. */
+    val inEditMode =
+        providerIdentifier
+            .mapLatest { it != null }
+            .flowOn(Dispatchers.IO)
+            .stateIn(viewModelScope, started = SharingStarted.Eagerly, initialValue = false)
 
-    /**
-     * The [Bundle] containing the arguments of the provider to manage.
-     */
-    private val providerArguments = providerIdentifier
-        .filterNotNull()
-        .flatMapLatest {
-            providersRepository.providerArguments(it)
-        }
-        .flowOn(Dispatchers.IO)
-        .stateIn(
-            viewModelScope,
-            started = SharingStarted.WhileSubscribed(),
-            initialValue = null
-        )
+    /** The [Bundle] containing the arguments of the provider to manage. */
+    private val providerArguments =
+        providerIdentifier
+            .filterNotNull()
+            .flatMapLatest { providersRepository.providerArguments(it) }
+            .flowOn(Dispatchers.IO)
+            .stateIn(
+                viewModelScope,
+                started = SharingStarted.WhileSubscribed(),
+                initialValue = null,
+            )
 
-    /**
-     * The provider type.
-     */
-    private val providerType = combine(
-        _selectedProviderType,
-        provider,
-    ) { selectedProviderType, provider ->
-        provider.getOrNull()?.type ?: selectedProviderType
-    }
-        .flowOn(Dispatchers.IO)
-        .stateIn(
-            viewModelScope,
-            started = SharingStarted.WhileSubscribed(),
-            initialValue = null
-        )
+    /** The provider type. */
+    private val providerType =
+        combine(_selectedProviderType, provider) { selectedProviderType, provider ->
+                provider.getOrNull()?.type ?: selectedProviderType
+            }
+            .flowOn(Dispatchers.IO)
+            .stateIn(
+                viewModelScope,
+                started = SharingStarted.WhileSubscribed(),
+                initialValue = null,
+            )
 
-    /**
-     * The provider type and the arguments of the provider to manage.
-     */
-    val providerTypeWithArguments = combine(
-        providerType,
-        providerArguments,
-    ) { providerType, providerArguments ->
-        providerType to providerArguments
-    }
-        .flowOn(Dispatchers.IO)
-        .stateIn(
-            viewModelScope,
-            started = SharingStarted.WhileSubscribed(),
-            initialValue = null to null
-        )
+    /** The provider type and the arguments of the provider to manage. */
+    val providerTypeWithArguments =
+        combine(providerType, providerArguments) { providerType, providerArguments ->
+                providerType to providerArguments
+            }
+            .flowOn(Dispatchers.IO)
+            .stateIn(
+                viewModelScope,
+                started = SharingStarted.WhileSubscribed(),
+                initialValue = null to null,
+            )
 
     fun setProviderType(providerType: ProviderType?) {
         _selectedProviderType.value = providerType
     }
 
-    /**
-     * Add a new provider.
-     */
-    suspend fun addProvider(
-        providerType: ProviderType, name: String, arguments: Bundle
-    ) {
+    /** Add a new provider. */
+    suspend fun addProvider(providerType: ProviderType, name: String, arguments: Bundle) {
         withContext(Dispatchers.IO) {
             providersRepository.addProvider(providerType, name, arguments)
         }
     }
 
-    /**
-     * Update the provider.
-     */
+    /** Update the provider. */
     suspend fun updateProvider(name: String, arguments: Bundle) {
         val providerIdentifier = providerIdentifier.value ?: return
 

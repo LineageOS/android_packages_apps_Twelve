@@ -39,83 +39,81 @@ import org.lineageos.twelve.database.entities.ResumptionPlaylist
 import org.lineageos.twelve.database.entities.SubsonicProvider
 
 @Database(
-    entities = [
-        /* Favorites */
-        Favorite::class,
+    entities =
+        [
+            /* Favorites */
+            Favorite::class,
 
-        /* Playlist */
-        Playlist::class,
-        PlaylistItemCrossRef::class,
+            /* Playlist */
+            Playlist::class,
+            PlaylistItemCrossRef::class,
 
-        /* Resumption */
-        ResumptionItem::class,
-        ResumptionPlaylist::class,
+            /* Resumption */
+            ResumptionItem::class,
+            ResumptionPlaylist::class,
 
-        /* Providers */
-        AmpacheProvider::class,
-        JellyfinProvider::class,
-        SubsonicProvider::class,
+            /* Providers */
+            AmpacheProvider::class,
+            JellyfinProvider::class,
+            SubsonicProvider::class,
 
-        /* Local Media Stats */
-        LocalMediaStats::class,
-    ],
+            /* Local Media Stats */
+            LocalMediaStats::class,
+        ],
     version = 9,
-    autoMigrations = [
-        AutoMigration(from = 1, to = 2),
-        AutoMigration(from = 2, to = 3),
-        AutoMigration(from = 3, to = 4),
-        AutoMigration(from = 4, to = 5),
-        AutoMigration(from = 5, to = 6),
-        AutoMigration(from = 6, to = 7, spec = TwelveDatabase.Companion.MigrationSpec6To7::class),
-        // 7 to 8 is done manually
-        AutoMigration(from = 8, to = 9),
-    ],
+    autoMigrations =
+        [
+            AutoMigration(from = 1, to = 2),
+            AutoMigration(from = 2, to = 3),
+            AutoMigration(from = 3, to = 4),
+            AutoMigration(from = 4, to = 5),
+            AutoMigration(from = 5, to = 6),
+            AutoMigration(
+                from = 6,
+                to = 7,
+                spec = TwelveDatabase.Companion.MigrationSpec6To7::class,
+            ),
+            // 7 to 8 is done manually
+            AutoMigration(from = 8, to = 9),
+        ],
 )
-@TypeConverters(
-    InstantConverter::class,
-    UriConverter::class,
-)
+@TypeConverters(InstantConverter::class, UriConverter::class)
 abstract class TwelveDatabase : RoomDatabase() {
     abstract fun getAmpacheProviderDao(): AmpacheProviderDao
+
     abstract fun getFavoriteDao(): FavoriteDao
+
     abstract fun getJellyfinProviderDao(): JellyfinProviderDao
+
     abstract fun getLocalMediaStatsProviderDao(): MediaStatsDao
+
     abstract fun getPlaylistDao(): PlaylistDao
+
     abstract fun getPlaylistItemCrossRefDao(): PlaylistItemCrossRefDao
+
     abstract fun getPlaylistWithItemsDao(): PlaylistWithItemsDao
+
     abstract fun getResumptionPlaylistDao(): ResumptionPlaylistDao
+
     abstract fun getSubsonicProviderDao(): SubsonicProviderDao
 
     companion object {
         @DeleteColumn.Entries(
-            DeleteColumn(
-                tableName = "Item",
-                columnName = "count"
-            ),
-            DeleteColumn(
-                tableName = "LocalMediaStats",
-                columnName = "favorite"
-            ),
-            DeleteColumn(
-                tableName = "Playlist",
-                columnName = "track_count"
-            ),
+            DeleteColumn(tableName = "Item", columnName = "count"),
+            DeleteColumn(tableName = "LocalMediaStats", columnName = "favorite"),
+            DeleteColumn(tableName = "Playlist", columnName = "track_count"),
         )
-        @DeleteTable.Entries(
-            DeleteTable(
-                tableName = "LastPlayed"
-            ),
-        )
+        @DeleteTable.Entries(DeleteTable(tableName = "LastPlayed"))
         @RenameColumn.Entries(
             RenameColumn(
                 tableName = "LocalMediaStats",
                 fromColumnName = "media_uri",
-                toColumnName = "audio_uri"
+                toColumnName = "audio_uri",
             ),
             RenameColumn(
                 tableName = "Playlist",
                 fromColumnName = "last_modified",
-                toColumnName = "created_at"
+                toColumnName = "created_at",
             ),
         )
         class MigrationSpec6To7 : AutoMigrationSpec
@@ -133,7 +131,8 @@ abstract class TwelveDatabase : RoomDatabase() {
                             `audio_uri` TEXT NOT NULL DEFAULT '',
                             PRIMARY KEY(`audio_uri`)
                         )
-                    """.trimIndent()
+                    """
+                        .trimIndent()
                 )
                 // Migrate data
                 db.execSQL(
@@ -141,26 +140,30 @@ abstract class TwelveDatabase : RoomDatabase() {
                         INSERT INTO Favorite_temp (audio_uri, added_at)
                         SELECT audio_uri, added_at FROM Favorite
                             INNER JOIN Item ON Item.item_id = Favorite.item_id
-                    """.trimIndent()
+                    """
+                        .trimIndent()
                 )
                 // Delete old table and rename new table
                 db.execSQL(
                     """
                         DROP TABLE IF EXISTS `Favorite`
-                    """.trimIndent()
+                    """
+                        .trimIndent()
                 )
                 db.execSQL(
                     """
                         ALTER TABLE `Favorite_temp`
                         RENAME TO `Favorite`
-                    """.trimIndent()
+                    """
+                        .trimIndent()
                 )
                 // Create indexes
                 db.execSQL(
                     """
                         CREATE UNIQUE INDEX IF NOT EXISTS `index_Favorite_audio_uri`
                         ON `Favorite` (`audio_uri`)
-                    """.trimIndent()
+                    """
+                        .trimIndent()
                 )
                 // Favorite: End
 
@@ -179,7 +182,8 @@ abstract class TwelveDatabase : RoomDatabase() {
                                 ON UPDATE CASCADE
                                 ON DELETE CASCADE
                         )
-                    """.trimIndent()
+                    """
+                        .trimIndent()
                 )
                 // Migrate data
                 db.execSQL(
@@ -187,32 +191,37 @@ abstract class TwelveDatabase : RoomDatabase() {
                         INSERT INTO PlaylistItemCrossRef_temp (playlist_id, audio_uri, last_modified)
                         SELECT playlist_id, audio_uri, last_modified FROM PlaylistItemCrossRef
                             INNER JOIN Item ON Item.item_id = PlaylistItemCrossRef.item_id
-                    """.trimIndent()
+                    """
+                        .trimIndent()
                 )
                 // Delete old table and rename new table
                 db.execSQL(
                     """
                         DROP TABLE IF EXISTS `PlaylistItemCrossRef`
-                    """.trimIndent()
+                    """
+                        .trimIndent()
                 )
                 db.execSQL(
                     """
                         ALTER TABLE `PlaylistItemCrossRef_temp`
                         RENAME TO `PlaylistItemCrossRef`
-                    """.trimIndent()
+                    """
+                        .trimIndent()
                 )
                 // Create indexes
                 db.execSQL(
                     """
                         CREATE INDEX IF NOT EXISTS `index_PlaylistItemCrossRef_playlist_id`
                         ON `PlaylistItemCrossRef` (`playlist_id`)
-                    """.trimIndent()
+                    """
+                        .trimIndent()
                 )
                 db.execSQL(
                     """
                         CREATE INDEX IF NOT EXISTS `index_PlaylistItemCrossRef_audio_uri`
                         ON `PlaylistItemCrossRef` (`audio_uri`)
-                    """.trimIndent()
+                    """
+                        .trimIndent()
                 )
                 // PlaylistItemCrossRef: End
 
@@ -221,18 +230,20 @@ abstract class TwelveDatabase : RoomDatabase() {
                 db.execSQL(
                     """
                         DROP TABLE IF EXISTS `Item`
-                    """.trimIndent()
+                    """
+                        .trimIndent()
                 )
                 // Item: End
             }
         }
 
-        fun get(context: Context) = Room.databaseBuilder(
-            context.applicationContext,
-            TwelveDatabase::class.java,
-            "twelve_database",
-        )
-            .addMigrations(Migration7To8)
-            .build()
+        fun get(context: Context) =
+            Room.databaseBuilder(
+                    context.applicationContext,
+                    TwelveDatabase::class.java,
+                    "twelve_database",
+                )
+                .addMigrations(Migration7To8)
+                .build()
     }
 }

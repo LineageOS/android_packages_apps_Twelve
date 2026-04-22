@@ -5,10 +5,10 @@
 
 package org.lineageos.twelve.datasources.subsonic
 
+import java.security.MessageDigest
 import okhttp3.HttpUrl
 import okhttp3.Interceptor
 import org.lineageos.twelve.datasources.subsonic.models.Version
-import java.security.MessageDigest
 
 class SubsonicAuthInterceptor(
     private val version: Version,
@@ -17,13 +17,14 @@ class SubsonicAuthInterceptor(
     private val clientName: String,
     private val useLegacyAuthentication: Boolean = false,
 ) : Interceptor {
-    override fun intercept(chain: Interceptor.Chain) = chain.proceed(
-        chain.request().newBuilder()
-            .url(
-                chain.request().url.addQueryParameters(getAuthParameters())
-            )
-            .build()
-    )
+    override fun intercept(chain: Interceptor.Chain) =
+        chain.proceed(
+            chain
+                .request()
+                .newBuilder()
+                .url(chain.request().url.addQueryParameters(getAuthParameters()))
+                .build()
+        )
 
     fun getAuthParameters() = buildList {
         add("u" to username)
@@ -40,20 +41,18 @@ class SubsonicAuthInterceptor(
     }
 
     private fun HttpUrl.addQueryParameters(queryParameters: List<Pair<String, Any>>) =
-        newBuilder().apply {
-            queryParameters.forEach { (key, value) ->
-                addQueryParameter(key, value.toString())
+        newBuilder()
+            .apply {
+                queryParameters.forEach { (key, value) -> addQueryParameter(key, value.toString()) }
             }
-        }.build()
+            .build()
 
     companion object {
         private const val PROTOCOL_JSON = "json"
 
         private val allowedSaltChars = ('A'..'Z') + ('a'..'z') + ('0'..'9')
 
-        private fun generateSalt() = (1..20)
-            .map { allowedSaltChars.random() }
-            .joinToString("")
+        private fun generateSalt() = (1..20).map { allowedSaltChars.random() }.joinToString("")
 
         @OptIn(ExperimentalStdlibApi::class)
         private fun getSaltedPassword(password: String, salt: String) =

@@ -41,55 +41,64 @@ import org.lineageos.twelve.utils.PermissionsChecker
 import org.lineageos.twelve.utils.PermissionsUtils
 import org.lineageos.twelve.viewmodels.ActivityViewModel
 
-/**
- * User activity, notifications and recommendations.
- */
+/** User activity, notifications and recommendations. */
 class ActivityFragment : Fragment(R.layout.fragment_activity) {
     // View models
     private val viewModel by viewModels<ActivityViewModel>()
 
     // Views
-    private val linearProgressIndicator by getViewProperty<LinearProgressIndicator>(R.id.linearProgressIndicator)
+    private val linearProgressIndicator by
+        getViewProperty<LinearProgressIndicator>(R.id.linearProgressIndicator)
     private val noElementsLinearLayout by getViewProperty<LinearLayout>(R.id.noElementsLinearLayout)
     private val recyclerView by getViewProperty<RecyclerView>(R.id.recyclerView)
 
     // RecyclerView
     private val adapter by lazy {
-        object : SimpleListAdapter<ActivityTab, ActivityTabView>(
-            UniqueItemDiffCallback(),
-            ::ActivityTabView,
-        ) {
+        object :
+            SimpleListAdapter<ActivityTab, ActivityTabView>(
+                UniqueItemDiffCallback(),
+                ::ActivityTabView,
+            ) {
             override fun ViewHolder.onBindView(item: ActivityTab) {
                 view.setOnItemClickListener { mediaItem ->
                     when (mediaItem) {
-                        is Album -> findNavController().navigateSafe(
-                            R.id.action_mainFragment_to_fragment_album,
-                            AlbumFragment.createBundle(mediaItem.uri)
-                        )
+                        is Album ->
+                            findNavController()
+                                .navigateSafe(
+                                    R.id.action_mainFragment_to_fragment_album,
+                                    AlbumFragment.createBundle(mediaItem.uri),
+                                )
 
-                        is Artist -> findNavController().navigateSafe(
-                            R.id.action_mainFragment_to_fragment_artist,
-                            ArtistFragment.createBundle(mediaItem.uri)
-                        )
+                        is Artist ->
+                            findNavController()
+                                .navigateSafe(
+                                    R.id.action_mainFragment_to_fragment_artist,
+                                    ArtistFragment.createBundle(mediaItem.uri),
+                                )
 
                         is Audio -> viewModel.playAudio(listOf(mediaItem), 0)
 
-                        is Genre -> findNavController().navigateSafe(
-                            R.id.action_mainFragment_to_fragment_genre,
-                            GenreFragment.createBundle(mediaItem.uri)
-                        )
+                        is Genre ->
+                            findNavController()
+                                .navigateSafe(
+                                    R.id.action_mainFragment_to_fragment_genre,
+                                    GenreFragment.createBundle(mediaItem.uri),
+                                )
 
-                        is Playlist -> findNavController().navigateSafe(
-                            R.id.action_mainFragment_to_fragment_playlist,
-                            PlaylistFragment.createBundle(mediaItem.uri)
-                        )
+                        is Playlist ->
+                            findNavController()
+                                .navigateSafe(
+                                    R.id.action_mainFragment_to_fragment_playlist,
+                                    PlaylistFragment.createBundle(mediaItem.uri),
+                                )
                     }
                 }
                 view.setOnItemLongClickListener { mediaItem ->
-                    findNavController().navigateSafe(
-                        R.id.action_mainFragment_to_fragment_media_item_bottom_sheet_dialog,
-                        MediaItemBottomSheetDialogFragment.createBundle(mediaItem.uri)
-                    )
+                    findNavController()
+                        .navigateSafe(
+                            R.id.action_mainFragment_to_fragment_media_item_bottom_sheet_dialog,
+                            MediaItemBottomSheetDialogFragment.createBundle(mediaItem.uri),
+                        )
                     true
                 }
 
@@ -99,25 +108,19 @@ class ActivityFragment : Fragment(R.layout.fragment_activity) {
     }
 
     // Permissions
-    private val permissionsChecker = PermissionsChecker(
-        this, PermissionsUtils.mainPermissions
-    )
+    private val permissionsChecker = PermissionsChecker(this, PermissionsUtils.mainPermissions)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         // Insets
         ViewCompat.setOnApplyWindowInsetsListener(recyclerView) { v, windowInsets ->
-            val insets = windowInsets.getInsets(
-                WindowInsetsCompat.Type.systemBars() or WindowInsetsCompat.Type.displayCutout()
-            )
+            val insets =
+                windowInsets.getInsets(
+                    WindowInsetsCompat.Type.systemBars() or WindowInsetsCompat.Type.displayCutout()
+                )
 
-            v.updatePadding(
-                insets,
-                start = true,
-                end = true,
-                bottom = true,
-            )
+            v.updatePadding(insets, start = true, end = true, bottom = true)
 
             windowInsets
         }
@@ -126,9 +129,7 @@ class ActivityFragment : Fragment(R.layout.fragment_activity) {
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                permissionsChecker.withPermissionsGranted {
-                    loadData()
-                }
+                permissionsChecker.withPermissionsGranted { loadData() }
             }
         }
     }

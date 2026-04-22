@@ -14,7 +14,4 @@ import kotlinx.serialization.Serializable
  *
  * @param name Genre name
  */
-@Serializable
-data class ItemGenre(
-    val name: String,
-)
+@Serializable data class ItemGenre(val name: String)

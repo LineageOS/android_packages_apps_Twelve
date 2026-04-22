@@ -27,5 +27,5 @@ data class ReplayGain(
     val trackPeak: Double? = null,
     val albumPeak: Double? = null,
     val baseGain: Double? = null,
-    val fallbackGain: Double? = null
+    val fallbackGain: Double? = null,
 )

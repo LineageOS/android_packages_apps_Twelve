@@ -5,14 +5,14 @@
 
 package org.lineageos.twelve.datasources.subsonic.models
 
+import java.time.Instant
+import java.time.OffsetDateTime
+import java.time.ZoneId
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.descriptors.PrimitiveKind
 import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
-import java.time.Instant
-import java.time.OffsetDateTime
-import java.time.ZoneId
 
 class InstantSerializer : KSerializer<Instant> {
     override val descriptor = PrimitiveSerialDescriptor("Instant", PrimitiveKind.STRING)
@@ -21,8 +21,6 @@ class InstantSerializer : KSerializer<Instant> {
         OffsetDateTime.parse(decoder.decodeString()).toInstant()
 
     override fun serialize(encoder: Encoder, value: Instant) {
-        encoder.encodeString(
-            OffsetDateTime.ofInstant(value, ZoneId.of("Z")).toString()
-        )
+        encoder.encodeString(OffsetDateTime.ofInstant(value, ZoneId.of("Z")).toString())
     }
 }

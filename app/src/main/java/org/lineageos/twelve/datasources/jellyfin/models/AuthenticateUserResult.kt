@@ -9,6 +9,4 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class AuthenticateUserResult(
-    @SerialName("AccessToken") val accessToken: String? = null,
-)
+data class AuthenticateUserResult(@SerialName("AccessToken") val accessToken: String? = null)

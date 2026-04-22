@@ -14,11 +14,8 @@ object TimestampFormatter {
         return String.format(Locale.ROOT, "%02d:%02d", minutes, seconds)
     }
 
-    fun formatTimestampSecs(
-        timestampSecs: Number
-    ) = formatTimestampSecs(timestampSecs.toLong())
+    fun formatTimestampSecs(timestampSecs: Number) = formatTimestampSecs(timestampSecs.toLong())
 
-    fun formatTimestampMillis(
-        timestampMillis: Number
-    ) = formatTimestampSecs(timestampMillis.toLong() / 1000)
+    fun formatTimestampMillis(timestampMillis: Number) =
+        formatTimestampSecs(timestampMillis.toLong() / 1000)
 }

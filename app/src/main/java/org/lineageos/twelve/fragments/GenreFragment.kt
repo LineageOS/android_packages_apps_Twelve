@@ -49,48 +49,56 @@ import org.lineageos.twelve.utils.PermissionsChecker
 import org.lineageos.twelve.utils.PermissionsUtils
 import org.lineageos.twelve.viewmodels.GenreViewModel
 
-/**
- * Single genre viewer.
- */
+/** Single genre viewer. */
 class GenreFragment : CollapsingToolbarLayoutFragment(R.layout.fragment_genre) {
     // View models
     private val viewModel by viewModels<GenreViewModel>()
 
     // Views
     override val appBarLayout by getViewProperty<AppBarLayout>(R.id.appBarLayout)
-    private val appearsInAlbumsLinearLayout by getViewProperty<LinearLayout>(R.id.appearsInAlbumsLinearLayout)
-    private val appearsInAlbumsRecyclerView by getViewProperty<RecyclerView>(R.id.appearsInAlbumsRecyclerView)
-    private val appearsInPlaylistsLinearLayout by getViewProperty<LinearLayout>(R.id.appearsInPlaylistsLinearLayout)
-    private val appearsInPlaylistsRecyclerView by getViewProperty<RecyclerView>(R.id.appearsInPlaylistsRecyclerView)
+    private val appearsInAlbumsLinearLayout by
+        getViewProperty<LinearLayout>(R.id.appearsInAlbumsLinearLayout)
+    private val appearsInAlbumsRecyclerView by
+        getViewProperty<RecyclerView>(R.id.appearsInAlbumsRecyclerView)
+    private val appearsInPlaylistsLinearLayout by
+        getViewProperty<LinearLayout>(R.id.appearsInPlaylistsLinearLayout)
+    private val appearsInPlaylistsRecyclerView by
+        getViewProperty<RecyclerView>(R.id.appearsInPlaylistsRecyclerView)
     private val audiosLinearLayout by getViewProperty<LinearLayout>(R.id.audiosLinearLayout)
     private val audiosRecyclerView by getViewProperty<RecyclerView>(R.id.audiosRecyclerView)
     override val coordinatorLayout by getViewProperty<CoordinatorLayout>(R.id.coordinatorLayout)
     private val genreNameTextView by getViewProperty<TextView>(R.id.genreNameTextView)
-    private val infoNestedScrollView by getViewProperty<NestedScrollView?>(R.id.infoNestedScrollView)
-    private val linearProgressIndicator by getViewProperty<LinearProgressIndicator>(R.id.linearProgressIndicator)
+    private val infoNestedScrollView by
+        getViewProperty<NestedScrollView?>(R.id.infoNestedScrollView)
+    private val linearProgressIndicator by
+        getViewProperty<LinearProgressIndicator>(R.id.linearProgressIndicator)
     private val nestedScrollView by getViewProperty<NestedScrollView>(R.id.nestedScrollView)
-    private val noElementsNestedScrollView by getViewProperty<NestedScrollView>(R.id.noElementsNestedScrollView)
+    private val noElementsNestedScrollView by
+        getViewProperty<NestedScrollView>(R.id.noElementsNestedScrollView)
     private val thumbnailImageView by getViewProperty<ImageView>(R.id.thumbnailImageView)
     private val toolbar by getViewProperty<MaterialToolbar>(R.id.toolbar)
 
     // RecyclerView
     private val appearsInAlbumsAdapter by lazy {
-        object : SimpleListAdapter<Album, HorizontalMediaItemView>(
-            UniqueItemDiffCallback(),
-            ::HorizontalMediaItemView,
-        ) {
+        object :
+            SimpleListAdapter<Album, HorizontalMediaItemView>(
+                UniqueItemDiffCallback(),
+                ::HorizontalMediaItemView,
+            ) {
             override fun ViewHolder.onBindView(item: Album) {
                 view.setOnClickListener {
-                    findNavController().navigateSafe(
-                        R.id.action_genreFragment_to_fragment_album,
-                        AlbumFragment.createBundle(item.uri)
-                    )
+                    findNavController()
+                        .navigateSafe(
+                            R.id.action_genreFragment_to_fragment_album,
+                            AlbumFragment.createBundle(item.uri),
+                        )
                 }
                 view.setOnLongClickListener {
-                    findNavController().navigateSafe(
-                        R.id.action_genreFragment_to_fragment_media_item_bottom_sheet_dialog,
-                        MediaItemBottomSheetDialogFragment.createBundle(item.uri)
-                    )
+                    findNavController()
+                        .navigateSafe(
+                            R.id.action_genreFragment_to_fragment_media_item_bottom_sheet_dialog,
+                            MediaItemBottomSheetDialogFragment.createBundle(item.uri),
+                        )
                     true
                 }
 
@@ -99,22 +107,25 @@ class GenreFragment : CollapsingToolbarLayoutFragment(R.layout.fragment_genre) {
         }
     }
     private val appearsInPlaylistsAdapter by lazy {
-        object : SimpleListAdapter<Playlist, HorizontalMediaItemView>(
-            UniqueItemDiffCallback(),
-            ::HorizontalMediaItemView,
-        ) {
+        object :
+            SimpleListAdapter<Playlist, HorizontalMediaItemView>(
+                UniqueItemDiffCallback(),
+                ::HorizontalMediaItemView,
+            ) {
             override fun ViewHolder.onBindView(item: Playlist) {
                 view.setOnClickListener {
-                    findNavController().navigateSafe(
-                        R.id.action_genreFragment_to_fragment_playlist,
-                        PlaylistFragment.createBundle(item.uri)
-                    )
+                    findNavController()
+                        .navigateSafe(
+                            R.id.action_genreFragment_to_fragment_playlist,
+                            PlaylistFragment.createBundle(item.uri),
+                        )
                 }
                 view.setOnLongClickListener {
-                    findNavController().navigateSafe(
-                        R.id.action_genreFragment_to_fragment_media_item_bottom_sheet_dialog,
-                        MediaItemBottomSheetDialogFragment.createBundle(item.uri)
-                    )
+                    findNavController()
+                        .navigateSafe(
+                            R.id.action_genreFragment_to_fragment_media_item_bottom_sheet_dialog,
+                            MediaItemBottomSheetDialogFragment.createBundle(item.uri),
+                        )
                     true
                 }
 
@@ -123,22 +134,22 @@ class GenreFragment : CollapsingToolbarLayoutFragment(R.layout.fragment_genre) {
         }
     }
     private val audiosAdapter by lazy {
-        object : SimpleListAdapter<Audio, HorizontalMediaItemView>(
-            UniqueItemDiffCallback(),
-            ::HorizontalMediaItemView,
-        ) {
+        object :
+            SimpleListAdapter<Audio, HorizontalMediaItemView>(
+                UniqueItemDiffCallback(),
+                ::HorizontalMediaItemView,
+            ) {
             override fun ViewHolder.onBindView(item: Audio) {
-                view.setOnClickListener {
-                    viewModel.playAudio(currentList, bindingAdapterPosition)
-                }
+                view.setOnClickListener { viewModel.playAudio(currentList, bindingAdapterPosition) }
                 view.setOnLongClickListener {
-                    findNavController().navigateSafe(
-                        R.id.action_genreFragment_to_fragment_media_item_bottom_sheet_dialog,
-                        MediaItemBottomSheetDialogFragment.createBundle(
-                            item.uri,
-                            fromGenre = true,
+                    findNavController()
+                        .navigateSafe(
+                            R.id.action_genreFragment_to_fragment_media_item_bottom_sheet_dialog,
+                            MediaItemBottomSheetDialogFragment.createBundle(
+                                item.uri,
+                                fromGenre = true,
+                            ),
                         )
-                    )
                     true
                 }
 
@@ -152,9 +163,7 @@ class GenreFragment : CollapsingToolbarLayoutFragment(R.layout.fragment_genre) {
         get() = requireArguments().getParcelable(ARG_GENRE_URI, Uri::class)!!
 
     // Permissions
-    private val permissionsChecker = PermissionsChecker(
-        this, PermissionsUtils.mainPermissions
-    )
+    private val permissionsChecker = PermissionsChecker(this, PermissionsUtils.mainPermissions)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -163,11 +172,7 @@ class GenreFragment : CollapsingToolbarLayoutFragment(R.layout.fragment_genre) {
         ViewCompat.setOnApplyWindowInsetsListener(toolbar) { v, windowInsets ->
             val insets = windowInsets.getInsets(WindowInsetsCompat.Type.displayCutout())
 
-            v.updatePadding(
-                insets,
-                start = true,
-                end = true,
-            )
+            v.updatePadding(insets, start = true, end = true)
 
             windowInsets
         }
@@ -176,10 +181,7 @@ class GenreFragment : CollapsingToolbarLayoutFragment(R.layout.fragment_genre) {
             ViewCompat.setOnApplyWindowInsetsListener(it) { v, windowInsets ->
                 val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
 
-                v.updatePadding(
-                    insets,
-                    bottom = true,
-                )
+                v.updatePadding(insets, bottom = true)
 
                 windowInsets
             }
@@ -188,10 +190,7 @@ class GenreFragment : CollapsingToolbarLayoutFragment(R.layout.fragment_genre) {
         ViewCompat.setOnApplyWindowInsetsListener(nestedScrollView) { v, windowInsets ->
             val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
 
-            v.updatePadding(
-                insets,
-                bottom = true,
-            )
+            v.updatePadding(insets, bottom = true)
 
             windowInsets
         }
@@ -199,10 +198,7 @@ class GenreFragment : CollapsingToolbarLayoutFragment(R.layout.fragment_genre) {
         ViewCompat.setOnApplyWindowInsetsListener(noElementsNestedScrollView) { v, windowInsets ->
             val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
 
-            v.updatePadding(
-                insets,
-                bottom = true,
-            )
+            v.updatePadding(insets, bottom = true)
 
             windowInsets
         }
@@ -217,9 +213,7 @@ class GenreFragment : CollapsingToolbarLayoutFragment(R.layout.fragment_genre) {
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                permissionsChecker.withPermissionsGranted {
-                    loadData()
-                }
+                permissionsChecker.withPermissionsGranted { loadData() }
             }
         }
     }
@@ -247,14 +241,15 @@ class GenreFragment : CollapsingToolbarLayoutFragment(R.layout.fragment_genre) {
                     genre.name?.also { genreName ->
                         toolbar.title = genreName
                         genreNameTextView.text = genreName
-                    } ?: run {
-                        toolbar.setTitle(R.string.genre_unknown)
-                        genreNameTextView.setText(R.string.genre_unknown)
                     }
+                        ?: run {
+                            toolbar.setTitle(R.string.genre_unknown)
+                            genreNameTextView.setText(R.string.genre_unknown)
+                        }
 
                     thumbnailImageView.loadThumbnail(
                         genre.thumbnail,
-                        placeholder = R.drawable.ic_genres
+                        placeholder = R.drawable.ic_genres,
                     )
 
                     appearsInAlbumsAdapter.submitList(genreContent.appearsInAlbums)
@@ -270,21 +265,15 @@ class GenreFragment : CollapsingToolbarLayoutFragment(R.layout.fragment_genre) {
                     val isAudiosEmpty = genreContent.audios.isEmpty()
                     audiosLinearLayout.isVisible = !isAudiosEmpty
 
-                    val isEmpty = listOf(
-                        isAppearsInAlbumsEmpty,
-                        isAppearsInPlaylistsEmpty,
-                        isAudiosEmpty,
-                    ).all { isEmpty -> isEmpty }
+                    val isEmpty =
+                        listOf(isAppearsInAlbumsEmpty, isAppearsInPlaylistsEmpty, isAudiosEmpty)
+                            .all { isEmpty -> isEmpty }
                     nestedScrollView.isVisible = !isEmpty
                     noElementsNestedScrollView.isVisible = isEmpty
                 }
 
                 is FlowResult.Error -> {
-                    Log.e(
-                        LOG_TAG,
-                        "Error loading genre, error: ${it.error}",
-                        it.throwable
-                    )
+                    Log.e(LOG_TAG, "Error loading genre, error: ${it.error}", it.throwable)
 
                     toolbar.title = ""
                     genreNameTextView.text = ""
@@ -312,12 +301,9 @@ class GenreFragment : CollapsingToolbarLayoutFragment(R.layout.fragment_genre) {
 
         /**
          * Create a [Bundle] to use as the arguments for this fragment.
+         *
          * @param genreUri The URI of the genre to display
          */
-        fun createBundle(
-            genreUri: Uri,
-        ) = Bundle {
-            putParcelable(ARG_GENRE_URI, genreUri)
-        }
+        fun createBundle(genreUri: Uri) = Bundle { putParcelable(ARG_GENRE_URI, genreUri) }
     }
 }

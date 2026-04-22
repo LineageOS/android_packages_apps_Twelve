@@ -16,54 +16,38 @@ import com.google.android.material.tabs.TabLayoutMediator
 import org.lineageos.twelve.R
 import org.lineageos.twelve.ext.getViewProperty
 
-/**
- * Music library.
- */
+/** Music library. */
 class LibraryFragment : Fragment(R.layout.fragment_library) {
     // Views
     private val tabLayout by getViewProperty<TabLayout>(R.id.tabLayout)
     private val viewPager2 by getViewProperty<ViewPager2>(R.id.viewPager2)
 
     // ViewPager2
-    private enum class Menus(
-        @StringRes val titleStringResId: Int,
-        val fragment: () -> Fragment,
-    ) {
-        ALBUMS(
-            R.string.library_fragment_menu_albums,
-            { AlbumsFragment() },
-        ),
-        ARTISTS(
-            R.string.library_fragment_menu_artists,
-            { ArtistsFragment() },
-        ),
-        GENRES(
-            R.string.library_fragment_menu_genres,
-            { GenresFragment() },
-        ),
-        PLAYLISTS(
-            R.string.library_fragment_menu_playlists,
-            { PlaylistsFragment() },
-        ),
+    private enum class Menus(@StringRes val titleStringResId: Int, val fragment: () -> Fragment) {
+        ALBUMS(R.string.library_fragment_menu_albums, { AlbumsFragment() }),
+        ARTISTS(R.string.library_fragment_menu_artists, { ArtistsFragment() }),
+        GENRES(R.string.library_fragment_menu_genres, { GenresFragment() }),
+        PLAYLISTS(R.string.library_fragment_menu_playlists, { PlaylistsFragment() }),
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewPager2.adapter = object : FragmentStateAdapter(
-            childFragmentManager, viewLifecycleOwner.lifecycle
-        ) {
-            override fun getItemCount() = Menus.entries.size
-            override fun createFragment(position: Int) = Menus.entries[position].fragment()
-        }
+        viewPager2.adapter =
+            object : FragmentStateAdapter(childFragmentManager, viewLifecycleOwner.lifecycle) {
+                override fun getItemCount() = Menus.entries.size
+
+                override fun createFragment(position: Int) = Menus.entries[position].fragment()
+            }
         viewPager2.offscreenPageLimit = Menus.entries.size
 
         TabLayoutMediator(tabLayout, viewPager2) { tab, position ->
-            val menu = Menus.entries[position]
+                val menu = Menus.entries[position]
 
-            tab.setText(menu.titleStringResId)
-            tab.setContentDescription(menu.titleStringResId)
-        }.attach()
+                tab.setText(menu.titleStringResId)
+                tab.setContentDescription(menu.titleStringResId)
+            }
+            .attach()
     }
 
     override fun onDestroyView() {

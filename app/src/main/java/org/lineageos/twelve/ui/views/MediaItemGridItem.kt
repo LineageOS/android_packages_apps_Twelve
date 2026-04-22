@@ -10,7 +10,9 @@ import android.util.AttributeSet
 import androidx.annotation.AttrRes
 import org.lineageos.twelve.R
 
-class MediaItemGridItem @JvmOverloads constructor(
+class MediaItemGridItem
+@JvmOverloads
+constructor(
     context: Context,
     attrs: AttributeSet? = null,
     @AttrRes defStyleAttr: Int = com.google.android.material.R.attr.materialCardViewStyle,

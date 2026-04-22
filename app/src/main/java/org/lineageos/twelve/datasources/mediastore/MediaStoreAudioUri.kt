@@ -9,14 +9,8 @@ import android.content.ContentResolver
 import android.net.Uri
 import android.provider.MediaStore
 
-/**
- * A [MediaStore.Audio] item URI.
- */
-data class MediaStoreAudioUri(
-    val volumeName: String,
-    val type: Type,
-    val id: Long,
-) {
+/** A [MediaStore.Audio] item URI. */
+data class MediaStoreAudioUri(val volumeName: String, val type: Type, val id: Long) {
     enum class Type(val value: String) {
         ALBUMS("albums"),
         ARTISTS("artists"),
@@ -28,14 +22,15 @@ data class MediaStoreAudioUri(
         }
     }
 
-    fun toUri(): Uri = Uri.Builder()
-        .scheme(ContentResolver.SCHEME_CONTENT)
-        .authority(MediaStore.AUTHORITY)
-        .appendPath(AUDIO_PATH)
-        .appendPath(volumeName)
-        .appendPath(type.value)
-        .appendPath(id.toString())
-        .build()
+    fun toUri(): Uri =
+        Uri.Builder()
+            .scheme(ContentResolver.SCHEME_CONTENT)
+            .authority(MediaStore.AUTHORITY)
+            .appendPath(AUDIO_PATH)
+            .appendPath(volumeName)
+            .appendPath(type.value)
+            .appendPath(id.toString())
+            .build()
 
     companion object {
         private const val AUDIO_PATH = "audio"

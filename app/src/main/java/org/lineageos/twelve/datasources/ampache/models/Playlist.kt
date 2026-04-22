@@ -5,6 +5,7 @@
 
 package org.lineageos.twelve.datasources.ampache.models
 
+import java.util.Locale
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -12,7 +13,6 @@ import kotlinx.serialization.descriptors.PrimitiveKind
 import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
-import java.util.Locale
 
 /**
  * Playlist.
@@ -51,31 +51,24 @@ data class Playlist(
     @SerialName("md5") val md5: String?,
     @SerialName("last_update") val lastUpdate: InstantAsTimestampLong,
 ) {
-    /**
-     * Playlist type.
-     */
+    /** Playlist type. */
     @Serializable(with = Type.Serializer::class)
     enum class Type(val value: String) {
         PUBLIC("public"),
         PRIVATE("private");
 
         class Serializer : KSerializer<Type> {
-            override val descriptor = PrimitiveSerialDescriptor(
-                Serializer::class.qualifiedName!!, PrimitiveKind.STRING
-            )
+            override val descriptor =
+                PrimitiveSerialDescriptor(Serializer::class.qualifiedName!!, PrimitiveKind.STRING)
 
-            override fun serialize(
-                encoder: Encoder,
-                value: Type
-            ) {
+            override fun serialize(encoder: Encoder, value: Type) {
                 encoder.encodeString(value.value)
             }
 
-            override fun deserialize(
-                decoder: Decoder
-            ) = decoder.decodeString().lowercase(Locale.US).let { value ->
-                entries.first { it.value == value }
-            }
+            override fun deserialize(decoder: Decoder) =
+                decoder.decodeString().lowercase(Locale.US).let { value ->
+                    entries.first { it.value == value }
+                }
         }
     }
 }

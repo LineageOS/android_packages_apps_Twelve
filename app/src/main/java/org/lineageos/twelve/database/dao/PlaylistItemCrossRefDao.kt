@@ -13,9 +13,7 @@ import androidx.room.Transaction
 @Dao
 @Suppress("FunctionName")
 interface PlaylistItemCrossRefDao {
-    /**
-     * Add an item to a playlist (creates a cross-reference).
-     */
+    /** Add an item to a playlist (creates a cross-reference). */
     @Transaction
     @Query(
         """
@@ -26,12 +24,12 @@ interface PlaylistItemCrossRefDao {
     suspend fun _addItemToPlaylist(
         playlistId: Long,
         audioUri: Uri,
-        lastModified: Long = System.currentTimeMillis()
+        lastModified: Long = System.currentTimeMillis(),
     )
 
-    /**
-     * Remove an item from a playlist (deletes the cross-reference).
-     */
-    @Query("DELETE FROM PlaylistItemCrossRef WHERE playlist_id = :playlistId AND audio_uri = :audioUri")
+    /** Remove an item from a playlist (deletes the cross-reference). */
+    @Query(
+        "DELETE FROM PlaylistItemCrossRef WHERE playlist_id = :playlistId AND audio_uri = :audioUri"
+    )
     suspend fun _removeItemFromPlaylist(playlistId: Long, audioUri: Uri)
 }

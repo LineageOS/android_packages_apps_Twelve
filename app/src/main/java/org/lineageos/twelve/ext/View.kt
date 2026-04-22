@@ -34,17 +34,9 @@ fun View.slideUp() {
     startAnimation(
         AnimationSet(true).apply {
             addAnimation(
-                TranslateAnimation(
-                    0f, 0f, measuredHeight.toFloat(), 0f
-                ).apply {
-                    duration = 250
-                }
+                TranslateAnimation(0f, 0f, measuredHeight.toFloat(), 0f).apply { duration = 250 }
             )
-            addAnimation(
-                AlphaAnimation(0.0f, 1.0f).apply {
-                    duration = 250
-                }
-            )
+            addAnimation(AlphaAnimation(0.0f, 1.0f).apply { duration = 250 })
         }
     )
 }
@@ -58,29 +50,18 @@ fun View.slideDown() {
 
     startAnimation(
         AnimationSet(true).apply {
-            addAnimation(
-                TranslateAnimation(0f, 0f, 0f, height.toFloat()).apply {
-                    duration = 200
-                }
-            )
-            addAnimation(
-                AlphaAnimation(1.0f, 0.0f).apply {
-                    duration = 200
-                }
-            )
+            addAnimation(TranslateAnimation(0f, 0f, 0f, height.toFloat()).apply { duration = 200 })
+            addAnimation(AlphaAnimation(1.0f, 0.0f).apply { duration = 200 })
         }
     )
 }
 
-/**
- * Return whether [View.getLayoutDirection] is [View.LAYOUT_DIRECTION_RTL].
- */
+/** Return whether [View.getLayoutDirection] is [View.LAYOUT_DIRECTION_RTL]. */
 val View.isRtl: Boolean
     get() = layoutDirection == View.LAYOUT_DIRECTION_RTL
 
 /**
- * Updates the padding of the view based on the insets.
- * Layout direction is taken into account.
+ * Updates the padding of the view based on the insets. Layout direction is taken into account.
  *
  * @param insets The insets to apply
  * @param start Whether the start padding should be applied
@@ -93,24 +74,24 @@ fun View.updatePadding(
     start: Boolean = false,
     top: Boolean = false,
     end: Boolean = false,
-    bottom: Boolean = false
+    bottom: Boolean = false,
 ) {
-    val (left, right) = when (isRtl) {
-        true -> end to start
-        false -> start to end
-    }
+    val (left, right) =
+        when (isRtl) {
+            true -> end to start
+            false -> start to end
+        }
 
     setPadding(
         insets.left.takeIf { left } ?: paddingLeft,
         insets.top.takeIf { top } ?: paddingTop,
         insets.right.takeIf { right } ?: paddingRight,
-        insets.bottom.takeIf { bottom } ?: paddingBottom
+        insets.bottom.takeIf { bottom } ?: paddingBottom,
     )
 }
 
 /**
- * Updates the margin of the view based on the insets.
- * Layout direction is taken into account.
+ * Updates the margin of the view based on the insets. Layout direction is taken into account.
  *
  * @param insets The insets to apply
  * @param start Whether the start padding should be applied
@@ -123,12 +104,13 @@ fun View.updateMargin(
     start: Boolean = false,
     top: Boolean = false,
     end: Boolean = false,
-    bottom: Boolean = false
+    bottom: Boolean = false,
 ) {
-    val (left, right) = when (isRtl) {
-        true -> end to start
-        false -> start to end
-    }
+    val (left, right) =
+        when (isRtl) {
+            true -> end to start
+            false -> start to end
+        }
 
     updateLayoutParams<ViewGroup.MarginLayoutParams> {
         leftMargin = insets.left.takeIf { left } ?: leftMargin
@@ -138,7 +120,5 @@ fun View.updateMargin(
     }
 }
 
-/**
- * @see toPx
- */
+/** @see toPx */
 fun View.toPx(dp: Int) = resources.displayMetrics.toPx(dp)

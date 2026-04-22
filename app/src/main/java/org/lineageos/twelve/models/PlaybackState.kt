@@ -5,9 +5,7 @@
 
 package org.lineageos.twelve.models
 
-/**
- * Player playback status.
- */
+/** Player playback status. */
 enum class PlaybackState {
     IDLE,
     BUFFERING,

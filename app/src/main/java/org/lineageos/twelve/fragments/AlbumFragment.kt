@@ -50,9 +50,7 @@ import org.lineageos.twelve.utils.PermissionsUtils
 import org.lineageos.twelve.utils.TimestampFormatter
 import org.lineageos.twelve.viewmodels.AlbumViewModel
 
-/**
- * Single music album viewer.
- */
+/** Single music album viewer. */
 class AlbumFragment : CollapsingToolbarLayoutFragment(R.layout.fragment_album) {
     // View models
     private val viewModel by viewModels<AlbumViewModel>()
@@ -62,19 +60,22 @@ class AlbumFragment : CollapsingToolbarLayoutFragment(R.layout.fragment_album) {
     override val appBarLayout by getViewProperty<AppBarLayout>(R.id.appBarLayout)
     private val artistNameTextView by getViewProperty<TextView>(R.id.artistNameTextView)
     override val coordinatorLayout by getViewProperty<CoordinatorLayout>(R.id.coordinatorLayout)
-    private val fileTypeMaterialCardView by getViewProperty<MaterialCardView>(R.id.fileTypeMaterialCardView)
+    private val fileTypeMaterialCardView by
+        getViewProperty<MaterialCardView>(R.id.fileTypeMaterialCardView)
     private val fileTypeTextView by getViewProperty<TextView>(R.id.fileTypeTextView)
-    private val infoNestedScrollView by getViewProperty<NestedScrollView?>(R.id.infoNestedScrollView)
-    private val linearProgressIndicator by getViewProperty<LinearProgressIndicator>(R.id.linearProgressIndicator)
-    private val noElementsNestedScrollView by getViewProperty<NestedScrollView>(R.id.noElementsNestedScrollView)
-    private val playAllExtendedFloatingActionButton by getViewProperty<ExtendedFloatingActionButton>(
-        R.id.playAllExtendedFloatingActionButton
-    )
-    private val playButtonsLinearLayout by getViewProperty<LinearLayout>(R.id.playButtonsLinearLayout)
+    private val infoNestedScrollView by
+        getViewProperty<NestedScrollView?>(R.id.infoNestedScrollView)
+    private val linearProgressIndicator by
+        getViewProperty<LinearProgressIndicator>(R.id.linearProgressIndicator)
+    private val noElementsNestedScrollView by
+        getViewProperty<NestedScrollView>(R.id.noElementsNestedScrollView)
+    private val playAllExtendedFloatingActionButton by
+        getViewProperty<ExtendedFloatingActionButton>(R.id.playAllExtendedFloatingActionButton)
+    private val playButtonsLinearLayout by
+        getViewProperty<LinearLayout>(R.id.playButtonsLinearLayout)
     private val recyclerView by getViewProperty<RecyclerView>(R.id.recyclerView)
-    private val shufflePlayExtendedFloatingActionButton by getViewProperty<ExtendedFloatingActionButton>(
-        R.id.shufflePlayExtendedFloatingActionButton
-    )
+    private val shufflePlayExtendedFloatingActionButton by
+        getViewProperty<ExtendedFloatingActionButton>(R.id.shufflePlayExtendedFloatingActionButton)
     private val thumbnailImageView by getViewProperty<ImageView>(R.id.thumbnailImageView)
     private val toolbar by getViewProperty<MaterialToolbar>(R.id.toolbar)
     private val tracksInfoTextView by getViewProperty<TextView>(R.id.tracksInfoTextView)
@@ -82,10 +83,11 @@ class AlbumFragment : CollapsingToolbarLayoutFragment(R.layout.fragment_album) {
 
     // Recyclerview
     private val adapter by lazy {
-        object : SimpleListAdapter<AlbumViewModel.AlbumContent, ListItem>(
-            UniqueItemDiffCallback(),
-            ::ListItem,
-        ) {
+        object :
+            SimpleListAdapter<AlbumViewModel.AlbumContent, ListItem>(
+                UniqueItemDiffCallback(),
+                ::ListItem,
+            ) {
             private val ViewHolder.trackTextView
                 get() = view.leadingView!!.findViewById<TextView>(R.id.trackTextView)
 
@@ -98,10 +100,7 @@ class AlbumFragment : CollapsingToolbarLayoutFragment(R.layout.fragment_album) {
                     is AlbumViewModel.AlbumContent.DiscHeader -> {
                         view.setLeadingIconImage(R.drawable.ic_album)
                         view.leadingViewIsVisible = false
-                        view.setHeadlineText(
-                            R.string.album_disc_header,
-                            item.discNumber,
-                        )
+                        view.setHeadlineText(R.string.album_disc_header, item.discNumber)
                         view.supportingText = null
                         view.trailingSupportingText = null
                         view.isClickable = false
@@ -109,40 +108,38 @@ class AlbumFragment : CollapsingToolbarLayoutFragment(R.layout.fragment_album) {
                     }
 
                     is AlbumViewModel.AlbumContent.AudioItem -> {
-                        view.setOnClickListener {
-                            viewModel.playAlbum(item.audio)
-                        }
+                        view.setOnClickListener { viewModel.playAlbum(item.audio) }
                         view.setOnLongClickListener {
-                            findNavController().navigateSafe(
-                                R.id.action_albumFragment_to_fragment_media_item_bottom_sheet_dialog,
-                                MediaItemBottomSheetDialogFragment.createBundle(
-                                    item.audio.uri,
-                                    fromAlbum = true,
+                            findNavController()
+                                .navigateSafe(
+                                    R.id
+                                        .action_albumFragment_to_fragment_media_item_bottom_sheet_dialog,
+                                    MediaItemBottomSheetDialogFragment.createBundle(
+                                        item.audio.uri,
+                                        fromAlbum = true,
+                                    ),
                                 )
-                            )
 
                             true
                         }
 
                         item.audio.trackNumber?.also {
                             view.leadingIconImage = null
-                            trackTextView.text = getString(
-                                R.string.track_number,
-                                it
-                            )
+                            trackTextView.text = getString(R.string.track_number, it)
                             view.leadingViewIsVisible = true
-                        } ?: run {
-                            view.setLeadingIconImage(R.drawable.ic_music_note)
-                            view.leadingViewIsVisible = false
                         }
+                            ?: run {
+                                view.setLeadingIconImage(R.drawable.ic_music_note)
+                                view.leadingViewIsVisible = false
+                            }
 
                         view.headlineText = item.audio.title
-                        item.audio.artistName?.also {
-                            view.supportingText = it
-                        } ?: view.setSupportingText(R.string.artist_unknown)
-                        view.trailingSupportingText = item.audio.durationMs?.let {
-                            TimestampFormatter.formatTimestampMillis(it)
-                        }
+                        item.audio.artistName?.also { view.supportingText = it }
+                            ?: view.setSupportingText(R.string.artist_unknown)
+                        view.trailingSupportingText =
+                            item.audio.durationMs?.let {
+                                TimestampFormatter.formatTimestampMillis(it)
+                            }
                         view.isClickable = true
                         view.isLongClickable = true
                     }
@@ -156,9 +153,7 @@ class AlbumFragment : CollapsingToolbarLayoutFragment(R.layout.fragment_album) {
         get() = requireArguments().getParcelable(ARG_ALBUM_URI, Uri::class)!!
 
     // Permissions
-    private val permissionsChecker = PermissionsChecker(
-        this, PermissionsUtils.mainPermissions
-    )
+    private val permissionsChecker = PermissionsChecker(this, PermissionsUtils.mainPermissions)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -167,11 +162,7 @@ class AlbumFragment : CollapsingToolbarLayoutFragment(R.layout.fragment_album) {
         ViewCompat.setOnApplyWindowInsetsListener(toolbar) { v, windowInsets ->
             val insets = windowInsets.getInsets(WindowInsetsCompat.Type.displayCutout())
 
-            v.updatePadding(
-                insets,
-                start = true,
-                end = true,
-            )
+            v.updatePadding(insets, start = true, end = true)
 
             windowInsets
         }
@@ -180,10 +171,7 @@ class AlbumFragment : CollapsingToolbarLayoutFragment(R.layout.fragment_album) {
             ViewCompat.setOnApplyWindowInsetsListener(it) { v, windowInsets ->
                 val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
 
-                v.updatePadding(
-                    insets,
-                    bottom = true,
-                )
+                v.updatePadding(insets, bottom = true)
 
                 windowInsets
             }
@@ -192,10 +180,7 @@ class AlbumFragment : CollapsingToolbarLayoutFragment(R.layout.fragment_album) {
         ViewCompat.setOnApplyWindowInsetsListener(recyclerView) { v, windowInsets ->
             val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
 
-            v.updatePadding(
-                insets,
-                bottom = true,
-            )
+            v.updatePadding(insets, bottom = true)
 
             windowInsets
         }
@@ -203,23 +188,15 @@ class AlbumFragment : CollapsingToolbarLayoutFragment(R.layout.fragment_album) {
         ViewCompat.setOnApplyWindowInsetsListener(noElementsNestedScrollView) { v, windowInsets ->
             val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
 
-            v.updatePadding(
-                insets,
-                bottom = true,
-            )
+            v.updatePadding(insets, bottom = true)
 
             windowInsets
         }
 
-        ViewCompat.setOnApplyWindowInsetsListener(
-            playButtonsLinearLayout
-        ) { v, windowInsets ->
+        ViewCompat.setOnApplyWindowInsetsListener(playButtonsLinearLayout) { v, windowInsets ->
             val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
 
-            v.updatePadding(
-                insets,
-                bottom = true,
-            )
+            v.updatePadding(insets, bottom = true)
 
             windowInsets
         }
@@ -244,21 +221,15 @@ class AlbumFragment : CollapsingToolbarLayoutFragment(R.layout.fragment_album) {
 
         recyclerView.adapter = adapter
 
-        playAllExtendedFloatingActionButton.setOnClickListener {
-            viewModel.playAlbum()
-        }
+        playAllExtendedFloatingActionButton.setOnClickListener { viewModel.playAlbum() }
 
-        shufflePlayExtendedFloatingActionButton.setOnClickListener {
-            viewModel.shufflePlayAlbum()
-        }
+        shufflePlayExtendedFloatingActionButton.setOnClickListener { viewModel.shufflePlayAlbum() }
 
         viewModel.loadAlbum(albumUri)
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                permissionsChecker.withPermissionsGranted {
-                    loadData()
-                }
+                permissionsChecker.withPermissionsGranted { loadData() }
             }
         }
     }
@@ -286,14 +257,15 @@ class AlbumFragment : CollapsingToolbarLayoutFragment(R.layout.fragment_album) {
                             album.title?.also { albumTitle ->
                                 toolbar.title = albumTitle
                                 albumTitleTextView.text = albumTitle
-                            } ?: run {
-                                toolbar.setTitle(R.string.album_unknown)
-                                albumTitleTextView.setText(R.string.album_unknown)
                             }
+                                ?: run {
+                                    toolbar.setTitle(R.string.album_unknown)
+                                    albumTitleTextView.setText(R.string.album_unknown)
+                                }
 
                             thumbnailImageView.loadThumbnail(
                                 album.thumbnail,
-                                placeholder = R.drawable.ic_album
+                                placeholder = R.drawable.ic_album,
                             )
 
                             album.artistName?.also { artistName ->
@@ -301,47 +273,40 @@ class AlbumFragment : CollapsingToolbarLayoutFragment(R.layout.fragment_album) {
                             } ?: artistNameTextView.setText(R.string.artist_unknown)
                             artistNameTextView.setOnClickListener {
                                 album.artistUri?.let { artistUri ->
-                                    findNavController().navigateSafe(
-                                        R.id.action_albumFragment_to_fragment_artist,
-                                        ArtistFragment.createBundle(artistUri)
-                                    )
+                                    findNavController()
+                                        .navigateSafe(
+                                            R.id.action_albumFragment_to_fragment_artist,
+                                            ArtistFragment.createBundle(artistUri),
+                                        )
                                 }
                             }
 
                             album.year?.also { year ->
                                 yearTextView.isVisible = true
                                 yearTextView.text = getString(R.string.year_format, year)
-                            } ?: run {
-                                yearTextView.isVisible = false
-                            }
+                            } ?: run { yearTextView.isVisible = false }
 
-                            val totalDurationMs = audios.sumOf { audio ->
-                                audio.durationMs ?: 0L
-                            }
+                            val totalDurationMs = audios.sumOf { audio -> audio.durationMs ?: 0L }
                             val totalDurationMinutes = (totalDurationMs / 1000 / 60).toInt()
 
-                            val tracksCount = resources.getQuantityString(
-                                R.plurals.tracks_count,
-                                audios.size,
-                                audios.size
-                            )
-                            val tracksDuration = resources.getQuantityString(
-                                R.plurals.tracks_duration,
-                                totalDurationMinutes,
-                                totalDurationMinutes
-                            )
-                            tracksInfoTextView.text = getString(
-                                R.string.tracks_info,
-                                tracksCount, tracksDuration
-                            )
+                            val tracksCount =
+                                resources.getQuantityString(
+                                    R.plurals.tracks_count,
+                                    audios.size,
+                                    audios.size,
+                                )
+                            val tracksDuration =
+                                resources.getQuantityString(
+                                    R.plurals.tracks_duration,
+                                    totalDurationMinutes,
+                                    totalDurationMinutes,
+                                )
+                            tracksInfoTextView.text =
+                                getString(R.string.tracks_info, tracksCount, tracksDuration)
                         }
 
                         is FlowResult.Error -> {
-                            Log.e(
-                                LOG_TAG,
-                                "Error loading album, error: ${it.error}",
-                                it.throwable
-                            )
+                            Log.e(LOG_TAG, "Error loading album, error: ${it.error}", it.throwable)
 
                             toolbar.title = ""
                             albumTitleTextView.text = ""
@@ -392,12 +357,9 @@ class AlbumFragment : CollapsingToolbarLayoutFragment(R.layout.fragment_album) {
 
         /**
          * Create a [Bundle] to use as the arguments for this fragment.
+         *
          * @param albumUri The URI of the album to display
          */
-        fun createBundle(
-            albumUri: Uri,
-        ) = Bundle {
-            putParcelable(ARG_ALBUM_URI, albumUri)
-        }
+        fun createBundle(albumUri: Uri) = Bundle { putParcelable(ARG_ALBUM_URI, albumUri) }
     }
 }

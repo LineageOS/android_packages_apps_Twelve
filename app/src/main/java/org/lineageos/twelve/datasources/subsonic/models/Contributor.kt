@@ -20,8 +20,4 @@ import kotlinx.serialization.Serializable
  *   returned by default)
  */
 @Serializable
-data class Contributor(
-    val role: String,
-    val subRole: String? = null,
-    val artist: ArtistID3,
-)
+data class Contributor(val role: String, val subRole: String? = null, val artist: ArtistID3)

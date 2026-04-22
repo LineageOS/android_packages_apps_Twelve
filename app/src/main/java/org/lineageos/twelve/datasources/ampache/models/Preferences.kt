@@ -13,7 +13,4 @@ import kotlinx.serialization.Serializable
  *
  * @param preference The list of preferences
  */
-@Serializable
-data class Preferences(
-    @SerialName("preference") val preference: List<Preference>,
-)
+@Serializable data class Preferences(@SerialName("preference") val preference: List<Preference>)

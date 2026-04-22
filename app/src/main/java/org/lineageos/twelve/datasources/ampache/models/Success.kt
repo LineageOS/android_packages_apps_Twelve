@@ -13,7 +13,4 @@ import kotlinx.serialization.Serializable
  *
  * @param success The success message
  */
-@Serializable
-data class Success(
-    @SerialName("success") val success: String,
-)
+@Serializable data class Success(@SerialName("success") val success: String)

@@ -38,12 +38,17 @@ class In<T>(private val value: T, private val values: Collection<T>) : Query {
 }
 
 infix fun Query.and(other: Query) = LogicalOp(this, Operator.AND, other)
+
 infix fun Query.or(other: Query) = LogicalOp(this, Operator.OR, other)
 
 infix fun Column.eq(other: String) = StringOp(this, Operator.EQUALS, other)
+
 infix fun Column.neq(other: String) = StringOp(this, Operator.NOT_EQUALS, other)
+
 infix fun Column.like(other: String) = StringOp(this, Operator.LIKE, other)
+
 infix fun Column.`is`(other: String) = StringOp(this, Operator.IS, other)
+
 infix fun <T> Column.`in`(values: Collection<T>) = In(this, values)
 
 inline fun query(block: () -> Query) = block().build()

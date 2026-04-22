@@ -46,9 +46,7 @@ import org.lineageos.twelve.models.RepeatMode
 import org.lineageos.twelve.models.Thumbnail
 import org.lineageos.twelve.services.TwelveRenderersFactory
 
-/**
- * A view model useful to playback stuff locally (not in the playback service).
- */
+/** A view model useful to playback stuff locally (not in the playback service). */
 @androidx.annotation.OptIn(UnstableApi::class)
 class LocalPlayerViewModel(application: Application) : AndroidViewModel(application) {
     enum class PlaybackSpeed(val value: Float) {
@@ -58,9 +56,7 @@ class LocalPlayerViewModel(application: Application) : AndroidViewModel(applicat
         ZERO_POINT_FIVE(0.5f);
 
         companion object {
-            fun fromValue(value: Float) = entries.firstOrNull {
-                it.value == value
-            }
+            fun fromValue(value: Float) = entries.firstOrNull { it.value == value }
         }
     }
 
@@ -69,109 +65,120 @@ class LocalPlayerViewModel(application: Application) : AndroidViewModel(applicat
     }
 
     // ExoPlayer
-    private val exoPlayer = ExoPlayer.Builder(applicationContext)
-        .setAudioAttributes(
-            AudioAttributes.Builder()
-                .setContentType(C.AUDIO_CONTENT_TYPE_MUSIC)
-                .setUsage(C.USAGE_MEDIA)
-                .build(),
-            true
-        )
-        .setHandleAudioBecomingNoisy(true)
-        .setRenderersFactory(
-            TwelveRenderersFactory(
-                applicationContext,
-                false,
-                onAudioDeviceInfoChanged = {},
-                onAudioTrackConfigChanged = {}
+    private val exoPlayer =
+        ExoPlayer.Builder(applicationContext)
+            .setAudioAttributes(
+                AudioAttributes.Builder()
+                    .setContentType(C.AUDIO_CONTENT_TYPE_MUSIC)
+                    .setUsage(C.USAGE_MEDIA)
+                    .build(),
+                true,
             )
-        )
-        .build()
+            .setHandleAudioBecomingNoisy(true)
+            .setRenderersFactory(
+                TwelveRenderersFactory(
+                    applicationContext,
+                    false,
+                    onAudioDeviceInfoChanged = {},
+                    onAudioTrackConfigChanged = {},
+                )
+            )
+            .build()
 
-    private val eventsFlow = exoPlayer.eventsFlow()
-        .flowOn(Dispatchers.Main)
-        .shareIn(
-            viewModelScope,
-            SharingStarted.WhileSubscribed(),
-            replay = 1
-        )
+    private val eventsFlow =
+        exoPlayer
+            .eventsFlow()
+            .flowOn(Dispatchers.Main)
+            .shareIn(viewModelScope, SharingStarted.WhileSubscribed(), replay = 1)
 
-    private val playbackState = exoPlayer.playbackStateFlow(eventsFlow)
-        .flowOn(Dispatchers.Main)
+    private val playbackState = exoPlayer.playbackStateFlow(eventsFlow).flowOn(Dispatchers.Main)
 
-    val mediaMetadata = exoPlayer.mediaMetadataFlow(eventsFlow)
-        .flowOn(Dispatchers.Main)
-        .stateIn(
-            viewModelScope,
-            started = SharingStarted.WhileSubscribed(),
-            initialValue = MediaMetadata.EMPTY
-        )
+    val mediaMetadata =
+        exoPlayer
+            .mediaMetadataFlow(eventsFlow)
+            .flowOn(Dispatchers.Main)
+            .stateIn(
+                viewModelScope,
+                started = SharingStarted.WhileSubscribed(),
+                initialValue = MediaMetadata.EMPTY,
+            )
 
-    val isPlaying = exoPlayer.isPlayingFlow(eventsFlow)
-        .flowOn(Dispatchers.Main)
-        .stateIn(
-            viewModelScope,
-            started = SharingStarted.WhileSubscribed(),
-            initialValue = false
-        )
+    val isPlaying =
+        exoPlayer
+            .isPlayingFlow(eventsFlow)
+            .flowOn(Dispatchers.Main)
+            .stateIn(
+                viewModelScope,
+                started = SharingStarted.WhileSubscribed(),
+                initialValue = false,
+            )
 
-    val shuffleMode = exoPlayer.shuffleModeFlow(eventsFlow)
-        .flowOn(Dispatchers.Main)
-        .stateIn(
-            viewModelScope,
-            started = SharingStarted.WhileSubscribed(),
-            initialValue = false
-        )
+    val shuffleMode =
+        exoPlayer
+            .shuffleModeFlow(eventsFlow)
+            .flowOn(Dispatchers.Main)
+            .stateIn(
+                viewModelScope,
+                started = SharingStarted.WhileSubscribed(),
+                initialValue = false,
+            )
 
-    val repeatMode = exoPlayer.repeatModeFlow(eventsFlow)
-        .flowOn(Dispatchers.Main)
-        .stateIn(
-            viewModelScope,
-            started = SharingStarted.WhileSubscribed(),
-            initialValue = RepeatMode.NONE
-        )
+    val repeatMode =
+        exoPlayer
+            .repeatModeFlow(eventsFlow)
+            .flowOn(Dispatchers.Main)
+            .stateIn(
+                viewModelScope,
+                started = SharingStarted.WhileSubscribed(),
+                initialValue = RepeatMode.NONE,
+            )
 
-    val mediaArtwork = combine(
-        mediaMetadata,
-        playbackState,
-    ) { mediaMetadata, playbackState ->
-        when (playbackState) {
-            PlaybackState.BUFFERING -> FlowResult.Loading()
-            else -> mediaMetadata.toThumbnail(applicationContext)?.let {
-                FlowResult.Success<Thumbnail, Error>(it)
-            } ?: FlowResult.Error(Error.NOT_FOUND)
-        }
-    }
-        .flowOn(Dispatchers.IO)
-        .stateIn(
-            viewModelScope,
-            started = SharingStarted.WhileSubscribed(),
-            initialValue = FlowResult.Loading()
-        )
+    val mediaArtwork =
+        combine(mediaMetadata, playbackState) { mediaMetadata, playbackState ->
+                when (playbackState) {
+                    PlaybackState.BUFFERING -> FlowResult.Loading()
+                    else ->
+                        mediaMetadata.toThumbnail(applicationContext)?.let {
+                            FlowResult.Success<Thumbnail, Error>(it)
+                        } ?: FlowResult.Error(Error.NOT_FOUND)
+                }
+            }
+            .flowOn(Dispatchers.IO)
+            .stateIn(
+                viewModelScope,
+                started = SharingStarted.WhileSubscribed(),
+                initialValue = FlowResult.Loading(),
+            )
 
-    val playbackProgress = exoPlayer.playbackProgressFlow(eventsFlow)
-        .flowOn(Dispatchers.Main)
-        .stateIn(
-            viewModelScope,
-            started = SharingStarted.WhileSubscribed(),
-            initialValue = PlaybackProgress.EMPTY
-        )
+    val playbackProgress =
+        exoPlayer
+            .playbackProgressFlow(eventsFlow)
+            .flowOn(Dispatchers.Main)
+            .stateIn(
+                viewModelScope,
+                started = SharingStarted.WhileSubscribed(),
+                initialValue = PlaybackProgress.EMPTY,
+            )
 
-    val playbackParameters = exoPlayer.playbackParametersFlow(eventsFlow)
-        .flowOn(Dispatchers.Main)
-        .stateIn(
-            viewModelScope,
-            started = SharingStarted.WhileSubscribed(),
-            initialValue = PlaybackParameters.DEFAULT
-        )
+    val playbackParameters =
+        exoPlayer
+            .playbackParametersFlow(eventsFlow)
+            .flowOn(Dispatchers.Main)
+            .stateIn(
+                viewModelScope,
+                started = SharingStarted.WhileSubscribed(),
+                initialValue = PlaybackParameters.DEFAULT,
+            )
 
-    val availableCommands = exoPlayer.availableCommandsFlow(eventsFlow)
-        .flowOn(Dispatchers.Main)
-        .stateIn(
-            viewModelScope,
-            started = SharingStarted.WhileSubscribed(),
-            initialValue = Player.Commands.EMPTY
-        )
+    val availableCommands =
+        exoPlayer
+            .availableCommandsFlow(eventsFlow)
+            .flowOn(Dispatchers.Main)
+            .stateIn(
+                viewModelScope,
+                started = SharingStarted.WhileSubscribed(),
+                initialValue = Player.Commands.EMPTY,
+            )
 
     override fun onCleared() {
         exoPlayer.release()
@@ -185,11 +192,7 @@ class LocalPlayerViewModel(application: Application) : AndroidViewModel(applicat
             typedRepeatMode = sharedPreferences.typedRepeatMode
             shuffleModeEnabled = sharedPreferences.shuffleModeEnabled
 
-            setMediaItems(
-                uris.map {
-                    MediaItem.fromUri(it)
-                }
-            )
+            setMediaItems(uris.map { MediaItem.fromUri(it) })
             prepare()
             play()
         }
@@ -208,9 +211,8 @@ class LocalPlayerViewModel(application: Application) : AndroidViewModel(applicat
     }
 
     fun shufflePlaybackSpeed() {
-        val playbackSpeed = PlaybackSpeed.fromValue(
-            exoPlayer.playbackParameters.speed
-        ) ?: PlaybackSpeed.ONE
+        val playbackSpeed =
+            PlaybackSpeed.fromValue(exoPlayer.playbackParameters.speed) ?: PlaybackSpeed.ONE
 
         exoPlayer.setPlaybackSpeed(playbackSpeed.next().value)
     }

@@ -7,12 +7,6 @@ package org.lineageos.twelve.datasources.subsonic.models
 
 import kotlinx.serialization.Serializable
 
-/**
- * Lyrics.
- */
+/** Lyrics. */
 @Serializable
-data class Lyrics(
-    val value: String,
-    val artist: String? = null,
-    val title: String? = null,
-)
+data class Lyrics(val value: String, val artist: String? = null, val title: String? = null)

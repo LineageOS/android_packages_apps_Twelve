@@ -35,15 +35,15 @@ class JellyfinAuthenticator(
 ) : Authenticator {
     private val mutex = Mutex()
     private val okHttpClient = OkHttpClient()
-    private val json = Json {
-        ignoreUnknownKeys = true
-    }
+    private val json = Json { ignoreUnknownKeys = true }
 
-    private val authenticationUrl = serverUri.buildUpon()
-        .appendPath("Users")
-        .appendPath("AuthenticateByName")
-        .build()
-        .toString()
+    private val authenticationUrl =
+        serverUri
+            .buildUpon()
+            .appendPath("Users")
+            .appendPath("AuthenticateByName")
+            .build()
+            .toString()
 
     // This block is only run in case the request got a 401 error code
     override fun authenticate(route: Route?, response: Response) = runBlocking {
@@ -55,7 +55,8 @@ class JellyfinAuthenticator(
             // Ensure no other request has updated the token
             // If it did we assume the new token is valid
             if (newToken != null && newToken != token) {
-                return@runBlocking response.request.newBuilder()
+                return@runBlocking response.request
+                    .newBuilder()
                     .header("Authorization", "MediaBrowser Token=\"$newToken\"")
                     .build()
             }
@@ -64,7 +65,8 @@ class JellyfinAuthenticator(
             getNewAccessToken()?.let {
                 tokenSetter(it)
 
-                return@runBlocking response.request.newBuilder()
+                return@runBlocking response.request
+                    .newBuilder()
                     .header("Authorization", "MediaBrowser Token=\"$newToken\"")
                     .build()
             }
@@ -75,41 +77,51 @@ class JellyfinAuthenticator(
     }
 
     private fun getNewAccessToken() = runBlocking {
-        val response = runCatching {
-            okHttpClient.newCall(
-                Request.Builder()
-                    .url(authenticationUrl)
-                    .headers(getAuthenticationRequestHeaders())
-                    .post(
-                        json.encodeToString(
-                            AuthenticateUser(username, password)
-                        ).toRequestBody("application/json".toMediaType())
-                    )
-                    .build()
-            ).executeAsync()
-        }.fold(
-            onSuccess = { it },
-            onFailure = { return@runBlocking null }
-        )
+        val response =
+            runCatching {
+                    okHttpClient
+                        .newCall(
+                            Request.Builder()
+                                .url(authenticationUrl)
+                                .headers(getAuthenticationRequestHeaders())
+                                .post(
+                                    json
+                                        .encodeToString(AuthenticateUser(username, password))
+                                        .toRequestBody("application/json".toMediaType())
+                                )
+                                .build()
+                        )
+                        .executeAsync()
+                }
+                .fold(
+                    onSuccess = { it },
+                    onFailure = {
+                        return@runBlocking null
+                    },
+                )
 
         if (!response.isSuccessful) {
             return@runBlocking null
         }
 
-        val authResponse = response.body?.use { body ->
-            json.decodeFromString<AuthenticateUserResult>(body.string())
-        } ?: return@runBlocking null
+        val authResponse =
+            response.body?.use { body ->
+                json.decodeFromString<AuthenticateUserResult>(body.string())
+            } ?: return@runBlocking null
 
         authResponse.accessToken
     }
 
-    private fun getAuthenticationRequestHeaders() = Headers.Builder().apply {
-        add(
-            "Authorization",
-            "MediaBrowser Client=\"${packageName}\", " +
-                    "Device=\"${Build.MODEL}\", " +
-                    "DeviceId=\"${deviceIdentifier}\", " +
-                    "Version=\"${JellyfinClient.JELLYFIN_API_VERSION}\""
-        )
-    }.build()
+    private fun getAuthenticationRequestHeaders() =
+        Headers.Builder()
+            .apply {
+                add(
+                    "Authorization",
+                    "MediaBrowser Client=\"${packageName}\", " +
+                        "Device=\"${Build.MODEL}\", " +
+                        "DeviceId=\"${deviceIdentifier}\", " +
+                        "Version=\"${JellyfinClient.JELLYFIN_API_VERSION}\"",
+                )
+            }
+            .build()
 }

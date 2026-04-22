@@ -25,66 +25,48 @@ data class Playlist(
     val type: Type,
 ) : MediaItem<Playlist> {
     enum class Type {
-        /**
-         * A playlist that is managed by the user.
-         */
+        /** A playlist that is managed by the user. */
         PLAYLIST,
 
-        /**
-         * The list of favorite songs.
-         */
+        /** The list of favorite songs. */
         FAVORITES,
     }
 
     override val mediaType = MediaType.PLAYLIST
 
-    override fun areContentsTheSame(other: Playlist) = compareValuesBy(
-        this, other,
-        Playlist::thumbnail,
-        Playlist::name,
-        Playlist::type,
-    ) == 0
+    override fun areContentsTheSame(other: Playlist) =
+        compareValuesBy(this, other, Playlist::thumbnail, Playlist::name, Playlist::type) == 0
 
-    override fun toMedia3MediaItem(resources: Resources) = buildMediaItem(
-        title = name ?: resources.getString(
-            when (type) {
-                Type.PLAYLIST -> R.string.playlist_unknown
-                Type.FAVORITES -> R.string.favorites_playlist
-            }
-        ),
-        mediaId = uri.toString(),
-        isPlayable = false,
-        isBrowsable = true,
-        mediaType = MediaMetadata.MEDIA_TYPE_PLAYLIST,
-        sourceUri = uri,
-        artworkData = thumbnail?.bitmap?.toByteArray(),
-        artworkType = thumbnail?.type?.media3Value,
-        artworkUri = thumbnail?.uri,
-    )
+    override fun toMedia3MediaItem(resources: Resources) =
+        buildMediaItem(
+            title =
+                name
+                    ?: resources.getString(
+                        when (type) {
+                            Type.PLAYLIST -> R.string.playlist_unknown
+                            Type.FAVORITES -> R.string.favorites_playlist
+                        }
+                    ),
+            mediaId = uri.toString(),
+            isPlayable = false,
+            isBrowsable = true,
+            mediaType = MediaMetadata.MEDIA_TYPE_PLAYLIST,
+            sourceUri = uri,
+            artworkData = thumbnail?.bitmap?.toByteArray(),
+            artworkType = thumbnail?.type?.media3Value,
+            artworkUri = thumbnail?.uri,
+        )
 
     class Builder(uri: Uri) : MediaItem.Builder<Builder, Playlist>(uri) {
         private var name: String? = null
         private var type: Type = Type.PLAYLIST
 
-        /**
-         * @see Playlist.name
-         */
-        fun setName(name: String?) = this.also {
-            this.name = name
-        }
+        /** @see Playlist.name */
+        fun setName(name: String?) = this.also { this.name = name }
 
-        /**
-         * @see Playlist.type
-         */
-        fun setType(type: Type) = this.also {
-            this.type = type
-        }
+        /** @see Playlist.type */
+        fun setType(type: Type) = this.also { this.type = type }
 
-        override fun build() = Playlist(
-            uri = uri,
-            thumbnail = thumbnail,
-            name = name,
-            type = type,
-        )
+        override fun build() = Playlist(uri = uri, thumbnail = thumbnail, name = name, type = type)
     }
 }

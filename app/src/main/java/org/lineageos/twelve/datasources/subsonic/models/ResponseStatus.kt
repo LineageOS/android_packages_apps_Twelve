@@ -19,13 +19,12 @@ enum class ResponseStatus(val value: String) {
     FAILED("failed");
 
     class Serializer : KSerializer<ResponseStatus> {
-        override val descriptor = PrimitiveSerialDescriptor(
-            "ResponseStatus", PrimitiveKind.STRING
-        )
+        override val descriptor = PrimitiveSerialDescriptor("ResponseStatus", PrimitiveKind.STRING)
 
-        override fun deserialize(decoder: Decoder) = decoder.decodeString().let {
-            fromValue(it) ?: throw SerializationException("Unknown ResponseStatus value $it")
-        }
+        override fun deserialize(decoder: Decoder) =
+            decoder.decodeString().let {
+                fromValue(it) ?: throw SerializationException("Unknown ResponseStatus value $it")
+            }
 
         override fun serialize(encoder: Encoder, value: ResponseStatus) {
             encoder.encodeString(value.value)

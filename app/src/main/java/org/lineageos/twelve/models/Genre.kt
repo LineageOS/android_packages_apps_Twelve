@@ -14,49 +14,37 @@ import org.lineageos.twelve.ext.toByteArray
 
 /**
  * A music genre.
- * TODO: Maybe make it an enum class and follow https://en.wikipedia.org/wiki/List_of_ID3v1_genres
  *
  * @param name The name of the genre. Can be null
+ *
+ * TODO: Maybe make it an enum class and follow https://en.wikipedia.org/wiki/List_of_ID3v1_genres
  */
-data class Genre(
-    override val uri: Uri,
-    override val thumbnail: Thumbnail?,
-    val name: String?,
-) : MediaItem<Genre> {
+data class Genre(override val uri: Uri, override val thumbnail: Thumbnail?, val name: String?) :
+    MediaItem<Genre> {
     override val mediaType = MediaType.GENRE
 
-    override fun areContentsTheSame(other: Genre) = compareValuesBy(
-        this, other,
-        Genre::thumbnail,
-        Genre::name,
-    ) == 0
+    override fun areContentsTheSame(other: Genre) =
+        compareValuesBy(this, other, Genre::thumbnail, Genre::name) == 0
 
-    override fun toMedia3MediaItem(resources: Resources) = buildMediaItem(
-        title = name ?: resources.getString(R.string.genre_unknown),
-        mediaId = uri.toString(),
-        isPlayable = false,
-        isBrowsable = true,
-        mediaType = MediaMetadata.MEDIA_TYPE_GENRE,
-        sourceUri = uri,
-        artworkData = thumbnail?.bitmap?.toByteArray(),
-        artworkType = thumbnail?.type?.media3Value,
-        artworkUri = thumbnail?.uri,
-    )
+    override fun toMedia3MediaItem(resources: Resources) =
+        buildMediaItem(
+            title = name ?: resources.getString(R.string.genre_unknown),
+            mediaId = uri.toString(),
+            isPlayable = false,
+            isBrowsable = true,
+            mediaType = MediaMetadata.MEDIA_TYPE_GENRE,
+            sourceUri = uri,
+            artworkData = thumbnail?.bitmap?.toByteArray(),
+            artworkType = thumbnail?.type?.media3Value,
+            artworkUri = thumbnail?.uri,
+        )
 
     class Builder(uri: Uri) : MediaItem.Builder<Builder, Genre>(uri) {
         private var name: String? = null
 
-        /**
-         * @see Genre.name
-         */
-        fun setName(name: String?) = this.also {
-            this.name = name
-        }
+        /** @see Genre.name */
+        fun setName(name: String?) = this.also { this.name = name }
 
-        override fun build() = Genre(
-            uri = uri,
-            thumbnail = thumbnail,
-            name = name,
-        )
+        override fun build() = Genre(uri = uri, thumbnail = thumbnail, name = name)
     }
 }

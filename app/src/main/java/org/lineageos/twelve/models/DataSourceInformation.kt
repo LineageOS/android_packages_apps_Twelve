@@ -22,9 +22,6 @@ data class DataSourceInformation(
     override fun areItemsTheSame(other: DataSourceInformation) = this.key == other.key
 
     override fun areContentsTheSame(other: DataSourceInformation) =
-        this.keyLocalizedString.areContentsTheSame(
-            other.keyLocalizedString
-        ) && this.value.areContentsTheSame(
-            other.value
-        )
+        this.keyLocalizedString.areContentsTheSame(other.keyLocalizedString) &&
+            this.value.areContentsTheSame(other.value)
 }

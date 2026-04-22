@@ -19,9 +19,8 @@ import kotlinx.coroutines.launch
 import org.lineageos.twelve.ext.updateBarsVisibility
 import org.lineageos.twelve.viewmodels.FullscreenViewModel
 
-abstract class TwelveBottomSheetDialogFragment(
-    @LayoutRes contentLayoutId: Int,
-) : BottomSheetDialogFragment(contentLayoutId) {
+abstract class TwelveBottomSheetDialogFragment(@LayoutRes contentLayoutId: Int) :
+    BottomSheetDialogFragment(contentLayoutId) {
     // View models
     private val fullscreenViewModel by activityViewModels<FullscreenViewModel>()
 
@@ -29,9 +28,9 @@ abstract class TwelveBottomSheetDialogFragment(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        requireDialog().window?.updateBarsVisibility(
-            systemBars = !fullscreenViewModel.fullscreenMode.value
-        )
+        requireDialog()
+            .window
+            ?.updateBarsVisibility(systemBars = !fullscreenViewModel.fullscreenMode.value)
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.CREATED) {

@@ -18,11 +18,7 @@ import java.time.Instant
  * @param audioUri The [Uri] of the audio
  * @param addedAt The date and time of when this item was added to the favorites
  */
-@Entity(
-    indices = [
-        Index(value = ["audio_uri"], unique = true),
-    ],
-)
+@Entity(indices = [Index(value = ["audio_uri"], unique = true)])
 data class Favorite(
     @PrimaryKey @ColumnInfo(name = "audio_uri", defaultValue = "") val audioUri: Uri,
     @ColumnInfo(name = "added_at") val addedAt: Instant,

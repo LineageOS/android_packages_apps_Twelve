@@ -10,8 +10,6 @@ import androidx.room.Relation
 
 data class ResumptionPlaylistWithMediaItems(
     @Embedded val resumptionPlaylist: ResumptionPlaylist,
-    @Relation(
-        parentColumn = "resumption_id",
-        entityColumn = "resumption_playlist_id",
-    ) val items: List<ResumptionItem>,
+    @Relation(parentColumn = "resumption_id", entityColumn = "resumption_playlist_id")
+    val items: List<ResumptionItem>,
 )

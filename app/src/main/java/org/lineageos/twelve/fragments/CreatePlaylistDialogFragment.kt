@@ -28,19 +28,22 @@ import org.lineageos.twelve.models.ProviderIdentifier
 import org.lineageos.twelve.ui.views.FullscreenLoadingProgressBar
 import org.lineageos.twelve.viewmodels.CreatePlaylistViewModel
 
-class CreatePlaylistDialogFragment : MaterialDialogFragment(
-    R.layout.fragment_create_playlist_dialog
-) {
+class CreatePlaylistDialogFragment :
+    MaterialDialogFragment(R.layout.fragment_create_playlist_dialog) {
     // View models
     private val viewModel by viewModels<CreatePlaylistViewModel>()
 
     // Views
     private val cancelMaterialButton by getViewProperty<MaterialButton>(R.id.cancelMaterialButton)
     private val createMaterialButton by getViewProperty<MaterialButton>(R.id.createMaterialButton)
-    private val fullscreenLoadingProgressBar by getViewProperty<FullscreenLoadingProgressBar>(R.id.fullscreenLoadingProgressBar)
-    private val playlistNameTextInputLayout by getViewProperty<TextInputLayout>(R.id.playlistNameTextInputLayout)
-    private val providerAutoCompleteTextView by getViewProperty<MaterialAutoCompleteTextView>(R.id.providerAutoCompleteTextView)
-    private val providerTextInputLayout by getViewProperty<TextInputLayout>(R.id.providerTextInputLayout)
+    private val fullscreenLoadingProgressBar by
+        getViewProperty<FullscreenLoadingProgressBar>(R.id.fullscreenLoadingProgressBar)
+    private val playlistNameTextInputLayout by
+        getViewProperty<TextInputLayout>(R.id.playlistNameTextInputLayout)
+    private val providerAutoCompleteTextView by
+        getViewProperty<MaterialAutoCompleteTextView>(R.id.providerAutoCompleteTextView)
+    private val providerTextInputLayout by
+        getViewProperty<TextInputLayout>(R.id.providerTextInputLayout)
 
     // Arguments
     private val providerIdentifier: ProviderIdentifier?
@@ -67,15 +70,12 @@ class CreatePlaylistDialogFragment : MaterialDialogFragment(
             }
         }
 
-        cancelMaterialButton.setOnClickListener {
-            findNavController().navigateUp()
-        }
+        cancelMaterialButton.setOnClickListener { findNavController().navigateUp() }
 
         createMaterialButton.setOnClickListener {
             if (viewModel.isPlaylistNameEmpty()) {
-                playlistNameTextInputLayout.error = getString(
-                    R.string.create_playlist_error_empty_name
-                )
+                playlistNameTextInputLayout.error =
+                    getString(R.string.create_playlist_error_empty_name)
                 return@setOnClickListener
             }
 
@@ -90,9 +90,7 @@ class CreatePlaylistDialogFragment : MaterialDialogFragment(
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                loadData()
-            }
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) { loadData() }
         }
     }
 
@@ -102,22 +100,22 @@ class CreatePlaylistDialogFragment : MaterialDialogFragment(
                 val (providers, position) = providersWithSelection
 
                 providerAutoCompleteTextView.setSimpleItems(
-                    providers.map { provider ->
-                        getString(
-                            R.string.provider_format,
-                            provider.name,
-                            getString(provider.type.nameStringResId),
-                        )
-                    }.toTypedArray()
+                    providers
+                        .map { provider ->
+                            getString(
+                                R.string.provider_format,
+                                provider.name,
+                                getString(provider.type.nameStringResId),
+                            )
+                        }
+                        .toTypedArray()
                 )
 
                 position?.also {
                     val provider = providers[it]
 
                     providerAutoCompleteTextView.selectItem(it)
-                    providerTextInputLayout.setStartIconDrawable(
-                        provider.type.iconDrawableResId
-                    )
+                    providerTextInputLayout.setStartIconDrawable(provider.type.iconDrawableResId)
                 }
             }
         }
@@ -128,11 +126,10 @@ class CreatePlaylistDialogFragment : MaterialDialogFragment(
 
         /**
          * Create a [Bundle] to use as the arguments for this fragment.
+         *
          * @param providerIdentifier A [ProviderIdentifier] to pre-fill the provider field
          */
-        fun createBundle(
-            providerIdentifier: ProviderIdentifier? = null,
-        ) = Bundle {
+        fun createBundle(providerIdentifier: ProviderIdentifier? = null) = Bundle {
             putParcelable(ARG_PROVIDER_IDENTIFIER, providerIdentifier)
         }
     }

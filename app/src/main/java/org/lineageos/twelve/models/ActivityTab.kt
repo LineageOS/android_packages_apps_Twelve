@@ -5,11 +5,8 @@
 
 package org.lineageos.twelve.models
 
-data class ActivityTab(
-    val id: String,
-    val title: LocalizedString,
-    val items: List<MediaItem<*>>,
-) : UniqueItem<ActivityTab> {
+data class ActivityTab(val id: String, val title: LocalizedString, val items: List<MediaItem<*>>) :
+    UniqueItem<ActivityTab> {
     override fun areItemsTheSame(other: ActivityTab) = id == other.id
 
     override fun areContentsTheSame(other: ActivityTab) =

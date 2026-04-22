@@ -11,12 +11,9 @@ import androidx.annotation.LayoutRes
 import androidx.fragment.app.DialogFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
-/**
- * A [DialogFragment] that uses [MaterialAlertDialogBuilder] to build the base dialog.
- */
-abstract class MaterialDialogFragment(
-    @LayoutRes contentLayoutId: Int,
-) : DialogFragment(contentLayoutId) {
+/** A [DialogFragment] that uses [MaterialAlertDialogBuilder] to build the base dialog. */
+abstract class MaterialDialogFragment(@LayoutRes contentLayoutId: Int) :
+    DialogFragment(contentLayoutId) {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog =
         MaterialAlertDialogBuilder(requireContext())
             .setView(onCreateView(layoutInflater, null, savedInstanceState))

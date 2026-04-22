@@ -16,9 +16,7 @@ import androidx.core.view.isVisible
 import androidx.core.widget.ContentLoadingProgressBar
 import com.google.android.material.progressindicator.CircularProgressIndicator
 
-/**
- * Inspired by [ContentLoadingProgressBar].
- */
+/** Inspired by [ContentLoadingProgressBar]. */
 class FullscreenLoadingProgressBar : FrameLayout {
     constructor(context: Context) : super(context)
 
@@ -30,9 +28,8 @@ class FullscreenLoadingProgressBar : FrameLayout {
         @StyleRes defStyleRes: Int = 0,
     ) : super(context, attrs, defStyleAttr, defStyleRes)
 
-    private val circularProgressIndicator = CircularProgressIndicator(context).apply {
-        isIndeterminate = true
-    }
+    private val circularProgressIndicator =
+        CircularProgressIndicator(context).apply { isIndeterminate = true }
 
     private var startTime = -1L
     private var postedHide = false
@@ -58,12 +55,9 @@ class FullscreenLoadingProgressBar : FrameLayout {
 
         addView(
             circularProgressIndicator,
-            LayoutParams(
-                LayoutParams.WRAP_CONTENT,
-                LayoutParams.WRAP_CONTENT,
-            ).apply {
+            LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT).apply {
                 gravity = Gravity.CENTER
-            }
+            },
         )
 
         setOnClickListener {

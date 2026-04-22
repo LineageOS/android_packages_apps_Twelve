@@ -8,9 +8,7 @@ package org.lineageos.twelve.datasources.ampache.models
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
-/**
- * Ping.
- */
+/** Ping. */
 @Serializable
 data class Ping(
     @SerialName("session_expire") val sessionExpire: InstantAsIso8061String? = null,

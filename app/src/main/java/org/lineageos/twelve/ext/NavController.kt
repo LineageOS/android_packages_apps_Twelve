@@ -17,7 +17,5 @@ fun NavController.navigateSafe(
     navOptions: NavOptions? = null,
     navigatorExtras: Navigator.Extras? = null,
 ) {
-    currentDestination?.getAction(id)?.run {
-        navigate(id, args, navOptions, navigatorExtras)
-    }
+    currentDestination?.getAction(id)?.run { navigate(id, args, navOptions, navigatorExtras) }
 }

@@ -5,9 +5,7 @@
 
 package org.lineageos.twelve.models
 
-/**
- * Media types handled by the data sources.
- */
+/** Media types handled by the data sources. */
 enum class MediaType {
     ALBUM,
     ARTIST,

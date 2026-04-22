@@ -23,13 +23,14 @@ data class ArtistWithAlbumsID3(
 
     val album: List<AlbumID3>,
 ) {
-    fun toArtistID3() = ArtistID3(
-        id = id,
-        name = name,
-        coverArt = coverArt,
-        artistImageUrl = artistImageUrl,
-        albumCount = albumCount,
-        starred = starred,
-        sortName = sortName,
-    )
+    fun toArtistID3() =
+        ArtistID3(
+            id = id,
+            name = name,
+            coverArt = coverArt,
+            artistImageUrl = artistImageUrl,
+            albumCount = albumCount,
+            starred = starred,
+            sortName = sortName,
+        )
 }

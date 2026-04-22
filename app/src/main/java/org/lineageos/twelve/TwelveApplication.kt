@@ -39,9 +39,6 @@ class TwelveApplication : Application(), SingletonImageLoader.Factory {
         DynamicColors.applyToActivitiesIfAvailable(this)
     }
 
-    override fun newImageLoader(context: PlatformContext) = ImageLoader.Builder(this)
-        .components {
-            add(ThumbnailMapper)
-        }
-        .build()
+    override fun newImageLoader(context: PlatformContext) =
+        ImageLoader.Builder(this).components { add(ThumbnailMapper) }.build()
 }

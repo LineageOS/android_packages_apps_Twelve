@@ -26,10 +26,6 @@ inline fun ImageView.loadThumbnail(
         }
     },
 ): Disposable {
-    val request = ImageRequest.Builder(context)
-        .data(data)
-        .target(this)
-        .apply(builder)
-        .build()
+    val request = ImageRequest.Builder(context).data(data).target(this).apply(builder).build()
     return imageLoader.enqueue(request)
 }

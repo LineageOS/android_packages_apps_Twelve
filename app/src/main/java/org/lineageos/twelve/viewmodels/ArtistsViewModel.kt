@@ -23,22 +23,20 @@ import org.lineageos.twelve.models.FlowResult.Companion.asFlowResult
 import org.lineageos.twelve.models.SortingRule
 
 class ArtistsViewModel(application: Application) : TwelveViewModel(application) {
-    val sortingRule = sharedPreferences.preferenceFlow(
-        ARTISTS_SORTING_STRATEGY_KEY,
-        ARTISTS_SORTING_REVERSE_KEY,
-        getter = SharedPreferences::artistsSortingRule,
-    )
+    val sortingRule =
+        sharedPreferences.preferenceFlow(
+            ARTISTS_SORTING_STRATEGY_KEY,
+            ARTISTS_SORTING_REVERSE_KEY,
+            getter = SharedPreferences::artistsSortingRule,
+        )
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val artists = sortingRule
-        .flatMapLatest { mediaRepository.artists(it) }
-        .asFlowResult()
-        .flowOn(Dispatchers.IO)
-        .stateIn(
-            viewModelScope,
-            SharingStarted.WhileSubscribed(),
-            FlowResult.Loading()
-        )
+    val artists =
+        sortingRule
+            .flatMapLatest { mediaRepository.artists(it) }
+            .asFlowResult()
+            .flowOn(Dispatchers.IO)
+            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), FlowResult.Loading())
 
     fun setSortingRule(sortingRule: SortingRule) {
         sharedPreferences.artistsSortingRule = sortingRule

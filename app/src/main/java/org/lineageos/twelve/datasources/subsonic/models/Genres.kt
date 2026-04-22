@@ -7,7 +7,4 @@ package org.lineageos.twelve.datasources.subsonic.models
 
 import kotlinx.serialization.Serializable
 
-@Serializable
-data class Genres(
-    val genre: List<Genre>,
-)
+@Serializable data class Genres(val genre: List<Genre>)

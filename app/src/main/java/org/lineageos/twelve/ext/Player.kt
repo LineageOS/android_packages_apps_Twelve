@@ -22,166 +22,183 @@ import org.lineageos.twelve.models.QueueItem
 import org.lineageos.twelve.models.RepeatMode
 
 fun Player.eventsFlow() = conflatedCallbackFlow {
-    val listener = object : Player.Listener {
-        override fun onEvents(player: Player, events: Player.Events) {
-            trySend(events)
+    val listener =
+        object : Player.Listener {
+            override fun onEvents(player: Player, events: Player.Events) {
+                trySend(events)
+            }
         }
-    }
 
     addListener(listener)
 
-    awaitClose {
-        removeListener(listener)
-    }
+    awaitClose { removeListener(listener) }
 }
 
-fun Player.mediaMetadataFlow(eventsFlow: Flow<Player.Events>) = eventsFlow
-    .filter { it.containsAny(Player.EVENT_MEDIA_METADATA_CHANGED) }
-    .map { mediaMetadata }
-    .onStart { emit(mediaMetadata) }
+fun Player.mediaMetadataFlow(eventsFlow: Flow<Player.Events>) =
+    eventsFlow
+        .filter { it.containsAny(Player.EVENT_MEDIA_METADATA_CHANGED) }
+        .map { mediaMetadata }
+        .onStart { emit(mediaMetadata) }
 
-fun Player.mediaItemFlow(eventsFlow: Flow<Player.Events>) = eventsFlow
-    .filter { it.containsAny(Player.EVENT_MEDIA_ITEM_TRANSITION) }
-    .map { currentMediaItem }
-    .onStart { emit(currentMediaItem) }
+fun Player.mediaItemFlow(eventsFlow: Flow<Player.Events>) =
+    eventsFlow
+        .filter { it.containsAny(Player.EVENT_MEDIA_ITEM_TRANSITION) }
+        .map { currentMediaItem }
+        .onStart { emit(currentMediaItem) }
 
-fun Player.playbackStateFlow(eventsFlow: Flow<Player.Events>) = eventsFlow
-    .filter { it.containsAny(Player.EVENT_PLAYBACK_STATE_CHANGED) }
-    .map { typedPlaybackState }
-    .onStart { emit(typedPlaybackState) }
+fun Player.playbackStateFlow(eventsFlow: Flow<Player.Events>) =
+    eventsFlow
+        .filter { it.containsAny(Player.EVENT_PLAYBACK_STATE_CHANGED) }
+        .map { typedPlaybackState }
+        .onStart { emit(typedPlaybackState) }
 
-fun Player.isPlayingFlow(eventsFlow: Flow<Player.Events>) = eventsFlow
-    .filter { it.containsAny(Player.EVENT_IS_PLAYING_CHANGED) }
-    .map { isPlaying }
-    .onStart { emit(isPlaying) }
+fun Player.isPlayingFlow(eventsFlow: Flow<Player.Events>) =
+    eventsFlow
+        .filter { it.containsAny(Player.EVENT_IS_PLAYING_CHANGED) }
+        .map { isPlaying }
+        .onStart { emit(isPlaying) }
 
-fun Player.shuffleModeFlow(eventsFlow: Flow<Player.Events>) = eventsFlow
-    .filter { it.containsAny(Player.EVENT_SHUFFLE_MODE_ENABLED_CHANGED) }
-    .map { shuffleModeEnabled }
-    .onStart { emit(shuffleModeEnabled) }
+fun Player.shuffleModeFlow(eventsFlow: Flow<Player.Events>) =
+    eventsFlow
+        .filter { it.containsAny(Player.EVENT_SHUFFLE_MODE_ENABLED_CHANGED) }
+        .map { shuffleModeEnabled }
+        .onStart { emit(shuffleModeEnabled) }
 
-fun Player.repeatModeFlow(eventsFlow: Flow<Player.Events>) = eventsFlow
-    .filter { it.containsAny(Player.EVENT_REPEAT_MODE_CHANGED) }
-    .map { typedRepeatMode }
-    .onStart { emit(typedRepeatMode) }
+fun Player.repeatModeFlow(eventsFlow: Flow<Player.Events>) =
+    eventsFlow
+        .filter { it.containsAny(Player.EVENT_REPEAT_MODE_CHANGED) }
+        .map { typedRepeatMode }
+        .onStart { emit(typedRepeatMode) }
 
-fun Player.playbackParametersFlow(eventsFlow: Flow<Player.Events>) = eventsFlow
-    .filter { it.containsAny(Player.EVENT_PLAYBACK_PARAMETERS_CHANGED) }
-    .map { playbackParameters }
-    .onStart { emit(playbackParameters) }
+fun Player.playbackParametersFlow(eventsFlow: Flow<Player.Events>) =
+    eventsFlow
+        .filter { it.containsAny(Player.EVENT_PLAYBACK_PARAMETERS_CHANGED) }
+        .map { playbackParameters }
+        .onStart { emit(playbackParameters) }
 
-fun Player.availableCommandsFlow(eventsFlow: Flow<Player.Events>) = eventsFlow
-    .filter { it.containsAny(Player.EVENT_AVAILABLE_COMMANDS_CHANGED) }
-    .map { availableCommands }
-    .onStart { emit(availableCommands) }
+fun Player.availableCommandsFlow(eventsFlow: Flow<Player.Events>) =
+    eventsFlow
+        .filter { it.containsAny(Player.EVENT_AVAILABLE_COMMANDS_CHANGED) }
+        .map { availableCommands }
+        .onStart { emit(availableCommands) }
 
-fun Player.tracksFlow(eventsFlow: Flow<Player.Events>) = eventsFlow
-    .filter { it.containsAny(Player.EVENT_TRACKS_CHANGED) }
-    .map { currentTracks }
-    .onStart { emit(currentTracks) }
+fun Player.tracksFlow(eventsFlow: Flow<Player.Events>) =
+    eventsFlow
+        .filter { it.containsAny(Player.EVENT_TRACKS_CHANGED) }
+        .map { currentTracks }
+        .onStart { emit(currentTracks) }
 
 private fun Player.mediaItemsShuffled() =
-    currentTimeline.getFirstWindowIndex(shuffleModeEnabled).takeIf {
-        it != C.INDEX_UNSET
-    }?.let { startIndex ->
-        var index = startIndex
-        buildList {
-            repeat(currentTimeline.windowCount) {
-                add(getMediaItemAt(index))
-                index = currentTimeline.getNextWindowIndex(
-                    index, Player.REPEAT_MODE_OFF, shuffleModeEnabled
-                )
-            }
-        }.let { items ->
-            items.indexOfFirst { getMediaItemAt(currentMediaItemIndex) == it } to items
-        }
-    } ?: (currentMediaItemIndex to mediaItems)
+    currentTimeline
+        .getFirstWindowIndex(shuffleModeEnabled)
+        .takeIf { it != C.INDEX_UNSET }
+        ?.let { startIndex ->
+            var index = startIndex
+            buildList {
+                    repeat(currentTimeline.windowCount) {
+                        add(getMediaItemAt(index))
+                        index =
+                            currentTimeline.getNextWindowIndex(
+                                index,
+                                Player.REPEAT_MODE_OFF,
+                                shuffleModeEnabled,
+                            )
+                    }
+                }
+                .let { items ->
+                    items.indexOfFirst { getMediaItemAt(currentMediaItemIndex) == it } to items
+                }
+        } ?: (currentMediaItemIndex to mediaItems)
 
 private fun Player.createQueueItems() =
     mediaItemsShuffled().let { (currentIndex, mediaItems) ->
         mediaItems.mapIndexed { index, mediaItem ->
-            QueueItem(
-                mediaItem = mediaItem,
-                isCurrent = index == currentIndex
+            QueueItem(mediaItem = mediaItem, isCurrent = index == currentIndex)
+        }
+    }
+
+fun Player.queueFlow(eventsFlow: Flow<Player.Events>) =
+    eventsFlow
+        .filter {
+            it.containsAny(
+                Player.EVENT_TIMELINE_CHANGED,
+                Player.EVENT_MEDIA_ITEM_TRANSITION,
+                Player.EVENT_SHUFFLE_MODE_ENABLED_CHANGED,
             )
         }
-    }
+        .map { createQueueItems() }
+        .onStart { emit(createQueueItems()) }
 
-fun Player.queueFlow(eventsFlow: Flow<Player.Events>) = eventsFlow
-    .filter {
-        it.containsAny(
-            Player.EVENT_TIMELINE_CHANGED,
-            Player.EVENT_MEDIA_ITEM_TRANSITION,
-            Player.EVENT_SHUFFLE_MODE_ENABLED_CHANGED
-        )
-    }
-    .map { createQueueItems() }
-    .onStart { emit(createQueueItems()) }
+private fun Player.createPlaybackProgress() =
+    PlaybackProgress(
+        isPlaying = isPlaying,
+        durationMs = duration.takeIf { it != C.TIME_UNSET },
+        currentPositionMs =
+            currentPosition.takeIf { duration != C.TIME_UNSET }?.coerceAtMost(duration),
+        playbackSpeed = playbackParameters.speed,
+    )
 
-private fun Player.createPlaybackProgress() = PlaybackProgress(
-    isPlaying = isPlaying,
-    durationMs = duration.takeIf { it != C.TIME_UNSET },
-    currentPositionMs = currentPosition
-        .takeIf { duration != C.TIME_UNSET }
-        ?.coerceAtMost(duration),
-    playbackSpeed = playbackParameters.speed,
-)
-
-fun Player.playbackProgressFlow(eventsFlow: Flow<Player.Events>) = eventsFlow
-    .filter {
-        it.containsAny(
-            Player.EVENT_IS_PLAYING_CHANGED,
-            Player.EVENT_MEDIA_ITEM_TRANSITION,
-            Player.EVENT_PLAYBACK_PARAMETERS_CHANGED,
-            Player.EVENT_POSITION_DISCONTINUITY,
-            Player.EVENT_TIMELINE_CHANGED,
-        )
-    }
-    .map { createPlaybackProgress() }
-    .onStart { emit(createPlaybackProgress()) }
+fun Player.playbackProgressFlow(eventsFlow: Flow<Player.Events>) =
+    eventsFlow
+        .filter {
+            it.containsAny(
+                Player.EVENT_IS_PLAYING_CHANGED,
+                Player.EVENT_MEDIA_ITEM_TRANSITION,
+                Player.EVENT_PLAYBACK_PARAMETERS_CHANGED,
+                Player.EVENT_POSITION_DISCONTINUITY,
+                Player.EVENT_TIMELINE_CHANGED,
+            )
+        }
+        .map { createPlaybackProgress() }
+        .onStart { emit(createPlaybackProgress()) }
 
 var Player.typedRepeatMode: RepeatMode
-    get() = when (repeatMode) {
-        Player.REPEAT_MODE_OFF -> RepeatMode.NONE
-        Player.REPEAT_MODE_ONE -> RepeatMode.ONE
-        Player.REPEAT_MODE_ALL -> RepeatMode.ALL
-        else -> throw Exception("Unknown repeat mode")
-    }
-    set(value) {
-        repeatMode = when (value) {
-            RepeatMode.NONE -> Player.REPEAT_MODE_OFF
-            RepeatMode.ONE -> Player.REPEAT_MODE_ONE
-            RepeatMode.ALL -> Player.REPEAT_MODE_ALL
+    get() =
+        when (repeatMode) {
+            Player.REPEAT_MODE_OFF -> RepeatMode.NONE
+            Player.REPEAT_MODE_ONE -> RepeatMode.ONE
+            Player.REPEAT_MODE_ALL -> RepeatMode.ALL
+            else -> throw Exception("Unknown repeat mode")
         }
+    set(value) {
+        repeatMode =
+            when (value) {
+                RepeatMode.NONE -> Player.REPEAT_MODE_OFF
+                RepeatMode.ONE -> Player.REPEAT_MODE_ONE
+                RepeatMode.ALL -> Player.REPEAT_MODE_ALL
+            }
     }
 
 val Player.typedPlaybackState: PlaybackState
-    get() = when (playbackState) {
-        Player.STATE_IDLE -> PlaybackState.IDLE
-        Player.STATE_BUFFERING -> PlaybackState.BUFFERING
-        Player.STATE_READY -> PlaybackState.READY
-        Player.STATE_ENDED -> PlaybackState.ENDED
-        else -> throw Exception("Unknown playback state")
-    }
+    get() =
+        when (playbackState) {
+            Player.STATE_IDLE -> PlaybackState.IDLE
+            Player.STATE_BUFFERING -> PlaybackState.BUFFERING
+            Player.STATE_READY -> PlaybackState.READY
+            Player.STATE_ENDED -> PlaybackState.ENDED
+            else -> throw Exception("Unknown playback state")
+        }
 
 val Player.mediaItems: List<MediaItem>
-    get() = (0 until mediaItemCount).map {
-        getMediaItemAt(it)
-    }
+    get() = (0 until mediaItemCount).map { getMediaItemAt(it) }
 
 @OptIn(UnstableApi::class)
 fun Player.setOffloadEnabled(enabled: Boolean) {
-    trackSelectionParameters = trackSelectionParameters.buildUpon()
-        .setAudioOffloadPreferences(
-            TrackSelectionParameters.AudioOffloadPreferences
-                .Builder()
-                .setAudioOffloadMode(
-                    if (enabled) {
-                        TrackSelectionParameters.AudioOffloadPreferences.AUDIO_OFFLOAD_MODE_ENABLED
-                    } else {
-                        TrackSelectionParameters.AudioOffloadPreferences.AUDIO_OFFLOAD_MODE_DISABLED
-                    }
-                )
-                .build()
-        ).build()
+    trackSelectionParameters =
+        trackSelectionParameters
+            .buildUpon()
+            .setAudioOffloadPreferences(
+                TrackSelectionParameters.AudioOffloadPreferences.Builder()
+                    .setAudioOffloadMode(
+                        if (enabled) {
+                            TrackSelectionParameters.AudioOffloadPreferences
+                                .AUDIO_OFFLOAD_MODE_ENABLED
+                        } else {
+                            TrackSelectionParameters.AudioOffloadPreferences
+                                .AUDIO_OFFLOAD_MODE_DISABLED
+                        }
+                    )
+                    .build()
+            )
+            .build()
 }

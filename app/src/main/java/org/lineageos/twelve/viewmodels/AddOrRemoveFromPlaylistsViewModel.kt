@@ -25,44 +25,31 @@ class AddOrRemoveFromPlaylistsViewModel(application: Application) : TwelveViewMo
     private val audioUri = MutableStateFlow<Uri?>(null)
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val audio = audioUri
-        .filterNotNull()
-        .flatMapLatest {
-            mediaRepository.audio(it)
-        }
-        .asFlowResult()
-        .flowOn(Dispatchers.IO)
-        .stateIn(
-            viewModelScope,
-            SharingStarted.WhileSubscribed(),
-            FlowResult.Loading()
-        )
+    val audio =
+        audioUri
+            .filterNotNull()
+            .flatMapLatest { mediaRepository.audio(it) }
+            .asFlowResult()
+            .flowOn(Dispatchers.IO)
+            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), FlowResult.Loading())
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val playlistToHasAudio = audioUri
-        .filterNotNull()
-        .flatMapLatest {
-            mediaRepository.audioPlaylistsStatus(it)
-        }
-        .asFlowResult()
-        .flowOn(Dispatchers.IO)
-        .stateIn(
-            viewModelScope,
-            SharingStarted.WhileSubscribed(),
-            FlowResult.Loading()
-        )
+    val playlistToHasAudio =
+        audioUri
+            .filterNotNull()
+            .flatMapLatest { mediaRepository.audioPlaylistsStatus(it) }
+            .asFlowResult()
+            .flowOn(Dispatchers.IO)
+            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), FlowResult.Loading())
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val providerOfAudio = audioUri
-        .filterNotNull()
-        .flatMapLatest { mediaRepository.providerOf(it) }
-        .asFlowResult()
-        .flowOn(Dispatchers.IO)
-        .stateIn(
-            viewModelScope,
-            SharingStarted.Eagerly,
-            FlowResult.Loading()
-        )
+    val providerOfAudio =
+        audioUri
+            .filterNotNull()
+            .flatMapLatest { mediaRepository.providerOf(it) }
+            .asFlowResult()
+            .flowOn(Dispatchers.IO)
+            .stateIn(viewModelScope, SharingStarted.Eagerly, FlowResult.Loading())
 
     fun loadAudio(audioUri: Uri) {
         this.audioUri.value = audioUri
@@ -70,23 +57,17 @@ class AddOrRemoveFromPlaylistsViewModel(application: Application) : TwelveViewMo
 
     suspend fun addToPlaylist(playlistUri: Uri) {
         audioUri.value?.let {
-            withContext(Dispatchers.IO) {
-                mediaRepository.addAudioToPlaylist(playlistUri, it)
-            }
+            withContext(Dispatchers.IO) { mediaRepository.addAudioToPlaylist(playlistUri, it) }
         }
     }
 
     suspend fun removeFromPlaylist(playlistUri: Uri) {
         audioUri.value?.let {
-            withContext(Dispatchers.IO) {
-                mediaRepository.removeAudioFromPlaylist(playlistUri, it)
-            }
+            withContext(Dispatchers.IO) { mediaRepository.removeAudioFromPlaylist(playlistUri, it) }
         }
     }
 
-    /**
-     * Create a new playlist in the same provider as the audio.
-     */
+    /** Create a new playlist in the same provider as the audio. */
     suspend fun createPlaylist(name: String) {
         withContext(Dispatchers.IO) {
             audioUri.value?.let {

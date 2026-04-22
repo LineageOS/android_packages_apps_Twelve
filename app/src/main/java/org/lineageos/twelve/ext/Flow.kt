@@ -10,6 +10,4 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import org.lineageos.twelve.models.ColumnIndexCache
 
-fun <T> Flow<Cursor?>.mapEachRow(
-    mapping: (ColumnIndexCache) -> T,
-) = map { it.mapEachRow(mapping) }
+fun <T> Flow<Cursor?>.mapEachRow(mapping: (ColumnIndexCache) -> T) = map { it.mapEachRow(mapping) }

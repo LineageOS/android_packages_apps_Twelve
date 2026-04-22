@@ -22,9 +22,7 @@ import coil3.target.Target
 import coil3.toBitmap
 import kotlin.reflect.KClass
 
-/**
- * A helper class used to update a widget.
- */
+/** A helper class used to update a widget. */
 abstract class AppWidgetUpdater<T : AppWidgetProvider>(
     private val appWidgetProviderKClass: KClass<T>,
     @LayoutRes val layoutResId: Int,
@@ -38,49 +36,46 @@ abstract class AppWidgetUpdater<T : AppWidgetProvider>(
     ) {
         appWidgetIds.forEach { appWidgetId ->
             // Get the layout for the widget
-            val views = RemoteViews(context.packageName, layoutResId).apply {
-                update(context)
-            }
+            val views = RemoteViews(context.packageName, layoutResId).apply { update(context) }
 
             // Tell the AppWidgetManager to perform an update on the current widget
             appWidgetManager.updateAppWidget(appWidgetId, views)
         }
     }
 
-    suspend fun update(context: Context) = AppWidgetManager.getInstance(context).let {
-        update(
-            context,
-            it,
-            it.getAppWidgetIds(
-                ComponentName(context, appWidgetProviderKClass.java)
-            ),
-        )
-    }
+    suspend fun update(context: Context) =
+        AppWidgetManager.getInstance(context).let {
+            update(
+                context,
+                it,
+                it.getAppWidgetIds(ComponentName(context, appWidgetProviderKClass.java)),
+            )
+        }
 
-    suspend fun RemoteViews.fetchImage(
-        context: Context,
-        data: Any,
-        @IdRes imageViewResId: Int
-    ) {
+    suspend fun RemoteViews.fetchImage(context: Context, data: Any, @IdRes imageViewResId: Int) {
         val imageLoader = context.imageLoader
 
-        val imageRequest = ImageRequest.Builder(context)
-            .target(RemoteViewsTarget(this, imageViewResId))
-            .data(data)
-            .maxBitmapSize(Size(512, 512))
-            .allowHardware(false)
-            .build()
+        val imageRequest =
+            ImageRequest.Builder(context)
+                .target(RemoteViewsTarget(this, imageViewResId))
+                .data(data)
+                .maxBitmapSize(Size(512, 512))
+                .allowHardware(false)
+                .build()
 
         imageLoader.execute(imageRequest)
     }
 
     private class RemoteViewsTarget(
         private val remoteViews: RemoteViews,
-        @IdRes private val imageViewResId: Int
+        @IdRes private val imageViewResId: Int,
     ) : Target {
         override fun onStart(placeholder: Image?) = setDrawable(placeholder)
+
         override fun onError(error: Image?) = setDrawable(error)
+
         override fun onSuccess(result: Image) = setDrawable(result)
+
         private fun setDrawable(image: Image?) {
             remoteViews.setImageViewBitmap(imageViewResId, image?.toBitmap())
         }

@@ -11,6 +11,4 @@ import androidx.fragment.app.Fragment
 import kotlin.properties.ReadOnlyProperty
 
 inline fun <reified T : View?> getViewProperty(@IdRes viewId: Int) =
-    ReadOnlyProperty<Fragment, T> { thisRef, _ ->
-        thisRef.requireView().findViewById<T>(viewId)
-    }
+    ReadOnlyProperty<Fragment, T> { thisRef, _ -> thisRef.requireView().findViewById<T>(viewId) }

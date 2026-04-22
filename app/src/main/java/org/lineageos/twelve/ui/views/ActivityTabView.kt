@@ -29,27 +29,21 @@ class ActivityTabView(context: Context) : FrameLayout(context) {
     private val titleTextView by lazy { findViewById<TextView>(R.id.titleTextView) }
 
     // RecyclerView
-    private val adapter = object : SimpleListAdapter<MediaItem<*>, HorizontalMediaItemView>(
-        mediaItemDiffCallback,
-        ::HorizontalMediaItemView,
-    ) {
-        override fun ViewHolder.onPrepareView() {
-            view.setOnClickListener {
-                item?.let {
-                    onItemClickListener(it)
-                }
+    private val adapter =
+        object :
+            SimpleListAdapter<MediaItem<*>, HorizontalMediaItemView>(
+                mediaItemDiffCallback,
+                ::HorizontalMediaItemView,
+            ) {
+            override fun ViewHolder.onPrepareView() {
+                view.setOnClickListener { item?.let { onItemClickListener(it) } }
+                view.setOnLongClickListener { item?.let { onItemLongClickListener(it) } ?: false }
             }
-            view.setOnLongClickListener {
-                item?.let {
-                    onItemLongClickListener(it)
-                } ?: false
-            }
-        }
 
-        override fun ViewHolder.onBindView(item: MediaItem<*>) {
-            view.setItem(item)
+            override fun ViewHolder.onBindView(item: MediaItem<*>) {
+                view.setItem(item)
+            }
         }
-    }
 
     // Callbacks
     private var onItemClickListener: (item: MediaItem<*>) -> Unit = { _ -> }
@@ -65,9 +59,7 @@ class ActivityTabView(context: Context) : FrameLayout(context) {
         onItemClickListener = listener ?: {}
     }
 
-    fun setOnItemLongClickListener(
-        listener: ((item: MediaItem<*>) -> Boolean)?
-    ) {
+    fun setOnItemLongClickListener(listener: ((item: MediaItem<*>) -> Boolean)?) {
         onItemLongClickListener = listener ?: { false }
     }
 
@@ -79,28 +71,25 @@ class ActivityTabView(context: Context) : FrameLayout(context) {
     }
 
     companion object {
-        private val mediaItemDiffCallback = object : DiffUtil.ItemCallback<MediaItem<*>>() {
-            override fun areItemsTheSame(
-                oldItem: MediaItem<*>,
-                newItem: MediaItem<*>,
-            ) = when (oldItem) {
-                is Album -> oldItem.areItemsTheSame<Album>(newItem)
-                is Artist -> oldItem.areItemsTheSame<Artist>(newItem)
-                is Audio -> oldItem.areItemsTheSame<Audio>(newItem)
-                is Genre -> oldItem.areItemsTheSame<Genre>(newItem)
-                is Playlist -> oldItem.areItemsTheSame<Playlist>(newItem)
-            }
+        private val mediaItemDiffCallback =
+            object : DiffUtil.ItemCallback<MediaItem<*>>() {
+                override fun areItemsTheSame(oldItem: MediaItem<*>, newItem: MediaItem<*>) =
+                    when (oldItem) {
+                        is Album -> oldItem.areItemsTheSame<Album>(newItem)
+                        is Artist -> oldItem.areItemsTheSame<Artist>(newItem)
+                        is Audio -> oldItem.areItemsTheSame<Audio>(newItem)
+                        is Genre -> oldItem.areItemsTheSame<Genre>(newItem)
+                        is Playlist -> oldItem.areItemsTheSame<Playlist>(newItem)
+                    }
 
-            override fun areContentsTheSame(
-                oldItem: MediaItem<*>,
-                newItem: MediaItem<*>,
-            ) = when (oldItem) {
-                is Album -> oldItem.areContentsTheSame<Album>(newItem)
-                is Artist -> oldItem.areContentsTheSame<Artist>(newItem)
-                is Audio -> oldItem.areContentsTheSame<Audio>(newItem)
-                is Genre -> oldItem.areContentsTheSame<Genre>(newItem)
-                is Playlist -> oldItem.areContentsTheSame<Playlist>(newItem)
+                override fun areContentsTheSame(oldItem: MediaItem<*>, newItem: MediaItem<*>) =
+                    when (oldItem) {
+                        is Album -> oldItem.areContentsTheSame<Album>(newItem)
+                        is Artist -> oldItem.areContentsTheSame<Artist>(newItem)
+                        is Audio -> oldItem.areContentsTheSame<Audio>(newItem)
+                        is Genre -> oldItem.areContentsTheSame<Genre>(newItem)
+                        is Playlist -> oldItem.areContentsTheSame<Playlist>(newItem)
+                    }
             }
-        }
     }
 }

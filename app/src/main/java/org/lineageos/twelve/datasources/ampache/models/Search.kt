@@ -14,9 +14,7 @@ import kotlinx.serialization.Serializable
  * @param search The search information
  */
 @Serializable
-data class Search(
-    @SerialName("search") val search: Information,
-) {
+data class Search(@SerialName("search") val search: Information) {
     /**
      * Information.
      *

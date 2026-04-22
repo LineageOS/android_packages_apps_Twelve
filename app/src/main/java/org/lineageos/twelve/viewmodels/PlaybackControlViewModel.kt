@@ -24,59 +24,59 @@ class PlaybackControlViewModel(application: Application) : TwelveViewModel(appli
     val pitchSliderVisible = _pitchSliderVisible.asStateFlow()
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val playbackParameters = mediaControllerFlow
-        .flatMapLatest { it.playbackParametersFlow(eventsFlow) }
-        .flowOn(Dispatchers.Main)
-        .stateIn(
-            viewModelScope,
-            started = SharingStarted.WhileSubscribed(),
-            initialValue = PlaybackParameters(1f, 1f)
-        )
+    val playbackParameters =
+        mediaControllerFlow
+            .flatMapLatest { it.playbackParametersFlow(eventsFlow) }
+            .flowOn(Dispatchers.Main)
+            .stateIn(
+                viewModelScope,
+                started = SharingStarted.WhileSubscribed(),
+                initialValue = PlaybackParameters(1f, 1f),
+            )
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val isSpeedMinusButtonEnabled = playbackParameters
-        .mapLatest { it.speed > (SPEED_MIN + (SPEED_STEP / 2)) }
-        .flowOn(Dispatchers.IO)
-        .stateIn(
-            viewModelScope,
-            started = SharingStarted.WhileSubscribed(),
-            initialValue = false
-        )
+    val isSpeedMinusButtonEnabled =
+        playbackParameters
+            .mapLatest { it.speed > (SPEED_MIN + (SPEED_STEP / 2)) }
+            .flowOn(Dispatchers.IO)
+            .stateIn(
+                viewModelScope,
+                started = SharingStarted.WhileSubscribed(),
+                initialValue = false,
+            )
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val isSpeedPlusButtonEnabled = playbackParameters
-        .mapLatest { it.speed < (SPEED_MAX - (SPEED_STEP / 2)) }
-        .flowOn(Dispatchers.IO)
-        .stateIn(
-            viewModelScope,
-            started = SharingStarted.WhileSubscribed(),
-            initialValue = false
-        )
+    val isSpeedPlusButtonEnabled =
+        playbackParameters
+            .mapLatest { it.speed < (SPEED_MAX - (SPEED_STEP / 2)) }
+            .flowOn(Dispatchers.IO)
+            .stateIn(
+                viewModelScope,
+                started = SharingStarted.WhileSubscribed(),
+                initialValue = false,
+            )
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val isPitchUnlockSwitchChecked = playbackParameters
-        .mapLatest { it.pitch != PITCH_DEFAULT }
-        .flowOn(Dispatchers.IO)
-        .stateIn(
-            viewModelScope,
-            started = SharingStarted.WhileSubscribed(),
-            initialValue = false
-        )
+    val isPitchUnlockSwitchChecked =
+        playbackParameters
+            .mapLatest { it.pitch != PITCH_DEFAULT }
+            .flowOn(Dispatchers.IO)
+            .stateIn(
+                viewModelScope,
+                started = SharingStarted.WhileSubscribed(),
+                initialValue = false,
+            )
 
     fun increasePlaybackSpeed() {
         val newSpeed = (playbackParameters.value.speed + SPEED_STEP).coerceAtMost(SPEED_MAX)
 
-        mediaController.value?.setPlaybackParameters(
-            playbackParameters.value.withSpeed(newSpeed)
-        )
+        mediaController.value?.setPlaybackParameters(playbackParameters.value.withSpeed(newSpeed))
     }
 
     fun decreasePlaybackSpeed() {
         val newSpeed = (playbackParameters.value.speed - SPEED_STEP).coerceAtLeast(SPEED_MIN)
 
-        mediaController.value?.setPlaybackParameters(
-            playbackParameters.value.withSpeed(newSpeed)
-        )
+        mediaController.value?.setPlaybackParameters(playbackParameters.value.withSpeed(newSpeed))
     }
 
     fun resetPlaybackSpeed() {
@@ -96,9 +96,7 @@ class PlaybackControlViewModel(application: Application) : TwelveViewModel(appli
     }
 
     fun setPlaybackPitch(pitch: Float) {
-        mediaController.value?.setPlaybackParameters(
-            playbackParameters.value.withPitch(pitch)
-        )
+        mediaController.value?.setPlaybackParameters(playbackParameters.value.withPitch(pitch))
     }
 
     companion object {

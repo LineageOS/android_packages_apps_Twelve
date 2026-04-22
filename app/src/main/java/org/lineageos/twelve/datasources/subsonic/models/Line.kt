@@ -16,8 +16,4 @@ import kotlinx.serialization.Serializable
  * @param start The start time of the lyrics, relative to the start time of the track, in
  *   milliseconds. If this is not part of synced lyrics, start must be omitted
  */
-@Serializable
-data class Line(
-    val value: String,
-    val start: Long? = null,
-)
+@Serializable data class Line(val value: String, val start: Long? = null)

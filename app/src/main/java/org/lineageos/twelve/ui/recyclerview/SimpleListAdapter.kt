@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 
 /**
  * A very basic ListAdapter that holds only one type of item.
+ *
  * @param diffCallback A [DiffUtil.ItemCallback] provided by the derived class
  * @param factory The factory of the [View]
  */
@@ -25,9 +26,8 @@ abstract class SimpleListAdapter<T, V : View>(
 
     open fun ViewHolder.onPrepareView() {}
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = ViewHolder(
-        factory(parent.context),
-    )
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
+        ViewHolder(factory(parent.context))
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.bind(getItem(position))

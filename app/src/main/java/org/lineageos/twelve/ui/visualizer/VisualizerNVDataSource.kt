@@ -17,9 +17,9 @@ import kotlinx.coroutines.flow.flatMapLatest
 import me.bogerchan.niervisualizer.NierVisualizerManager
 
 /**
- * A somewhat coroutine-friendly implementation of [NierVisualizerManager.NVDataSource].
- * Set the audio session ID with [setAudioSessionId] and collect [workFlow] to let
- * the [Visualizer] do its thing.
+ * A somewhat coroutine-friendly implementation of [NierVisualizerManager.NVDataSource]. Set the
+ * audio session ID with [setAudioSessionId] and collect [workFlow] to let the [Visualizer] do its
+ * thing.
  */
 class VisualizerNVDataSource : NierVisualizerManager.NVDataSource, DefaultLifecycleObserver {
     private val audioSessionId = MutableStateFlow<Int?>(null)
@@ -30,20 +30,20 @@ class VisualizerNVDataSource : NierVisualizerManager.NVDataSource, DefaultLifecy
     private val waveBuffer = ByteArray(CAPTURE_SIZE)
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val workFlow = audioSessionId
-        .filterNotNull()
-        .flatMapLatest { audioSessionId ->
+    val workFlow =
+        audioSessionId.filterNotNull().flatMapLatest { audioSessionId ->
             callbackFlow<Unit> {
-                val visualizer = Visualizer(audioSessionId).apply {
-                    enabled = false
-                    captureSize = CAPTURE_SIZE
-                    try {
-                        scalingMode = Visualizer.SCALING_MODE_NORMALIZED
-                    } catch (e: NoSuchMethodError) {
-                        Log.e(LOG_TAG, "Can't set scaling mode", e)
+                val visualizer =
+                    Visualizer(audioSessionId).apply {
+                        enabled = false
+                        captureSize = CAPTURE_SIZE
+                        try {
+                            scalingMode = Visualizer.SCALING_MODE_NORMALIZED
+                        } catch (e: NoSuchMethodError) {
+                            Log.e(LOG_TAG, "Can't set scaling mode", e)
+                        }
+                        measurementMode = Visualizer.MEASUREMENT_MODE_NONE
                     }
-                    measurementMode = Visualizer.MEASUREMENT_MODE_NONE
-                }
                 require(visualizer.captureSize == CAPTURE_SIZE) {
                     "Capture size mismatch: ${visualizer.captureSize} != $CAPTURE_SIZE"
                 }
@@ -58,13 +58,10 @@ class VisualizerNVDataSource : NierVisualizerManager.NVDataSource, DefaultLifecy
             }
         }
 
-    override fun fetchFftData() = fftBuffer.takeIf {
-        visualizer?.getFft(it) == Visualizer.SUCCESS
-    }
+    override fun fetchFftData() = fftBuffer.takeIf { visualizer?.getFft(it) == Visualizer.SUCCESS }
 
-    override fun fetchWaveData() = waveBuffer.takeIf {
-        visualizer?.getWaveForm(it) == Visualizer.SUCCESS
-    }
+    override fun fetchWaveData() =
+        waveBuffer.takeIf { visualizer?.getWaveForm(it) == Visualizer.SUCCESS }
 
     override fun getDataLength() = CAPTURE_SIZE
 

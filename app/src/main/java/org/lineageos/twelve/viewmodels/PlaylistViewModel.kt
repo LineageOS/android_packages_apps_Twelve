@@ -27,30 +27,22 @@ class PlaylistViewModel(application: Application) : TwelveViewModel(application)
     private val playlistUri = MutableStateFlow<Uri?>(null)
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val playlist = playlistUri
-        .filterNotNull()
-        .flatMapLatest {
-            mediaRepository.playlist(it)
-        }
-        .asFlowResult()
-        .flowOn(Dispatchers.IO)
-        .stateIn(
-            viewModelScope,
-            SharingStarted.WhileSubscribed(),
-            FlowResult.Loading()
-        )
+    val playlist =
+        playlistUri
+            .filterNotNull()
+            .flatMapLatest { mediaRepository.playlist(it) }
+            .asFlowResult()
+            .flowOn(Dispatchers.IO)
+            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), FlowResult.Loading())
 
-    val playlistMetadataCanBeEdited = playlist
-        .foldLatest(
-            onSuccess = { it.first.type == Playlist.Type.PLAYLIST },
-            onError = { _, _ -> false },
-        )
-        .flowOn(Dispatchers.IO)
-        .stateIn(
-            viewModelScope,
-            SharingStarted.WhileSubscribed(),
-            false
-        )
+    val playlistMetadataCanBeEdited =
+        playlist
+            .foldLatest(
+                onSuccess = { it.first.type == Playlist.Type.PLAYLIST },
+                onError = { _, _ -> false },
+            )
+            .flowOn(Dispatchers.IO)
+            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), false)
 
     fun loadPlaylist(playlistUri: Uri) {
         this.playlistUri.value = playlistUri
@@ -58,33 +50,29 @@ class PlaylistViewModel(application: Application) : TwelveViewModel(application)
 
     suspend fun renamePlaylist(name: String) {
         playlistUri.value?.let { playlistUri ->
-            withContext(Dispatchers.IO) {
-                mediaRepository.renamePlaylist(playlistUri, name)
-            }
+            withContext(Dispatchers.IO) { mediaRepository.renamePlaylist(playlistUri, name) }
         }
     }
 
     suspend fun deletePlaylist() {
         playlistUri.value?.let { playlistUri ->
-            withContext(Dispatchers.IO) {
-                mediaRepository.deletePlaylist(playlistUri)
-            }
+            withContext(Dispatchers.IO) { mediaRepository.deletePlaylist(playlistUri) }
         }
     }
 
     fun playPlaylist(position: Int = 0) {
-        playlist.value.getOrNull()?.second?.takeUnless {
-            it.isEmpty()
-        }?.let {
-            playAudio(it, position)
-        }
+        playlist.value
+            .getOrNull()
+            ?.second
+            ?.takeUnless { it.isEmpty() }
+            ?.let { playAudio(it, position) }
     }
 
     fun shufflePlayPlaylist() {
-        playlist.value.getOrNull()?.second?.takeUnless {
-            it.isEmpty()
-        }?.let {
-            playAudio(it.shuffled(), 0)
-        }
+        playlist.value
+            .getOrNull()
+            ?.second
+            ?.takeUnless { it.isEmpty() }
+            ?.let { playAudio(it.shuffled(), 0) }
     }
 }

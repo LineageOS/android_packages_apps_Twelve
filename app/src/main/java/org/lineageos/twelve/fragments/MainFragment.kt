@@ -62,24 +62,27 @@ import org.lineageos.twelve.ui.recyclerview.SimpleListAdapter
 import org.lineageos.twelve.ui.views.ListItem
 import org.lineageos.twelve.viewmodels.MainViewModel
 
-/**
- * The home page.
- */
+/** The home page. */
 class MainFragment : Fragment(R.layout.fragment_main) {
     // View models
     private val viewModel by viewModels<MainViewModel>()
 
     // Views
     private val navigationBarView by getViewProperty<NavigationBarView>(R.id.navigationBarView)
-    private val playRandomSongsExtendedFloatingActionButton by getViewProperty<ExtendedFloatingActionButton>(
-        R.id.playRandomSongsExtendedFloatingActionButton
-    )
-    private val providerMaterialButton by getViewProperty<MaterialButton>(R.id.providerMaterialButton)
-    private val searchLinearProgressIndicator by getViewProperty<LinearProgressIndicator>(R.id.searchLinearProgressIndicator)
-    private val searchNoElementsLinearLayout by getViewProperty<LinearLayout>(R.id.searchNoElementsLinearLayout)
+    private val playRandomSongsExtendedFloatingActionButton by
+        getViewProperty<ExtendedFloatingActionButton>(
+            R.id.playRandomSongsExtendedFloatingActionButton
+        )
+    private val providerMaterialButton by
+        getViewProperty<MaterialButton>(R.id.providerMaterialButton)
+    private val searchLinearProgressIndicator by
+        getViewProperty<LinearProgressIndicator>(R.id.searchLinearProgressIndicator)
+    private val searchNoElementsLinearLayout by
+        getViewProperty<LinearLayout>(R.id.searchNoElementsLinearLayout)
     private val searchRecyclerView by getViewProperty<RecyclerView>(R.id.searchRecyclerView)
     private val searchView by getViewProperty<SearchView>(R.id.searchView)
-    private val settingsMaterialButton by getViewProperty<MaterialButton>(R.id.settingsMaterialButton)
+    private val settingsMaterialButton by
+        getViewProperty<MaterialButton>(R.id.settingsMaterialButton)
     private val toolbar by getViewProperty<MaterialToolbar>(R.id.toolbar)
     private val viewPager2 by getViewProperty<ViewPager2>(R.id.viewPager2)
 
@@ -107,26 +110,25 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
     // RecyclerView
     private val searchAdapter by lazy {
-        object : SimpleListAdapter<MediaItem<*>, ListItem>(
-            searchDiffCallback,
-            ::ListItem
-        ) {
+        object : SimpleListAdapter<MediaItem<*>, ListItem>(searchDiffCallback, ::ListItem) {
             override fun ViewHolder.onBindView(item: MediaItem<*>) {
                 view.setOnLongClickListener {
-                    findNavController().navigateSafe(
-                        R.id.action_mainFragment_to_fragment_media_item_bottom_sheet_dialog,
-                        MediaItemBottomSheetDialogFragment.createBundle(item.uri)
-                    )
+                    findNavController()
+                        .navigateSafe(
+                            R.id.action_mainFragment_to_fragment_media_item_bottom_sheet_dialog,
+                            MediaItemBottomSheetDialogFragment.createBundle(item.uri),
+                        )
                     true
                 }
 
                 when (item) {
                     is Album -> {
                         view.setOnClickListener {
-                            findNavController().navigateSafe(
-                                R.id.action_mainFragment_to_fragment_album,
-                                AlbumFragment.createBundle(item.uri)
-                            )
+                            findNavController()
+                                .navigateSafe(
+                                    R.id.action_mainFragment_to_fragment_album,
+                                    AlbumFragment.createBundle(item.uri),
+                                )
                         }
 
                         view.setTrailingIconImage(R.drawable.ic_album)
@@ -136,10 +138,11 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
                     is Artist -> {
                         view.setOnClickListener {
-                            findNavController().navigateSafe(
-                                R.id.action_mainFragment_to_fragment_artist,
-                                ArtistFragment.createBundle(item.uri)
-                            )
+                            findNavController()
+                                .navigateSafe(
+                                    R.id.action_mainFragment_to_fragment_artist,
+                                    ArtistFragment.createBundle(item.uri),
+                                )
                         }
 
                         view.setTrailingIconImage(R.drawable.ic_person)
@@ -149,10 +152,12 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
                     is Audio -> {
                         view.setOnClickListener {
-                            findNavController().navigateSafe(
-                                R.id.action_mainFragment_to_fragment_media_item_bottom_sheet_dialog,
-                                MediaItemBottomSheetDialogFragment.createBundle(item.uri)
-                            )
+                            findNavController()
+                                .navigateSafe(
+                                    R.id
+                                        .action_mainFragment_to_fragment_media_item_bottom_sheet_dialog,
+                                    MediaItemBottomSheetDialogFragment.createBundle(item.uri),
+                                )
                         }
 
                         view.setTrailingIconImage(R.drawable.ic_music_note)
@@ -162,10 +167,11 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
                     is Genre -> {
                         view.setOnClickListener {
-                            findNavController().navigateSafe(
-                                R.id.action_mainFragment_to_fragment_genre,
-                                GenreFragment.createBundle(item.uri)
-                            )
+                            findNavController()
+                                .navigateSafe(
+                                    R.id.action_mainFragment_to_fragment_genre,
+                                    GenreFragment.createBundle(item.uri),
+                                )
                         }
 
                         view.setTrailingIconImage(R.drawable.ic_genres)
@@ -175,10 +181,11 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
                     is Playlist -> {
                         view.setOnClickListener {
-                            findNavController().navigateSafe(
-                                R.id.action_mainFragment_to_fragment_playlist,
-                                PlaylistFragment.createBundle(item.uri)
-                            )
+                            findNavController()
+                                .navigateSafe(
+                                    R.id.action_mainFragment_to_fragment_playlist,
+                                    PlaylistFragment.createBundle(item.uri),
+                                )
                         }
 
                         view.setTrailingIconImage(R.drawable.ic_playlist_play)
@@ -197,19 +204,16 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         ViewCompat.setOnApplyWindowInsetsListener(toolbar) { v, windowInsets ->
             val insets = windowInsets.getInsets(WindowInsetsCompat.Type.displayCutout())
 
-            v.updatePadding(
-                insets,
-                start = !resources.configuration.isLandscape,
-                end = true,
-            )
+            v.updatePadding(insets, start = !resources.configuration.isLandscape, end = true)
 
             windowInsets
         }
 
         ViewCompat.setOnApplyWindowInsetsListener(navigationBarView) { v, windowInsets ->
-            val insets = windowInsets.getInsets(
-                WindowInsetsCompat.Type.systemBars() or WindowInsetsCompat.Type.displayCutout()
-            )
+            val insets =
+                windowInsets.getInsets(
+                    WindowInsetsCompat.Type.systemBars() or WindowInsetsCompat.Type.displayCutout()
+                )
 
             v.updatePadding(
                 insets,
@@ -222,32 +226,29 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         }
 
         ViewCompat.setOnApplyWindowInsetsListener(viewPager2) { v, windowInsets ->
-            val displayCutoutInsets = windowInsets.getInsets(
-                WindowInsetsCompat.Type.displayCutout()
-            )
+            val displayCutoutInsets =
+                windowInsets.getInsets(WindowInsetsCompat.Type.displayCutout())
             val systemBarsInsets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
 
-            fun adjustInsets(insets: Insets) = Insets.of(
-                when (!v.isRtl && resources.configuration.isLandscape) {
-                    true -> 0
-                    false -> insets.left
-                },
-                insets.top,
-                when (v.isRtl && resources.configuration.isLandscape) {
-                    true -> 0
-                    false -> insets.right
-                },
-                when (resources.configuration.isLandscape) {
-                    true -> insets.bottom
-                    false -> 0
-                },
-            )
+            fun adjustInsets(insets: Insets) =
+                Insets.of(
+                    when (!v.isRtl && resources.configuration.isLandscape) {
+                        true -> 0
+                        false -> insets.left
+                    },
+                    insets.top,
+                    when (v.isRtl && resources.configuration.isLandscape) {
+                        true -> 0
+                        false -> insets.right
+                    },
+                    when (resources.configuration.isLandscape) {
+                        true -> insets.bottom
+                        false -> 0
+                    },
+                )
 
             WindowInsetsCompat.Builder(windowInsets)
-                .setInsets(
-                    WindowInsetsCompat.Type.systemBars(),
-                    adjustInsets(systemBarsInsets),
-                )
+                .setInsets(WindowInsetsCompat.Type.systemBars(), adjustInsets(systemBarsInsets))
                 .setInsets(
                     WindowInsetsCompat.Type.displayCutout(),
                     adjustInsets(displayCutoutInsets),
@@ -258,12 +259,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         ViewCompat.setOnApplyWindowInsetsListener(searchRecyclerView) { v, windowInsets ->
             val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
 
-            v.updatePadding(
-                insets,
-                start = true,
-                end = true,
-                bottom = true,
-            )
+            v.updatePadding(insets, start = true, end = true, bottom = true)
 
             windowInsets
         }
@@ -271,65 +267,66 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         ViewCompat.setOnApplyWindowInsetsListener(searchNoElementsLinearLayout) { v, windowInsets ->
             val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
 
-            v.updatePadding(
-                insets,
-                start = true,
-                end = true,
-                bottom = true,
-            )
+            v.updatePadding(insets, start = true, end = true, bottom = true)
 
             windowInsets
         }
 
         // On back pressed
-        requireActivity().onBackPressedDispatcher.addCallback(
-            viewLifecycleOwner,
-            object : OnBackPressedCallback(searchView.isShowing) {
-                override fun handleOnBackStarted(backEvent: BackEventCompat) {
-                    searchView.startBackProgress(backEvent)
-                }
+        requireActivity()
+            .onBackPressedDispatcher
+            .addCallback(
+                viewLifecycleOwner,
+                object : OnBackPressedCallback(searchView.isShowing) {
+                        override fun handleOnBackStarted(backEvent: BackEventCompat) {
+                            searchView.startBackProgress(backEvent)
+                        }
 
-                override fun handleOnBackProgressed(backEvent: BackEventCompat) {
-                    searchView.updateBackProgress(backEvent)
-                }
+                        override fun handleOnBackProgressed(backEvent: BackEventCompat) {
+                            searchView.updateBackProgress(backEvent)
+                        }
 
-                override fun handleOnBackPressed() {
-                    searchView.handleBackInvoked()
-                }
+                        override fun handleOnBackPressed() {
+                            searchView.handleBackInvoked()
+                        }
 
-                override fun handleOnBackCancelled() {
-                    searchView.cancelBackProgress()
-                }
-            }.also {
-                searchView.addTransitionListener { searchView, _, newState ->
-                    val isShowing = newState in listOf(
-                        SearchView.TransitionState.SHOWN,
-                        SearchView.TransitionState.SHOWING,
-                    )
-
-                    it.isEnabled = isShowing
-
-                    // Clear search query if hidden
-                    if (!isShowing) {
-                        searchView.clearText()
+                        override fun handleOnBackCancelled() {
+                            searchView.cancelBackProgress()
+                        }
                     }
-                }
-            }
-        )
+                    .also {
+                        searchView.addTransitionListener { searchView, _, newState ->
+                            val isShowing =
+                                newState in
+                                    listOf(
+                                        SearchView.TransitionState.SHOWN,
+                                        SearchView.TransitionState.SHOWING,
+                                    )
+
+                            it.isEnabled = isShowing
+
+                            // Clear search query if hidden
+                            if (!isShowing) {
+                                searchView.clearText()
+                            }
+                        }
+                    },
+            )
 
         toolbar.setupWithNavController(findNavController())
 
         providerMaterialButton.setOnClickListener {
-            findNavController().navigateSafe(
-                R.id.action_mainFragment_to_fragment_provider_selector_dialog
-            )
+            findNavController()
+                .navigateSafe(R.id.action_mainFragment_to_fragment_provider_selector_dialog)
         }
         providerMaterialButton.setOnLongClickListener {
             viewModel.navigationProvider.value?.let {
-                findNavController().navigateSafe(
-                    R.id.action_mainFragment_to_fragment_provider_information_bottom_sheet_dialog,
-                    ManageProviderFragment.createBundle(providerIdentifier = it.identifier),
-                )
+                findNavController()
+                    .navigateSafe(
+                        R.id
+                            .action_mainFragment_to_fragment_provider_information_bottom_sheet_dialog,
+                        ManageProviderFragment.createBundle(providerIdentifier = it.identifier),
+                    )
                 true
             } ?: false
         }
@@ -342,21 +339,19 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         playRandomSongsExtendedFloatingActionButton.setOnClickListener {
             viewLifecycleOwner.lifecycleScope.launch {
                 viewModel.playAllAudios().onError {
-                    Snackbar.make(
-                        navigationBarView,
-                        it.toString(),
-                        Snackbar.LENGTH_SHORT,
-                    ).show()
+                    Snackbar.make(navigationBarView, it.toString(), Snackbar.LENGTH_SHORT).show()
                 }
             }
         }
 
         // View pager
         viewPager2.isUserInputEnabled = false
-        viewPager2.adapter = object : FragmentStateAdapter(this) {
-            override fun getItemCount() = fragments.size
-            override fun createFragment(position: Int) = fragments[position]()
-        }
+        viewPager2.adapter =
+            object : FragmentStateAdapter(this) {
+                override fun getItemCount() = fragments.size
+
+                override fun createFragment(position: Int) = fragments[position]()
+            }
         viewPager2.offscreenPageLimit = fragments.size
         viewPager2.registerOnPageChangeCallback(onPageChangeCallback)
 
@@ -401,10 +396,11 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                         it?.let {
                             providerMaterialButton.text = it.name
                             providerMaterialButton.setIconResource(it.type.iconDrawableResId)
-                        } ?: run {
-                            providerMaterialButton.setText(R.string.no_provider)
-                            providerMaterialButton.setIconResource(R.drawable.ic_warning)
                         }
+                            ?: run {
+                                providerMaterialButton.setText(R.string.no_provider)
+                                providerMaterialButton.setIconResource(R.drawable.ic_warning)
+                            }
                     }
                 }
 
@@ -430,7 +426,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                                 Log.e(
                                     LOG_TAG,
                                     "Failed to load search results, error: ${it.error}",
-                                    it.throwable
+                                    it.throwable,
                                 )
 
                                 searchAdapter.submitList(listOf())
@@ -459,33 +455,27 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         private val LOG_TAG = MainFragment::class.simpleName!!
 
         // Keep in sync with the BottomNavigationView menu
-        private val fragments = arrayOf(
-            { ActivityFragment() },
-            { LibraryFragment() },
-        )
+        private val fragments = arrayOf({ ActivityFragment() }, { LibraryFragment() })
 
-        private val searchDiffCallback = object : DiffUtil.ItemCallback<MediaItem<*>>() {
-            override fun areItemsTheSame(
-                oldItem: MediaItem<*>,
-                newItem: MediaItem<*>
-            ) = when (oldItem) {
-                is Album -> oldItem.areItemsTheSame(newItem)
-                is Artist -> oldItem.areItemsTheSame(newItem)
-                is Audio -> oldItem.areItemsTheSame(newItem)
-                is Genre -> oldItem.areItemsTheSame(newItem)
-                is Playlist -> oldItem.areItemsTheSame(newItem)
-            }
+        private val searchDiffCallback =
+            object : DiffUtil.ItemCallback<MediaItem<*>>() {
+                override fun areItemsTheSame(oldItem: MediaItem<*>, newItem: MediaItem<*>) =
+                    when (oldItem) {
+                        is Album -> oldItem.areItemsTheSame(newItem)
+                        is Artist -> oldItem.areItemsTheSame(newItem)
+                        is Audio -> oldItem.areItemsTheSame(newItem)
+                        is Genre -> oldItem.areItemsTheSame(newItem)
+                        is Playlist -> oldItem.areItemsTheSame(newItem)
+                    }
 
-            override fun areContentsTheSame(
-                oldItem: MediaItem<*>,
-                newItem: MediaItem<*>
-            ) = when (oldItem) {
-                is Album -> oldItem.areContentsTheSame(newItem)
-                is Artist -> oldItem.areContentsTheSame(newItem)
-                is Audio -> oldItem.areContentsTheSame(newItem)
-                is Genre -> oldItem.areContentsTheSame(newItem)
-                is Playlist -> oldItem.areContentsTheSame(newItem)
+                override fun areContentsTheSame(oldItem: MediaItem<*>, newItem: MediaItem<*>) =
+                    when (oldItem) {
+                        is Album -> oldItem.areContentsTheSame(newItem)
+                        is Artist -> oldItem.areContentsTheSame(newItem)
+                        is Audio -> oldItem.areContentsTheSame(newItem)
+                        is Genre -> oldItem.areContentsTheSame(newItem)
+                        is Playlist -> oldItem.areContentsTheSame(newItem)
+                    }
             }
-        }
     }
 }

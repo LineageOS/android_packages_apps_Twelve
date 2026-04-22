@@ -12,7 +12,4 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.UseSerializers
 import org.lineageos.twelve.datasources.jellyfin.serializers.UUIDSerializer
 
-@Serializable
-data class Lyrics(
-    @SerialName("Lyrics") val lyrics: List<LyricLine>? = null
-)
+@Serializable data class Lyrics(@SerialName("Lyrics") val lyrics: List<LyricLine>? = null)

@@ -13,24 +13,16 @@ package org.lineageos.twelve.models
  * @param device Output speaker configuration
  */
 data class OutputConfiguration(
-    /**
-     * The audio stream format information.
-     */
+    /** The audio stream format information. */
     val source: Source,
 
-    /**
-     * Information related to how the speaker will receive the audio.
-     */
+    /** Information related to how the speaker will receive the audio. */
     val transcoding: Transcoding,
 
-    /**
-     * Output speaker configuration.
-     */
+    /** Output speaker configuration. */
     val device: Device,
 
-    /**
-     * Verdict of the output configuration.
-     */
+    /** Verdict of the output configuration. */
     val verdict: Verdict,
 ) {
     /**
@@ -75,23 +67,15 @@ data class OutputConfiguration(
         val channelCount: Int?,
         val bitrateBps: Int?,
     ) {
-        /**
-         * Audio output mode.
-         */
+        /** Audio output mode. */
         enum class OutputMode {
-            /**
-             * The audio sink plays PCM audio.
-             */
+            /** The audio sink plays PCM audio. */
             PCM,
 
-            /**
-             * The audio sink plays encoded audio in offload.
-             */
+            /** The audio sink plays encoded audio in offload. */
             OFFLOAD,
 
-            /**
-             * The audio sink plays encoded audio in passthrough.
-             */
+            /** The audio sink plays encoded audio in passthrough. */
             PASSTHROUGH,
         }
     }
@@ -113,44 +97,28 @@ data class OutputConfiguration(
         val encodings: Set<Encoding>,
     ) {
         enum class Type {
-            /**
-             * Internal speakers.
-             */
+            /** Internal speakers. */
             BUILTIN,
 
-            /**
-             * Headphones connected to the device.
-             */
+            /** Headphones connected to the device. */
             HEADPHONES,
 
-            /**
-             * External speakers.
-             */
+            /** External speakers. */
             EXTERNAL_SPEAKERS,
 
-            /**
-             * Bluetooth audio device.
-             */
+            /** Bluetooth audio device. */
             BLUETOOTH,
 
-            /**
-             * HDMI audio device.
-             */
+            /** HDMI audio device. */
             HDMI,
 
-            /**
-             * USB device output.
-             */
+            /** USB device output. */
             USB,
 
-            /**
-             * Remote audio device (cast).
-             */
+            /** Remote audio device (cast). */
             REMOTE,
 
-            /**
-             * Hearing aid device.
-             */
+            /** Hearing aid device. */
             HEARING_AID,
         }
     }
@@ -161,14 +129,9 @@ data class OutputConfiguration(
      * @param hiRes Whether the current playback deserves a Hi-Res stamp
      * @param potentialIssues A set of [Verdict.Issue] that the user can be warned about
      */
-    data class Verdict(
-        val hiRes: Boolean,
-        val potentialIssues: Set<Issue>,
-    ) {
+    data class Verdict(val hiRes: Boolean, val potentialIssues: Set<Issue>) {
         enum class Issue {
-            /**
-             * The device is outputting the stream at a sample rate lower than the source one.
-             */
+            /** The device is outputting the stream at a sample rate lower than the source one. */
             DOWNSAMPLING,
 
             /**
@@ -177,14 +140,10 @@ data class OutputConfiguration(
              */
             PCM_FLOAT_MODE_DISABLED,
 
-            /**
-             * The user is listening to a track with more channels than the output device.
-             */
+            /** The user is listening to a track with more channels than the output device. */
             DOWNMIXING,
 
-            /**
-             * The source stream is getting compressed to a lossy encoding
-             */
+            /** The source stream is getting compressed to a lossy encoding */
             POST_PROCESSING_LOSSY_COMPRESSION,
         }
     }
@@ -195,10 +154,7 @@ data class OutputConfiguration(
      * @param displayName User-friendly name of the encoding
      * @param compression The [Compression] of the stream
      */
-    enum class Encoding(
-        val displayName: String,
-        val compression: Compression,
-    ) {
+    enum class Encoding(val displayName: String, val compression: Compression) {
         AAC_ELD(
             displayName = "Advanced Audio Coding Enhanced Low Delay (AAC ELD)",
             compression = Compression.LOSSY,
@@ -223,66 +179,27 @@ data class OutputConfiguration(
             displayName = "Advanced Audio Coding Extended High-Efficiency (AAC xHE)",
             compression = Compression.LOSSY,
         ),
-        AC3(
-            displayName = "Dolby Digital (AC-3)",
-            compression = Compression.LOSSY,
-        ),
-        AC4(
-            displayName = "Dolby Audio Codec 4 (AC-4)",
-            compression = Compression.LOSSY,
-        ),
+        AC3(displayName = "Dolby Digital (AC-3)", compression = Compression.LOSSY),
+        AC4(displayName = "Dolby Audio Codec 4 (AC-4)", compression = Compression.LOSSY),
         DOLBY_MAT(
             displayName = "Dolby Metadata-enhanced Audio Transmission",
             compression = Compression.LOSSY,
         ),
-        DOLBY_TRUEHD(
-            displayName = "Dolby TrueHD",
-            compression = Compression.LOSSLESS,
-        ),
-        DRA(
-            displayName = "Dynamic Resolution Adaptation",
-            compression = Compression.LOSSY,
-        ),
-        DSD(
-            displayName = "Direct Stream Digital",
-            compression = Compression.UNCOMPRESSED,
-        ),
-        DTS(
-            displayName = "DTS",
-            compression = Compression.LOSSY,
-        ),
-        DTS_HD(
-            displayName = "DTS HD",
-            compression = Compression.LOSSY,
-        ),
-        DTS_HD_MA(
-            displayName = "DTS HD Master Audio",
-            compression = Compression.LOSSLESS,
-        ),
-        DTS_UHD_P1(
-            displayName = "DTS:X Profile-1",
-            compression = Compression.LOSSY,
-        ),
-        DTS_UHD_P2(
-            displayName = "DTS:X Profile-2",
-            compression = Compression.LOSSY,
-        ),
-        E_AC3(
-            displayName = "Dolby Digital Plus (E-AC-3)",
-            compression = Compression.LOSSY,
-        ),
+        DOLBY_TRUEHD(displayName = "Dolby TrueHD", compression = Compression.LOSSLESS),
+        DRA(displayName = "Dynamic Resolution Adaptation", compression = Compression.LOSSY),
+        DSD(displayName = "Direct Stream Digital", compression = Compression.UNCOMPRESSED),
+        DTS(displayName = "DTS", compression = Compression.LOSSY),
+        DTS_HD(displayName = "DTS HD", compression = Compression.LOSSY),
+        DTS_HD_MA(displayName = "DTS HD Master Audio", compression = Compression.LOSSLESS),
+        DTS_UHD_P1(displayName = "DTS:X Profile-1", compression = Compression.LOSSY),
+        DTS_UHD_P2(displayName = "DTS:X Profile-2", compression = Compression.LOSSY),
+        E_AC3(displayName = "Dolby Digital Plus (E-AC-3)", compression = Compression.LOSSY),
         E_AC3_JOC(
             displayName = "Dolby Digital Plus with Dolby Atmos (E-AC-3-JOC)",
             compression = Compression.LOSSY,
         ),
-        IEC61937(
-            displayName = "S/PDIF (IEC 61937)",
-            compression = Compression.LOSSLESS,
-        ),
-        MP3(
-            displayName = "MP3",
-            compression = Compression.LOSSY,
-        ),
+        IEC61937(displayName = "S/PDIF (IEC 61937)", compression = Compression.LOSSLESS),
+        MP3(displayName = "MP3", compression = Compression.LOSSY),
         MPEGH_BL_L3(
             displayName = "MPEG-H 3D Audio Baseline Profile (level 3)",
             compression = Compression.LOSSY,
@@ -299,53 +216,30 @@ data class OutputConfiguration(
             displayName = "MPEG-H 3D Audio Low Complexity Profile (level 4)",
             compression = Compression.LOSSY,
         ),
-        OPUS(
-            displayName = "Opus",
-            compression = Compression.LOSSY,
-        ),
-        PCM_8_BIT(
-            displayName = "PCM 8-bit",
-            compression = Compression.UNCOMPRESSED,
-        ),
-        PCM_16_BIT(
-            displayName = "PCM 16-bit",
-            compression = Compression.UNCOMPRESSED,
-        ),
-        PCM_24_BIT(
-            displayName = "PCM 24-bit",
-            compression = Compression.UNCOMPRESSED,
-        ),
+        OPUS(displayName = "Opus", compression = Compression.LOSSY),
+        PCM_8_BIT(displayName = "PCM 8-bit", compression = Compression.UNCOMPRESSED),
+        PCM_16_BIT(displayName = "PCM 16-bit", compression = Compression.UNCOMPRESSED),
+        PCM_24_BIT(displayName = "PCM 24-bit", compression = Compression.UNCOMPRESSED),
         PCM_24_BIT_PACKED(
             displayName = "PCM 24-bit packed",
             compression = Compression.UNCOMPRESSED,
         ),
-        PCM_32_BIT(
-            displayName = "PCM 32-bit",
-            compression = Compression.UNCOMPRESSED,
-        ),
+        PCM_32_BIT(displayName = "PCM 32-bit", compression = Compression.UNCOMPRESSED),
         PCM_FLOAT(
             displayName = "PCM single-precision floating-point",
             compression = Compression.UNCOMPRESSED,
-        );
+        ),
     }
 
-    /**
-     * Audio format compression type.
-     */
+    /** Audio format compression type. */
     enum class Compression {
-        /**
-         * Lossy audio format.
-         */
+        /** Lossy audio format. */
         LOSSY,
 
-        /**
-         * Compressed lossless audio format.
-         */
+        /** Compressed lossless audio format. */
         LOSSLESS,
 
-        /**
-         * Uncompressed lossless audio format.
-         */
+        /** Uncompressed lossless audio format. */
         UNCOMPRESSED,
     }
 }

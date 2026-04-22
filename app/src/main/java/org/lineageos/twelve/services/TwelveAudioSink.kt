@@ -29,99 +29,96 @@ class TwelveAudioSink(
     private val onAudioDeviceInfoChanged: (AudioDeviceInfo?) -> Unit,
     private val onAudioTrackConfigChanged: (AudioSink.AudioTrackConfig?) -> Unit,
 ) : AudioSink by defaultAudioSink {
-    private val audioOutputField = DefaultAudioSink::class.java.getDeclaredField(
-        "audioOutput"
-    ).apply {
-        isAccessible = true
-    }
-    private val audioTrackField = AudioTrackAudioOutput::class.java.getDeclaredField(
-        "audioTrack"
-    ).apply {
-        isAccessible = true
-    }
+    private val audioOutputField =
+        DefaultAudioSink::class.java.getDeclaredField("audioOutput").apply { isAccessible = true }
+    private val audioTrackField =
+        AudioTrackAudioOutput::class.java.getDeclaredField("audioTrack").apply {
+            isAccessible = true
+        }
 
     private val audioTrack
-        get() = audioOutputField.get(defaultAudioSink)?.let {
-            audioTrackField.get(it) as AudioTrack?
-        }
+        get() =
+            audioOutputField.get(defaultAudioSink)?.let { audioTrackField.get(it) as AudioTrack? }
 
     private val handler = Handler(Looper.getMainLooper())
 
-    private val routingListener = AudioRouting.OnRoutingChangedListener { routing ->
-        onAudioDeviceInfoChanged(routing.routedDevice)
-    }
+    private val routingListener =
+        AudioRouting.OnRoutingChangedListener { routing ->
+            onAudioDeviceInfoChanged(routing.routedDevice)
+        }
 
     private var currentAudioTrack: AudioTrack? = null
 
     private var externalListener: AudioSink.Listener? = null
 
-    private val proxyListener = object : AudioSink.Listener {
-        override fun onPositionDiscontinuity() {
-            externalListener?.onPositionDiscontinuity()
-        }
-
-        override fun onPositionAdvancing(playoutStartSystemTimeMs: Long) {
-            externalListener?.onPositionAdvancing(playoutStartSystemTimeMs)
-        }
-
-        override fun onUnderrun(bufferSize: Int, bufferSizeMs: Long, elapsedSinceLastFeedMs: Long) {
-            externalListener?.onUnderrun(
-                bufferSize,
-                bufferSizeMs,
-                elapsedSinceLastFeedMs,
-            )
-        }
-
-        override fun onSkipSilenceEnabledChanged(skipSilenceEnabled: Boolean) {
-            externalListener?.onSkipSilenceEnabledChanged(skipSilenceEnabled)
-        }
-
-        override fun onOffloadBufferEmptying() {
-            externalListener?.onOffloadBufferEmptying()
-        }
-
-        override fun onOffloadBufferFull() {
-            externalListener?.onOffloadBufferFull()
-        }
-
-        override fun onAudioSinkError(audioSinkError: Exception) {
-            externalListener?.onAudioSinkError(audioSinkError)
-        }
-
-        override fun onAudioCapabilitiesChanged() {
-            externalListener?.onAudioCapabilitiesChanged()
-        }
-
-        override fun onAudioTrackInitialized(audioTrackConfig: AudioSink.AudioTrackConfig) {
-            currentAudioTrack?.removeOnRoutingChangedListener(routingListener)
-
-            val track = audioTrack
-            currentAudioTrack = track
-
-            onAudioTrackConfigChanged(audioTrackConfig)
-            track?.addOnRoutingChangedListener(routingListener, handler)
-            onAudioDeviceInfoChanged(track?.routedDevice)
-
-            externalListener?.onAudioTrackInitialized(audioTrackConfig)
-        }
-
-        override fun onAudioTrackReleased(audioTrackConfig: AudioSink.AudioTrackConfig) {
-            if (currentAudioTrack == null) {
-                onAudioTrackConfigChanged(null)
-                onAudioDeviceInfoChanged(null)
+    private val proxyListener =
+        object : AudioSink.Listener {
+            override fun onPositionDiscontinuity() {
+                externalListener?.onPositionDiscontinuity()
             }
 
-            externalListener?.onAudioTrackReleased(audioTrackConfig)
-        }
+            override fun onPositionAdvancing(playoutStartSystemTimeMs: Long) {
+                externalListener?.onPositionAdvancing(playoutStartSystemTimeMs)
+            }
 
-        override fun onSilenceSkipped() {
-            externalListener?.onSilenceSkipped()
-        }
+            override fun onUnderrun(
+                bufferSize: Int,
+                bufferSizeMs: Long,
+                elapsedSinceLastFeedMs: Long,
+            ) {
+                externalListener?.onUnderrun(bufferSize, bufferSizeMs, elapsedSinceLastFeedMs)
+            }
 
-        override fun onAudioSessionIdChanged(audioSessionId: Int) {
-            externalListener?.onAudioSessionIdChanged(audioSessionId)
+            override fun onSkipSilenceEnabledChanged(skipSilenceEnabled: Boolean) {
+                externalListener?.onSkipSilenceEnabledChanged(skipSilenceEnabled)
+            }
+
+            override fun onOffloadBufferEmptying() {
+                externalListener?.onOffloadBufferEmptying()
+            }
+
+            override fun onOffloadBufferFull() {
+                externalListener?.onOffloadBufferFull()
+            }
+
+            override fun onAudioSinkError(audioSinkError: Exception) {
+                externalListener?.onAudioSinkError(audioSinkError)
+            }
+
+            override fun onAudioCapabilitiesChanged() {
+                externalListener?.onAudioCapabilitiesChanged()
+            }
+
+            override fun onAudioTrackInitialized(audioTrackConfig: AudioSink.AudioTrackConfig) {
+                currentAudioTrack?.removeOnRoutingChangedListener(routingListener)
+
+                val track = audioTrack
+                currentAudioTrack = track
+
+                onAudioTrackConfigChanged(audioTrackConfig)
+                track?.addOnRoutingChangedListener(routingListener, handler)
+                onAudioDeviceInfoChanged(track?.routedDevice)
+
+                externalListener?.onAudioTrackInitialized(audioTrackConfig)
+            }
+
+            override fun onAudioTrackReleased(audioTrackConfig: AudioSink.AudioTrackConfig) {
+                if (currentAudioTrack == null) {
+                    onAudioTrackConfigChanged(null)
+                    onAudioDeviceInfoChanged(null)
+                }
+
+                externalListener?.onAudioTrackReleased(audioTrackConfig)
+            }
+
+            override fun onSilenceSkipped() {
+                externalListener?.onSilenceSkipped()
+            }
+
+            override fun onAudioSessionIdChanged(audioSessionId: Int) {
+                externalListener?.onAudioSessionIdChanged(audioSessionId)
+            }
         }
-    }
 
     init {
         defaultAudioSink.setListener(proxyListener)

@@ -17,8 +17,4 @@ import kotlinx.serialization.Serializable
  * @param day The day (1-31)
  */
 @Serializable
-data class ItemDate(
-    val year: Int? = null,
-    val month: Int? = null,
-    val day: Int? = null,
-)
+data class ItemDate(val year: Int? = null, val month: Int? = null, val day: Int? = null)

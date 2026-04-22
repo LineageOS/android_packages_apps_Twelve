@@ -21,6 +21,7 @@ import androidx.navigation.ui.setupWithNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.MaterialToolbar
+import java.util.Collections
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.lineageos.twelve.R
@@ -32,27 +33,22 @@ import org.lineageos.twelve.ui.recyclerview.UniqueItemDiffCallback
 import org.lineageos.twelve.ui.views.ListItem
 import org.lineageos.twelve.utils.TimestampFormatter
 import org.lineageos.twelve.viewmodels.QueueViewModel
-import java.util.Collections
 
-/**
- * Playback service queue.
- */
+/** Playback service queue. */
 @androidx.annotation.OptIn(UnstableApi::class)
 class QueueFragment : Fragment(R.layout.fragment_queue) {
     // View models
     private val viewModel by viewModels<QueueViewModel>()
 
     // Views
-    private val noElementsNestedScrollView by getViewProperty<NestedScrollView>(R.id.noElementsNestedScrollView)
+    private val noElementsNestedScrollView by
+        getViewProperty<NestedScrollView>(R.id.noElementsNestedScrollView)
     private val recyclerView by getViewProperty<RecyclerView>(R.id.recyclerView)
     private val toolbar by getViewProperty<MaterialToolbar>(R.id.toolbar)
 
     // RecyclerView
     private val adapter by lazy {
-        object : SimpleListAdapter<QueueItem, ListItem>(
-            UniqueItemDiffCallback(),
-            ::ListItem,
-        ) {
+        object : SimpleListAdapter<QueueItem, ListItem>(UniqueItemDiffCallback(), ::ListItem) {
             var currentQueue = listOf<QueueItem>()
             var scrolled = false
 
@@ -69,48 +65,47 @@ class QueueFragment : Fragment(R.layout.fragment_queue) {
                         false -> R.drawable.ic_music_note
                     }
                 )
-                mediaItem.mediaMetadata.title?.also {
-                    view.headlineText = it
-                } ?: view.setHeadlineText(R.string.unknown)
-                mediaItem.mediaMetadata.artist?.also {
-                    view.supportingText = it
-                } ?: view.setSupportingText(R.string.artist_unknown)
-                view.trailingSupportingText = mediaItem.mediaMetadata.durationMs?.let {
-                    TimestampFormatter.formatTimestampMillis(it)
-                }
+                mediaItem.mediaMetadata.title?.also { view.headlineText = it }
+                    ?: view.setHeadlineText(R.string.unknown)
+                mediaItem.mediaMetadata.artist?.also { view.supportingText = it }
+                    ?: view.setSupportingText(R.string.artist_unknown)
+                view.trailingSupportingText =
+                    mediaItem.mediaMetadata.durationMs?.let {
+                        TimestampFormatter.formatTimestampMillis(it)
+                    }
 
-                view.setOnClickListener {
-                    viewModel.playItem(bindingAdapterPosition)
-                }
+                view.setOnClickListener { viewModel.playItem(bindingAdapterPosition) }
             }
         }
     }
-    private val itemTouchHelperCallback = object : ItemTouchHelper.SimpleCallback(
-        ItemTouchHelper.UP or ItemTouchHelper.DOWN,
-        ItemTouchHelper.START or ItemTouchHelper.END,
-    ) {
-        override fun onMove(
-            recyclerView: RecyclerView,
-            viewHolder: RecyclerView.ViewHolder,
-            target: RecyclerView.ViewHolder
-        ): Boolean {
-            val from = viewHolder.bindingAdapterPosition
-            val to = target.bindingAdapterPosition
+    private val itemTouchHelperCallback =
+        object :
+            ItemTouchHelper.SimpleCallback(
+                ItemTouchHelper.UP or ItemTouchHelper.DOWN,
+                ItemTouchHelper.START or ItemTouchHelper.END,
+            ) {
+            override fun onMove(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                target: RecyclerView.ViewHolder,
+            ): Boolean {
+                val from = viewHolder.bindingAdapterPosition
+                val to = target.bindingAdapterPosition
 
-            // First update our adapter list
-            Collections.swap(adapter.currentQueue, from, to)
-            adapter.notifyItemMoved(from, to)
+                // First update our adapter list
+                Collections.swap(adapter.currentQueue, from, to)
+                adapter.notifyItemMoved(from, to)
 
-            // Then update the queue
-            viewModel.moveItem(from, to)
+                // Then update the queue
+                viewModel.moveItem(from, to)
 
-            return true
+                return true
+            }
+
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                viewModel.removeItem(viewHolder.bindingAdapterPosition)
+            }
         }
-
-        override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-            viewModel.removeItem(viewHolder.bindingAdapterPosition)
-        }
-    }
     private val itemTouchHelper = ItemTouchHelper(itemTouchHelperCallback)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -120,11 +115,7 @@ class QueueFragment : Fragment(R.layout.fragment_queue) {
         ViewCompat.setOnApplyWindowInsetsListener(toolbar) { v, windowInsets ->
             val insets = windowInsets.getInsets(WindowInsetsCompat.Type.displayCutout())
 
-            v.updatePadding(
-                insets,
-                start = true,
-                end = true,
-            )
+            v.updatePadding(insets, start = true, end = true)
 
             windowInsets
         }
@@ -132,10 +123,7 @@ class QueueFragment : Fragment(R.layout.fragment_queue) {
         ViewCompat.setOnApplyWindowInsetsListener(recyclerView) { v, windowInsets ->
             val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
 
-            v.updatePadding(
-                insets,
-                bottom = true,
-            )
+            v.updatePadding(insets, bottom = true)
 
             windowInsets
         }
@@ -143,10 +131,7 @@ class QueueFragment : Fragment(R.layout.fragment_queue) {
         ViewCompat.setOnApplyWindowInsetsListener(noElementsNestedScrollView) { v, windowInsets ->
             val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
 
-            v.updatePadding(
-                insets,
-                bottom = true,
-            )
+            v.updatePadding(insets, bottom = true)
 
             windowInsets
         }

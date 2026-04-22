@@ -5,8 +5,8 @@
 
 package org.lineageos.twelve.datasources.ampache.models
 
+import java.time.Instant
 import kotlinx.serialization.Serializable
 import org.lineageos.twelve.datasources.ampache.serializers.TimestampInstantSerializer
-import java.time.Instant
 
 typealias InstantAsTimestampLong = @Serializable(with = TimestampInstantSerializer::class) Instant

@@ -54,9 +54,7 @@ import org.lineageos.twelve.utils.PermissionsUtils
 import org.lineageos.twelve.utils.TimestampFormatter
 import org.lineageos.twelve.viewmodels.PlaylistViewModel
 
-/**
- * Single playlist viewer.
- */
+/** Single playlist viewer. */
 class PlaylistFragment : CollapsingToolbarLayoutFragment(R.layout.fragment_playlist) {
     // View models
     private val viewModel by viewModels<PlaylistViewModel>()
@@ -64,59 +62,59 @@ class PlaylistFragment : CollapsingToolbarLayoutFragment(R.layout.fragment_playl
     // Views
     override val appBarLayout by getViewProperty<AppBarLayout>(R.id.appBarLayout)
     override val coordinatorLayout by getViewProperty<CoordinatorLayout>(R.id.coordinatorLayout)
-    private val fullscreenLoadingProgressBar by getViewProperty<FullscreenLoadingProgressBar>(R.id.fullscreenLoadingProgressBar)
-    private val infoNestedScrollView by getViewProperty<NestedScrollView?>(R.id.infoNestedScrollView)
-    private val linearProgressIndicator by getViewProperty<LinearProgressIndicator>(R.id.linearProgressIndicator)
-    private val noElementsNestedScrollView by getViewProperty<NestedScrollView>(R.id.noElementsNestedScrollView)
-    private val playAllExtendedFloatingActionButton by getViewProperty<ExtendedFloatingActionButton>(
-        R.id.playAllExtendedFloatingActionButton
-    )
+    private val fullscreenLoadingProgressBar by
+        getViewProperty<FullscreenLoadingProgressBar>(R.id.fullscreenLoadingProgressBar)
+    private val infoNestedScrollView by
+        getViewProperty<NestedScrollView?>(R.id.infoNestedScrollView)
+    private val linearProgressIndicator by
+        getViewProperty<LinearProgressIndicator>(R.id.linearProgressIndicator)
+    private val noElementsNestedScrollView by
+        getViewProperty<NestedScrollView>(R.id.noElementsNestedScrollView)
+    private val playAllExtendedFloatingActionButton by
+        getViewProperty<ExtendedFloatingActionButton>(R.id.playAllExtendedFloatingActionButton)
     private val playlistNameTextView by getViewProperty<TextView>(R.id.playlistNameTextView)
-    private val playButtonsLinearLayout by getViewProperty<LinearLayout>(R.id.playButtonsLinearLayout)
+    private val playButtonsLinearLayout by
+        getViewProperty<LinearLayout>(R.id.playButtonsLinearLayout)
     private val recyclerView by getViewProperty<RecyclerView>(R.id.recyclerView)
-    private val shufflePlayExtendedFloatingActionButton by getViewProperty<ExtendedFloatingActionButton>(
-        R.id.shufflePlayExtendedFloatingActionButton
-    )
+    private val shufflePlayExtendedFloatingActionButton by
+        getViewProperty<ExtendedFloatingActionButton>(R.id.shufflePlayExtendedFloatingActionButton)
     private val thumbnailImageView by getViewProperty<ImageView>(R.id.thumbnailImageView)
     private val toolbar by getViewProperty<MaterialToolbar>(R.id.toolbar)
     private val tracksInfoTextView by getViewProperty<TextView>(R.id.tracksInfoTextView)
 
     // Menu items
-    private val deletePlaylistMenuItem get() = toolbar.menu.findItem(R.id.deletePlaylist)
-    private val renamePlaylistMenuItem get() = toolbar.menu.findItem(R.id.renamePlaylist)
+    private val deletePlaylistMenuItem
+        get() = toolbar.menu.findItem(R.id.deletePlaylist)
+
+    private val renamePlaylistMenuItem
+        get() = toolbar.menu.findItem(R.id.renamePlaylist)
 
     // Recyclerview
     private val adapter by lazy {
-        object : SimpleListAdapter<Audio, ListItem>(
-            UniqueItemDiffCallback(),
-            ::ListItem,
-        ) {
+        object : SimpleListAdapter<Audio, ListItem>(UniqueItemDiffCallback(), ::ListItem) {
             override fun ViewHolder.onPrepareView() {
                 view.setLeadingIconImage(R.drawable.ic_music_note)
             }
 
             override fun ViewHolder.onBindView(item: Audio) {
-                view.setOnClickListener {
-                    viewModel.playPlaylist(bindingAdapterPosition)
-                }
+                view.setOnClickListener { viewModel.playPlaylist(bindingAdapterPosition) }
                 view.setOnLongClickListener {
-                    findNavController().navigateSafe(
-                        R.id.action_playlistFragment_to_fragment_media_item_bottom_sheet_dialog,
-                        MediaItemBottomSheetDialogFragment.createBundle(
-                            item.uri,
-                            playlistUri = playlistUri,
+                    findNavController()
+                        .navigateSafe(
+                            R.id.action_playlistFragment_to_fragment_media_item_bottom_sheet_dialog,
+                            MediaItemBottomSheetDialogFragment.createBundle(
+                                item.uri,
+                                playlistUri = playlistUri,
+                            ),
                         )
-                    )
                     true
                 }
 
                 view.headlineText = item.title
-                item.artistName?.also {
-                    view.supportingText = it
-                } ?: view.setSupportingText(R.string.artist_unknown)
-                view.trailingSupportingText = item.durationMs?.let {
-                    TimestampFormatter.formatTimestampMillis(it)
-                }
+                item.artistName?.also { view.supportingText = it }
+                    ?: view.setSupportingText(R.string.artist_unknown)
+                view.trailingSupportingText =
+                    item.durationMs?.let { TimestampFormatter.formatTimestampMillis(it) }
             }
         }
     }
@@ -126,9 +124,7 @@ class PlaylistFragment : CollapsingToolbarLayoutFragment(R.layout.fragment_playl
         get() = requireArguments().getParcelable(ARG_PLAYLIST_URI, Uri::class)!!
 
     // Permissions
-    private val permissionsChecker = PermissionsChecker(
-        this, PermissionsUtils.mainPermissions
-    )
+    private val permissionsChecker = PermissionsChecker(this, PermissionsUtils.mainPermissions)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -137,11 +133,7 @@ class PlaylistFragment : CollapsingToolbarLayoutFragment(R.layout.fragment_playl
         ViewCompat.setOnApplyWindowInsetsListener(toolbar) { v, windowInsets ->
             val insets = windowInsets.getInsets(WindowInsetsCompat.Type.displayCutout())
 
-            v.updatePadding(
-                insets,
-                start = true,
-                end = true,
-            )
+            v.updatePadding(insets, start = true, end = true)
 
             windowInsets
         }
@@ -150,10 +142,7 @@ class PlaylistFragment : CollapsingToolbarLayoutFragment(R.layout.fragment_playl
             ViewCompat.setOnApplyWindowInsetsListener(it) { v, windowInsets ->
                 val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
 
-                v.updatePadding(
-                    insets,
-                    bottom = true,
-                )
+                v.updatePadding(insets, bottom = true)
 
                 windowInsets
             }
@@ -162,10 +151,7 @@ class PlaylistFragment : CollapsingToolbarLayoutFragment(R.layout.fragment_playl
         ViewCompat.setOnApplyWindowInsetsListener(recyclerView) { v, windowInsets ->
             val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
 
-            v.updatePadding(
-                insets,
-                bottom = true,
-            )
+            v.updatePadding(insets, bottom = true)
 
             windowInsets
         }
@@ -173,23 +159,15 @@ class PlaylistFragment : CollapsingToolbarLayoutFragment(R.layout.fragment_playl
         ViewCompat.setOnApplyWindowInsetsListener(noElementsNestedScrollView) { v, windowInsets ->
             val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
 
-            v.updatePadding(
-                insets,
-                bottom = true,
-            )
+            v.updatePadding(insets, bottom = true)
 
             windowInsets
         }
 
-        ViewCompat.setOnApplyWindowInsetsListener(
-            playButtonsLinearLayout
-        ) { v, windowInsets ->
+        ViewCompat.setOnApplyWindowInsetsListener(playButtonsLinearLayout) { v, windowInsets ->
             val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
 
-            v.updatePadding(
-                insets,
-                bottom = true,
-            )
+            v.updatePadding(insets, bottom = true)
 
             windowInsets
         }
@@ -214,9 +192,7 @@ class PlaylistFragment : CollapsingToolbarLayoutFragment(R.layout.fragment_playl
 
         recyclerView.adapter = adapter
 
-        playAllExtendedFloatingActionButton.setOnClickListener {
-            viewModel.playPlaylist()
-        }
+        playAllExtendedFloatingActionButton.setOnClickListener { viewModel.playPlaylist() }
 
         shufflePlayExtendedFloatingActionButton.setOnClickListener {
             viewModel.shufflePlayPlaylist()
@@ -226,9 +202,7 @@ class PlaylistFragment : CollapsingToolbarLayoutFragment(R.layout.fragment_playl
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                permissionsChecker.withPermissionsGranted {
-                    loadData()
-                }
+                permissionsChecker.withPermissionsGranted { loadData() }
             }
         }
     }
@@ -252,42 +226,43 @@ class PlaylistFragment : CollapsingToolbarLayoutFragment(R.layout.fragment_playl
                     is FlowResult.Success -> {
                         val (playlist, audios) = it.data
 
-                        val playlistName = playlist.name ?: getString(
-                            when (playlist.type) {
-                                Playlist.Type.PLAYLIST -> R.string.playlist_unknown
-                                Playlist.Type.FAVORITES -> R.string.favorites_playlist
-                            }
-                        )
+                        val playlistName =
+                            playlist.name
+                                ?: getString(
+                                    when (playlist.type) {
+                                        Playlist.Type.PLAYLIST -> R.string.playlist_unknown
+                                        Playlist.Type.FAVORITES -> R.string.favorites_playlist
+                                    }
+                                )
                         toolbar.title = playlistName
                         playlistNameTextView.text = playlistName
 
                         thumbnailImageView.loadThumbnail(
                             playlist.thumbnail,
-                            placeholder = when (playlist.type) {
-                                Playlist.Type.PLAYLIST -> R.drawable.ic_playlist_play
-                                Playlist.Type.FAVORITES -> R.drawable.ic_favorite
-                            }
+                            placeholder =
+                                when (playlist.type) {
+                                    Playlist.Type.PLAYLIST -> R.drawable.ic_playlist_play
+                                    Playlist.Type.FAVORITES -> R.drawable.ic_favorite
+                                },
                         )
 
-                        val totalDurationMs = audios.sumOf { audio ->
-                            audio.durationMs ?: 0L
-                        }
+                        val totalDurationMs = audios.sumOf { audio -> audio.durationMs ?: 0L }
                         val totalDurationMinutes = (totalDurationMs / 1000 / 60).toInt()
 
-                        val tracksCount = resources.getQuantityString(
-                            R.plurals.tracks_count,
-                            audios.size,
-                            audios.size
-                        )
-                        val tracksDuration = resources.getQuantityString(
-                            R.plurals.tracks_duration,
-                            totalDurationMinutes,
-                            totalDurationMinutes
-                        )
-                        tracksInfoTextView.text = getString(
-                            R.string.tracks_info,
-                            tracksCount, tracksDuration
-                        )
+                        val tracksCount =
+                            resources.getQuantityString(
+                                R.plurals.tracks_count,
+                                audios.size,
+                                audios.size,
+                            )
+                        val tracksDuration =
+                            resources.getQuantityString(
+                                R.plurals.tracks_duration,
+                                totalDurationMinutes,
+                                totalDurationMinutes,
+                            )
+                        tracksInfoTextView.text =
+                            getString(R.string.tracks_info, tracksCount, tracksDuration)
 
                         adapter.submitList(audios)
 
@@ -308,11 +283,7 @@ class PlaylistFragment : CollapsingToolbarLayoutFragment(R.layout.fragment_playl
                     }
 
                     is FlowResult.Error -> {
-                        Log.e(
-                            LOG_TAG,
-                            "Error loading playlist, error: ${it.error}",
-                            it.throwable
-                        )
+                        Log.e(LOG_TAG, "Error loading playlist, error: ${it.error}", it.throwable)
 
                         toolbar.title = ""
                         playlistNameTextView.text = ""
@@ -345,9 +316,7 @@ class PlaylistFragment : CollapsingToolbarLayoutFragment(R.layout.fragment_playl
             .setText(toolbar.title.toString())
             .setPositiveButton(R.string.rename_playlist_positive) { text ->
                 viewLifecycleOwner.lifecycleScope.launch {
-                    fullscreenLoadingProgressBar.withProgress {
-                        viewModel.renamePlaylist(text)
-                    }
+                    fullscreenLoadingProgressBar.withProgress { viewModel.renamePlaylist(text) }
                 }
             }
             .setTitle(R.string.rename_playlist)
@@ -361,9 +330,7 @@ class PlaylistFragment : CollapsingToolbarLayoutFragment(R.layout.fragment_playl
             .setMessage(R.string.delete_playlist_message)
             .setPositiveButton(android.R.string.ok) { _, _ ->
                 viewLifecycleOwner.lifecycleScope.launch {
-                    fullscreenLoadingProgressBar.withProgress {
-                        viewModel.deletePlaylist()
-                    }
+                    fullscreenLoadingProgressBar.withProgress { viewModel.deletePlaylist() }
                 }
             }
             .setNegativeButton(android.R.string.cancel, null)
@@ -377,12 +344,9 @@ class PlaylistFragment : CollapsingToolbarLayoutFragment(R.layout.fragment_playl
 
         /**
          * Create a [Bundle] to use as the arguments for this fragment.
+         *
          * @param playlistUri The URI of the playlist to display
          */
-        fun createBundle(
-            playlistUri: Uri,
-        ) = Bundle {
-            putParcelable(ARG_PLAYLIST_URI, playlistUri)
-        }
+        fun createBundle(playlistUri: Uri) = Bundle { putParcelable(ARG_PLAYLIST_URI, playlistUri) }
     }
 }

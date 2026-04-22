@@ -14,9 +14,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import org.lineageos.twelve.models.OutputConfiguration
 import org.lineageos.twelve.utils.OutputConfigurationUtils.toModel
 
-/**
- * Repository holding current output configuration info.
- */
+/** Repository holding current output configuration info. */
 class OutputConfigurationRepository {
     private val _format = MutableStateFlow<Format?>(null)
     val format = _format.asStateFlow()

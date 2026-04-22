@@ -7,7 +7,4 @@ package org.lineageos.twelve.datasources.subsonic.models
 
 import kotlinx.serialization.Serializable
 
-@Serializable
-data class AlbumList2(
-    val album: List<AlbumID3>,
-)
+@Serializable data class AlbumList2(val album: List<AlbumID3>)

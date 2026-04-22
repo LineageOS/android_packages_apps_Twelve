@@ -12,9 +12,7 @@ import org.lineageos.twelve.database.entities.JellyfinProvider
 
 @Dao
 interface JellyfinProviderDao {
-    /**
-     * Add a new jellyfin provider to the database.
-     */
+    /** Add a new jellyfin provider to the database. */
     @Query(
         """
             INSERT INTO JellyfinProvider (name, url, username, password, device_identifier)
@@ -29,9 +27,7 @@ interface JellyfinProviderDao {
         deviceIdentifier: String = generateDeviceIdentifier(),
     ): Long
 
-    /**
-     * Update a jellyfin provider.
-     */
+    /** Update a jellyfin provider. */
     @Query(
         """
             UPDATE JellyfinProvider
@@ -51,33 +47,22 @@ interface JellyfinProviderDao {
         password: String,
     )
 
-    /**
-     * Delete a jellyfin provider from the database.
-     */
+    /** Delete a jellyfin provider from the database. */
     @Query("DELETE FROM JellyfinProvider WHERE jellyfin_provider_id = :jellyfinProviderId")
     suspend fun delete(jellyfinProviderId: Long)
 
-    /**
-     * Fetch all jellyfin providers from the database.
-     */
-    @Query("SELECT * FROM JellyfinProvider")
-    fun getAll(): Flow<List<JellyfinProvider>>
+    /** Fetch all jellyfin providers from the database. */
+    @Query("SELECT * FROM JellyfinProvider") fun getAll(): Flow<List<JellyfinProvider>>
 
-    /**
-     * Fetch a jellyfin provider by its ID from the database.
-     */
+    /** Fetch a jellyfin provider by its ID from the database. */
     @Query("SELECT * FROM JellyfinProvider WHERE jellyfin_provider_id = :jellyfinProviderId")
     fun getById(jellyfinProviderId: Long): Flow<JellyfinProvider?>
 
-    /**
-     * Fetch the token of a jellyfin provider by its ID from the database.
-     */
+    /** Fetch the token of a jellyfin provider by its ID from the database. */
     @Query("SELECT token FROM JellyfinProvider WHERE jellyfin_provider_id = :jellyfinProviderId")
     fun getToken(jellyfinProviderId: Long): String?
 
-    /**
-     * Update the token of a jellyfin provider by its ID in the database.
-     */
+    /** Update the token of a jellyfin provider by its ID in the database. */
     @Query(
         """
             UPDATE JellyfinProvider
@@ -90,8 +75,7 @@ interface JellyfinProviderDao {
     companion object {
         private val allowedSaltChars = ('A'..'Z') + ('a'..'z') + ('0'..'9')
 
-        private fun generateDeviceIdentifier() = (1..20)
-            .map { allowedSaltChars.random() }
-            .joinToString("")
+        private fun generateDeviceIdentifier() =
+            (1..20).map { allowedSaltChars.random() }.joinToString("")
     }
 }

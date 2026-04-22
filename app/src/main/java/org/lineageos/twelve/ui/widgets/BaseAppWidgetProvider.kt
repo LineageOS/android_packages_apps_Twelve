@@ -17,12 +17,12 @@ import kotlinx.coroutines.launch
  * @param updater The widget updater
  */
 abstract class BaseAppWidgetProvider<T : AppWidgetProvider>(
-    private val updater: AppWidgetUpdater<T>,
+    private val updater: AppWidgetUpdater<T>
 ) : AppWidgetProvider() {
     final override fun onUpdate(
         context: Context?,
         appWidgetManager: AppWidgetManager?,
-        appWidgetIds: IntArray?
+        appWidgetIds: IntArray?,
     ) {
         MainScope().launch {
             updater.update(

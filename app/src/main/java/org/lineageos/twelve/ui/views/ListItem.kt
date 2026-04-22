@@ -28,9 +28,12 @@ import org.lineageos.twelve.ext.use
 
 /**
  * A poor man's Material Design 3 ListItem implementation.
+ *
  * @see <a href="https://m3.material.io/components/lists/overview">Material Design 3 docs</a>
  */
-class ListItem @JvmOverloads constructor(
+class ListItem
+@JvmOverloads
+constructor(
     context: Context,
     attrs: AttributeSet? = null,
     @AttrRes defStyleAttr: Int = com.google.android.material.R.attr.materialCardViewStyle,
@@ -38,11 +41,19 @@ class ListItem @JvmOverloads constructor(
     private val headlineTextView by lazy { findViewById<TextView>(R.id.headlineTextView) }
     private val leadingIconImageView by lazy { findViewById<ImageView>(R.id.leadingIconImageView) }
     private val leadingTextView by lazy { findViewById<TextView>(R.id.leadingTextView) }
-    private val leadingViewContainerFrameLayout by lazy { findViewById<FrameLayout>(R.id.leadingViewContainerFrameLayout) }
+    private val leadingViewContainerFrameLayout by lazy {
+        findViewById<FrameLayout>(R.id.leadingViewContainerFrameLayout)
+    }
     private val supportingTextView by lazy { findViewById<TextView>(R.id.supportingTextView) }
-    private val trailingIconImageView by lazy { findViewById<ImageView>(R.id.trailingIconImageView) }
-    private val trailingSupportingTextView by lazy { findViewById<TextView>(R.id.trailingSupportingTextView) }
-    private val trailingViewContainerFrameLayout by lazy { findViewById<FrameLayout>(R.id.trailingViewContainerFrameLayout) }
+    private val trailingIconImageView by lazy {
+        findViewById<ImageView>(R.id.trailingIconImageView)
+    }
+    private val trailingSupportingTextView by lazy {
+        findViewById<TextView>(R.id.trailingSupportingTextView)
+    }
+    private val trailingViewContainerFrameLayout by lazy {
+        findViewById<FrameLayout>(R.id.trailingViewContainerFrameLayout)
+    }
 
     private var cardCornerRadius: Float = 0f
 
@@ -123,9 +134,7 @@ class ListItem @JvmOverloads constructor(
         }
 
     init {
-        setCardBackgroundColor(
-            context.getColorStateList(R.color.list_item_background)
-        )
+        setCardBackgroundColor(context.getColorStateList(R.color.list_item_background))
         cardElevation = 0f
         radius = 0f
         strokeWidth = 0
@@ -133,10 +142,11 @@ class ListItem @JvmOverloads constructor(
         inflate(context, R.layout.list_item, this)
 
         context.obtainStyledAttributes(attrs, R.styleable.ListItem, 0, 0).use {
-            cardCornerRadius = it.getDimension(
-                R.styleable.ListItem_cardCornerRadius,
-                resources.getDimension(R.dimen.list_item_default_corner_radius)
-            )
+            cardCornerRadius =
+                it.getDimension(
+                    R.styleable.ListItem_cardCornerRadius,
+                    resources.getDimension(R.dimen.list_item_default_corner_radius),
+                )
             leadingIconImage = it.getDrawable(R.styleable.ListItem_leadingIconImage)
             leadingText = it.getString(R.styleable.ListItem_leadingText)
             it.getResourceId(R.styleable.ListItem_leadingViewLayout, 0).let { leadingViewLayout ->
@@ -179,17 +189,21 @@ class ListItem @JvmOverloads constructor(
     }
 
     fun setHeadlineText(@StringRes resId: Int) = headlineTextView.setTextAndUpdateVisibility(resId)
+
     fun setHeadlineText(@StringRes resId: Int, vararg formatArgs: Any) =
         headlineTextView.setTextAndUpdateVisibility(resId, *formatArgs)
 
     fun setLeadingIconImage(bm: Bitmap) = leadingIconImageView.setImageAndUpdateVisibility(bm)
+
     fun setLeadingIconImage(icon: Icon) = leadingIconImageView.setImageAndUpdateVisibility(icon)
+
     fun setLeadingIconImage(@DrawableRes resId: Int) =
         leadingIconImageView.setImageAndUpdateVisibility(resId)
 
     fun setLeadingIconImage(uri: Uri) = leadingIconImageView.setImageAndUpdateVisibility(uri)
 
     fun setLeadingText(@StringRes resId: Int) = leadingTextView.setTextAndUpdateVisibility(resId)
+
     fun setLeadingText(@StringRes resId: Int, vararg formatArgs: Any) =
         leadingTextView.setTextAndUpdateVisibility(resId, *formatArgs)
 
@@ -203,7 +217,9 @@ class ListItem @JvmOverloads constructor(
         supportingTextView.setTextAndUpdateVisibility(resId, *formatArgs)
 
     fun setTrailingIconImage(bm: Bitmap) = trailingIconImageView.setImageAndUpdateVisibility(bm)
+
     fun setTrailingIconImage(icon: Icon) = trailingIconImageView.setImageAndUpdateVisibility(icon)
+
     fun setTrailingIconImage(@DrawableRes resId: Int) =
         trailingIconImageView.setImageAndUpdateVisibility(resId)
 
@@ -218,10 +234,7 @@ class ListItem @JvmOverloads constructor(
     fun setTrailingView(@LayoutRes resId: Int) =
         trailingViewContainerFrameLayout.setChildAndUpdateVisibility(resId)
 
-    private inline fun <T> setViewsProperty(
-        setter: View.(T) -> Unit,
-        value: T,
-    ) {
+    private inline fun <T> setViewsProperty(setter: View.(T) -> Unit, value: T) {
         headlineTextView.setter(value)
         leadingIconImageView.setter(value)
         leadingTextView.setter(value)
@@ -283,9 +296,7 @@ class ListItem @JvmOverloads constructor(
     // TextView utils
 
     private fun TextView.setTextAndUpdateVisibility(text: CharSequence?) {
-        this.text = text.also {
-            isVisible = it != null
-        }
+        this.text = text.also { isVisible = it != null }
     }
 
     private fun TextView.setTextAndUpdateVisibility(@StringRes resId: Int) =

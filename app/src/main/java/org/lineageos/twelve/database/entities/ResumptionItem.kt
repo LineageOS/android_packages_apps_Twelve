@@ -20,18 +20,20 @@ import androidx.room.PrimaryKey
  * @param mediaId ID of the media item
  */
 @Entity(
-    indices = [
-        Index(value = ["playlist_index"], unique = true),
-        Index(value = ["resumption_playlist_id"]),
-    ],
-    foreignKeys = [
-        ForeignKey(
-            entity = ResumptionPlaylist::class,
-            parentColumns = ["resumption_id"],
-            childColumns = ["resumption_playlist_id"],
-            onDelete = ForeignKey.CASCADE,
-        ),
-    ],
+    indices =
+        [
+            Index(value = ["playlist_index"], unique = true),
+            Index(value = ["resumption_playlist_id"]),
+        ],
+    foreignKeys =
+        [
+            ForeignKey(
+                entity = ResumptionPlaylist::class,
+                parentColumns = ["resumption_id"],
+                childColumns = ["resumption_playlist_id"],
+                onDelete = ForeignKey.CASCADE,
+            )
+        ],
 )
 data class ResumptionItem(
     @PrimaryKey @ColumnInfo(name = "playlist_index") val playlistIndex: Long,

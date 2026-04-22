@@ -54,7 +54,6 @@ data class SubsonicResponse(
     val topSongs: TODO = null,
     val scanStatus: TODO = null,
     val error: Error? = null,
-
     val status: ResponseStatus,
     val version: Version,
 

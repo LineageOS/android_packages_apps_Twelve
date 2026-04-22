@@ -19,14 +19,13 @@ abstract class CollapsingToolbarLayoutFragment : Fragment {
     protected abstract val appBarLayout: AppBarLayout
     protected abstract val coordinatorLayout: CoordinatorLayout
 
-    @Px
-    private var appBarOffset = -1
+    @Px private var appBarOffset = -1
 
-    private val offsetChangedListener = AppBarLayout.OnOffsetChangedListener { _, i ->
-        appBarOffset = -i
-    }
+    private val offsetChangedListener =
+        AppBarLayout.OnOffsetChangedListener { _, i -> appBarOffset = -i }
 
     constructor() : super()
+
     constructor(contentLayoutId: Int) : super(contentLayoutId)
 
     @CallSuper

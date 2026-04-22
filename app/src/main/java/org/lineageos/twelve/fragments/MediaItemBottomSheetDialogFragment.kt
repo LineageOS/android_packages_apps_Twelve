@@ -39,50 +39,54 @@ import org.lineageos.twelve.utils.PermissionsChecker
 import org.lineageos.twelve.utils.PermissionsUtils
 import org.lineageos.twelve.viewmodels.MediaItemViewModel
 
-/**
- * Audio information.
- */
-class MediaItemBottomSheetDialogFragment : TwelveBottomSheetDialogFragment(
-    R.layout.fragment_media_item_bottom_sheet_dialog
-) {
+/** Audio information. */
+class MediaItemBottomSheetDialogFragment :
+    TwelveBottomSheetDialogFragment(R.layout.fragment_media_item_bottom_sheet_dialog) {
     // View models
     private val viewModel by viewModels<MediaItemViewModel>()
 
     // Views
-    private val addOrRemoveFromFavoritesListItem by getViewProperty<ListItem>(R.id.addOrRemoveFromFavoritesListItem)
-    private val addOrRemoveFromPlaylistsListItem by getViewProperty<ListItem>(R.id.addOrRemoveFromPlaylistsListItem)
+    private val addOrRemoveFromFavoritesListItem by
+        getViewProperty<ListItem>(R.id.addOrRemoveFromFavoritesListItem)
+    private val addOrRemoveFromPlaylistsListItem by
+        getViewProperty<ListItem>(R.id.addOrRemoveFromPlaylistsListItem)
     private val addToQueueListItem by getViewProperty<ListItem>(R.id.addToQueueListItem)
     private val artistNameTextView by getViewProperty<TextView>(R.id.artistNameTextView)
     private val albumTitleTextView by getViewProperty<TextView>(R.id.albumTitleTextView)
-    private val fullscreenLoadingProgressBar by getViewProperty<FullscreenLoadingProgressBar>(R.id.fullscreenLoadingProgressBar)
+    private val fullscreenLoadingProgressBar by
+        getViewProperty<FullscreenLoadingProgressBar>(R.id.fullscreenLoadingProgressBar)
     private val openAlbumListItem by getViewProperty<ListItem>(R.id.openAlbumListItem)
     private val openArtistListItem by getViewProperty<ListItem>(R.id.openArtistListItem)
     private val openGenreListItem by getViewProperty<ListItem>(R.id.openGenreListItem)
     private val placeholderImageView by getViewProperty<ImageView>(R.id.placeholderImageView)
     private val playNowListItem by getViewProperty<ListItem>(R.id.playNowListItem)
     private val playNextListItem by getViewProperty<ListItem>(R.id.playNextListItem)
-    private val removeFromPlaylistListItem by getViewProperty<ListItem>(R.id.removeFromPlaylistListItem)
+    private val removeFromPlaylistListItem by
+        getViewProperty<ListItem>(R.id.removeFromPlaylistListItem)
     private val thumbnailImageView by getViewProperty<ImageView>(R.id.thumbnailImageView)
     private val titleTextView by getViewProperty<TextView>(R.id.titleTextView)
 
     // Arguments
     private val uri: Uri
         get() = requireArguments().getParcelable(ARG_URI, Uri::class)!!
+
     private val fromAlbum: Boolean
         get() = requireArguments().getBoolean(ARG_FROM_ALBUM)
+
     private val fromArtist: Boolean
         get() = requireArguments().getBoolean(ARG_FROM_ARTIST)
+
     private val fromGenre: Boolean
         get() = requireArguments().getBoolean(ARG_FROM_GENRE)
+
     private val fromNowPlaying: Boolean
         get() = requireArguments().getBoolean(ARG_FROM_NOW_PLAYING)
+
     private val playlistUri: Uri?
         get() = requireArguments().getParcelable(ARG_PLAYLIST_URI, Uri::class)
 
     // Permissions
-    private val permissionsChecker = PermissionsChecker(
-        this, PermissionsUtils.mainPermissions
-    )
+    private val permissionsChecker = PermissionsChecker(this, PermissionsUtils.mainPermissions)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -118,9 +122,7 @@ class MediaItemBottomSheetDialogFragment : TwelveBottomSheetDialogFragment(
 
         addOrRemoveFromFavoritesListItem.setOnClickListener {
             viewLifecycleOwner.lifecycleScope.launch {
-                fullscreenLoadingProgressBar.withProgress {
-                    viewModel.toggleFavorites()
-                }
+                fullscreenLoadingProgressBar.withProgress { viewModel.toggleFavorites() }
             }
         }
 
@@ -136,45 +138,48 @@ class MediaItemBottomSheetDialogFragment : TwelveBottomSheetDialogFragment(
 
         addOrRemoveFromPlaylistsListItem.setOnClickListener {
             viewModel.uri.value?.let {
-                findNavController().navigateSafe(
-                    R.id.action_mediaItemBottomSheetDialogFragment_to_fragment_add_or_remove_from_playlists,
-                    AddOrRemoveFromPlaylistsFragment.createBundle(it)
-                )
+                findNavController()
+                    .navigateSafe(
+                        R.id
+                            .action_mediaItemBottomSheetDialogFragment_to_fragment_add_or_remove_from_playlists,
+                        AddOrRemoveFromPlaylistsFragment.createBundle(it),
+                    )
             }
         }
 
         openAlbumListItem.setOnClickListener {
             viewModel.albumUri.value?.let { albumUri ->
-                findNavController().navigateSafe(
-                    R.id.action_mediaItemBottomSheetDialogFragment_to_fragment_album,
-                    AlbumFragment.createBundle(albumUri)
-                )
+                findNavController()
+                    .navigateSafe(
+                        R.id.action_mediaItemBottomSheetDialogFragment_to_fragment_album,
+                        AlbumFragment.createBundle(albumUri),
+                    )
             }
         }
 
         openArtistListItem.setOnClickListener {
             viewModel.artistUri.value?.let { artistUri ->
-                findNavController().navigateSafe(
-                    R.id.action_mediaItemBottomSheetDialogFragment_to_fragment_artist,
-                    ArtistFragment.createBundle(artistUri)
-                )
+                findNavController()
+                    .navigateSafe(
+                        R.id.action_mediaItemBottomSheetDialogFragment_to_fragment_artist,
+                        ArtistFragment.createBundle(artistUri),
+                    )
             }
         }
 
         openGenreListItem.setOnClickListener {
             viewModel.genreUri.value?.let { genreUri ->
-                findNavController().navigateSafe(
-                    R.id.action_mediaItemBottomSheetDialogFragment_to_fragment_genre,
-                    GenreFragment.createBundle(genreUri)
-                )
+                findNavController()
+                    .navigateSafe(
+                        R.id.action_mediaItemBottomSheetDialogFragment_to_fragment_genre,
+                        GenreFragment.createBundle(genreUri),
+                    )
             }
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                permissionsChecker.withPermissionsGranted {
-                    loadData()
-                }
+                permissionsChecker.withPermissionsGranted { loadData() }
             }
         }
     }
@@ -190,31 +195,37 @@ class MediaItemBottomSheetDialogFragment : TwelveBottomSheetDialogFragment(
                     is FlowResult.Success -> {
                         val mediaItem = it.data
 
-                        titleTextView.text = when (mediaItem) {
-                            is Album -> mediaItem.title ?: getString(R.string.album_unknown)
-                            is Artist -> mediaItem.name ?: getString(R.string.artist_unknown)
-                            is Audio -> mediaItem.title
-                            is Genre -> mediaItem.name ?: getString(R.string.genre_unknown)
-                            is Playlist -> mediaItem.name ?: getString(
-                                when (mediaItem.type) {
-                                    Playlist.Type.PLAYLIST -> R.string.playlist_unknown
-                                    Playlist.Type.FAVORITES -> R.string.favorites_playlist
-                                }
-                            )
-                        }
-                        artistNameTextView.text = when (mediaItem) {
-                            is Album -> mediaItem.artistName
-                            is Audio -> mediaItem.artistName
-                            else -> null
-                        }.also { artistName ->
-                            artistNameTextView.isVisible = artistName != null
-                        }
-                        albumTitleTextView.text = when (mediaItem) {
-                            is Audio -> mediaItem.albumTitle
-                            else -> null
-                        }.also { albumTitle ->
-                            albumTitleTextView.isVisible = albumTitle != null
-                        }
+                        titleTextView.text =
+                            when (mediaItem) {
+                                is Album -> mediaItem.title ?: getString(R.string.album_unknown)
+                                is Artist -> mediaItem.name ?: getString(R.string.artist_unknown)
+                                is Audio -> mediaItem.title
+                                is Genre -> mediaItem.name ?: getString(R.string.genre_unknown)
+                                is Playlist ->
+                                    mediaItem.name
+                                        ?: getString(
+                                            when (mediaItem.type) {
+                                                Playlist.Type.PLAYLIST -> R.string.playlist_unknown
+                                                Playlist.Type.FAVORITES ->
+                                                    R.string.favorites_playlist
+                                            }
+                                        )
+                            }
+                        artistNameTextView.text =
+                            when (mediaItem) {
+                                is Album -> mediaItem.artistName
+                                is Audio -> mediaItem.artistName
+                                else -> null
+                            }.also { artistName ->
+                                artistNameTextView.isVisible = artistName != null
+                            }
+                        albumTitleTextView.text =
+                            when (mediaItem) {
+                                is Audio -> mediaItem.albumTitle
+                                else -> null
+                            }.also { albumTitle ->
+                                albumTitleTextView.isVisible = albumTitle != null
+                            }
 
                         placeholderImageView.setImageResource(
                             when (mediaItem) {
@@ -222,10 +233,11 @@ class MediaItemBottomSheetDialogFragment : TwelveBottomSheetDialogFragment(
                                 is Artist -> R.drawable.ic_person
                                 is Audio -> R.drawable.ic_music_note
                                 is Genre -> R.drawable.ic_genres
-                                is Playlist -> when (mediaItem.type) {
-                                    Playlist.Type.PLAYLIST -> R.drawable.ic_playlist_play
-                                    Playlist.Type.FAVORITES -> R.drawable.ic_favorite
-                                }
+                                is Playlist ->
+                                    when (mediaItem.type) {
+                                        Playlist.Type.PLAYLIST -> R.drawable.ic_playlist_play
+                                        Playlist.Type.FAVORITES -> R.drawable.ic_favorite
+                                    }
                             }
                         )
 
@@ -243,13 +255,14 @@ class MediaItemBottomSheetDialogFragment : TwelveBottomSheetDialogFragment(
                                     onError = { _, _ ->
                                         placeholderImageView.isVisible = true
                                         thumbnailImageView.isVisible = false
-                                    }
+                                    },
                                 )
                             }
-                        } ?: run {
-                            placeholderImageView.isVisible = true
-                            thumbnailImageView.isVisible = false
                         }
+                            ?: run {
+                                placeholderImageView.isVisible = true
+                                thumbnailImageView.isVisible = false
+                            }
 
                         when (mediaItem) {
                             is Audio -> {
@@ -275,7 +288,7 @@ class MediaItemBottomSheetDialogFragment : TwelveBottomSheetDialogFragment(
                         Log.e(
                             LOG_TAG,
                             "Failed to load media item, error: ${it.error}",
-                            it.throwable
+                            it.throwable,
                         )
 
                         if (it.error == Error.NOT_FOUND) {
@@ -344,6 +357,7 @@ class MediaItemBottomSheetDialogFragment : TwelveBottomSheetDialogFragment(
 
         /**
          * Create a [Bundle] to use as the arguments for this fragment.
+         *
          * @param uri The URI of the media item to display
          * @param fromAlbum Whether this fragment was opened from an album
          * @param fromArtist Whether this fragment was opened from an artist

@@ -41,9 +41,7 @@ class ProvidersManager<T : ProvidersManager.Instance>(
     providerType: ProviderType,
     providerToArgumentsMapper: suspend (Provider, Bundle) -> T,
 ) {
-    /**
-     * A data source instance. Ideally each provider has a dedicated instance.
-     */
+    /** A data source instance. Ideally each provider has a dedicated instance. */
     interface Instance {
         /**
          * Check if this instance handles this media item. Be sure to also handle URIs that aren't
@@ -56,129 +54,123 @@ class ProvidersManager<T : ProvidersManager.Instance>(
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    private val providersToArguments = providersRepository.allProvidersToArguments
-        .mapLatest { allProviders -> allProviders.filter { it.first.type == providerType } }
-        .flowOn(Dispatchers.IO)
-        .shareIn(
-            scope = coroutineScope,
-            started = SharingStarted.WhileSubscribed(),
-            replay = 1,
-        )
+    private val providersToArguments =
+        providersRepository.allProvidersToArguments
+            .mapLatest { allProviders -> allProviders.filter { it.first.type == providerType } }
+            .flowOn(Dispatchers.IO)
+            .shareIn(scope = coroutineScope, started = SharingStarted.WhileSubscribed(), replay = 1)
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val providers = providersToArguments
-        .mapLatest { providersToArguments ->
-            providersToArguments.map { (provider, _) -> provider }
+    val providers =
+        providersToArguments
+            .mapLatest { providersToArguments ->
+                providersToArguments.map { (provider, _) -> provider }
+            }
+            .flowOn(Dispatchers.IO)
+            .shareIn(scope = coroutineScope, started = SharingStarted.WhileSubscribed(), replay = 1)
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private val providersToInstance =
+        providersToArguments
+            .mapLatest { providersToArguments ->
+                providersToArguments
+                    .mapAsync { (provider, arguments) ->
+                        provider to providerToArgumentsMapper(provider, arguments)
+                    }
+                    .toMap()
+            }
+            .flowOn(Dispatchers.IO)
+            .shareIn(scope = coroutineScope, started = SharingStarted.WhileSubscribed(), replay = 1)
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private val providerIdsToInstance =
+        providersToInstance
+            .mapLatest { providersToInstance ->
+                providersToInstance
+                    .map { (provider, instance) -> provider.typeId to instance }
+                    .toMap()
+            }
+            .flowOn(Dispatchers.IO)
+            .stateIn(
+                scope = coroutineScope,
+                started = SharingStarted.Eagerly,
+                initialValue = mapOf(),
+            )
+
+    /** @see MediaDataSource.providerOf */
+    @OptIn(ExperimentalCoroutinesApi::class)
+    fun providerOf(mediaItemUri: Uri) =
+        providersToInstance.mapLatest { providersToInstance ->
+            providersToInstance
+                .firstNotNullOfOrNull { (provider, instance) ->
+                    provider.takeIf { instance.isMediaItemCompatible(mediaItemUri) }
+                }
+                ?.let { Result.Success<_, Error>(it as ProviderIdentifier) }
+                ?: Result.Error(Error.NOT_FOUND)
         }
-        .flowOn(Dispatchers.IO)
-        .shareIn(
-            scope = coroutineScope,
-            started = SharingStarted.WhileSubscribed(),
-            replay = 1,
-        )
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    private val providersToInstance = providersToArguments
-        .mapLatest { providersToArguments ->
-            providersToArguments.mapAsync { (provider, arguments) ->
-                provider to providerToArgumentsMapper(provider, arguments)
-            }.toMap()
-        }
-        .flowOn(Dispatchers.IO)
-        .shareIn(
-            scope = coroutineScope,
-            started = SharingStarted.WhileSubscribed(),
-            replay = 1,
-        )
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    private val providerIdsToInstance = providersToInstance
-        .mapLatest { providersToInstance ->
-            providersToInstance.map { (provider, instance) ->
-                provider.typeId to instance
-            }.toMap()
-        }
-        .flowOn(Dispatchers.IO)
-        .stateIn(
-            scope = coroutineScope,
-            started = SharingStarted.Eagerly,
-            initialValue = mapOf(),
-        )
-
-    /**
-     * @see MediaDataSource.providerOf
-     */
-    @OptIn(ExperimentalCoroutinesApi::class)
-    fun providerOf(
-        mediaItemUri: Uri,
-    ) = providersToInstance.mapLatest { providersToInstance ->
-        providersToInstance.firstNotNullOfOrNull { (provider, instance) ->
-            provider.takeIf { instance.isMediaItemCompatible(mediaItemUri) }
-        }?.let {
-            Result.Success<_, Error>(it as ProviderIdentifier)
-        } ?: Result.Error(Error.NOT_FOUND)
-    }
 
     @OptIn(ExperimentalCoroutinesApi::class)
     fun <R> flatMapWithInstanceOf(
         providerIdentifier: ProviderIdentifier,
         block: suspend T.() -> Flow<Result<R, Error>>,
-    ) = providerIdsToInstance.flatMapLatest { providerIdsToType ->
-        providerIdsToType[providerIdentifier.typeId]?.block() ?: flowOf(
-            Result.Error(Error.NOT_FOUND)
-        )
-    }
+    ) =
+        providerIdsToInstance.flatMapLatest { providerIdsToType ->
+            providerIdsToType[providerIdentifier.typeId]?.block()
+                ?: flowOf(Result.Error(Error.NOT_FOUND))
+        }
 
     @OptIn(ExperimentalCoroutinesApi::class)
     fun <R> flatMapWithInstanceOf(
         vararg mediaItemUris: Uri,
         block: suspend T.() -> Flow<Result<R, Error>>,
-    ) = providerIdsToInstance.flatMapLatest { providerIdsToType ->
-        providerIdsToType.firstNotNullOfOrNull { (_, instance) ->
-            instance.takeIf {
-                mediaItemUris.all { mediaItemUri ->
-                    it.isMediaItemCompatible(mediaItemUri)
+    ) =
+        providerIdsToInstance.flatMapLatest { providerIdsToType ->
+            providerIdsToType
+                .firstNotNullOfOrNull { (_, instance) ->
+                    instance.takeIf {
+                        mediaItemUris.all { mediaItemUri -> it.isMediaItemCompatible(mediaItemUri) }
+                    }
                 }
-            }
-        }?.block() ?: flowOf(Result.Error(Error.NOT_FOUND))
-    }
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    fun <R> mapWithInstanceOf(
-        providerIdentifier: ProviderIdentifier,
-        block: suspend T.() -> Result<R, Error>,
-    ) = providerIdsToInstance.mapLatest { providerIdsToType ->
-        providerIdsToType[providerIdentifier.typeId]?.block() ?: Result.Error(Error.NOT_FOUND)
-    }
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    fun <R> mapWithInstanceOf(
-        vararg mediaItemUris: Uri,
-        block: suspend T.() -> Result<R, Error>,
-    ) = providerIdsToInstance.mapLatest { providerIdsToType ->
-        providerIdsToType.firstNotNullOfOrNull { (_, instance) ->
-            instance.takeIf {
-                mediaItemUris.all { mediaItemUri ->
-                    it.isMediaItemCompatible(mediaItemUri)
-                }
-            }
-        }?.block() ?: Result.Error(Error.NOT_FOUND)
-    }
-
-    suspend fun <R> doWithInstanceOf(
-        providerIdentifier: ProviderIdentifier,
-        block: suspend T.() -> Result<R, Error>,
-    ) = providerIdsToInstance.value[providerIdentifier.typeId]?.block()
-        ?: Result.Error(Error.NOT_FOUND)
-
-    suspend fun <R> doWithInstanceOf(
-        vararg mediaItemUris: Uri,
-        block: suspend T.() -> Result<R, Error>,
-    ) = providerIdsToInstance.value.firstNotNullOfOrNull { (_, instance) ->
-        instance.takeIf {
-            mediaItemUris.all { mediaItemUri ->
-                it.isMediaItemCompatible(mediaItemUri)
-            }
+                ?.block() ?: flowOf(Result.Error(Error.NOT_FOUND))
         }
-    }?.block() ?: Result.Error(Error.NOT_FOUND)
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    fun <R> mapWithInstanceOf(
+        providerIdentifier: ProviderIdentifier,
+        block: suspend T.() -> Result<R, Error>,
+    ) =
+        providerIdsToInstance.mapLatest { providerIdsToType ->
+            providerIdsToType[providerIdentifier.typeId]?.block() ?: Result.Error(Error.NOT_FOUND)
+        }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    fun <R> mapWithInstanceOf(vararg mediaItemUris: Uri, block: suspend T.() -> Result<R, Error>) =
+        providerIdsToInstance.mapLatest { providerIdsToType ->
+            providerIdsToType
+                .firstNotNullOfOrNull { (_, instance) ->
+                    instance.takeIf {
+                        mediaItemUris.all { mediaItemUri -> it.isMediaItemCompatible(mediaItemUri) }
+                    }
+                }
+                ?.block() ?: Result.Error(Error.NOT_FOUND)
+        }
+
+    suspend fun <R> doWithInstanceOf(
+        providerIdentifier: ProviderIdentifier,
+        block: suspend T.() -> Result<R, Error>,
+    ) =
+        providerIdsToInstance.value[providerIdentifier.typeId]?.block()
+            ?: Result.Error(Error.NOT_FOUND)
+
+    suspend fun <R> doWithInstanceOf(
+        vararg mediaItemUris: Uri,
+        block: suspend T.() -> Result<R, Error>,
+    ) =
+        providerIdsToInstance.value
+            .firstNotNullOfOrNull { (_, instance) ->
+                instance.takeIf {
+                    mediaItemUris.all { mediaItemUri -> it.isMediaItemCompatible(mediaItemUri) }
+                }
+            }
+            ?.block() ?: Result.Error(Error.NOT_FOUND)
 }

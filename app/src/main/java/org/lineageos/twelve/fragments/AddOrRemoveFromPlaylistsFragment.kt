@@ -40,17 +40,17 @@ import org.lineageos.twelve.utils.PermissionsChecker
 import org.lineageos.twelve.utils.PermissionsUtils
 import org.lineageos.twelve.viewmodels.AddOrRemoveFromPlaylistsViewModel
 
-/**
- * Fragment from which you can add or remove a specific audio from a list of playlists.
- */
+/** Fragment from which you can add or remove a specific audio from a list of playlists. */
 class AddOrRemoveFromPlaylistsFragment : Fragment(R.layout.fragment_add_or_remove_from_playlists) {
     // View models
     private val viewModel by viewModels<AddOrRemoveFromPlaylistsViewModel>()
 
     // Views
     private val createNewPlaylistButton by getViewProperty<Button>(R.id.createNewPlaylistButton)
-    private val fullscreenLoadingProgressBar by getViewProperty<FullscreenLoadingProgressBar>(R.id.fullscreenLoadingProgressBar)
-    private val linearProgressIndicator by getViewProperty<LinearProgressIndicator>(R.id.linearProgressIndicator)
+    private val fullscreenLoadingProgressBar by
+        getViewProperty<FullscreenLoadingProgressBar>(R.id.fullscreenLoadingProgressBar)
+    private val linearProgressIndicator by
+        getViewProperty<LinearProgressIndicator>(R.id.linearProgressIndicator)
     private val noElementsLinearLayout by getViewProperty<LinearLayout>(R.id.noElementsLinearLayout)
     private val recyclerView by getViewProperty<RecyclerView>(R.id.recyclerView)
     private val toolbar by getViewProperty<MaterialToolbar>(R.id.toolbar)
@@ -58,21 +58,20 @@ class AddOrRemoveFromPlaylistsFragment : Fragment(R.layout.fragment_add_or_remov
     // Recyclerview
     private val addNewPlaylistItem = Pair(Playlist.Builder(Uri.EMPTY).build(), false)
     private val adapter by lazy {
-        object : SimpleListAdapter<Pair<Playlist, Boolean>, ListItem>(
-            diffCallback,
-            ::ListItem,
-        ) {
+        object : SimpleListAdapter<Pair<Playlist, Boolean>, ListItem>(diffCallback, ::ListItem) {
             override fun ViewHolder.onBindView(item: Pair<Playlist, Boolean>) {
                 when (item === addNewPlaylistItem) {
                     true -> {
                         view.setOnClickListener {
                             val providerIdentifier = viewModel.providerOfAudio.value.getOrNull()
-                            findNavController().navigateSafe(
-                                R.id.action_addOrRemoveFromPlaylistsFragment_to_fragment_create_playlist_dialog,
-                                CreatePlaylistDialogFragment.createBundle(
-                                    providerIdentifier = providerIdentifier,
+                            findNavController()
+                                .navigateSafe(
+                                    R.id
+                                        .action_addOrRemoveFromPlaylistsFragment_to_fragment_create_playlist_dialog,
+                                    CreatePlaylistDialogFragment.createBundle(
+                                        providerIdentifier = providerIdentifier
+                                    ),
                                 )
-                            )
                         }
 
                         view.setLeadingIconImage(R.drawable.ic_playlist_add)
@@ -98,12 +97,14 @@ class AddOrRemoveFromPlaylistsFragment : Fragment(R.layout.fragment_add_or_remov
                                 Playlist.Type.FAVORITES -> R.drawable.ic_favorite
                             }
                         )
-                        view.headlineText = item.first.name ?: getString(
-                            when (item.first.type) {
-                                Playlist.Type.PLAYLIST -> R.string.playlist_unknown
-                                Playlist.Type.FAVORITES -> R.string.favorites_playlist
-                            }
-                        )
+                        view.headlineText =
+                            item.first.name
+                                ?: getString(
+                                    when (item.first.type) {
+                                        Playlist.Type.PLAYLIST -> R.string.playlist_unknown
+                                        Playlist.Type.FAVORITES -> R.string.favorites_playlist
+                                    }
+                                )
                         view.setTrailingIconImage(
                             when (item.second) {
                                 true -> R.drawable.ic_check_circle
@@ -112,7 +113,6 @@ class AddOrRemoveFromPlaylistsFragment : Fragment(R.layout.fragment_add_or_remov
                         )
                     }
                 }
-
             }
         }
     }
@@ -122,9 +122,7 @@ class AddOrRemoveFromPlaylistsFragment : Fragment(R.layout.fragment_add_or_remov
         get() = requireArguments().getParcelable(ARG_AUDIO_URI, Uri::class)!!
 
     // Permissions
-    private val permissionsChecker = PermissionsChecker(
-        this, PermissionsUtils.mainPermissions
-    )
+    private val permissionsChecker = PermissionsChecker(this, PermissionsUtils.mainPermissions)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -134,21 +132,20 @@ class AddOrRemoveFromPlaylistsFragment : Fragment(R.layout.fragment_add_or_remov
         recyclerView.adapter = adapter
 
         createNewPlaylistButton.setOnClickListener {
-            findNavController().navigateSafe(
-                R.id.action_addOrRemoveFromPlaylistsFragment_to_fragment_create_playlist_dialog,
-                CreatePlaylistDialogFragment.createBundle(
-                    providerIdentifier = viewModel.providerOfAudio.value.getOrNull(),
+            findNavController()
+                .navigateSafe(
+                    R.id.action_addOrRemoveFromPlaylistsFragment_to_fragment_create_playlist_dialog,
+                    CreatePlaylistDialogFragment.createBundle(
+                        providerIdentifier = viewModel.providerOfAudio.value.getOrNull()
+                    ),
                 )
-            )
         }
 
         viewModel.loadAudio(audioUri)
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                permissionsChecker.withPermissionsGranted {
-                    loadData()
-                }
+                permissionsChecker.withPermissionsGranted { loadData() }
             }
         }
     }
@@ -174,10 +171,7 @@ class AddOrRemoveFromPlaylistsFragment : Fragment(R.layout.fragment_add_or_remov
                     adapter.submitList(
                         when (isEmpty) {
                             true -> emptyList()
-                            false -> listOf(
-                                addNewPlaylistItem,
-                                *it.data.toTypedArray(),
-                            )
+                            false -> listOf(addNewPlaylistItem, *it.data.toTypedArray())
                         }
                     )
 
@@ -202,26 +196,26 @@ class AddOrRemoveFromPlaylistsFragment : Fragment(R.layout.fragment_add_or_remov
 
         private const val ARG_AUDIO_URI = "audio_uri"
 
-        private val diffCallback = object : DiffUtil.ItemCallback<Pair<Playlist, Boolean>>() {
-            override fun areItemsTheSame(
-                oldItem: Pair<Playlist, Boolean>,
-                newItem: Pair<Playlist, Boolean>
-            ) = oldItem.first.areItemsTheSame(newItem.first)
+        private val diffCallback =
+            object : DiffUtil.ItemCallback<Pair<Playlist, Boolean>>() {
+                override fun areItemsTheSame(
+                    oldItem: Pair<Playlist, Boolean>,
+                    newItem: Pair<Playlist, Boolean>,
+                ) = oldItem.first.areItemsTheSame(newItem.first)
 
-            override fun areContentsTheSame(
-                oldItem: Pair<Playlist, Boolean>,
-                newItem: Pair<Playlist, Boolean>
-            ) = oldItem.first.areContentsTheSame(newItem.first) && oldItem.second == newItem.second
-        }
+                override fun areContentsTheSame(
+                    oldItem: Pair<Playlist, Boolean>,
+                    newItem: Pair<Playlist, Boolean>,
+                ) =
+                    oldItem.first.areContentsTheSame(newItem.first) &&
+                        oldItem.second == newItem.second
+            }
 
         /**
          * Create a [Bundle] to use as the arguments for this fragment.
+         *
          * @param audioUri The URI of the audio to manage
          */
-        fun createBundle(
-            audioUri: Uri,
-        ) = Bundle {
-            putParcelable(ARG_AUDIO_URI, audioUri)
-        }
+        fun createBundle(audioUri: Uri) = Bundle { putParcelable(ARG_AUDIO_URI, audioUri) }
     }
 }

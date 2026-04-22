@@ -13,17 +13,16 @@ import coil3.request.allowHardware
 import coil3.toBitmap
 import org.lineageos.twelve.models.Thumbnail
 
-suspend fun MediaMetadata.toThumbnail(context: Context) = Thumbnail.Builder()
-    .setBitmap(
-        artworkData?.let {
-            val imageRequest = ImageRequest.Builder(context)
-                .data(it)
-                .allowHardware(false)
-                .build()
+suspend fun MediaMetadata.toThumbnail(context: Context) =
+    Thumbnail.Builder()
+        .setBitmap(
+            artworkData?.let {
+                val imageRequest =
+                    ImageRequest.Builder(context).data(it).allowHardware(false).build()
 
-            context.imageLoader.execute(imageRequest).image?.toBitmap()
-        }
-    )
-    .setUri(artworkUri)
-    .setType(Thumbnail.Type.fromMedia3Value(artworkDataType))
-    .build()
+                context.imageLoader.execute(imageRequest).image?.toBitmap()
+            }
+        )
+        .setUri(artworkUri)
+        .setType(Thumbnail.Type.fromMedia3Value(artworkDataType))
+        .build()

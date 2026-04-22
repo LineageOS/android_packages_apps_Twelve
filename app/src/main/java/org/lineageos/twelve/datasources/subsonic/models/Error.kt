@@ -29,34 +29,22 @@ data class Error(
     // OpenSubsonic
     val helpUrl: String? = null,
 ) {
-    /**
-     * Subsonic error code.
-     */
+    /** Subsonic error code. */
     @Serializable(with = Code.Serializer::class)
     enum class Code(val code: Int) {
-        /**
-         * A generic error.
-         */
+        /** A generic error. */
         GENERIC_ERROR(0),
 
-        /**
-         * Required parameter is missing.
-         */
+        /** Required parameter is missing. */
         REQUIRED_PARAMETER_MISSING(10),
 
-        /**
-         * Incompatible Subsonic REST protocol version. Client must upgrade.
-         */
+        /** Incompatible Subsonic REST protocol version. Client must upgrade. */
         OUTDATED_CLIENT(20),
 
-        /**
-         * Incompatible Subsonic REST protocol version. Server must upgrade.
-         */
+        /** Incompatible Subsonic REST protocol version. Server must upgrade. */
         OUTDATED_SERVER(30),
 
-        /**
-         * Wrong username or password.
-         */
+        /** Wrong username or password. */
         WRONG_CREDENTIALS(40),
 
         /**
@@ -88,9 +76,7 @@ data class Error(
          */
         INVALID_API_KEY(44),
 
-        /**
-         * User is not authorized for the given operation.
-         */
+        /** User is not authorized for the given operation. */
         USER_NOT_AUTHORIZED(50),
 
         /**
@@ -99,17 +85,16 @@ data class Error(
          */
         SUBSONIC_PREMIUM_TRIAL_ENDED(60),
 
-        /**
-         * The requested data was not found.
-         */
+        /** The requested data was not found. */
         NOT_FOUND(70);
 
         class Serializer : KSerializer<Code> {
             override val descriptor = PrimitiveSerialDescriptor("Instant", PrimitiveKind.INT)
 
-            override fun deserialize(decoder: Decoder) = decoder.decodeInt().let {
-                Code.fromCode(it) ?: throw SerializationException("Unknown code $it")
-            }
+            override fun deserialize(decoder: Decoder) =
+                decoder.decodeInt().let {
+                    Code.fromCode(it) ?: throw SerializationException("Unknown code $it")
+                }
 
             override fun serialize(encoder: Encoder, value: Code) {
                 encoder.encodeInt(value.code)

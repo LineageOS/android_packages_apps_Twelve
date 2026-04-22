@@ -16,27 +16,23 @@ import org.lineageos.twelve.models.Provider
 import org.lineageos.twelve.models.areItemsTheSame
 
 class ProvidersViewModel(application: Application) : TwelveViewModel(application) {
-    val navigationProvider = mediaRepository.navigationProvider
-        .stateIn(
+    val navigationProvider =
+        mediaRepository.navigationProvider.stateIn(
             viewModelScope,
             SharingStarted.WhileSubscribed(),
             null,
         )
 
-    val providersToIsCurrent = combine(
-        providersRepository.allProviders,
-        navigationProvider,
-    ) { allVisibleProviders, navigationProvider ->
-        allVisibleProviders.map { provider ->
-            provider to provider.areItemsTheSame(navigationProvider)
-        }
-    }
-        .flowOn(Dispatchers.IO)
-        .stateIn(
-            viewModelScope,
-            SharingStarted.WhileSubscribed(),
-            listOf(),
-        )
+    val providersToIsCurrent =
+        combine(providersRepository.allProviders, navigationProvider) {
+                allVisibleProviders,
+                navigationProvider ->
+                allVisibleProviders.map { provider ->
+                    provider to provider.areItemsTheSame(navigationProvider)
+                }
+            }
+            .flowOn(Dispatchers.IO)
+            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), listOf())
 
     fun setNavigationProvider(provider: Provider) {
         mediaRepository.setNavigationProvider(provider.identifier)

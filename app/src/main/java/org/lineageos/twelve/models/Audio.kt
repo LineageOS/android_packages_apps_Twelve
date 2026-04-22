@@ -17,8 +17,8 @@ import org.lineageos.twelve.ext.toByteArray
  * An audio.
  *
  * @param playbackUri A URI that is understood by Media3 to play the audio. If required, this can be
- *   equal to [uri] and a proper [MediaSource.Factory] can be implemented. If this field is null,
- *   it means that currently this audio cannot be played
+ *   equal to [uri] and a proper [MediaSource.Factory] can be implemented. If this field is null, it
+ *   means that currently this audio cannot be played
  * @param mimeType The MIME type of the audio
  * @param title The title of the audio
  * @param type The type of the audio
@@ -53,71 +53,64 @@ data class Audio(
     val year: Int?,
     val isFavorite: Boolean,
 ) : MediaItem<Audio> {
-    enum class Type(
-        val media3MediaType: @MediaMetadata.MediaType Int,
-    ) {
-        /**
-         * Music.
-         */
+    enum class Type(val media3MediaType: @MediaMetadata.MediaType Int) {
+        /** Music. */
         MUSIC(MediaMetadata.MEDIA_TYPE_MUSIC),
 
-        /**
-         * Podcast.
-         */
+        /** Podcast. */
         PODCAST(MediaMetadata.MEDIA_TYPE_PODCAST),
 
-        /**
-         * Audiobook.
-         */
+        /** Audiobook. */
         AUDIOBOOK(MediaMetadata.MEDIA_TYPE_AUDIO_BOOK),
 
-        /**
-         * Recording.
-         */
+        /** Recording. */
         RECORDING(MediaMetadata.MEDIA_TYPE_MUSIC),
     }
 
     override val mediaType = MediaType.AUDIO
 
-    override fun areContentsTheSame(other: Audio) = compareValuesBy(
-        this, other,
-        Audio::thumbnail,
-        Audio::playbackUri,
-        Audio::mimeType,
-        Audio::title,
-        Audio::type,
-        Audio::durationMs,
-        Audio::artistUri,
-        Audio::artistName,
-        Audio::albumUri,
-        Audio::albumTitle,
-        Audio::discNumber,
-        Audio::trackNumber,
-        Audio::genreUri,
-        Audio::genreName,
-        Audio::year,
-        Audio::isFavorite,
-    ) == 0
+    override fun areContentsTheSame(other: Audio) =
+        compareValuesBy(
+            this,
+            other,
+            Audio::thumbnail,
+            Audio::playbackUri,
+            Audio::mimeType,
+            Audio::title,
+            Audio::type,
+            Audio::durationMs,
+            Audio::artistUri,
+            Audio::artistName,
+            Audio::albumUri,
+            Audio::albumTitle,
+            Audio::discNumber,
+            Audio::trackNumber,
+            Audio::genreUri,
+            Audio::genreName,
+            Audio::year,
+            Audio::isFavorite,
+        ) == 0
 
-    override fun toMedia3MediaItem(resources: Resources) = buildMediaItem(
-        title = title ?: resources.getString(R.string.audio_unknown),
-        mediaId = uri.toString(),
-        isPlayable = playbackUri != null,
-        isBrowsable = false,
-        mediaType = type.media3MediaType,
-        album = albumTitle,
-        artist = artistName,
-        genre = genreName,
-        sourceUri = playbackUri,
-        mimeType = mimeType,
-        artworkData = thumbnail?.bitmap?.toByteArray(),
-        artworkType = thumbnail?.type?.media3Value,
-        artworkUri = thumbnail?.uri,
-        discNumber = discNumber,
-        trackNumber = trackNumber,
-        durationMs = durationMs,
-        isFavorite = isFavorite,
-    )
+    override fun toMedia3MediaItem(resources: Resources) =
+        buildMediaItem(
+            title = title ?: resources.getString(R.string.audio_unknown),
+            mediaId = uri.toString(),
+            isPlayable = playbackUri != null,
+            isBrowsable = false,
+            mediaType = type.media3MediaType,
+            album = albumTitle,
+            artist = artistName,
+            genre = genreName,
+            sourceUri = playbackUri,
+            mimeType = mimeType,
+            artworkData = thumbnail?.bitmap?.toByteArray(),
+            artworkType = thumbnail?.type?.media3Value,
+            artworkUri = thumbnail?.uri,
+            discNumber = discNumber,
+            trackNumber = trackNumber,
+            durationMs = durationMs,
+            isFavorite = isFavorite,
+        )
 
     class Builder(uri: Uri) : MediaItem.Builder<Builder, Audio>(uri) {
         private var playbackUri: Uri? = null
@@ -136,129 +129,70 @@ data class Audio(
         private var year: Int? = null
         private var isFavorite: Boolean = false
 
-        /**
-         * @see Audio.playbackUri
-         */
-        fun setPlaybackUri(playbackUri: Uri?) = this.also {
-            this.playbackUri = playbackUri
-        }
+        /** @see Audio.playbackUri */
+        fun setPlaybackUri(playbackUri: Uri?) = this.also { this.playbackUri = playbackUri }
 
-        /**
-         * @see Audio.mimeType
-         */
-        fun setMimeType(mimeType: String?) = this.also {
-            this.mimeType = mimeType
-        }
+        /** @see Audio.mimeType */
+        fun setMimeType(mimeType: String?) = this.also { this.mimeType = mimeType }
 
-        /**
-         * @see Audio.title
-         */
-        fun setTitle(title: String?) = this.also {
-            this.title = title
-        }
+        /** @see Audio.title */
+        fun setTitle(title: String?) = this.also { this.title = title }
 
-        /**
-         * @see Audio.type
-         */
-        fun setType(type: Type) = this.also {
-            this.type = type
-        }
+        /** @see Audio.type */
+        fun setType(type: Type) = this.also { this.type = type }
 
-        /**
-         * @see Audio.durationMs
-         */
-        fun setDurationMs(durationMs: Long?) = this.also {
-            this.durationMs = durationMs
-        }
+        /** @see Audio.durationMs */
+        fun setDurationMs(durationMs: Long?) = this.also { this.durationMs = durationMs }
 
-        /**
-         * @see Audio.artistUri
-         */
-        fun setArtistUri(artistUri: Uri?) = this.also {
-            this.artistUri = artistUri
-        }
+        /** @see Audio.artistUri */
+        fun setArtistUri(artistUri: Uri?) = this.also { this.artistUri = artistUri }
 
-        /**
-         * @see Audio.artistName
-         */
-        fun setArtistName(artistName: String?) = this.also {
-            this.artistName = artistName
-        }
+        /** @see Audio.artistName */
+        fun setArtistName(artistName: String?) = this.also { this.artistName = artistName }
 
-        /**
-         * @see Audio.albumUri
-         */
-        fun setAlbumUri(albumUri: Uri?) = this.also {
-            this.albumUri = albumUri
-        }
+        /** @see Audio.albumUri */
+        fun setAlbumUri(albumUri: Uri?) = this.also { this.albumUri = albumUri }
 
-        /**
-         * @see Audio.albumTitle
-         */
-        fun setAlbumTitle(albumTitle: String?) = this.also {
-            this.albumTitle = albumTitle
-        }
+        /** @see Audio.albumTitle */
+        fun setAlbumTitle(albumTitle: String?) = this.also { this.albumTitle = albumTitle }
 
-        /**
-         * @see Audio.discNumber
-         */
-        fun setDiscNumber(discNumber: Int?) = this.also {
-            this.discNumber = discNumber
-        }
+        /** @see Audio.discNumber */
+        fun setDiscNumber(discNumber: Int?) = this.also { this.discNumber = discNumber }
 
-        /**
-         * @see Audio.trackNumber
-         */
-        fun setTrackNumber(trackNumber: Int?) = this.also {
-            this.trackNumber = trackNumber
-        }
+        /** @see Audio.trackNumber */
+        fun setTrackNumber(trackNumber: Int?) = this.also { this.trackNumber = trackNumber }
 
-        /**
-         * @see Audio.genreUri
-         */
-        fun setGenreUri(genreUri: Uri?) = this.also {
-            this.genreUri = genreUri
-        }
+        /** @see Audio.genreUri */
+        fun setGenreUri(genreUri: Uri?) = this.also { this.genreUri = genreUri }
 
-        /**
-         * @see Audio.genreName
-         */
-        fun setGenreName(genreName: String?) = this.also {
-            this.genreName = genreName
-        }
+        /** @see Audio.genreName */
+        fun setGenreName(genreName: String?) = this.also { this.genreName = genreName }
 
-        /**
-         * @see Audio.year
-         */
-        fun setYear(year: Int?) = this.also {
-            this.year = year
-        }
+        /** @see Audio.year */
+        fun setYear(year: Int?) = this.also { this.year = year }
 
-        /**
-         * @see Audio.isFavorite
-         */
-        fun setIsFavorite(isFavorite: Boolean) = this.also {
-            this.isFavorite = isFavorite
-        }
+        /** @see Audio.isFavorite */
+        fun setIsFavorite(isFavorite: Boolean) = this.also { this.isFavorite = isFavorite }
 
-        override fun build() = Audio(
-            uri = uri,
-            thumbnail = thumbnail,
-            playbackUri = playbackUri,
-            mimeType = mimeType,
-            title = title,
-            type = type,
-            durationMs = durationMs,
-            artistUri = artistUri,
-            artistName = artistName,
-            albumUri = albumUri,
-            albumTitle = albumTitle,
-            discNumber = discNumber,
-            trackNumber = trackNumber,
-            genreUri = genreUri,
-            genreName = genreName,
-            year = year,
-            isFavorite = isFavorite,
-        )
+        override fun build() =
+            Audio(
+                uri = uri,
+                thumbnail = thumbnail,
+                playbackUri = playbackUri,
+                mimeType = mimeType,
+                title = title,
+                type = type,
+                durationMs = durationMs,
+                artistUri = artistUri,
+                artistName = artistName,
+                albumUri = albumUri,
+                albumTitle = albumTitle,
+                discNumber = discNumber,
+                trackNumber = trackNumber,
+                genreUri = genreUri,
+                genreName = genreName,
+                year = year,
+                isFavorite = isFavorite,
+            )
     }
 }
