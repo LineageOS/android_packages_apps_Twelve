@@ -484,7 +484,7 @@ class SubsonicDataSource(
         providerIdentifier: ProviderIdentifier,
         query: String
     ) = providersManager.mapWithInstanceOf(providerIdentifier) {
-        subsonicClient.search3(query).map { searchResult3 ->
+        subsonicClient.search3("%${query}%").map { searchResult3 ->
             searchResult3.song.orEmpty().map { it.toMediaItem() } +
                     searchResult3.artist.orEmpty().map { it.toMediaItem() } +
                     searchResult3.album.orEmpty().map { it.toMediaItem() }

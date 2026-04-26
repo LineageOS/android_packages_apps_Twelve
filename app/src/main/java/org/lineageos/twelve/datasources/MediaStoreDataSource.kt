@@ -390,7 +390,7 @@ class MediaStoreDataSource(
                     )
                     putStringArray(
                         ContentResolver.QUERY_ARG_SQL_SELECTION_ARGS,
-                        arrayOf(query)
+                        arrayOf("%${query}%")
                     )
                 }
             ).mapEachRowToAlbum(),
