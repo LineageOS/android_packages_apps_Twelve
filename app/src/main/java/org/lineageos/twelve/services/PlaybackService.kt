@@ -10,13 +10,9 @@ import android.content.Intent
 import android.content.res.Resources
 import android.media.audiofx.AudioEffect
 import android.os.Bundle
-import android.os.IBinder
 import android.util.Log
 import androidx.annotation.OptIn
 import androidx.core.net.toUri
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.ServiceLifecycleDispatcher
 import androidx.lifecycle.lifecycleScope
 import androidx.media3.common.AudioAttributes
 import androidx.media3.common.C
@@ -25,6 +21,7 @@ import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.common.Rating
 import androidx.media3.common.listen
+import androidx.media3.common.util.ExperimentalApi
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.analytics.AnalyticsListener
@@ -61,7 +58,7 @@ import org.lineageos.twelve.models.RepeatMode
 import org.lineageos.twelve.ui.widgets.NowPlayingAppWidgetProvider
 
 @OptIn(UnstableApi::class)
-class PlaybackService : MediaLibraryService(), LifecycleOwner {
+class PlaybackService : MediaLibraryService() {
     enum class CustomCommand {
         /**
          * Toggles audio offload mode.
@@ -166,10 +163,6 @@ class PlaybackService : MediaLibraryService(), LifecycleOwner {
             ) = sendCustomCommand(customCommand.sessionCommand, extras).await()
         }
     }
-
-    private val dispatcher = ServiceLifecycleDispatcher(this)
-    override val lifecycle: Lifecycle
-        get() = dispatcher.lifecycle
 
     private lateinit var player: ExoPlayer
     private lateinit var mediaLibrarySession: MediaLibrarySession
@@ -426,8 +419,8 @@ class PlaybackService : MediaLibraryService(), LifecycleOwner {
         }
     }
 
+    @OptIn(ExperimentalApi::class)
     override fun onCreate() {
-        dispatcher.onServicePreSuperOnCreate()
         super.onCreate()
 
         val audioAttributes = AudioAttributes.Builder()
@@ -453,6 +446,7 @@ class PlaybackService : MediaLibraryService(), LifecycleOwner {
             .setSkipSilenceEnabled(sharedPreferences.skipSilence)
             .setWakeMode(C.WAKE_MODE_NETWORK)
             .experimentalSetDynamicSchedulingEnabled(true)
+            .experimentalAvoidLoadingWhileEnded(true)
             .build()
             .apply {
                 setOffloadEnabled(sharedPreferences.enableOffload)
@@ -525,31 +519,23 @@ class PlaybackService : MediaLibraryService(), LifecycleOwner {
         }
     }
 
-    override fun onBind(intent: Intent?): IBinder? {
-        dispatcher.onServicePreSuperOnBind()
-        return super.onBind(intent)
-    }
 
-    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        dispatcher.onServicePreSuperOnStart()
-
-        return when (intent?.action) {
-            ACTION_TOGGLE_PLAY_PAUSE -> {
-                lifecycleScope.launch {
-                    when (player.playWhenReady) {
-                        true -> player.pause()
-                        false -> {
-                            maybeLoadResumptionPlaylist()
-                            player.play()
-                        }
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int) = when (intent?.action) {
+        ACTION_TOGGLE_PLAY_PAUSE -> {
+            lifecycleScope.launch {
+                when (player.playWhenReady) {
+                    true -> player.pause()
+                    false -> {
+                        maybeLoadResumptionPlaylist()
+                        player.play()
                     }
                 }
-
-                START_STICKY
             }
 
-            else -> super.onStartCommand(intent, flags, startId)
+            START_STICKY
         }
+
+        else -> super.onStartCommand(intent, flags, startId)
     }
 
     override fun onTaskRemoved(rootIntent: Intent?) {
@@ -567,8 +553,6 @@ class PlaybackService : MediaLibraryService(), LifecycleOwner {
     }
 
     override fun onDestroy() {
-        dispatcher.onServicePreSuperOnDestroy()
-
         closeAudioEffectSession()
 
         player.removeAnalyticsListener(analyticsListener)

@@ -13,6 +13,7 @@ import android.os.Looper
 import androidx.media3.common.Format
 import androidx.media3.common.util.Clock
 import androidx.media3.exoplayer.analytics.PlayerId
+import androidx.media3.exoplayer.audio.AudioCapabilities
 import androidx.media3.exoplayer.audio.AudioOffloadSupport
 import androidx.media3.exoplayer.audio.AudioOutputProvider
 import androidx.media3.exoplayer.audio.AudioSink
@@ -141,6 +142,10 @@ class TwelveAudioSink(
 
     override fun getFormatOffloadSupport(format: Format): AudioOffloadSupport {
         return defaultAudioSink.getFormatOffloadSupport(format)
+    }
+
+    override fun getAudioCapabilities(): AudioCapabilities? {
+        return defaultAudioSink.getAudioCapabilities()
     }
 
     override fun setPreferredDevice(audioDeviceInfo: AudioDeviceInfo?) {
