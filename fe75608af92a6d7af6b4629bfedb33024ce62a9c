@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "630a63a0_59aac3cf",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2026-04-30T13:21:09Z",
+      "side": 1,
+      "message": "Enables one experimental feature flag, but it\u0027s a bug fix that simply didn\u0027t make in time for 1.10.0\nAnd as usual needed to update the delegate handler...",
+      "revId": "fe75608af92a6d7af6b4629bfedb33024ce62a9c",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
