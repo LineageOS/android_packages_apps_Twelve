@@ -104,13 +104,13 @@
     <string name="audio_format_compression_lossless">بێ پاشماوە (Lossless)</string>
     <string name="audio_format_compression_uncompressed">نەپەستێوراو</string>
     <string name="audio_output_issue_downsampling">کەمکردنەوەی تێکڕا (Downsampling)</string>
-    <string name="audio_output_issue_downsampling_description">ئەپەکە ئێستا تێکڕای دەنگەکە کەمدەکاتەوە چونکە ئامێری دەرچە پشتگیری لە تێکڕای سامپڵی مەبەست ناکات</string>
+    <string name="audio_output_issue_downsampling_description">بەرنامەکە ئێستا تێکڕای دەنگەکە کەمدەکاتەوە چونکە ئامێری دەرچە پشتگیری لە تێکڕای سامپڵی مەبەست ناکات</string>
     <string name="audio_output_issue_pcm_float_mode_disabled">دەرچەی ٣٢-بیت پۆینتی سەرئاوکەوتوو ناچالاکە</string>
     <string name="audio_output_issue_pcm_float_mode_disabled_description">کوالێتی دەنگ دەکرێت سوود لە دۆخی دەرچەی ٣٢-بیت وەربگرێت. دەتوانیت لە ڕێکخستنەکان چالاکی بکەیت</string>
     <string name="audio_output_issue_downmixing">تێکەڵکردنی کەناڵەکان (Downmixing)</string>
-    <string name="audio_output_issue_downmixing_description">ئەپەکە ئێستا کەناڵەکانی دەنگ تێکەڵ دەکاتەوە چونکە ئامێری دەرچە پشتگیری لە ژمارەی کەناڵە مەبەستەکان ناکات</string>
+    <string name="audio_output_issue_downmixing_description">بەرنامەکە ئێستا کەناڵەکانی دەنگ تێکەڵ دەکاتەوە چونکە ئامێری دەرچە پشتگیری لە ژمارەی کەناڵە مەبەستەکان ناکات</string>
     <string name="audio_output_issue_post_processing_lossy_compression">پەستانی پاش-پڕۆسێسکردن</string>
-    <string name="audio_output_issue_post_processing_lossy_compression_description">ئەپەکە داتای دەنگ دەپەستێوێت بۆ کۆدێکی Lossy، ڕەنگە کار بکاتە سەر کوالێتی دەنگ</string>
+    <string name="audio_output_issue_post_processing_lossy_compression_description">بەرنامەکە داتای دەنگ دەپەستێوێت بۆ کۆدێکی Lossy، ڕەنگە کار بکاتە سەر کوالێتی دەنگ</string>
     <string name="provider_type_local">ناوخۆیی</string>
     <string name="provider_argument_server">سێرڤەر</string>
     <string name="provider_argument_username">ناوی بەکارهێنەر</string>
@@ -140,9 +140,9 @@
     <string name="enable_offload">چالاککردنی Offload</string>
     <string name="enable_offload_summary">بەکارهێنانی ڕێڕەوی Offload بۆ لێدانی دەنگ. ناچالاککردنی ڕەنگە بەکاربردنی وزە زیاد بکات بەڵام سوودبەخشە ئەگەر کێشەت لە لێداندا هەبێت</string>
     <string name="enable_float_output">چالاککردنی دەرچەی ٣٢-بیت</string>
-    <string name="enable_float_output_summary">بەکارهێنانی ٣٢-بیت کاتێک کوالێتی دەنگ سوودی لێ دەبینێت. خێرایی و پلەی دەنگ لەم دۆخەدا کار ناکەن. پێویستی بە دووبارە دەستپێکردنەوەی ئەپەکە هەیە</string>
-    <string name="stop_playback_on_task_removed">ڕاگرتنی مۆسیقا کاتێک ئەپەکە لادەدرێت</string>
-    <string name="stop_playback_on_task_removed_summary">ڕاگرتنی مۆسیقا کاتێک ئەپەکە لە لیستی \"دوایینەکان\" پاک دەکرێتەوە</string>
+    <string name="enable_float_output_summary">بەکارهێنانی ٣٢-بیت کاتێک کوالێتی دەنگ سوودی لێ دەبینێت. خێرایی و پلەی دەنگ لەم دۆخەدا کار ناکەن. پێویستی بە دووبارە دەستپێکردنەوەی بەرنامەکە هەیە</string>
+    <string name="stop_playback_on_task_removed">ڕاگرتنی مۆسیقا کاتێک بەرنامەکە لادەدرێت</string>
+    <string name="stop_playback_on_task_removed_summary">ڕاگرتنی مۆسیقا کاتێک بەرنامەکە لە لیستی \"دوایینەکان\" پاک دەکرێتەوە</string>
     <string name="skip_silence">تێپەڕاندنی بێدەنگی</string>
     <string name="skip_silence_summary">تێپەڕاندنی بێدەنگی لە کاتی لێدانی دەنگدا</string>
     <string name="reset_local_stats">ڕێکخستنەوەی ئامارەکانی پەخشی ناوخۆیی</string>
@@ -185,7 +185,7 @@
     <string name="play_all">لێدانی هەمووی</string>
     <string name="shuffle_play">لێدانی تێکەڵ</string>
     <string name="library_item_no_permissions">ڕێپێدان نییە</string>
-    <string name="library_item_no_permissions_description">ئەپەکە ڕێپێدانی پێویستی نییە</string>
+    <string name="library_item_no_permissions_description">بەرنامەکە ڕێپێدانی پێویستی نییە</string>
     <string name="library_item_albums">ئەلبوومەکان</string>
     <string name="library_item_artists">هونەرمەندەکان</string>
     <string name="library_item_genres">چەشنەکان</string>
@@ -205,7 +205,7 @@
     <string name="jellyfin_server_name">ناوی سێرڤەر</string>
     <string name="jellyfin_version">وەشان</string>
     <string name="jellyfin_product_name">ناوی بەرهەم</string>
-    <string name="jellyfin_operating_system">سیستەمی کارپێکردن</string>
+    <string name="jellyfin_operating_system">سیستمی کارپێکردن</string>
     <string name="playlist_name">ناو</string>
     <string name="provider">دابینکەر</string>
     <string name="create_playlist_error_empty_name">ناو دیاری نەکراوە</string>
