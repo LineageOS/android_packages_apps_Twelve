@@ -105,12 +105,12 @@
     <string name="audio_format_compression_uncompressed">نەپەستێوراو</string>
     <string name="audio_output_issue_downsampling">کەمکردنەوەی تێکڕا (Downsampling)</string>
     <string name="audio_output_issue_downsampling_description">بەرنامەکە ئێستا تێکڕای دەنگەکە کەمدەکاتەوە چونکە ئامێری دەرچە پشتگیری لە تێکڕای سامپڵی مەبەست ناکات</string>
-    <string name="audio_output_issue_pcm_float_mode_disabled">دەرچەی ٣٢-بیت پۆینتی سەرئاوکەوتوو ناچالاکە</string>
-    <string name="audio_output_issue_pcm_float_mode_disabled_description">کوالێتی دەنگ دەکرێت سوود لە دۆخی دەرچەی ٣٢-بیت وەربگرێت. دەتوانیت لە ڕێکخستنەکان چالاکی بکەیت</string>
+    <string name="audio_output_issue_pcm_float_mode_disabled">دەرچەی 32-بیت پۆینتی سەرئاوکەوتوو ناچالاکە</string>
+    <string name="audio_output_issue_pcm_float_mode_disabled_description">کوالێتیی دەنگ دەکرێت سوود لە دۆخی دەرچەی 32-بیت وەربگرێت. دەتوانیت لە ڕێکخستنەکان چالاکی بکەیت</string>
     <string name="audio_output_issue_downmixing">تێکەڵکردنی کەناڵەکان (Downmixing)</string>
     <string name="audio_output_issue_downmixing_description">بەرنامەکە ئێستا کەناڵەکانی دەنگ تێکەڵ دەکاتەوە چونکە ئامێری دەرچە پشتگیری لە ژمارەی کەناڵە مەبەستەکان ناکات</string>
     <string name="audio_output_issue_post_processing_lossy_compression">پەستانی پاش-پڕۆسێسکردن</string>
-    <string name="audio_output_issue_post_processing_lossy_compression_description">بەرنامەکە داتای دەنگ دەپەستێوێت بۆ کۆدێکی Lossy، ڕەنگە کار بکاتە سەر کوالێتی دەنگ</string>
+    <string name="audio_output_issue_post_processing_lossy_compression_description">بەرنامەکە داتای دەنگ دەپەستێوێت بۆ کۆدێکی Lossy، ڕەنگە کار بکاتە سەر کوالێتیی دەنگ</string>
     <string name="provider_type_local">ناوخۆیی</string>
     <string name="provider_argument_server">سێرڤەر</string>
     <string name="provider_argument_username">ناوی بەکارهێنەر</string>
@@ -139,8 +139,8 @@
     <string name="experimental_header">تاقیکاری</string>
     <string name="enable_offload">چالاککردنی Offload</string>
     <string name="enable_offload_summary">بەکارهێنانی ڕێڕەوی Offload بۆ لێدانی دەنگ. ناچالاککردنی ڕەنگە بەکاربردنی وزە زیاد بکات بەڵام سوودبەخشە ئەگەر کێشەت لە لێداندا هەبێت</string>
-    <string name="enable_float_output">چالاککردنی دەرچەی ٣٢-بیت</string>
-    <string name="enable_float_output_summary">بەکارهێنانی ٣٢-بیت کاتێک کوالێتی دەنگ سوودی لێ دەبینێت. خێرایی و پلەی دەنگ لەم دۆخەدا کار ناکەن. پێویستی بە دووبارە دەستپێکردنەوەی بەرنامەکە هەیە</string>
+    <string name="enable_float_output">چالاککردنی دەرچەی 32-بیت</string>
+    <string name="enable_float_output_summary">بەکارهێنانی 32-بیت کاتێک کوالێتیی دەنگ سوودی لێ دەبینێت. خێرایی و پلەی دەنگ لەم دۆخەدا کار ناکەن. پێویستی بە دووبارە دەستپێکردنەوەی بەرنامەکە هەیە</string>
     <string name="stop_playback_on_task_removed">ڕاگرتنی مۆسیقا کاتێک بەرنامەکە لادەدرێت</string>
     <string name="stop_playback_on_task_removed_summary">ڕاگرتنی مۆسیقا کاتێک بەرنامەکە لە لیستی \"دوایینەکان\" پاک دەکرێتەوە</string>
     <string name="skip_silence">تێپەڕاندنی بێدەنگی</string>
@@ -199,7 +199,7 @@
     <string name="subsonic_server_type">جۆری سێرڤەر</string>
     <string name="subsonic_server_version">وەشانی سێرڤەر</string>
     <string name="subsonic_supports_opensubsonic">پشتیگری درێژکراوەکانی OpenSubsonic دەکات</string>
-    <string name="subsonic_license">مۆڵەت</string>
+    <string name="subsonic_license">ڕێپێدان</string>
     <string name="subsonic_license_valid">کارایە</string>
     <string name="subsonic_license_invalid">ناکارایە</string>
     <string name="jellyfin_server_name">ناوی سێرڤەر</string>
