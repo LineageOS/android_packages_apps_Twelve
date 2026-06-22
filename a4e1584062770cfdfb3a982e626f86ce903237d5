@@ -55,6 +55,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "7053cf6e_23326111",
+        "filename": "app/src/main/java/org/lineageos/twelve/datasources/AmpacheDataSource.kt",
+        "patchSetId": 1
+      },
+      "lineNbr": 452,
+      "author": {
+        "id": 25732
+      },
+      "writtenOn": "2026-06-22T17:05:33Z",
+      "side": 1,
+      "message": "Fuzzy search would be better",
+      "parentUuid": "7f3d91e6_5b7aa2f7",
+      "revId": "a4e1584062770cfdfb3a982e626f86ce903237d5",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "e354972e_6a312027",
         "filename": "app/src/main/java/org/lineageos/twelve/datasources/SubsonicDataSource.kt",
         "patchSetId": 1
@@ -84,6 +102,24 @@
       "side": 1,
       "message": "Checked a java query and they append * manually, so I think this should also be $query",
       "parentUuid": "e354972e_6a312027",
+      "revId": "a4e1584062770cfdfb3a982e626f86ce903237d5",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f34fb995_cd612e1f",
+        "filename": "app/src/main/java/org/lineageos/twelve/datasources/SubsonicDataSource.kt",
+        "patchSetId": 1
+      },
+      "lineNbr": 487,
+      "author": {
+        "id": 25732
+      },
+      "writtenOn": "2026-06-22T17:05:33Z",
+      "side": 1,
+      "message": "Does this change based on the server implementation used? I can check Nextcloud Music later",
+      "parentUuid": "b76da146_fd520242",
       "revId": "a4e1584062770cfdfb3a982e626f86ce903237d5",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
