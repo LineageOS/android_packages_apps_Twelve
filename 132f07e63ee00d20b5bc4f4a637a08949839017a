@@ -33,6 +33,24 @@
       "message": "Keep it as \"time\", I did that for other occurrences of such type",
       "revId": "132f07e63ee00d20b5bc4f4a637a08949839017a",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d8f8330b_49d38735",
+        "filename": "app/src/main/java/org/lineageos/twelve/datasources/subsonic/SubsonicClient.kt",
+        "patchSetId": 4
+      },
+      "lineNbr": 983,
+      "author": {
+        "id": 25732
+      },
+      "writtenOn": "2026-07-02T14:54:12Z",
+      "side": 1,
+      "message": "Uhh no nvm, that literally is not the case with `ids`",
+      "parentUuid": "5b1fc1cc_7c5fca6c",
+      "revId": "132f07e63ee00d20b5bc4f4a637a08949839017a",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
