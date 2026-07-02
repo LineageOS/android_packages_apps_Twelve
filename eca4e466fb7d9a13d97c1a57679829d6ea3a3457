@@ -33,6 +33,24 @@
       "message": "Can\u0027t we change the call site argument instead?",
       "revId": "eca4e466fb7d9a13d97c1a57679829d6ea3a3457",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7a17ce47_edd40bab",
+        "filename": "app/src/main/java/org/lineageos/twelve/datasources/subsonic/SubsonicClient.kt",
+        "patchSetId": 1
+      },
+      "lineNbr": 984,
+      "author": {
+        "id": 10067
+      },
+      "writtenOn": "2026-07-02T14:52:09Z",
+      "side": 1,
+      "message": "sure, can do.",
+      "parentUuid": "9cb6de8a_68f44b1c",
+      "revId": "eca4e466fb7d9a13d97c1a57679829d6ea3a3457",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
