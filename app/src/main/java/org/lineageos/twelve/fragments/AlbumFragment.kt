@@ -124,16 +124,25 @@ class AlbumFragment : CollapsingToolbarLayoutFragment(R.layout.fragment_album) {
                             true
                         }
 
-                        item.audio.trackNumber?.also {
-                            view.leadingIconImage = null
-                            trackTextView.text = getString(
-                                R.string.track_number,
-                                it
-                            )
-                            view.leadingViewIsVisible = true
-                        } ?: run {
-                            view.setLeadingIconImage(R.drawable.ic_music_note)
-                            view.leadingViewIsVisible = false
+                        when {
+                            item.isCurrent -> {
+                                view.setLeadingIconImage(R.drawable.ic_play_arrow)
+                                view.leadingViewIsVisible = false
+                            }
+
+                            item.audio.trackNumber != null -> {
+                                view.leadingIconImage = null
+                                trackTextView.text = getString(
+                                    R.string.track_number,
+                                    item.audio.trackNumber
+                                )
+                                view.leadingViewIsVisible = true
+                            }
+
+                            else -> {
+                                view.setLeadingIconImage(R.drawable.ic_music_note)
+                                view.leadingViewIsVisible = false
+                            }
                         }
 
                         view.headlineText = item.audio.title
