@@ -980,13 +980,13 @@ class SubsonicClient(
      */
     suspend fun scrobble(
         ids: List<String>,
-        time: Long? = null,
+        times: List<Long>? = null,
         submission: Boolean? = false,
     ) = ApiRequest.get<ResponseRoot>(
         listOf("scrobble"),
         queryParameters = listOf(
             *ids.map { "id" to it }.toTypedArray(),
-            "time" to time,
+            *times?.map { "time" to it }?.toTypedArray().orEmpty(),
             "submission" to submission,
         )
     ).execute(api).mapResponse { }
