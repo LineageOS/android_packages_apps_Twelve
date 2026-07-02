@@ -17,6 +17,7 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.AttrRes
+import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
 import androidx.annotation.LayoutRes
 import androidx.annotation.StringRes
@@ -181,6 +182,7 @@ class ListItem @JvmOverloads constructor(
     fun setHeadlineText(@StringRes resId: Int) = headlineTextView.setTextAndUpdateVisibility(resId)
     fun setHeadlineText(@StringRes resId: Int, vararg formatArgs: Any) =
         headlineTextView.setTextAndUpdateVisibility(resId, *formatArgs)
+    fun setHeadlineTextColor(@ColorInt color: Int) = headlineTextView.setTextColor(color)
 
     fun setLeadingIconImage(bm: Bitmap) = leadingIconImageView.setImageAndUpdateVisibility(bm)
     fun setLeadingIconImage(icon: Icon) = leadingIconImageView.setImageAndUpdateVisibility(icon)
