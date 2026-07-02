@@ -981,7 +981,7 @@ class SubsonicClient(
     suspend fun scrobble(
         ids: List<String>,
         time: Long? = null,
-        submission: Boolean? = null,
+        submission: Boolean? = false,
     ) = ApiRequest.get<ResponseRoot>(
         listOf("scrobble"),
         queryParameters = listOf(
