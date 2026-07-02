@@ -16,6 +16,23 @@
       "message": "When code is more explanatory than rest API definition",
       "revId": "132f07e63ee00d20b5bc4f4a637a08949839017a",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5b1fc1cc_7c5fca6c",
+        "filename": "app/src/main/java/org/lineageos/twelve/datasources/subsonic/SubsonicClient.kt",
+        "patchSetId": 4
+      },
+      "lineNbr": 983,
+      "author": {
+        "id": 25732
+      },
+      "writtenOn": "2026-07-02T14:51:42Z",
+      "side": 1,
+      "message": "Keep it as \"time\", I did that for other occurrences of such type",
+      "revId": "132f07e63ee00d20b5bc4f4a637a08949839017a",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
