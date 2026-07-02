@@ -704,7 +704,7 @@ class SubsonicDataSource(
         audioUri: Uri,
         positionMs: Long,
     ): MediaRequestStatus<Unit> = providersManager.doWithInstanceOf(audioUri) {
-        subsonicClient.scrobble(ids = listOf(audioUri.lastPathSegment!!))
+        subsonicClient.scrobble(id = audioUri.lastPathSegment!!)
         Result.Success(Unit)
     }
 
@@ -713,8 +713,8 @@ class SubsonicDataSource(
         isFavorite: Boolean
     ) = providersManager.doWithInstanceOf(audioUri) {
         when (isFavorite) {
-            true -> subsonicClient.star(ids = listOf(audioUri.lastPathSegment!!))
-            false -> subsonicClient.unstar(ids = listOf(audioUri.lastPathSegment!!))
+            true -> subsonicClient.star(id = audioUri.lastPathSegment!!)
+            false -> subsonicClient.unstar(id = audioUri.lastPathSegment!!)
         }.map {
             onFavoritesChanged()
         }
