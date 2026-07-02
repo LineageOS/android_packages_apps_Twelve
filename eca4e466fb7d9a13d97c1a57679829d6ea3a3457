@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "87a25a55_76cd1f23",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2026-07-02T14:11:55Z",
+      "side": 1,
+      "message": "I think this should actually be a \"now playing\" notification instead of \"add to last.fm\", we could do both but that\u0027s ugly",
+      "revId": "eca4e466fb7d9a13d97c1a57679829d6ea3a3457",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
