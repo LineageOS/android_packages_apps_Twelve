@@ -35,7 +35,7 @@ class ListItem @JvmOverloads constructor(
     attrs: AttributeSet? = null,
     @AttrRes defStyleAttr: Int = com.google.android.material.R.attr.materialCardViewStyle,
 ) : MaterialCardView(context, attrs, defStyleAttr) {
-    private val headlineTextView by lazy { findViewById<TextView>(R.id.headlineTextView) }
+    val headlineTextView by lazy { findViewById<TextView>(R.id.headlineTextView) }
     private val leadingIconImageView by lazy { findViewById<ImageView>(R.id.leadingIconImageView) }
     private val leadingTextView by lazy { findViewById<TextView>(R.id.leadingTextView) }
     private val leadingViewContainerFrameLayout by lazy { findViewById<FrameLayout>(R.id.leadingViewContainerFrameLayout) }
