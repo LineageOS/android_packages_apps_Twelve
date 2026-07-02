@@ -893,25 +893,25 @@ class SubsonicClient(
      * Attaches a star to a song, album or artist.
      *
      * @since 1.8.0
-     * @param ids The ID of the file (song) or folder (album/artist) to star. Multiple parameters
+     * @param id The ID of the file (song) or folder (album/artist) to star. Multiple parameters
      *   allowed.
-     * @param albumIds The ID of an album to star. Use this rather than id if the client accesses
+     * @param albumId The ID of an album to star. Use this rather than id if the client accesses
      *   the media collection according to ID3 tags rather than file structure. Multiple parameters
      *   allowed.
-     * @param artistIds The ID of an artist to star. Use this rather than id if the client accesses
+     * @param artistId The ID of an artist to star. Use this rather than id if the client accesses
      *   the media collection according to ID3 tags rather than file structure. Multiple parameters
      *   allowed.
      */
     suspend fun star(
-        ids: List<String>? = null,
-        albumIds: List<String>? = null,
-        artistIds: List<String>? = null,
+        id: String? = null,
+        albumId: String? = null,
+        artistId: String? = null,
     ) = ApiRequest.get<ResponseRoot>(
         listOf("star"),
         queryParameters = listOf(
-            *ids?.map { "id" to it }?.toTypedArray().orEmpty(),
-            *albumIds?.map { "albumId" to it }?.toTypedArray().orEmpty(),
-            *artistIds?.map { "artistId" to it }?.toTypedArray().orEmpty(),
+            "id" to id,
+            "albumId" to albumId,
+            "artistId" to artistId,
         )
     ).execute(api).mapResponse { }
 
@@ -919,25 +919,25 @@ class SubsonicClient(
      * Removes the star from a song, album or artist.
      *
      * @since 1.8.0
-     * @param ids The ID of the file (song) or folder (album/artist) to unstar. Multiple parameters
+     * @param id The ID of the file (song) or folder (album/artist) to unstar. Multiple parameters
      *   allowed.
-     * @param albumIds The ID of an album to unstar. Use this rather than id if the client accesses
+     * @param albumId The ID of an album to unstar. Use this rather than id if the client accesses
      *   the media collection according to ID3 tags rather than file structure. Multiple parameters
      *   allowed.
-     * @param artistIds The ID of an artist to unstar. Use this rather than id if the client
+     * @param artistId The ID of an artist to unstar. Use this rather than id if the client
      *   accesses the media collection according to ID3 tags rather than file structure. Multiple
      *   parameters allowed.
      */
     suspend fun unstar(
-        ids: List<String>? = null,
-        albumIds: List<String>? = null,
-        artistIds: List<String>? = null,
+        id: String? = null,
+        albumId: String? = null,
+        artistId: String? = null,
     ) = ApiRequest.get<ResponseRoot>(
         listOf("unstar"),
         queryParameters = listOf(
-            *ids?.map { "id" to it }?.toTypedArray().orEmpty(),
-            *albumIds?.map { "albumId" to it }?.toTypedArray().orEmpty(),
-            *artistIds?.map { "artistId" to it }?.toTypedArray().orEmpty(),
+            "albumId" to id,
+            "albumId" to albumId,
+            "albumId" to artistId,
         )
     ).execute(api).mapResponse { }
 
@@ -973,19 +973,19 @@ class SubsonicClient(
      * files.
      *
      * @since 1.5.0
-     * @param ids A string which uniquely identifies the file to scrobble.
+     * @param id A string which uniquely identifies the file to scrobble.
      * @param time (Since 1.8.0) The time (in milliseconds since 1 Jan 1970) at which the song was
      *   listened to.
      * @param submission Whether this is a "submission" or a "now playing" notification.
      */
     suspend fun scrobble(
-        ids: List<String>,
+        id: String,
         time: Long? = null,
         submission: Boolean? = false,
     ) = ApiRequest.get<ResponseRoot>(
         listOf("scrobble"),
         queryParameters = listOf(
-            *ids.map { "id" to it }.toTypedArray(),
+            "id" to id,
             "time" to time,
             "submission" to submission,
         )
