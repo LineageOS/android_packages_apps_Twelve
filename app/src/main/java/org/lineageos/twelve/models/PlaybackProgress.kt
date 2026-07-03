@@ -19,8 +19,4 @@ data class PlaybackProgress(
     val durationMs: Long?,
     val currentPositionMs: Long?,
     val playbackSpeed: Float,
-) {
-    companion object {
-        val EMPTY = PlaybackProgress(false, null, null, 1f)
-    }
-}
+)

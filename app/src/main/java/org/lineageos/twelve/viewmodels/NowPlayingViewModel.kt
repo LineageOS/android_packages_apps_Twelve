@@ -298,16 +298,6 @@ open class NowPlayingViewModel(application: Application) : TwelveViewModel(appli
         )
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val playbackProgress = mediaControllerFlow
-        .flatMapLatest { it.playbackProgressFlow(eventsFlow) }
-        .flowOn(Dispatchers.Main)
-        .stateIn(
-            viewModelScope,
-            started = SharingStarted.WhileSubscribed(),
-            initialValue = PlaybackProgress.EMPTY
-        )
-
-    @OptIn(ExperimentalCoroutinesApi::class)
     val audioSessionId = mediaControllerFlow
         .mapLatest { mediaController ->
             mediaController.sendCustomCommand(
