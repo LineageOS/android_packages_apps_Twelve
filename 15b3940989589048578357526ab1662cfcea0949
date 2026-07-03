@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3a2652e3_fe9561d1",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 10067
+      },
+      "writtenOn": "2026-07-03T21:00:17Z",
+      "side": 1,
+      "message": "https://discord.com/channels/628008280605589549/628011901107830785/1522706972812771469",
+      "revId": "15b3940989589048578357526ab1662cfcea0949",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
