@@ -16,6 +16,40 @@
       "message": "Makes sense",
       "revId": "ec55b59e0e4aabf76538a5879b9eacab33a25fb5",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2c9ac9ed_0b890fad",
+        "filename": "app/src/main/java/org/lineageos/twelve/ViewActivity.kt",
+        "patchSetId": 2
+      },
+      "lineNbr": 204,
+      "author": {
+        "id": 25732
+      },
+      "writtenOn": "2026-07-03T18:37:36Z",
+      "side": 1,
+      "message": "\"collectLatest\" is wrong here, it allows the scope to relaunch the lambda in the middle of execution, change it to \"collect\" if we wanna keep the current logic, but see other comment",
+      "revId": "ec55b59e0e4aabf76538a5879b9eacab33a25fb5",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "24ea8ca7_20f8b896",
+        "filename": "app/src/main/java/org/lineageos/twelve/ViewActivity.kt",
+        "patchSetId": 2
+      },
+      "lineNbr": 228,
+      "author": {
+        "id": 25732
+      },
+      "writtenOn": "2026-07-03T18:37:36Z",
+      "side": 1,
+      "message": "Uh, can\u0027t we just drop the job handling and do everything here? The lambda will be canceled and relaunched for us by the collectLatest on a new value\n\nI did what I did before because I had to coordinate the animator and the flow",
+      "revId": "ec55b59e0e4aabf76538a5879b9eacab33a25fb5",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
