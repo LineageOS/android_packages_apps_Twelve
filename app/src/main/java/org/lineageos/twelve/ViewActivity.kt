@@ -5,14 +5,13 @@
 
 package org.lineageos.twelve
 
-import android.animation.ValueAnimator
 import android.content.Intent
 import android.graphics.drawable.AnimatedVectorDrawable
 import android.icu.text.DecimalFormat
 import android.icu.text.DecimalFormatSymbols
 import android.os.Bundle
+import android.os.SystemClock
 import android.util.Log
-import android.view.animation.LinearInterpolator
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.viewModels
@@ -25,6 +24,8 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.media3.common.Player
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.slider.Slider
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.lineageos.twelve.ext.loadThumbnail
@@ -37,6 +38,7 @@ import org.lineageos.twelve.viewmodels.LocalPlayerViewModel
 import java.util.Locale
 import kotlin.math.roundToLong
 import kotlin.reflect.safeCast
+import kotlin.time.Duration.Companion.milliseconds
 
 /**
  * An activity used to handle view intents.
@@ -66,7 +68,7 @@ class ViewActivity : AppCompatActivity(R.layout.activity_view) {
 
     // Progress slider state
     private var isProgressSliderDragging = false
-    private var animator: ValueAnimator? = null
+    private var animatorJob: Job? = null
 
     // Intents
     private val intentListener = Consumer<Intent> { intentsViewModel.onIntent(it) }
@@ -87,7 +89,7 @@ class ViewActivity : AppCompatActivity(R.layout.activity_view) {
             object : Slider.OnSliderTouchListener {
                 override fun onStartTrackingTouch(slider: Slider) {
                     isProgressSliderDragging = true
-                    animator?.cancel()
+                    animatorJob?.cancel()
                 }
 
                 override fun onStopTrackingTouch(slider: Slider) {
@@ -201,8 +203,8 @@ class ViewActivity : AppCompatActivity(R.layout.activity_view) {
                 launch {
                     localPlayerViewModel.playbackProgress.collectLatest { playbackProgress ->
                         // Stop the old animator, we'll make a new one anyway
-                        animator?.cancel()
-                        animator = null
+                        animatorJob?.cancel()
+                        animatorJob = null
 
                         val durationMs = playbackProgress.durationMs ?: 0L
                         val currentPositionMs = playbackProgress.currentPositionMs ?: 0L
@@ -219,12 +221,17 @@ class ViewActivity : AppCompatActivity(R.layout.activity_view) {
                             currentTimestampTextView.text =
                                 TimestampFormatter.formatTimestampMillis(currentPositionMs)
                         } else {
-                            ValueAnimator.ofFloat(newValue, newValueTo).apply {
-                                interpolator = LinearInterpolator()
-                                duration = (newValueTo - newValue).toLong()
-                                    .div(playbackProgress.playbackSpeed.roundToLong())
-                                addUpdateListener {
-                                    val value = it.animatedValue as Float
+                            val duration = (newValueTo - newValue).toLong()
+                                .div(playbackProgress.playbackSpeed.roundToLong())
+                            val startTime = SystemClock.uptimeMillis()
+
+                            animatorJob = lifecycleScope.launch {
+                                while (true) {
+                                    val elapsedTime = SystemClock.uptimeMillis() - startTime
+                                    val progress =
+                                        (elapsedTime.toFloat() / duration).coerceIn(0f, 1f)
+                                    val value =
+                                        newValue + (newValueTo - newValue) * progress
 
                                     if (!isProgressSliderDragging) {
                                         progressSlider.value = value
@@ -232,10 +239,11 @@ class ViewActivity : AppCompatActivity(R.layout.activity_view) {
 
                                     currentTimestampTextView.text =
                                         TimestampFormatter.formatTimestampMillis(value)
+
+                                    if (progress >= 1f) break
+
+                                    delay((1000 / 60).milliseconds)
                                 }
-                            }.also {
-                                animator = it
-                                it.start()
                             }
                         }
 

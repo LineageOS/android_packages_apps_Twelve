@@ -5,20 +5,21 @@
 
 package org.lineageos.twelve.fragments
 
-import android.animation.ValueAnimator
 import android.content.Intent
 import android.graphics.PixelFormat
 import android.icu.text.DecimalFormat
 import android.icu.text.DecimalFormatSymbols
 import android.media.audiofx.AudioEffect
+import android.os.Build
 import android.os.Bundle
+import android.os.SystemClock
 import android.util.Log
 import android.view.SurfaceView
 import android.view.View
-import android.view.animation.LinearInterpolator
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -36,6 +37,8 @@ import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.progressindicator.LinearProgressIndicator
 import com.google.android.material.slider.Slider
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -58,6 +61,7 @@ import org.lineageos.twelve.utils.TimestampFormatter
 import org.lineageos.twelve.viewmodels.NowPlayingViewModel
 import java.util.Locale
 import kotlin.math.roundToLong
+import kotlin.time.Duration.Companion.milliseconds
 
 /**
  * Now playing fragment.
@@ -105,7 +109,7 @@ class NowPlayingFragment : Fragment(R.layout.fragment_now_playing) {
 
     // Progress slider state
     private var isProgressSliderDragging = false
-    private var animator: ValueAnimator? = null
+    private var animatorJob: Job? = null
 
     // AudioFX
     private val audioEffectsStartForResult =
@@ -200,7 +204,7 @@ class NowPlayingFragment : Fragment(R.layout.fragment_now_playing) {
             object : Slider.OnSliderTouchListener {
                 override fun onStartTrackingTouch(slider: Slider) {
                     isProgressSliderDragging = true
-                    animator?.cancel()
+                    animatorJob?.cancel()
                 }
 
                 override fun onStopTrackingTouch(slider: Slider) {
@@ -470,8 +474,8 @@ class NowPlayingFragment : Fragment(R.layout.fragment_now_playing) {
                 launch {
                     viewModel.playbackProgress.collectLatest { playbackProgress ->
                         // Stop the old animator, we'll make a new one anyway
-                        animator?.cancel()
-                        animator = null
+                        animatorJob?.cancel()
+                        animatorJob = null
 
                         val durationMs = playbackProgress.durationMs ?: 0L
                         val currentPositionMs = playbackProgress.currentPositionMs ?: 0L
@@ -488,12 +492,17 @@ class NowPlayingFragment : Fragment(R.layout.fragment_now_playing) {
                             currentTimestampTextView.text =
                                 TimestampFormatter.formatTimestampMillis(currentPositionMs)
                         } else {
-                            ValueAnimator.ofFloat(newValue, newValueTo).apply {
-                                interpolator = LinearInterpolator()
-                                duration = (newValueTo - newValue).toLong()
-                                    .div(playbackProgress.playbackSpeed.roundToLong())
-                                addUpdateListener {
-                                    val value = it.animatedValue as Float
+                            val duration = (newValueTo - newValue).toLong()
+                                .div(playbackProgress.playbackSpeed.roundToLong())
+                            val startTime = SystemClock.uptimeMillis()
+
+                            animatorJob = viewLifecycleOwner.lifecycleScope.launch {
+                                while (true) {
+                                    val elapsedTime = SystemClock.uptimeMillis() - startTime
+                                    val progress =
+                                        (elapsedTime.toFloat() / duration).coerceIn(0f, 1f)
+                                    val value =
+                                        newValue + (newValueTo - newValue) * progress
 
                                     if (!isProgressSliderDragging) {
                                         progressSlider.value = value
@@ -501,10 +510,11 @@ class NowPlayingFragment : Fragment(R.layout.fragment_now_playing) {
 
                                     currentTimestampTextView.text =
                                         TimestampFormatter.formatTimestampMillis(value)
+
+                                    if (progress >= 1f) break
+
+                                    delay((1000 / 60).milliseconds)
                                 }
-                            }.also {
-                                animator = it
-                                it.start()
                             }
                         }
 
@@ -633,8 +643,8 @@ class NowPlayingFragment : Fragment(R.layout.fragment_now_playing) {
     }
 
     override fun onDestroyView() {
-        animator?.cancel()
-        animator = null
+        animatorJob?.cancel()
+        animatorJob = null
 
         if (isVisualizerStarted) {
             visualizerManager.stop()
