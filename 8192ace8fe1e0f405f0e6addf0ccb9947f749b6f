@@ -39,6 +39,30 @@
       },
       "revId": "8192ace8fe1e0f405f0e6addf0ccb9947f749b6f",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "42e48968_701afbbd",
+        "filename": "app/src/main/java/org/lineageos/twelve/viewmodels/LocalPlayerViewModel.kt",
+        "patchSetId": 3
+      },
+      "lineNbr": 177,
+      "author": {
+        "id": 10067
+      },
+      "writtenOn": "2026-07-04T09:21:03Z",
+      "side": 1,
+      "message": "we could, but i was matching with NowPlayingViewModel",
+      "parentUuid": "54cf9433_316d83db",
+      "range": {
+        "startLine": 177,
+        "startChar": 0,
+        "endLine": 177,
+        "endChar": 30
+      },
+      "revId": "8192ace8fe1e0f405f0e6addf0ccb9947f749b6f",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
