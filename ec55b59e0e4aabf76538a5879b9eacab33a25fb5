@@ -50,6 +50,24 @@
       "message": "Uh, can\u0027t we just drop the job handling and do everything here? The lambda will be canceled and relaunched for us by the collectLatest on a new value\n\nI did what I did before because I had to coordinate the animator and the flow",
       "revId": "ec55b59e0e4aabf76538a5879b9eacab33a25fb5",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "76f53509_51d90a19",
+        "filename": "app/src/main/java/org/lineageos/twelve/ViewActivity.kt",
+        "patchSetId": 2
+      },
+      "lineNbr": 228,
+      "author": {
+        "id": 10067
+      },
+      "writtenOn": "2026-07-04T06:50:27Z",
+      "side": 1,
+      "message": "playbackProgressFlow doesn\u0027t generate events for position changes, so we can\u0027t do it so easily.",
+      "parentUuid": "24ea8ca7_20f8b896",
+      "revId": "ec55b59e0e4aabf76538a5879b9eacab33a25fb5",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
