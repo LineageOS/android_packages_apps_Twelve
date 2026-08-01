@@ -35,6 +35,24 @@
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "11a5799e_ce5348da",
+        "filename": "app/src/main/java/org/lineageos/twelve/ViewActivity.kt",
+        "patchSetId": 2
+      },
+      "lineNbr": 204,
+      "author": {
+        "id": 25732
+      },
+      "writtenOn": "2026-08-01T15:55:59Z",
+      "side": 1,
+      "message": "Acknowledged",
+      "parentUuid": "2c9ac9ed_0b890fad",
+      "revId": "ec55b59e0e4aabf76538a5879b9eacab33a25fb5",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "24ea8ca7_20f8b896",
@@ -66,6 +84,24 @@
       "side": 1,
       "message": "playbackProgressFlow doesn\u0027t generate events for position changes, so we can\u0027t do it so easily.",
       "parentUuid": "24ea8ca7_20f8b896",
+      "revId": "ec55b59e0e4aabf76538a5879b9eacab33a25fb5",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "388be2e8_d3cc2435",
+        "filename": "app/src/main/java/org/lineageos/twelve/ViewActivity.kt",
+        "patchSetId": 2
+      },
+      "lineNbr": 228,
+      "author": {
+        "id": 25732
+      },
+      "writtenOn": "2026-08-01T15:55:59Z",
+      "side": 1,
+      "message": "Acknowledged",
+      "parentUuid": "76f53509_51d90a19",
       "revId": "ec55b59e0e4aabf76538a5879b9eacab33a25fb5",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
