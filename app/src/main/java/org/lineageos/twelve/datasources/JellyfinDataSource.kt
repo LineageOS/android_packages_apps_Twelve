@@ -471,6 +471,9 @@ class JellyfinDataSource(
                 }.getOrNull().orEmpty(),
                 appearsInAlbum = listOf(),
                 appearsInPlaylist = listOf(),
+                audios = client.getArtistAudios(id).map { queryResult ->
+                    queryResult.items.map { it.toMediaItemAudio() }
+                }.getOrNull().orEmpty(),
             )
         }
     }
