@@ -12,6 +12,7 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -26,7 +27,10 @@ import androidx.navigation.ui.setupWithNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.MaterialToolbar
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.progressindicator.LinearProgressIndicator
+import com.google.android.material.shape.ShapeAppearanceModel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.lineageos.twelve.R
@@ -69,8 +73,22 @@ class ArtistFragment : CollapsingToolbarLayoutFragment(R.layout.fragment_artist)
     private val linearProgressIndicator by getViewProperty<LinearProgressIndicator>(R.id.linearProgressIndicator)
     private val nestedScrollView by getViewProperty<NestedScrollView>(R.id.nestedScrollView)
     private val noElementsNestedScrollView by getViewProperty<NestedScrollView>(R.id.noElementsNestedScrollView)
+    private val playButtonsContainer by getViewProperty<ConstraintLayout>(R.id.playButtonsContainer)
+    private val playMenuSecondaryButtons by getViewProperty<LinearLayout>(R.id.playMenuSecondaryButtons)
+    private val playMenuToggleFAB by getViewProperty<FloatingActionButton>(R.id.playMenuToggleFAB)
+    private val playAllExtendedFloatingActionButton by getViewProperty<ExtendedFloatingActionButton>(
+        R.id.playAllExtendedFloatingActionButton
+    )
+    private val shuffleFavoritesPlayExtendedFloatingActionButton by getViewProperty<ExtendedFloatingActionButton>(
+        R.id.shuffleFavoritesPlayExtendedFloatingActionButton
+    )
+    private val shufflePlayExtendedFloatingActionButton by getViewProperty<ExtendedFloatingActionButton>(
+        R.id.shufflePlayExtendedFloatingActionButton
+    )
     private val thumbnailImageView by getViewProperty<ImageView>(R.id.thumbnailImageView)
     private val toolbar by getViewProperty<MaterialToolbar>(R.id.toolbar)
+
+    private var defaultShapeAppearanceModel: ShapeAppearanceModel? = null
 
     // Recyclerview
     private val createAlbumAdapter = {
@@ -187,11 +205,45 @@ class ArtistFragment : CollapsingToolbarLayoutFragment(R.layout.fragment_artist)
             windowInsets
         }
 
+        ViewCompat.setOnApplyWindowInsetsListener(
+            playButtonsContainer
+        ) { v, windowInsets ->
+            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+
+            v.updatePadding(
+                insets,
+                bottom = true,
+            )
+
+            windowInsets
+        }
+
         toolbar.setupWithNavController(findNavController())
 
         albumsRecyclerView.adapter = albumsAdapter
         appearsInAlbumRecyclerView.adapter = appearsInAlbumAdapter
         appearsInPlaylistRecyclerView.adapter = appearsInPlaylistAdapter
+
+        playMenuToggleFAB.setOnClickListener {
+            togglePlayMenu()
+        }
+
+        defaultShapeAppearanceModel = playMenuToggleFAB.shapeAppearanceModel
+
+        playAllExtendedFloatingActionButton.setOnClickListener {
+            viewModel.playArtist()
+            togglePlayMenu()
+        }
+
+        shufflePlayExtendedFloatingActionButton.setOnClickListener {
+            viewModel.shufflePlayArtist()
+            togglePlayMenu()
+        }
+
+        shuffleFavoritesPlayExtendedFloatingActionButton.setOnClickListener {
+            viewModel.shufflePlayFavorites()
+            togglePlayMenu()
+        }
 
         viewModel.loadAlbum(artistUri)
 
@@ -254,9 +306,21 @@ class ArtistFragment : CollapsingToolbarLayoutFragment(R.layout.fragment_artist)
                         isAlbumsEmpty,
                         isAppearsInAlbumEmpty,
                         isAppearsInPlaylistEmpty,
-                    ).all { isEmpty -> isEmpty }
+                    ).all { it }
                     nestedScrollView.isVisible = !isEmpty
                     noElementsNestedScrollView.isVisible = isEmpty
+
+                    val hasFavorites = artistWorks.audios.any { audio -> audio.isFavorite == true }
+
+                    if (artistWorks.audios.isNotEmpty()) {
+                        playMenuToggleFAB.show()
+                        shuffleFavoritesPlayExtendedFloatingActionButton.isVisible = hasFavorites
+                    } else {
+                        playMenuToggleFAB.hide()
+                        if (playMenuSecondaryButtons.isVisible) {
+                            togglePlayMenu()
+                        }
+                    }
                 }
 
                 is FlowResult.Failure -> {
@@ -277,6 +341,24 @@ class ArtistFragment : CollapsingToolbarLayoutFragment(R.layout.fragment_artist)
                     }
                 }
             }
+        }
+    }
+
+    private fun togglePlayMenu() {
+        val isVisible = playMenuSecondaryButtons.isVisible
+
+        if (isVisible) {
+            playMenuSecondaryButtons.isVisible = false
+            playMenuToggleFAB.setImageResource(R.drawable.ic_play_arrow)
+            defaultShapeAppearanceModel?.let {
+                playMenuToggleFAB.shapeAppearanceModel = it
+            }
+        } else {
+            playMenuSecondaryButtons.isVisible = true
+            playMenuToggleFAB.setImageResource(R.drawable.ic_close)
+            playMenuToggleFAB.shapeAppearanceModel = playMenuToggleFAB.shapeAppearanceModel.toBuilder()
+                .setAllCornerSizes(playMenuToggleFAB.height / 2f)
+                .build()
         }
     }
 

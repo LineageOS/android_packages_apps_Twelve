@@ -270,6 +270,7 @@
     <!-- Play buttons -->
     <string name="play_all">Play all</string>
     <string name="shuffle_play">Shuffle play</string>
+    <string name="shuffle_favorites" translatable="false">Shuffle favorites</string>
 
     <!-- Media repository tree -->
     <string name="library_item_no_permissions">No permissions</string>
