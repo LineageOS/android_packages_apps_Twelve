@@ -71,6 +71,7 @@ class JellyfinClient(
         queryParameters = listOf(
             "IncludeItemTypes" to "Audio",
             "Recursive" to true,
+            "Fields" to DEFAULT_FIELDS,
         ) + getSortParameter(sortingRule),
     ).execute(api).mapToError()
 
@@ -113,6 +114,7 @@ class JellyfinClient(
             "SearchTerm" to query,
             "IncludeItemTypes" to "Playlist,MusicAlbum,MusicArtist,MusicGenre,Audio",
             "Recursive" to true,
+            "Fields" to DEFAULT_FIELDS,
         ),
     ).execute(api).mapToError()
 
@@ -122,6 +124,7 @@ class JellyfinClient(
             "Filters" to "IsFavorite",
             "IncludeItemTypes" to "Audio",
             "Recursive" to true,
+            "Fields" to DEFAULT_FIELDS,
         ),
     ).execute(api).mapToError()
 
@@ -147,6 +150,7 @@ class JellyfinClient(
             "ParentId" to id,
             "IncludeItemTypes" to "Audio",
             "Recursive" to true,
+            "Fields" to DEFAULT_FIELDS,
         ),
     ).execute(api).mapToError()
 
@@ -172,6 +176,9 @@ class JellyfinClient(
             id.toString(),
             "Items",
         ),
+        queryParameters = listOf(
+            "Fields" to DEFAULT_FIELDS,
+        ),
     ).execute(api).mapToError()
 
     suspend fun getGenreContent(id: UUID) = ApiRequest.get<QueryResult>(
@@ -180,6 +187,7 @@ class JellyfinClient(
             "GenreIds" to id,
             "IncludeItemTypes" to "MusicAlbum,Playlist,Audio",
             "Recursive" to true,
+            "Fields" to DEFAULT_FIELDS,
         ),
     ).execute(api).mapToError()
 
@@ -276,6 +284,7 @@ class JellyfinClient(
             "Type" to "Audio",
             "Recursive" to true,
             "Limit" to 12,
+            "Fields" to DEFAULT_FIELDS,
         )
     ).execute(api).mapToError()
 
@@ -287,6 +296,7 @@ class JellyfinClient(
         queryParameters = listOf(
             "Type" to "Audio",
             "Limit" to 25,
+            "Fields" to DEFAULT_FIELDS,
         )
     ).execute(api).mapToError()
 
@@ -339,6 +349,9 @@ class JellyfinClient(
             "Items",
             id.toString(),
         ),
+        queryParameters = listOf(
+            "Fields" to DEFAULT_FIELDS,
+        ),
     ).execute(api).mapToError()
 
     private fun getItemThumbnail(id: UUID) = api.buildUrl(
@@ -376,5 +389,6 @@ class JellyfinClient(
 
     companion object {
         const val JELLYFIN_API_VERSION = "10.10.3"
+        private const val DEFAULT_FIELDS = "Genres,GenreItems,ArtistItems"
     }
 }
