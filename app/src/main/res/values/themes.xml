@@ -113,4 +113,9 @@
     <style name="Theme.Twelve.AppWidgetContainer" parent="Theme.Material3Expressive.DynamicColors.DayNight">
         <item name="appWidgetRadius">28dp</item>
     </style>
+
+    <style name="ShapeAppearance.Twelve.FAB.Circle" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
+    </style>
 </resources>

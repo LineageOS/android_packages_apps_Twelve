@@ -16,8 +16,10 @@ import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.stateIn
+import org.lineageos.twelve.models.Audio
 import org.lineageos.twelve.models.FlowResult
 import org.lineageos.twelve.models.FlowResult.Companion.asFlowResult
+import org.lineageos.twelve.models.FlowResult.Companion.getOrNull
 
 class GenreViewModel(application: Application) : TwelveViewModel(application) {
     private val genreUri = MutableStateFlow<Uri?>(null)
@@ -38,5 +40,24 @@ class GenreViewModel(application: Application) : TwelveViewModel(application) {
 
     fun loadGenre(genreUri: Uri) {
         this.genreUri.value = genreUri
+    }
+
+    fun playGenre(startFrom: Audio? = null) {
+        genre.value.getOrNull()?.second?.audios?.takeUnless { it.isEmpty() }?.let { audios ->
+            playAudio(audios, startFrom?.let { audios.indexOf(it) } ?: 0)
+        }
+    }
+
+    fun shufflePlayGenre() {
+        genre.value.getOrNull()?.second?.audios?.takeUnless { it.isEmpty() }?.let { audios ->
+            playAudio(audios.shuffled(), 0)
+        }
+    }
+
+    fun shufflePlayFavorites() {
+        genre.value.getOrNull()?.second?.audios?.filter { it.isFavorite == true }
+            ?.takeUnless { it.isEmpty() }?.let { audios ->
+                playAudio(audios.shuffled(), 0)
+            }
     }
 }

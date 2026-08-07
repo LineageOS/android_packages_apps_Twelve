@@ -530,11 +530,12 @@ class AmpacheDataSource(
 
     override fun artist(artistUri: Uri) = providersManager.mapWithInstanceOf(artistUri) {
         val id = artistUri.lastPathSegment!!
-        client.artist(id, includeAlbums = true).map { artist ->
+        client.artist(id, includeAlbums = true, includeSongs = true).map { artist ->
             artist.toMediaItem() to ArtistWorks(
                 albums = artist.albums.orEmpty().map { it.toMediaItem() },
                 appearsInAlbum = listOf(),
                 appearsInPlaylist = listOf(),
+                audios = artist.songs.orEmpty().map { it.toMediaItem() },
             )
         }
     }

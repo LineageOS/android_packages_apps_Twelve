@@ -12,6 +12,7 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -28,7 +29,9 @@ import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.progressindicator.LinearProgressIndicator
+import com.google.android.material.shape.ShapeAppearanceModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -68,18 +71,25 @@ class PlaylistFragment : CollapsingToolbarLayoutFragment(R.layout.fragment_playl
     private val infoNestedScrollView by getViewProperty<NestedScrollView?>(R.id.infoNestedScrollView)
     private val linearProgressIndicator by getViewProperty<LinearProgressIndicator>(R.id.linearProgressIndicator)
     private val noElementsNestedScrollView by getViewProperty<NestedScrollView>(R.id.noElementsNestedScrollView)
+    private val playButtonsContainer by getViewProperty<ConstraintLayout>(R.id.playButtonsContainer)
+    private val playMenuSecondaryButtons by getViewProperty<LinearLayout>(R.id.playMenuSecondaryButtons)
+    private val playMenuToggleFAB by getViewProperty<FloatingActionButton>(R.id.playMenuToggleFAB)
     private val playAllExtendedFloatingActionButton by getViewProperty<ExtendedFloatingActionButton>(
         R.id.playAllExtendedFloatingActionButton
     )
-    private val playlistNameTextView by getViewProperty<TextView>(R.id.playlistNameTextView)
-    private val playButtonsLinearLayout by getViewProperty<LinearLayout>(R.id.playButtonsLinearLayout)
-    private val recyclerView by getViewProperty<RecyclerView>(R.id.recyclerView)
+    private val shuffleFavoritesPlayExtendedFloatingActionButton by getViewProperty<ExtendedFloatingActionButton>(
+        R.id.shuffleFavoritesPlayExtendedFloatingActionButton
+    )
     private val shufflePlayExtendedFloatingActionButton by getViewProperty<ExtendedFloatingActionButton>(
         R.id.shufflePlayExtendedFloatingActionButton
     )
+    private val playlistNameTextView by getViewProperty<TextView>(R.id.playlistNameTextView)
+    private val recyclerView by getViewProperty<RecyclerView>(R.id.recyclerView)
     private val thumbnailImageView by getViewProperty<ImageView>(R.id.thumbnailImageView)
     private val toolbar by getViewProperty<MaterialToolbar>(R.id.toolbar)
     private val tracksInfoTextView by getViewProperty<TextView>(R.id.tracksInfoTextView)
+
+    private var defaultShapeAppearanceModel: ShapeAppearanceModel? = null
 
     // Menu items
     private val deletePlaylistMenuItem get() = toolbar.menu.findItem(R.id.deletePlaylist)
@@ -182,7 +192,7 @@ class PlaylistFragment : CollapsingToolbarLayoutFragment(R.layout.fragment_playl
         }
 
         ViewCompat.setOnApplyWindowInsetsListener(
-            playButtonsLinearLayout
+            playButtonsContainer
         ) { v, windowInsets ->
             val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
 
@@ -214,12 +224,25 @@ class PlaylistFragment : CollapsingToolbarLayoutFragment(R.layout.fragment_playl
 
         recyclerView.adapter = adapter
 
+        playMenuToggleFAB.setOnClickListener {
+            togglePlayMenu()
+        }
+
+        defaultShapeAppearanceModel = playMenuToggleFAB.shapeAppearanceModel
+
         playAllExtendedFloatingActionButton.setOnClickListener {
             viewModel.playPlaylist()
+            togglePlayMenu()
         }
 
         shufflePlayExtendedFloatingActionButton.setOnClickListener {
             viewModel.shufflePlayPlaylist()
+            togglePlayMenu()
+        }
+
+        shuffleFavoritesPlayExtendedFloatingActionButton.setOnClickListener {
+            viewModel.shufflePlayFavorites()
+            togglePlayMenu()
         }
 
         viewModel.loadPlaylist(playlistUri)
@@ -294,15 +317,16 @@ class PlaylistFragment : CollapsingToolbarLayoutFragment(R.layout.fragment_playl
                         val isEmpty = audios.isEmpty()
                         recyclerView.isVisible = !isEmpty
                         noElementsNestedScrollView.isVisible = isEmpty
-                        when (isEmpty) {
-                            true -> {
-                                playAllExtendedFloatingActionButton.hide()
-                                shufflePlayExtendedFloatingActionButton.hide()
-                            }
 
-                            false -> {
-                                playAllExtendedFloatingActionButton.show()
-                                shufflePlayExtendedFloatingActionButton.show()
+                        val hasFavorites = audios.any { audio -> audio.isFavorite == true }
+
+                        if (audios.isNotEmpty()) {
+                            playMenuToggleFAB.show()
+                            shuffleFavoritesPlayExtendedFloatingActionButton.isVisible = hasFavorites
+                        } else {
+                            playMenuToggleFAB.hide()
+                            if (playMenuSecondaryButtons.isVisible) {
+                                togglePlayMenu()
                             }
                         }
                     }
@@ -321,7 +345,7 @@ class PlaylistFragment : CollapsingToolbarLayoutFragment(R.layout.fragment_playl
 
                         recyclerView.isVisible = false
                         noElementsNestedScrollView.isVisible = true
-                        playAllExtendedFloatingActionButton.isVisible = false
+                        playMenuToggleFAB.hide()
 
                         if (it.error == Error.NOT_FOUND) {
                             // Get out of here
@@ -368,6 +392,24 @@ class PlaylistFragment : CollapsingToolbarLayoutFragment(R.layout.fragment_playl
             }
             .setNegativeButton(android.R.string.cancel, null)
             .show()
+    }
+
+    private fun togglePlayMenu() {
+        val isVisible = playMenuSecondaryButtons.isVisible
+
+        if (isVisible) {
+            playMenuSecondaryButtons.isVisible = false
+            playMenuToggleFAB.setImageResource(R.drawable.ic_play_arrow)
+            defaultShapeAppearanceModel?.let {
+                playMenuToggleFAB.shapeAppearanceModel = it
+            }
+        } else {
+            playMenuSecondaryButtons.isVisible = true
+            playMenuToggleFAB.setImageResource(R.drawable.ic_close)
+            playMenuToggleFAB.shapeAppearanceModel = playMenuToggleFAB.shapeAppearanceModel.toBuilder()
+                .setAllCornerSizes(playMenuToggleFAB.height / 2f)
+                .build()
+        }
     }
 
     companion object {

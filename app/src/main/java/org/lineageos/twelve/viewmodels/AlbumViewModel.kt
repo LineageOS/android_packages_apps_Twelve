@@ -182,6 +182,12 @@ class AlbumViewModel(application: Application) : TwelveViewModel(application) {
         }
     }
 
+    fun shufflePlayFavorites() {
+        tracks.value.filter { it.isFavorite == true }.takeUnless { it.isEmpty() }?.let { audios ->
+            playAudio(audios.shuffled(), 0)
+        }
+    }
+
     fun addToQueue() {
         tracks.value.takeUnless { it.isEmpty() }?.let { audios ->
             mediaController.value?.apply {

@@ -12,6 +12,7 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -28,7 +29,9 @@ import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.progressindicator.LinearProgressIndicator
+import com.google.android.material.shape.ShapeAppearanceModel
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -70,8 +73,13 @@ class AlbumFragment : CollapsingToolbarLayoutFragment(R.layout.fragment_album) {
     private val playAllExtendedFloatingActionButton by getViewProperty<ExtendedFloatingActionButton>(
         R.id.playAllExtendedFloatingActionButton
     )
-    private val playButtonsLinearLayout by getViewProperty<LinearLayout>(R.id.playButtonsLinearLayout)
+    private val playButtonsContainer by getViewProperty<ConstraintLayout>(R.id.playButtonsContainer)
+    private val playMenuSecondaryButtons by getViewProperty<LinearLayout>(R.id.playMenuSecondaryButtons)
+    private val playMenuToggleFAB by getViewProperty<FloatingActionButton>(R.id.playMenuToggleFAB)
     private val recyclerView by getViewProperty<RecyclerView>(R.id.recyclerView)
+    private val shuffleFavoritesPlayExtendedFloatingActionButton by getViewProperty<ExtendedFloatingActionButton>(
+        R.id.shuffleFavoritesPlayExtendedFloatingActionButton
+    )
     private val shufflePlayExtendedFloatingActionButton by getViewProperty<ExtendedFloatingActionButton>(
         R.id.shufflePlayExtendedFloatingActionButton
     )
@@ -79,6 +87,8 @@ class AlbumFragment : CollapsingToolbarLayoutFragment(R.layout.fragment_album) {
     private val toolbar by getViewProperty<MaterialToolbar>(R.id.toolbar)
     private val tracksInfoTextView by getViewProperty<TextView>(R.id.tracksInfoTextView)
     private val yearTextView by getViewProperty<TextView>(R.id.yearTextView)
+
+    private var defaultShapeAppearanceModel: ShapeAppearanceModel? = null
 
     // Recyclerview
     private val adapter by lazy {
@@ -227,7 +237,7 @@ class AlbumFragment : CollapsingToolbarLayoutFragment(R.layout.fragment_album) {
         }
 
         ViewCompat.setOnApplyWindowInsetsListener(
-            playButtonsLinearLayout
+            playButtonsContainer
         ) { v, windowInsets ->
             val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
 
@@ -259,12 +269,25 @@ class AlbumFragment : CollapsingToolbarLayoutFragment(R.layout.fragment_album) {
 
         recyclerView.adapter = adapter
 
+        playMenuToggleFAB.setOnClickListener {
+            togglePlayMenu()
+        }
+
+        defaultShapeAppearanceModel = playMenuToggleFAB.shapeAppearanceModel
+
         playAllExtendedFloatingActionButton.setOnClickListener {
             viewModel.playAlbum()
+            togglePlayMenu()
         }
 
         shufflePlayExtendedFloatingActionButton.setOnClickListener {
             viewModel.shufflePlayAlbum()
+            togglePlayMenu()
+        }
+
+        shuffleFavoritesPlayExtendedFloatingActionButton.setOnClickListener {
+            viewModel.shufflePlayFavorites()
+            togglePlayMenu()
         }
 
         viewModel.loadAlbum(albumUri)
@@ -371,23 +394,28 @@ class AlbumFragment : CollapsingToolbarLayoutFragment(R.layout.fragment_album) {
             }
 
             launch {
+                viewModel.tracks.collectLatest { tracks ->
+                    val hasFavorites = tracks.any { it.isFavorite == true }
+
+                    if (tracks.isNotEmpty()) {
+                        playMenuToggleFAB.show()
+                        shuffleFavoritesPlayExtendedFloatingActionButton.isVisible = hasFavorites
+                    } else {
+                        playMenuToggleFAB.hide()
+                        if (playMenuSecondaryButtons.isVisible) {
+                            togglePlayMenu()
+                        }
+                    }
+                }
+            }
+
+            launch {
                 viewModel.albumContent.collectLatest {
                     adapter.submitList(it)
 
                     val isEmpty = it.isEmpty()
                     recyclerView.isVisible = !isEmpty
                     noElementsNestedScrollView.isVisible = isEmpty
-                    when (isEmpty) {
-                        true -> {
-                            playAllExtendedFloatingActionButton.hide()
-                            shufflePlayExtendedFloatingActionButton.hide()
-                        }
-
-                        false -> {
-                            playAllExtendedFloatingActionButton.show()
-                            shufflePlayExtendedFloatingActionButton.show()
-                        }
-                    }
                 }
             }
 
@@ -397,6 +425,24 @@ class AlbumFragment : CollapsingToolbarLayoutFragment(R.layout.fragment_album) {
                     fileTypeTextView.text = it.joinToString(" / ")
                 }
             }
+        }
+    }
+
+    private fun togglePlayMenu() {
+        val isVisible = playMenuSecondaryButtons.isVisible
+
+        if (isVisible) {
+            playMenuSecondaryButtons.isVisible = false
+            playMenuToggleFAB.setImageResource(R.drawable.ic_play_arrow)
+            defaultShapeAppearanceModel?.let {
+                playMenuToggleFAB.shapeAppearanceModel = it
+            }
+        } else {
+            playMenuSecondaryButtons.isVisible = true
+            playMenuToggleFAB.setImageResource(R.drawable.ic_close)
+            playMenuToggleFAB.shapeAppearanceModel = playMenuToggleFAB.shapeAppearanceModel.toBuilder()
+                .setAllCornerSizes(playMenuToggleFAB.height / 2f)
+                .build()
         }
     }
 

@@ -87,4 +87,12 @@ class PlaylistViewModel(application: Application) : TwelveViewModel(application)
             playAudio(it.shuffled(), 0)
         }
     }
+
+    fun shufflePlayFavorites() {
+        playlist.value.getOrNull()?.second?.filter { it.isFavorite == true }?.takeUnless {
+            it.isEmpty()
+        }?.let {
+            playAudio(it.shuffled(), 0)
+        }
+    }
 }

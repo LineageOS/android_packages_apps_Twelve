@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     SPDX-FileCopyrightText: The LineageOS Project
+     SPDX-License-Identifier: Apache-2.0
+-->
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/playAll"
+        android:icon="@drawable/ic_play_arrow"
+        android:title="@string/play_all" />
+    <item
+        android:id="@+id/shufflePlay"
+        android:icon="@drawable/ic_shuffle"
+        android:title="@string/shuffle_play" />
+    <item
+        android:id="@+id/shuffleFavorites"
+        android:icon="@drawable/ic_favorite"
+        android:title="@string/shuffle_favorites" />
+</menu>

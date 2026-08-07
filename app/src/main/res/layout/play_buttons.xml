@@ -3,42 +3,76 @@
      SPDX-FileCopyrightText: The LineageOS Project
      SPDX-License-Identifier: Apache-2.0
 -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/playButtonsLinearLayout"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:id="@+id/playButtonsContainer"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
     android:clipChildren="false"
-    android:clipToPadding="false"
-    android:gravity="bottom|end"
-    android:orientation="vertical">
+    android:clipToPadding="false">
 
-    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-        android:id="@+id/shufflePlayExtendedFloatingActionButton"
-        style="?attr/floatingActionButtonStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="18dp"
-        android:tooltipText="@string/shuffle_play"
-        android:visibility="gone"
-        app:collapsedSize="46dp"
-        app:icon="@drawable/ic_shuffle_play"
-        app:materialThemeOverlay="@style/ThemeOverlay.Material3Expressive.FloatingActionButton.TertiaryContainer"
-        tools:visibility="visible" />
-
-    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-        android:id="@+id/playAllExtendedFloatingActionButton"
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/playMenuToggleFAB"
         style="?attr/floatingActionButtonStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
-        android:text="@string/play_all"
+        android:contentDescription="@string/play_all"
+        android:src="@drawable/ic_play_arrow"
         android:visibility="gone"
-        app:icon="@drawable/ic_play_arrow"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:materialThemeOverlay="@style/ThemeOverlay.Material3Expressive.FloatingActionButton.PrimaryContainer"
         tools:visibility="visible" />
 
-</LinearLayout>
+    <LinearLayout
+        android:id="@+id/playMenuSecondaryButtons"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:gravity="end"
+        android:orientation="vertical"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/playMenuToggleFAB"
+        app:layout_constraintEnd_toEndOf="@+id/playMenuToggleFAB"
+        tools:visibility="visible">
+
+        <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+            android:id="@+id/shuffleFavoritesPlayExtendedFloatingActionButton"
+            style="?attr/floatingActionButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:text="@string/shuffle_favorites"
+            app:collapsedSize="46dp"
+            app:icon="@drawable/ic_favorite"
+            app:materialThemeOverlay="@style/ThemeOverlay.Material3Expressive.FloatingActionButton.TertiaryContainer" />
+
+        <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+            android:id="@+id/shufflePlayExtendedFloatingActionButton"
+            style="?attr/floatingActionButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:text="@string/shuffle_play"
+            app:collapsedSize="46dp"
+            app:icon="@drawable/ic_shuffle_play"
+            app:materialThemeOverlay="@style/ThemeOverlay.Material3Expressive.FloatingActionButton.TertiaryContainer" />
+
+        <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+            android:id="@+id/playAllExtendedFloatingActionButton"
+            style="?attr/floatingActionButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/play_all"
+            app:collapsedSize="46dp"
+            app:icon="@drawable/ic_play_arrow"
+            app:materialThemeOverlay="@style/ThemeOverlay.Material3Expressive.FloatingActionButton.TertiaryContainer" />
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
