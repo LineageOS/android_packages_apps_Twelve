@@ -110,7 +110,7 @@ class JellyfinDataSource(
                     .build()
             )
             .setTitle(name)
-            .setArtistUri(getArtistUri(id.toString()))
+            .setArtistUri(artistItems?.firstOrNull()?.id?.let { getArtistUri(it.toString()) })
             .setArtistName(artists?.firstOrNull())
             .setYear(productionYear)
             .build()
