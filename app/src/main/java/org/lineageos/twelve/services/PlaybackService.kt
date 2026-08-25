@@ -473,7 +473,13 @@ class PlaybackService : MediaLibraryService() {
         mediaLibrarySession = MediaLibrarySession.Builder(
             this, player, mediaLibrarySessionCallback
         )
-            .setBitmapLoader(CoilBitmapLoader(this, lifecycleScope))
+            .setBitmapLoader(
+                CoilBitmapLoader(
+                    this,
+                    lifecycleScope,
+                    MediaSession.getBitmapDimensionLimit(this)
+                )
+            )
             .setSessionActivity(getSingleTopActivity())
             .setCustomLayout(getCustomLayout())
             .build()
