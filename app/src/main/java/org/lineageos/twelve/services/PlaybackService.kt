@@ -221,7 +221,7 @@ class PlaybackService : MediaLibraryService() {
                     }
                     .build()
 
-            return MediaSession.ConnectionResult.AcceptedResultBuilder(session)
+            return MediaSession.ConnectionResult.AcceptedResultBuilder(session, controller)
                 .setAvailableSessionCommands(sessionCommands)
                 .build()
         }
@@ -446,7 +446,6 @@ class PlaybackService : MediaLibraryService() {
             .setSkipSilenceEnabled(sharedPreferences.skipSilence)
             .setWakeMode(C.WAKE_MODE_NETWORK)
             .experimentalSetDynamicSchedulingEnabled(true)
-            .experimentalAvoidLoadingWhileEnded(true)
             .build()
             .apply {
                 setOffloadEnabled(sharedPreferences.enableOffload)
