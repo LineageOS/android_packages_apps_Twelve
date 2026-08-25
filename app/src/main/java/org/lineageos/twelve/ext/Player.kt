@@ -80,22 +80,23 @@ fun Player.tracksFlow(eventsFlow: Flow<Player.Events>) = eventsFlow
     .map { currentTracks }
     .onStart { emit(currentTracks) }
 
-private fun Player.mediaItemsShuffled() =
-    currentTimeline.getFirstWindowIndex(shuffleModeEnabled).takeIf {
-        it != C.INDEX_UNSET
-    }?.let { startIndex ->
-        var index = startIndex
-        buildList {
-            repeat(currentTimeline.windowCount) {
-                add(getMediaItemAt(index))
-                index = currentTimeline.getNextWindowIndex(
-                    index, Player.REPEAT_MODE_OFF, shuffleModeEnabled
-                )
-            }
-        }.let { items ->
-            items.indexOfFirst { getMediaItemAt(currentMediaItemIndex) == it } to items
+private fun Player.mediaItemsShuffled(): Pair<Int, List<MediaItem>> {
+    val timeline = currentTimeline
+    val startIndex = timeline.getFirstWindowIndex(shuffleModeEnabled)
+    if (startIndex == C.INDEX_UNSET) return currentMediaItemIndex to mediaItems
+
+    var index = startIndex
+    var currentPos = -1
+    val items = buildList {
+        repeat(timeline.windowCount) {
+            if (index == currentMediaItemIndex) currentPos = it
+            add(getMediaItemAt(index))
+            index = timeline.getNextWindowIndex(index, Player.REPEAT_MODE_OFF, shuffleModeEnabled)
         }
-    } ?: (currentMediaItemIndex to mediaItems)
+    }
+
+    return currentPos to items
+}
 
 private fun Player.createQueueItems() =
     mediaItemsShuffled().let { (currentIndex, mediaItems) ->
