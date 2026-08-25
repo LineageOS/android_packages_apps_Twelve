@@ -456,6 +456,7 @@ class PlaybackService : MediaLibraryService() {
             .setTrackSelector(DefaultTrackSelector(this).apply {
                 setParameters(
                     buildUponParameters()
+                        .setAllowInvalidateSelectionsOnRendererCapabilitiesChange(true)
                         .setAudioOffloadPreferences(
                             TrackSelectionParameters.AudioOffloadPreferences.Builder()
                                 .setAudioOffloadMode(
