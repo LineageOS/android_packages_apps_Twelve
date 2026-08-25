@@ -144,6 +144,10 @@ class TwelveAudioSink(
         return defaultAudioSink.getFormatOffloadSupport(format)
     }
 
+    override fun configure(audioSinkConfig: AudioSink.AudioSinkConfig) {
+        defaultAudioSink.configure(audioSinkConfig)
+    }
+
     override fun getAudioCapabilities(): AudioCapabilities? {
         return defaultAudioSink.getAudioCapabilities()
     }
@@ -154,6 +158,10 @@ class TwelveAudioSink(
 
     override fun setVirtualDeviceId(virtualDeviceId: Int) {
         defaultAudioSink.setVirtualDeviceId(virtualDeviceId)
+    }
+
+    override fun setOutputStreamOffsetUs(outputStreamOffsetUs: Long) {
+        defaultAudioSink.setOutputStreamOffsetUs(outputStreamOffsetUs)
     }
 
     override fun setOffloadMode(offloadMode: Int) {
