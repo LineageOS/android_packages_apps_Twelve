@@ -5,8 +5,8 @@
 -->
 <resources>
     <string name="app_name">Musiqi</string>
-    <string name="app_permissions_toast">İstifadəçi tərəfindən verilməyən icazələr.</string>
-    <string name="visualizer_permissions_toast">Vizuallaşdırıcı üçün səs yazma icazəsi tələb olunur.</string>
+    <string name="app_permissions_toast">İstifadəçi izinləri vermədi.</string>
+    <string name="visualizer_permissions_toast">Vizuallaşdırıcı üçün səs yazma izni tələb olunur.</string>
     <string name="main_fragment_section_activity">Fəaliyyət</string>
     <string name="main_fragment_section_search">Axtar</string>
     <string name="main_fragment_section_library">Kitabxana</string>
@@ -184,8 +184,8 @@
     <string name="content_description_thumbnail">Kiçik şəkil</string>
     <string name="play_all">Hamısını oxut</string>
     <string name="shuffle_play">Qarışıq oxut</string>
-    <string name="library_item_no_permissions">İcazə yoxdur</string>
-    <string name="library_item_no_permissions_description">Tətbiqin lazımi icazələri yoxdur</string>
+    <string name="library_item_no_permissions">İzin yoxdur</string>
+    <string name="library_item_no_permissions_description">Tətbiqin gərəkli izinləri yoxdur</string>
     <string name="library_item_albums">Albomlar</string>
     <string name="library_item_artists">Sənətçilər</string>
     <string name="library_item_genres">Janrlar</string>
