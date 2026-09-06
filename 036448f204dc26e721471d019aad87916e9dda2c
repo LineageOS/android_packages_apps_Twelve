@@ -16,6 +16,23 @@
       "message": "For the whole chain",
       "revId": "036448f204dc26e721471d019aad87916e9dda2c",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2e65dc14_14a24581",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 25732
+      },
+      "writtenOn": "2026-09-06T19:10:31Z",
+      "side": 1,
+      "message": "If this matches the other list fragments, lgtm",
+      "revId": "036448f204dc26e721471d019aad87916e9dda2c",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
