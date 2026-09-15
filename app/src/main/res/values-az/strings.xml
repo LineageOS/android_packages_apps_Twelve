@@ -46,8 +46,8 @@
     <string name="action_play">Oxut</string>
     <string name="audio_play_next">Növbətini oxut</string>
     <string name="audio_add_to_queue">Növbəyə əlavə et</string>
-    <string name="audio_remove_from_playlist">Pleylistdən sil</string>
-    <string name="audio_add_or_remove_from_playlists">Pleylistə əlavə et və ya pleylistdən sil</string>
+    <string name="audio_remove_from_playlist">Pleylistdən çıxart</string>
+    <string name="audio_add_or_remove_from_playlists">Pleylistə əlavə et və ya pleylistdən çıxart</string>
     <string name="open_album">Albomu aç</string>
     <string name="open_artist">Sənətçini aç</string>
     <string name="open_genre">Janrı aç</string>
@@ -142,7 +142,7 @@
     <string name="enable_offload">Offload-ı fəallaşdır</string>
     <string name="enable_offload_summary">Səs oxutma üçün offload audio path-ını istifadə edin. Bunu sıradan çıxartmaq, enerji istifadəsini artıra bilər, ancaq səs oxutma və ya son proseslə bağlı problemlə üzləşdikdə faydalı ola bilər</string>
     <string name="enable_float_output">32-bit üzən nöqtə çıxacı fəallaşdır</string>
-    <string name="enable_float_output_summary">Səs keyfiyyətindən faydalanmaq mümkün olduqda 32-bit PCM üzən nöqtə çıxacını istifadə et. Sürət və ucalıq kontrolları kimi səs effektləri bu rejimdə çalışmağı dayandıracaq. Bu seçimi açmaq, tətbiqin yenidən başladılmasını tələb edir</string>
+    <string name="enable_float_output_summary">Səs keyfiyyətindən faydalanmaq mümkün olduqda 32-bit PCM üzən nöqtə çıxacını istifadə et. Sürət və ucalıq kontrolları kimi səs effektləri bu rejimdə çalışmağı dayandıracaq. Bu seçənəyi açmaq, tətbiqin yenidən başladılmasını tələb edir</string>
     <string name="stop_playback_on_task_removed">Tətbiq sonunculardan silindikdə oxutmanı dayandır</string>
     <string name="stop_playback_on_task_removed_summary">Tətbiq son tətbiqlərdən təmizləndikdə oxutmanı dayandır</string>
     <string name="skip_silence">Səssizliyi ötür</string>
@@ -225,5 +225,5 @@
     <string name="follow_current_lyrics_line">Hazırkı sətri izlə</string>
     <string name="favorites_playlist">Sevimlilər</string>
     <string name="add_to_favorites">Sevimlilərə əlavə et</string>
-    <string name="remove_from_favorites">Sevimlilərdən sil</string>
+    <string name="remove_from_favorites">Sevimlilərdən çıxart</string>
 </resources>
