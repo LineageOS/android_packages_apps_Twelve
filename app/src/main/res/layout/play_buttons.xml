@@ -5,40 +5,31 @@
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/playButtonsLinearLayout"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:clipChildren="false"
-    android:clipToPadding="false"
-    android:gravity="bottom|end"
-    android:orientation="vertical">
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:orientation="horizontal">
 
-    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-        android:id="@+id/shufflePlayExtendedFloatingActionButton"
-        style="?attr/floatingActionButtonStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="18dp"
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/shufflePlayButton"
+        style="?attr/materialIconButtonFilledTonalStyle"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:contentDescription="@string/shuffle_play"
         android:tooltipText="@string/shuffle_play"
-        android:visibility="gone"
-        app:collapsedSize="46dp"
         app:icon="@drawable/ic_shuffle_play"
-        app:materialThemeOverlay="@style/ThemeOverlay.Material3Expressive.FloatingActionButton.TertiaryContainer"
-        tools:visibility="visible" />
+        app:iconGravity="textStart"
+        app:iconPadding="0dp" />
 
-    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-        android:id="@+id/playAllExtendedFloatingActionButton"
-        style="?attr/floatingActionButtonStyle"
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/playAllButton"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
+        android:layout_height="56dp"
         android:text="@string/play_all"
-        android:visibility="gone"
+        android:textColor="?attr/colorOnTertiaryContainer"
+        app:backgroundTint="?attr/colorTertiaryContainer"
         app:icon="@drawable/ic_play_arrow"
-        app:materialThemeOverlay="@style/ThemeOverlay.Material3Expressive.FloatingActionButton.PrimaryContainer"
-        tools:visibility="visible" />
+        app:iconTint="?attr/colorOnTertiaryContainer" />
 
 </LinearLayout>
