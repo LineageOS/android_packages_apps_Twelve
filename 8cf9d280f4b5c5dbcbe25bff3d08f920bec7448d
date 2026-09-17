@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "575289af_74abd130",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2026-09-17T11:48:08Z",
+      "side": 1,
+      "message": "I verified those fixes on my side, but can you +V them?",
+      "revId": "8cf9d280f4b5c5dbcbe25bff3d08f920bec7448d",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
