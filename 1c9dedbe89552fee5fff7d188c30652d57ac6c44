@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d3292b8f_437a894e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2026-09-17T11:56:24Z",
+      "side": 1,
+      "message": "I think we\u0027re going towards a simpler layout as you can see here https://review.lineageos.org/c/LineageOS/android_packages_apps_Twelve/+/503073",
+      "revId": "1c9dedbe89552fee5fff7d188c30652d57ac6c44",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
