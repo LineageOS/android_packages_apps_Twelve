@@ -18,6 +18,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapLatest
 import org.lineageos.twelve.R
 import org.lineageos.twelve.database.TwelveDatabase
@@ -1057,14 +1058,15 @@ class MediaStoreDataSource(
                 .build()
         }.flatMapLatest { audios ->
             when (audios.isNotEmpty()) {
-                true -> combine(
-                    audios.map { audio ->
-                        database.getFavoriteDao().containsFlow(audio.uri)
-                            .mapLatest { isFavorite ->
-                                audio.copy(isFavorite = isFavorite)
+                true ->
+                    database.getFavoriteDao()
+                        .favoritesFlow(audios.map { it.uri })
+                        .map { favorites ->
+                            val favorites = favorites.toSet()
+                            audios.map { audio ->
+                                audio.copy(isFavorite = audio.uri in favorites)
                             }
-                    }
-                ) { it.toList() }
+                        }
 
                 false -> flowOf(listOf())
             }
