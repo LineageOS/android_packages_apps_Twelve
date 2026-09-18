@@ -61,8 +61,6 @@
     <string name="audio_effects">אפקטים לאודיו</string>
     <string name="playback_speed">מהירות השמעה</string>
     <string name="playback_speed_format">%1$s×</string>
-    <string name="playback_pitch_slider_description">גובה צליל נגינה</string>
-    <string name="playback_pitch_unlock">אפשר שינוי גובה צליל</string>
     <string name="playback_warning">ייתכן שהשליטה במהירות ובגובה הצליל לא תפעל כאשר האצת חומרה פעילה. ניתן לנסות לכבות אותה בהגדרות היישום.</string>
     <string name="visualizer">המחשה חזותית</string>
     <string name="audio_potential_issues">בעיות פוטנציאליות</string>

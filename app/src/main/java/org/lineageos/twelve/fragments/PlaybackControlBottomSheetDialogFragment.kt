@@ -34,8 +34,9 @@ class PlaybackControlBottomSheetDialogFragment : TwelveBottomSheetDialogFragment
     private val playbackSpeedMaterialButton by getViewProperty<MaterialButton>(R.id.playbackSpeedMaterialButton)
     private val playbackSpeedMinusMaterialButton by getViewProperty<MaterialButton>(R.id.playbackSpeedMinusMaterialButton)
     private val playbackSpeedPlusMaterialButton by getViewProperty<MaterialButton>(R.id.playbackSpeedPlusMaterialButton)
-    private val playbackPitchSlider by getViewProperty<Slider>(R.id.playbackPitchSlider)
-    private val playbackPitchUnlockMaterialSwitch by getViewProperty<MaterialSwitch>(R.id.playbackPitchUnlockMaterialSwitch)
+    private val playbackPitchMaterialButton by getViewProperty<MaterialButton>(R.id.playbackPitchMaterialButton)
+    private val playbackPitchMinusMaterialButton by getViewProperty<MaterialButton>(R.id.playbackPitchMinusMaterialButton)
+    private val playbackPitchPlusMaterialButton by getViewProperty<MaterialButton>(R.id.playbackPitchPlusMaterialButton)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -52,51 +53,16 @@ class PlaybackControlBottomSheetDialogFragment : TwelveBottomSheetDialogFragment
             viewModel.increasePlaybackSpeed()
         }
 
-        playbackPitchUnlockMaterialSwitch.setOnCheckedChangeListener { _, isChecked ->
-            viewModel.setPitchUnlock(isChecked)
+        playbackPitchMinusMaterialButton.setOnClickListener {
+            viewModel.decreasePlaybackPitch()
         }
 
-        val sliderFrom = playbackPitchSlider.valueFrom
-        val sliderTo = playbackPitchSlider.valueTo
-
-        // Range must odd length to ensure we have a center value
-        require(
-            (sliderTo - sliderFrom).toInt() % 2 == 0
-        ) { "Slider range must have an odd length" }
-
-        playbackPitchSlider.addOnChangeListener { _, value, _ ->
-            viewModel.setPlaybackPitch(
-                PlaybackControlViewModel.sliderToPitch(
-                    value,
-                    sliderFrom,
-                    sliderTo
-                )
-            )
+        playbackPitchMaterialButton.setOnClickListener {
+            viewModel.resetPlaybackPitch()
         }
 
-        playbackPitchSlider.addOnSliderTouchListener(object : Slider.OnSliderTouchListener {
-            override fun onStartTrackingTouch(slider: Slider) {
-            }
-
-            override fun onStopTrackingTouch(slider: Slider) {
-                viewModel.onPitchSliderTouchStopped(
-                    PlaybackControlViewModel.sliderToPitch(
-                        slider.value,
-                        sliderFrom,
-                        sliderTo
-                    )
-                )
-            }
-        })
-
-        playbackPitchSlider.setLabelFormatter {
-            playbackPitchFormatter.format(
-                PlaybackControlViewModel.sliderToPitch(
-                    it,
-                    sliderFrom,
-                    sliderTo
-                )
-            )
+        playbackPitchPlusMaterialButton.setOnClickListener {
+            viewModel.increasePlaybackPitch()
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
@@ -107,8 +73,10 @@ class PlaybackControlBottomSheetDialogFragment : TwelveBottomSheetDialogFragment
                             R.string.playback_speed_format,
                             playbackSpeedFormatter.format(it.speed),
                         )
-                        playbackPitchSlider.value =
-                            PlaybackControlViewModel.pitchToSlider(it.pitch, sliderFrom, sliderTo)
+                        playbackPitchMaterialButton.text = getString(
+                            R.string.playback_pitch_format,
+                            playbackPitchFormatter.format(it.pitch),
+                        )
                     }
                 }
 
@@ -125,14 +93,14 @@ class PlaybackControlBottomSheetDialogFragment : TwelveBottomSheetDialogFragment
                 }
 
                 launch {
-                    viewModel.pitchSliderVisible.collectLatest {
-                        playbackPitchSlider.isVisible = it
+                    viewModel.isPitchMinusButtonEnabled.collectLatest {
+                        playbackPitchMinusMaterialButton.isEnabled = it
                     }
                 }
 
                 launch {
-                    viewModel.isPitchUnlockSwitchChecked.collectLatest {
-                        playbackPitchUnlockMaterialSwitch.isChecked = it
+                    viewModel.isPitchPlusButtonEnabled.collectLatest {
+                        playbackPitchPlusMaterialButton.isEnabled = it
                     }
                 }
             }

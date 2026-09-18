@@ -4,7 +4,6 @@
      SPDX-License-Identifier: Apache-2.0
 -->
 <resources>
-    <string name="playback_pitch_unlock">Разблакіраваць змяненне вышыні тону</string>
     <string name="fullscreen_mode">Поўнаэкранны рэжым</string>
     <string name="activity_most_played_songs">Самыя папулярныя песні</string>
 </resources>

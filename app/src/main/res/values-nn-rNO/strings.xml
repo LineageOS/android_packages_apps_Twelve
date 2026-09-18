@@ -59,8 +59,6 @@
     <string name="audio_effects">Lydeffektar</string>
     <string name="playback_speed">Avspelingsfart</string>
     <string name="playback_speed_format">%1$s×</string>
-    <string name="playback_pitch_slider_description">Tonehøgd for avspeling</string>
-    <string name="playback_pitch_unlock">Lås opp endring av tonehøgd</string>
     <string name="playback_warning">Fart og tonehøgd fungerer kanskje ikkje som dei skal når avspelingsavlasting er på. Prøv å endra dette i app-innstillingane.</string>
     <string name="visualizer">Visualisering</string>
     <string name="audio_potential_issues">Moglege problem</string>

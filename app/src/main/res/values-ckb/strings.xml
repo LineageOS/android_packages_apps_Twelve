@@ -59,8 +59,6 @@
     <string name="audio_effects">کاریگەرییە دەنگییەکان</string>
     <string name="playback_speed">خێرایی لێدان</string>
     <string name="playback_speed_format">%1$s×</string>
-    <string name="playback_pitch_slider_description">پلەی دەنگ (Pitch)</string>
-    <string name="playback_pitch_unlock">کردنەوەی گۆڕینی پلەی دەنگ</string>
     <string name="playback_warning">ڕەنگە خێرایی و پلەی دەنگ بە دروستی کار نەکەن کاتێک تایبەتمەندی Offload چالاکە. لە ڕێکخستنەکاندا هەوڵی کوژاندنەوەی بدە.</string>
     <string name="visualizer">بینراوکار (Visualizer)</string>
     <string name="audio_potential_issues">کێشە ئەگەرییەکان</string>
