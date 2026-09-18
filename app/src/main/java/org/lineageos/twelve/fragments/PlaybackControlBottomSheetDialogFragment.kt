@@ -92,8 +92,9 @@ class PlaybackControlBottomSheetDialogFragment : TwelveBottomSheetDialogFragment
                             R.string.playback_speed_format,
                             playbackSpeedFormatter.format(it.speed),
                         )
-                        playbackPitchSlider.value =
-                            PlaybackControlViewModel.pitchToSlider(it.pitch, sliderFrom, sliderTo)
+                        playbackPitchSlider.value = PlaybackControlViewModel.pitchToSlider(
+                            it.pitch, sliderFrom, sliderTo
+                        ).coerceIn(sliderFrom, sliderTo)
                     }
                 }
 
