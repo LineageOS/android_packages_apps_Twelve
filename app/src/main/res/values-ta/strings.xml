@@ -59,8 +59,6 @@
     <string name="audio_effects">ஒலிவிளைவு</string>
     <string name="playback_speed">இசைவிரைவு</string>
     <string name="playback_speed_format">%1$s×</string>
-    <string name="playback_pitch_slider_description">இசைப்பண்</string>
-    <string name="playback_pitch_unlock">பண்மாற்றந்திற</string>
     <string name="playback_warning">இசைத்தள்ளீடு ஏற்றத்திலெனின் விரைவும் பண்ணும் பிழைக்கலாம். அமைப்பில் மாற்றிடுக.</string>
     <string name="visualizer">ஒலியுணர்வி</string>
     <string name="audio_potential_issues">நேருஞ்சிக்கல்</string>

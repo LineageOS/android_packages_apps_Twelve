@@ -62,8 +62,6 @@
     <string name="audio_effects">Zvukové efekty</string>
     <string name="playback_speed">Rychlost přehrávání</string>
     <string name="playback_speed_format">%1$s×</string>
-    <string name="playback_pitch_slider_description">Výška tónu při přehrávání</string>
-    <string name="playback_pitch_unlock">Odemknout změnu výšky tónu</string>
     <string name="playback_warning">Rychlost a výška tónu nemusí správně fungovat, když je povolena funkce odkládání přehrávání. Zkuste ji přepnout v nastavení aplikace.</string>
     <string name="visualizer">Vizualizér</string>
     <string name="audio_potential_issues">Možné problémy</string>

@@ -32,7 +32,6 @@
             android:textAppearance="?attr/textAppearanceBodyLarge" />
 
         <com.google.android.material.button.MaterialButtonGroup
-            android:id="@+id/buttonGroup"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center_vertical">
@@ -46,9 +45,10 @@
 
             <Button
                 android:id="@+id/playbackSpeedMaterialButton"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="56dp"
-                android:layout_weight="2"
+                android:minWidth="80dp"
+                android:paddingHorizontal="16dp"
                 android:insetTop="0dp"
                 android:insetBottom="0dp"
                 android:textAppearance="?attr/textAppearanceTitleLarge"
@@ -68,7 +68,7 @@
 
     </LinearLayout>
 
-    <!-- Unlock Pitch Change Section -->
+    <!-- Pitch control -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -81,27 +81,45 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:layout_weight="1"
-            android:text="@string/playback_pitch_unlock"
+            android:text="@string/playback_pitch"
             android:textAppearance="?attr/textAppearanceBodyLarge" />
 
-        <com.google.android.material.materialswitch.MaterialSwitch
-            android:id="@+id/playbackPitchUnlockMaterialSwitch"
+        <com.google.android.material.button.MaterialButtonGroup
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical">
+
+            <Button
+                android:id="@+id/playbackPitchMinusMaterialButton"
+                style="?attr/materialIconButtonFilledStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:icon="@drawable/ic_remove" />
+
+            <Button
+                android:id="@+id/playbackPitchMaterialButton"
+                android:layout_width="wrap_content"
+                android:layout_height="56dp"
+                android:minWidth="80dp"
+                android:paddingHorizontal="16dp"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                android:textAppearance="?attr/textAppearanceTitleLarge"
+                android:textColor="?attr/colorOnPrimaryContainer"
+                app:backgroundTint="?attr/colorPrimaryContainer"
+                app:cornerRadius="8dp"
+                tool:text="1.5x" />
+
+            <Button
+                android:id="@+id/playbackPitchPlusMaterialButton"
+                style="?attr/materialIconButtonFilledStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:icon="@drawable/ic_add" />
+
+        </com.google.android.material.button.MaterialButtonGroup>
 
     </LinearLayout>
-
-    <!-- Pitch control -->
-    <com.google.android.material.slider.Slider
-        android:id="@+id/playbackPitchSlider"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:contentDescription="@string/playback_pitch_slider_description"
-        android:paddingTop="16dp"
-        android:stepSize="1"
-        android:valueFrom="1"
-        android:valueTo="11"
-        android:visibility="gone" />
 
     <!-- Warning message -->
     <TextView
