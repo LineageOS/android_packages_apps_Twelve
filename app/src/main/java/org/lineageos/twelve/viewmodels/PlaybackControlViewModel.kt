@@ -13,6 +13,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.mapLatest
@@ -54,8 +55,12 @@ class PlaybackControlViewModel(application: Application) : TwelveViewModel(appli
         )
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val isPitchUnlockSwitchChecked = playbackParameters
-        .mapLatest { it.pitch != PITCH_DEFAULT }
+    val isPitchUnlockSwitchChecked = combine(
+        playbackParameters,
+        _pitchSliderVisible,
+    ) { parameters, pitchSliderVisible ->
+        pitchSliderVisible || parameters.pitch != PITCH_DEFAULT
+    }
         .flowOn(Dispatchers.IO)
         .stateIn(
             viewModelScope,
@@ -99,6 +104,12 @@ class PlaybackControlViewModel(application: Application) : TwelveViewModel(appli
         mediaController.value?.setPlaybackParameters(
             playbackParameters.value.withPitch(pitch)
         )
+    }
+
+    fun onPitchSliderTouchStopped(pitch: Float) {
+        if (pitch == PITCH_DEFAULT) {
+            setPitchUnlock(false)
+        }
     }
 
     companion object {

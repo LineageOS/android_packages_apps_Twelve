@@ -74,6 +74,21 @@ class PlaybackControlBottomSheetDialogFragment : TwelveBottomSheetDialogFragment
             )
         }
 
+        playbackPitchSlider.addOnSliderTouchListener(object : Slider.OnSliderTouchListener {
+            override fun onStartTrackingTouch(slider: Slider) {
+            }
+
+            override fun onStopTrackingTouch(slider: Slider) {
+                viewModel.onPitchSliderTouchStopped(
+                    PlaybackControlViewModel.sliderToPitch(
+                        slider.value,
+                        sliderFrom,
+                        sliderTo
+                    )
+                )
+            }
+        })
+
         playbackPitchSlider.setLabelFormatter {
             playbackPitchFormatter.format(
                 PlaybackControlViewModel.sliderToPitch(
