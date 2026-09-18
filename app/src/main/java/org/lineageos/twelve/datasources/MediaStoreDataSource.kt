@@ -1057,14 +1057,11 @@ class MediaStoreDataSource(
                 .build()
         }.flatMapLatest { audios ->
             when (audios.isNotEmpty()) {
-                true -> combine(
-                    audios.map { audio ->
-                        database.getFavoriteDao().containsFlow(audio.uri)
-                            .mapLatest { isFavorite ->
-                                audio.copy(isFavorite = isFavorite)
-                            }
+                true -> database.getFavoriteDao().getAll()
+                    .mapLatest { favorites ->
+                        val favoriteSet = favorites.toSet()
+                        audios.map { audio -> audio.copy(isFavorite = audio.uri in favoriteSet) }
                     }
-                ) { it.toList() }
 
                 false -> flowOf(listOf())
             }
