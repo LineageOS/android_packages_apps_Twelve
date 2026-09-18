@@ -43,6 +43,7 @@ import org.lineageos.twelve.ext.mediaItemFlow
 import org.lineageos.twelve.ext.mediaMetadataFlow
 import org.lineageos.twelve.ext.next
 import org.lineageos.twelve.ext.playbackParametersFlow
+import org.lineageos.twelve.ext.playbackProgressFlow
 import org.lineageos.twelve.ext.playbackStateFlow
 import org.lineageos.twelve.ext.repeatModeFlow
 import org.lineageos.twelve.ext.shuffleModeFlow
@@ -280,15 +281,18 @@ open class NowPlayingViewModel(application: Application) : TwelveViewModel(appli
     @OptIn(ExperimentalCoroutinesApi::class)
     val durationCurrentPositionMs = mediaControllerFlow
         .flatMapLatest { mediaController ->
-            flow {
-                while (true) {
-                    val duration = mediaController.duration.takeIf { it != C.TIME_UNSET }
-                    val currentPosition =
-                        mediaController.currentPosition.takeIf { duration != null }
-                    emit(duration to currentPosition)
-                    delay(200)
+            mediaController.playbackProgressFlow(eventsFlow)
+                .flatMapLatest {
+                    flow {
+                        while (true) {
+                            val duration = mediaController.duration.takeIf { it != C.TIME_UNSET }
+                            val currentPosition =
+                                mediaController.currentPosition.takeIf { duration != null }
+                            emit(duration to currentPosition)
+                            delay(500)
+                        }
+                    }
                 }
-            }
         }
         .flowOn(Dispatchers.Main)
         .stateIn(
