@@ -614,7 +614,9 @@ class JellyfinDataSource(
             else -> {
                 val playlistId = UUID.fromString(playlistUri.lastPathSegment!!)
                 val audioId = UUID.fromString(audioUri.lastPathSegment!!)
-                client.removeItemFromPlaylist(playlistId, audioId).map {
+                client.removeItemFromPlaylist(playlistId, audioId).also {
+                    android.util.Log.d("JellyfinDataSource", "removeItemFromPlaylist: $it")
+                }.map {
                     onPlaylistsChanged()
                 }
             }

@@ -30,4 +30,5 @@ data class Item(
     @SerialName("Genres") val genres: List<String>? = null,
     @SerialName("Type") val type: ItemType? = null,
     @SerialName("UserData") val userData: UserData? = null,
+    @SerialName("PlaylistItemId") val playlistItemId: String? = null,
 )
