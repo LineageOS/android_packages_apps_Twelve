@@ -25,6 +25,7 @@ import org.lineageos.twelve.models.Result
 import java.net.SocketTimeoutException
 import kotlin.reflect.KType
 import kotlin.reflect.typeOf
+import kotlin.time.Duration.Companion.milliseconds
 
 typealias MethodResult<T> = Result<T, ApiError>
 
@@ -190,7 +191,7 @@ class Api(
                 is Result.Failure -> when (result.error) {
                     is ApiError.HttpError -> when (result.error.code) {
                         in 500..599 -> {
-                            delay(currentDelay)
+                            delay(currentDelay.milliseconds)
                             currentDelay = (currentDelay * factor).toLong().coerceAtMost(maxDelay)
                         }
 
