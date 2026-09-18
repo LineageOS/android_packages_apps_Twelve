@@ -176,7 +176,7 @@ class LocalPlayerViewModel(application: Application) : AndroidViewModel(applicat
                     val currentPosition =
                         exoPlayer.currentPosition.takeIf { duration != null }
                     emit(duration to currentPosition)
-                    delay(200)
+                    delay(500)
                 }
             }
         }
