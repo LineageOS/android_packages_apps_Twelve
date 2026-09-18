@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8b4c7ee6_5b64ad0c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2026-09-18T15:55:39Z",
+      "side": 1,
+      "message": "I\u0027d just remove this feature as a whole, but sometimes it works and I\u0027d make nolen sad.",
+      "revId": "285b4a59b1b4119b2d214bc4c32022464916f4ab",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
