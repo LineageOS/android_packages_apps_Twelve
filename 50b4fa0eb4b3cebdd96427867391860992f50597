@@ -1,5 +1,23 @@
 {
-  "comments": [],
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d268f166_7879b23e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2026-09-18T16:41:35Z",
+      "side": 1,
+      "message": "yeah I did that also in some of our viewmodels, then asked myself if it was worth changing, and no was the answer",
+      "revId": "50b4fa0eb4b3cebdd96427867391860992f50597",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ],
   "submitRequirementResults": [
     {
       "submitRequirement": {
