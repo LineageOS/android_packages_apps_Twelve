@@ -26,10 +26,10 @@ import com.google.android.material.slider.Slider
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.lineageos.twelve.ext.loadThumbnail
-import org.lineageos.twelve.ext.updateValueAndRange
 import org.lineageos.twelve.models.FlowResult
 import org.lineageos.twelve.models.MediaType
 import org.lineageos.twelve.models.RepeatMode
+import org.lineageos.twelve.ui.views.PlaybackProgressSlider
 import org.lineageos.twelve.utils.TimestampFormatter
 import org.lineageos.twelve.viewmodels.IntentsViewModel
 import org.lineageos.twelve.viewmodels.LocalPlayerViewModel
@@ -63,8 +63,8 @@ class ViewActivity : AppCompatActivity(R.layout.activity_view) {
     private val shuffleMaterialButton by lazy { findViewById<MaterialButton>(R.id.shuffleMaterialButton) }
     private val thumbnailImageView by lazy { findViewById<ImageView>(R.id.thumbnailImageView) }
 
-    // Progress slider state
-    private var isProgressSliderDragging = false
+    // Progress slider
+    private var playbackProgressSlider: PlaybackProgressSlider? = null
 
     // Intents
     private val intentListener = Consumer<Intent> { intentsViewModel.onIntent(it) }
@@ -78,17 +78,21 @@ class ViewActivity : AppCompatActivity(R.layout.activity_view) {
         albumTitleTextView.isSelected = true
 
         // Media controls
+        playbackProgressSlider = PlaybackProgressSlider(
+            progressSlider,
+            currentTimestampTextView,
+        )
         progressSlider.setLabelFormatter {
             TimestampFormatter.formatTimestampMillis(it)
         }
         progressSlider.addOnSliderTouchListener(
             object : Slider.OnSliderTouchListener {
                 override fun onStartTrackingTouch(slider: Slider) {
-                    isProgressSliderDragging = true
+                    playbackProgressSlider?.startDragging()
                 }
 
                 override fun onStopTrackingTouch(slider: Slider) {
-                    isProgressSliderDragging = false
+                    playbackProgressSlider?.stopDragging()
                     localPlayerViewModel.seekToPosition(slider.value.roundToLong())
                 }
             }
@@ -156,6 +160,7 @@ class ViewActivity : AppCompatActivity(R.layout.activity_view) {
 
                 launch {
                     localPlayerViewModel.isPlaying.collectLatest { isPlaying ->
+                        playbackProgressSlider?.setIsPlaying(isPlaying)
                         playPauseMaterialButton.setIconResource(
                             when (isPlaying) {
                                 true -> R.drawable.avd_play_to_pause
@@ -197,20 +202,11 @@ class ViewActivity : AppCompatActivity(R.layout.activity_view) {
 
                 launch {
                     localPlayerViewModel.durationCurrentPositionMs.collectLatest {
-                        val durationMs = it.first ?: 0L
-                        val currentPositionMs = it.second ?: 0L
-
-                        val newValueTo = durationMs.toFloat().takeIf { it > 0 } ?: 1f
-                        val newValue = currentPositionMs.toFloat()
-
-                        progressSlider.updateValueAndRange(
-                            value = newValue,
-                            valueTo = newValueTo,
-                            isDragging = isProgressSliderDragging,
+                        playbackProgressSlider?.update(
+                            durationMs = it.first,
+                            currentPositionMs = it.second,
+                            playbackSpeed = localPlayerViewModel.playbackParameters.value.speed,
                         )
-
-                        currentTimestampTextView.text =
-                            TimestampFormatter.formatTimestampMillis(currentPositionMs)
                     }
                 }
 
@@ -307,6 +303,19 @@ class ViewActivity : AppCompatActivity(R.layout.activity_view) {
                 }
             }
         }
+    }
+
+    override fun onStop() {
+        playbackProgressSlider?.stop()
+
+        super.onStop()
+    }
+
+    override fun onDestroy() {
+        playbackProgressSlider?.stop()
+        playbackProgressSlider = null
+
+        super.onDestroy()
     }
 
     companion object {
