@@ -385,6 +385,7 @@ class JellyfinClient(
                 SortingStrategy.MODIFICATION_DATE -> "DateLastContentAdded"
                 SortingStrategy.NAME -> "Name"
                 SortingStrategy.PLAY_COUNT -> "PlayCount"
+                SortingStrategy.RANDOM -> "Random"
             }
         )
 
