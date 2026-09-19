@@ -132,12 +132,20 @@ class MediaStoreDataSource(
             limit: Int,
         ) =
             database.getLocalMediaStatsProviderDao()
-                .getAllByPlayCount(ACTIVITY_STATS_SCAN_LIMIT)
+                .getAllByPlayCount("${type.uri}/%", limit)
                 .mapLatest { stats ->
                     stats.mapNotNull { stat ->
                         MediaStoreAudioUri.from(stat.uri)?.takeIf { it.type == type }?.id
-                    }.take(limit)
+                    }
                 }
+
+        private val MediaStoreAudioUri.Type.uri
+            get() = when (this) {
+                MediaStoreAudioUri.Type.ALBUMS -> albumsUri
+                MediaStoreAudioUri.Type.ARTISTS -> artistsUri
+                MediaStoreAudioUri.Type.GENRES -> genresUri
+                MediaStoreAudioUri.Type.MEDIA -> audiosUri
+            }
 
         private fun queryMostPlayedMediaItems(
             uri: Uri,
@@ -1235,7 +1243,6 @@ class MediaStoreDataSource(
     companion object {
         // packages/providers/MediaProvider/src/com/android/providers/media/LocalUriMatcher.java
         private const val AUDIO_ALBUMART = "albumart"
-        private const val ACTIVITY_STATS_SCAN_LIMIT = 100
         private const val ACTIVITY_TAB_ITEM_LIMIT = 10
 
         private val albumsProjection = arrayOf(
