@@ -16,6 +16,24 @@
       "message": "Fine with it if the unique constraint is still active",
       "revId": "2f19d9ce3681226b2cc593ea49cf2b8b4a7358c7",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "65f6ed45_9d8945df",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2026-09-19T13:59:01Z",
+      "side": 1,
+      "message": "All of them are primary keys, so yes.\nThe only special case is PlaylistItemCrossRef, but sqlite always creates an index for the (a,b) pair, and a being the leftmost component can use (a,b) without any penalty",
+      "parentUuid": "0c3f261b_70b39051",
+      "revId": "2f19d9ce3681226b2cc593ea49cf2b8b4a7358c7",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
