@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0d0b7201_8fc9b55e",
+        "filename": "app/src/main/java/org/lineageos/twelve/models/SortingStrategy.kt",
+        "patchSetId": 1
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 25732
+      },
+      "writtenOn": "2026-09-19T13:50:15Z",
+      "side": 1,
+      "message": "Comma here pls",
+      "revId": "3d3e3d20f82e2b344eb5aea7359052fa764ac921",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
