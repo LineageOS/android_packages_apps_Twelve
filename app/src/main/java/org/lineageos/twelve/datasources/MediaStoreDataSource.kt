@@ -10,6 +10,7 @@ import android.content.ContentUris
 import android.database.Cursor
 import android.net.Uri
 import android.os.Build
+import android.os.Bundle
 import android.provider.BaseColumns
 import android.provider.MediaStore
 import kotlinx.coroutines.CoroutineScope
@@ -179,9 +180,9 @@ class MediaStoreDataSource(
     ) = providersManager.flatMapWithInstanceOf(providerIdentifier) {
         combine(
             mostPlayedAlbums(),
-            albums(providerIdentifier, SortingRule(SortingStrategy.NAME)),
-            artists(providerIdentifier, SortingRule(SortingStrategy.NAME)),
-            genres(providerIdentifier, SortingRule(SortingStrategy.NAME)),
+            albums(providerIdentifier, SortingRule(SortingStrategy.RANDOM)),
+            artists(providerIdentifier, SortingRule(SortingStrategy.RANDOM)),
+            genres(providerIdentifier, SortingRule(SortingStrategy.RANDOM)),
         ) { mostPlayed, albums, artists, genres ->
             Result.Success(
                 listOf(
@@ -200,7 +201,7 @@ class MediaStoreDataSource(
                             LocalizedString.StringResIdLocalizedString(
                                 R.string.activity_random_albums
                             ),
-                            it.shuffled(),
+                            it,
                         )
                     },
                     artists.map {
@@ -209,7 +210,7 @@ class MediaStoreDataSource(
                             LocalizedString.StringResIdLocalizedString(
                                 R.string.activity_random_artists
                             ),
-                            it.shuffled(),
+                            it,
                         )
                     },
                     genres.map {
@@ -218,7 +219,7 @@ class MediaStoreDataSource(
                             LocalizedString.StringResIdLocalizedString(
                                 R.string.activity_random_genres
                             ),
-                            it.shuffled(),
+                            it,
                         )
                     },
                 ).mapNotNull {
@@ -238,24 +239,15 @@ class MediaStoreDataSource(
             albumsUri,
             albumsProjection,
             Bundle {
-                putStringArray(
-                    ContentResolver.QUERY_ARG_SORT_COLUMNS,
-                    listOfNotNull(
-                        when (sortingRule.strategy) {
-                            SortingStrategy.ARTIST_NAME -> MediaStore.Audio.AlbumColumns.ARTIST
-                            SortingStrategy.CREATION_DATE -> MediaStore.Audio.AlbumColumns.LAST_YEAR
-                            SortingStrategy.NAME -> MediaStore.Audio.AlbumColumns.ALBUM
-                            else -> null
-                        }?.let { column ->
-                            when (sortingRule.reverse) {
-                                true -> "$column DESC"
-                                false -> column
-                            }
-                        },
-                        MediaStore.Audio.AlbumColumns.ALBUM.takeIf {
-                            sortingRule.strategy != SortingStrategy.NAME
-                        },
-                    ).toTypedArray()
+                putSortingRule(
+                    sortingRule,
+                    fallbackColumn = MediaStore.Audio.AlbumColumns.ALBUM,
+                    strategyColumn = when (sortingRule.strategy) {
+                        SortingStrategy.ARTIST_NAME -> MediaStore.Audio.AlbumColumns.ARTIST
+                        SortingStrategy.CREATION_DATE -> MediaStore.Audio.AlbumColumns.LAST_YEAR
+                        SortingStrategy.NAME -> MediaStore.Audio.AlbumColumns.ALBUM
+                        else -> null
+                    },
                 )
             }
         ).mapEachRowToAlbum().mapLatest {
@@ -271,22 +263,13 @@ class MediaStoreDataSource(
             artistsUri,
             artistsProjection,
             Bundle {
-                putStringArray(
-                    ContentResolver.QUERY_ARG_SORT_COLUMNS,
-                    listOfNotNull(
-                        when (sortingRule.strategy) {
-                            SortingStrategy.NAME -> MediaStore.Audio.ArtistColumns.ARTIST
-                            else -> null
-                        }?.let { column ->
-                            when (sortingRule.reverse) {
-                                true -> "$column DESC"
-                                false -> column
-                            }
-                        },
-                        MediaStore.Audio.ArtistColumns.ARTIST.takeIf {
-                            sortingRule.strategy != SortingStrategy.NAME
-                        },
-                    ).toTypedArray()
+                putSortingRule(
+                    sortingRule,
+                    fallbackColumn = MediaStore.Audio.ArtistColumns.ARTIST,
+                    strategyColumn = when (sortingRule.strategy) {
+                        SortingStrategy.NAME -> MediaStore.Audio.ArtistColumns.ARTIST
+                        else -> null
+                    },
                 )
             }
         ).mapEachRowToArtist().mapLatest {
@@ -302,24 +285,15 @@ class MediaStoreDataSource(
             audiosUri,
             audiosProjection,
             Bundle {
-                putStringArray(
-                    ContentResolver.QUERY_ARG_SORT_COLUMNS,
-                    listOfNotNull(
-                        when (sortingRule.strategy) {
-                            SortingStrategy.ARTIST_NAME -> MediaStore.Audio.AudioColumns.ARTIST
-                            SortingStrategy.CREATION_DATE -> MediaStore.Audio.AudioColumns.YEAR
-                            SortingStrategy.NAME -> MediaStore.Audio.AudioColumns.TITLE
-                            else -> null
-                        }?.let { column ->
-                            when (sortingRule.reverse) {
-                                true -> "$column DESC"
-                                false -> column
-                            }
-                        },
-                        MediaStore.Audio.AudioColumns.TITLE.takeIf {
-                            sortingRule.strategy != SortingStrategy.NAME
-                        },
-                    ).toTypedArray()
+                putSortingRule(
+                    sortingRule,
+                    fallbackColumn = MediaStore.Audio.AudioColumns.TITLE,
+                    strategyColumn = when (sortingRule.strategy) {
+                        SortingStrategy.ARTIST_NAME -> MediaStore.Audio.AudioColumns.ARTIST
+                        SortingStrategy.CREATION_DATE -> MediaStore.Audio.AudioColumns.YEAR
+                        SortingStrategy.NAME -> MediaStore.Audio.AudioColumns.TITLE
+                        else -> null
+                    },
                 )
             }
         ).mapEachRowToAudio().mapLatest {
@@ -335,22 +309,13 @@ class MediaStoreDataSource(
             genresUri,
             genresProjection,
             Bundle {
-                putStringArray(
-                    ContentResolver.QUERY_ARG_SORT_COLUMNS,
-                    listOfNotNull(
-                        when (sortingRule.strategy) {
-                            SortingStrategy.NAME -> MediaStore.Audio.GenresColumns.NAME
-                            else -> null
-                        }?.let { column ->
-                            when (sortingRule.reverse) {
-                                true -> "$column DESC"
-                                false -> column
-                            }
-                        },
-                        MediaStore.Audio.GenresColumns.NAME.takeIf {
-                            sortingRule.strategy != SortingStrategy.NAME
-                        },
-                    ).toTypedArray()
+                putSortingRule(
+                    sortingRule,
+                    fallbackColumn = MediaStore.Audio.GenresColumns.NAME,
+                    strategyColumn = when (sortingRule.strategy) {
+                        SortingStrategy.NAME -> MediaStore.Audio.GenresColumns.NAME
+                        else -> null
+                    },
                 )
             }
         ).mapEachRowToGenre().mapLatest {
@@ -1205,5 +1170,31 @@ class MediaStoreDataSource(
             required = true,
             hidden = false,
         )
+
+        private fun Bundle.putSortingRule(
+            sortingRule: SortingRule,
+            fallbackColumn: String,
+            strategyColumn: String?,
+        ) = when (sortingRule.strategy) {
+            SortingStrategy.RANDOM -> putString(
+                ContentResolver.QUERY_ARG_SQL_SORT_ORDER,
+                "RANDOM()",
+            )
+
+            else -> putStringArray(
+                ContentResolver.QUERY_ARG_SORT_COLUMNS,
+                listOfNotNull(
+                    strategyColumn?.let { column ->
+                        when (sortingRule.reverse) {
+                            true -> "$column DESC"
+                            false -> column
+                        }
+                    },
+                    fallbackColumn.takeIf {
+                        sortingRule.strategy != SortingStrategy.NAME
+                    },
+                ).toTypedArray()
+            )
+        }
     }
 }
