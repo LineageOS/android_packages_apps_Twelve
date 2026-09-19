@@ -135,7 +135,7 @@ class MediaStoreDataSource(
                 .getAllByPlayCount(ACTIVITY_STATS_SCAN_LIMIT)
                 .mapLatest { stats ->
                     stats.mapNotNull { stat ->
-                        MediaStoreAudioUri.from(stat.audioUri)?.takeIf { it.type == type }?.id
+                        MediaStoreAudioUri.from(stat.uri)?.takeIf { it.type == type }?.id
                     }.take(limit)
                 }
 
@@ -1049,7 +1049,7 @@ class MediaStoreDataSource(
         SortingStrategy.PLAY_COUNT -> combine(
             database.getLocalMediaStatsProviderDao().getAllFlow()
         ) { items, stats ->
-            val playCounts = stats.associate { it.audioUri to it.playCount }
+            val playCounts = stats.associate { it.uri to it.playCount }
 
             items.sortedByDescending { playCounts[it.uri] ?: 0L }.let {
                 when (sortingRule.reverse) {

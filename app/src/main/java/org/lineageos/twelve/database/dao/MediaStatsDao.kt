@@ -18,7 +18,7 @@ interface MediaStatsDao {
     /**
      * Delete an entry.
      */
-    @Query("DELETE FROM LocalMediaStats WHERE audio_uri IN (:mediaUris)")
+    @Query("DELETE FROM LocalMediaStats WHERE uri IN (:mediaUris)")
     suspend fun delete(mediaUris: List<Uri>)
 
     /**
@@ -33,13 +33,13 @@ interface MediaStatsDao {
     @Query(
         """
             INSERT
-            INTO LocalMediaStats (audio_uri, play_count)
-            VALUES (:audioUri, 1)
-            ON CONFLICT(audio_uri) DO UPDATE SET
+            INTO LocalMediaStats (uri, play_count)
+            VALUES (:uri, 1)
+            ON CONFLICT(uri) DO UPDATE SET
                 play_count = play_count + 1
         """
     )
-    suspend fun increasePlayCount(audioUri: Uri)
+    suspend fun increasePlayCount(uri: Uri)
 
     /**
      * Increase the play count of multiple entries by 1.
