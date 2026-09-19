@@ -66,6 +66,14 @@ interface MediaStatsDao {
     /**
      * Fetch all entries sorted by play count.
      */
-    @Query("SELECT * FROM LocalMediaStats ORDER BY play_count DESC LIMIT :limit")
-    fun getAllByPlayCount(limit: Int): Flow<List<LocalMediaStats>>
+    @Query(
+        """
+            SELECT *
+            FROM LocalMediaStats
+            WHERE uri LIKE :uriPattern
+            ORDER BY play_count DESC
+            LIMIT :limit
+        """
+    )
+    fun getAllByPlayCount(uriPattern: String, limit: Int): Flow<List<LocalMediaStats>>
 }
