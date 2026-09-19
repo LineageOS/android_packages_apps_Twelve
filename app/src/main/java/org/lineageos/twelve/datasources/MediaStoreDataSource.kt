@@ -1059,8 +1059,19 @@ class MediaStoreDataSource(
             when (audios.isNotEmpty()) {
                 true -> database.getFavoriteDao().getAll()
                     .mapLatest { favorites ->
-                        val favoriteSet = favorites.toSet()
-                        audios.map { audio -> audio.copy(isFavorite = audio.uri in favoriteSet) }
+                        when (favorites.isEmpty()) {
+                            true -> audios
+                            false -> {
+                                val favoriteSet = favorites.toHashSet()
+
+                                audios.map { audio ->
+                                    when (audio.uri in favoriteSet) {
+                                        true -> audio.copy(isFavorite = true)
+                                        false -> audio
+                                    }
+                                }
+                            }
+                        }
                     }
 
                 false -> flowOf(listOf())
