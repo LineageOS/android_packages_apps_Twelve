@@ -21,7 +21,6 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.launch
 import okhttp3.Cache
@@ -460,12 +459,10 @@ class MediaRepository(
     private suspend fun gcLocalMediaStats() {
         val statsDao = database.getLocalMediaStatsProviderDao()
         val allStats = statsDao.getAll()
-        val inSource = mediaStoreDataSource.audios().mapLatest { it }.first()
+        val inSource = mediaStoreDataSource.mediaStatsUris().first()
 
         val removedMedia = allStats.mapNotNull {
-            val notPresent = inSource.none { audio ->
-                audio.uri.lastPathSegment == it.audioUri.lastPathSegment
-            }
+            val notPresent = it.audioUri !in inSource
 
             when (notPresent) {
                 true -> it.audioUri
@@ -473,6 +470,8 @@ class MediaRepository(
             }
         }
 
-        statsDao.delete(removedMedia)
+        if (removedMedia.isNotEmpty()) {
+            statsDao.delete(removedMedia)
+        }
     }
 }

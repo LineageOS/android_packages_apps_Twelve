@@ -8,6 +8,7 @@ package org.lineageos.twelve.database.dao
 import android.net.Uri
 import androidx.room.Dao
 import androidx.room.Query
+import androidx.room.Transaction
 import kotlinx.coroutines.flow.Flow
 import org.lineageos.twelve.database.entities.LocalMediaStats
 
@@ -44,10 +45,26 @@ interface MediaStatsDao {
     suspend fun increasePlayCount(audioUri: Uri)
 
     /**
+     * Increase the play count of multiple entries by 1.
+     */
+    @Transaction
+    suspend fun increasePlayCount(mediaUris: List<Uri>) {
+        mediaUris.distinct().forEach {
+            increasePlayCount(it)
+        }
+    }
+
+    /**
      * Fetch all entries.
      */
     @Query("SELECT * FROM LocalMediaStats")
     suspend fun getAll(): List<LocalMediaStats>
+
+    /**
+     * Fetch all entries as a flow.
+     */
+    @Query("SELECT * FROM LocalMediaStats")
+    fun getAllFlow(): Flow<List<LocalMediaStats>>
 
     /**
      * Fetch all entries sorted by play count.
