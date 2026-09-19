@@ -370,7 +370,7 @@ class MediaStoreDataSource(
                     )
                     putStringArray(
                         ContentResolver.QUERY_ARG_SQL_SELECTION_ARGS,
-                        arrayOf(query)
+                        arrayOf("%${query}%")
                     )
                 }
             ).mapEachRowToArtist(),
@@ -386,7 +386,7 @@ class MediaStoreDataSource(
                     )
                     putStringArray(
                         ContentResolver.QUERY_ARG_SQL_SELECTION_ARGS,
-                        arrayOf(query)
+                        arrayOf("%${query}%")
                     )
                 }
             ).mapEachRowToAudio(),
@@ -402,7 +402,7 @@ class MediaStoreDataSource(
                     )
                     putStringArray(
                         ContentResolver.QUERY_ARG_SQL_SELECTION_ARGS,
-                        arrayOf(query)
+                        arrayOf("%${query}%")
                     )
                 }
             ).mapEachRowToGenre(),
