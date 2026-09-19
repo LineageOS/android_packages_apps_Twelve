@@ -32,14 +32,11 @@ interface MediaStatsDao {
      */
     @Query(
         """
-            INSERT OR REPLACE
+            INSERT
             INTO LocalMediaStats (audio_uri, play_count)
-            VALUES (
-                :audioUri,
-                COALESCE(
-                    (SELECT play_count + 1 FROM LocalMediaStats WHERE audio_uri = :audioUri), 1
-                )
-            )
+            VALUES (:audioUri, 1)
+            ON CONFLICT(audio_uri) DO UPDATE SET
+                play_count = play_count + 1
         """
     )
     suspend fun increasePlayCount(audioUri: Uri)
