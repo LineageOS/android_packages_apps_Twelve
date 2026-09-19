@@ -16,6 +16,24 @@
       "message": "Comma here pls",
       "revId": "3d3e3d20f82e2b344eb5aea7359052fa764ac921",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "7d3e8661_cc23a74d",
+        "filename": "app/src/main/java/org/lineageos/twelve/models/SortingStrategy.kt",
+        "patchSetId": 1
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2026-09-19T13:59:01Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "0d0b7201_8fc9b55e",
+      "revId": "3d3e3d20f82e2b344eb5aea7359052fa764ac921",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
