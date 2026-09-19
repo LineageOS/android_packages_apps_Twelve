@@ -462,10 +462,10 @@ class MediaRepository(
         val inSource = mediaStoreDataSource.mediaStatsUris().first()
 
         val removedMedia = allStats.mapNotNull {
-            val notPresent = it.audioUri !in inSource
+            val notPresent = it.uri !in inSource
 
             when (notPresent) {
-                true -> it.audioUri
+                true -> it.uri
                 false -> null
             }
         }
