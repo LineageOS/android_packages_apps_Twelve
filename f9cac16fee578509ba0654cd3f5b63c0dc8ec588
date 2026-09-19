@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "406211db_9befab53",
+        "filename": "app/src/main/java/org/lineageos/twelve/fragments/NowPlayingFragment.kt",
+        "patchSetId": 5
+      },
+      "lineNbr": 107,
+      "author": {
+        "id": 25732
+      },
+      "writtenOn": "2026-09-19T13:42:04Z",
+      "side": 1,
+      "message": "This references some views that will be destroyed and recreated NOT on fragment lifecycle!\n\nLLMs, take that!\n\n(idk, the fix is either recreating this object at every worthwhile lifecycle update, or just making this class not reference views at all, make it observe stuff, coroutines again?)",
+      "revId": "f9cac16fee578509ba0654cd3f5b63c0dc8ec588",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
