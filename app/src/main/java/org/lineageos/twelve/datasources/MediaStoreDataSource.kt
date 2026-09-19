@@ -740,7 +740,12 @@ class MediaStoreDataSource(
                 ).mapEachRowToAudio(volumeName)
             ) { genres, appearsInAlbums, audios ->
                 val genre = genres.firstOrNull() ?: when (genreId) {
-                    0L -> Genre.Builder(genreUri).build()
+                    0L -> Genre(
+                        uri = genreUri,
+                        thumbnail = null,
+                        name = null,
+                    )
+
                     else -> null
                 }
 
@@ -949,18 +954,19 @@ class MediaStoreDataSource(
 
             val albumArtUri = ContentUris.withAppendedId(albumsArtUri, albumId)
 
-            val thumbnail = Thumbnail.Builder()
-                .setUri(albumArtUri)
-                .setType(Thumbnail.Type.FRONT_COVER)
-                .build()
+            val thumbnail = Thumbnail(
+                uri = albumArtUri,
+                type = Thumbnail.Type.FRONT_COVER,
+            )
 
-            Album.Builder(uri)
-                .setThumbnail(thumbnail)
-                .setTitle(album?.takeIf { it != MediaStore.UNKNOWN_STRING })
-                .setArtistUri(artistUri)
-                .setArtistName(artist?.takeIf { it != MediaStore.UNKNOWN_STRING })
-                .setYear(lastYear.takeIf { it != 0 })
-                .build()
+            Album(
+                uri = uri,
+                thumbnail = thumbnail,
+                title = album?.takeIf { it != MediaStore.UNKNOWN_STRING },
+                artistUri = artistUri,
+                artistName = artist?.takeIf { it != MediaStore.UNKNOWN_STRING },
+                year = lastYear.takeIf { it != 0 },
+            )
         }
     }
 
@@ -973,9 +979,11 @@ class MediaStoreDataSource(
 
             val uri = ContentUris.withAppendedId(artistsUri, artistId)
 
-            Artist.Builder(uri)
-                .setName(artist?.takeIf { it != MediaStore.UNKNOWN_STRING })
-                .build()
+            Artist(
+                uri = uri,
+                thumbnail = null,
+                name = artist?.takeIf { it != MediaStore.UNKNOWN_STRING },
+            )
         }
     }
 
@@ -1033,28 +1041,30 @@ class MediaStoreDataSource(
                 .appendPath(AUDIO_ALBUMART)
                 .build()
 
-            val thumbnail = Thumbnail.Builder()
-                .setUri(albumArtUri)
-                .setType(Thumbnail.Type.FRONT_COVER)
-                .build()
+            val thumbnail = Thumbnail(
+                uri = albumArtUri,
+                type = Thumbnail.Type.FRONT_COVER,
+            )
 
-            Audio.Builder(uri)
-                .setThumbnail(thumbnail)
-                .setPlaybackUri(uri)
-                .setMimeType(mimeType)
-                .setTitle(title)
-                .setType(audioType)
-                .setDurationMs(duration)
-                .setArtistUri(artistUri)
-                .setArtistName(artist?.takeIf { it != MediaStore.UNKNOWN_STRING })
-                .setAlbumUri(albumUri)
-                .setAlbumTitle(album?.takeIf { it != MediaStore.UNKNOWN_STRING })
-                .setDiscNumber(discNumber)
-                .setTrackNumber(discTrack)
-                .setGenreUri(genreUri)
-                .setGenreName(genre)
-                .setYear(year.takeIf { it != 0 })
-                .build()
+            Audio(
+                uri = uri,
+                thumbnail = thumbnail,
+                playbackUri = uri,
+                mimeType = mimeType,
+                title = title,
+                type = audioType,
+                durationMs = duration,
+                artistUri = artistUri,
+                artistName = artist?.takeIf { it != MediaStore.UNKNOWN_STRING },
+                albumUri = albumUri,
+                albumTitle = album?.takeIf { it != MediaStore.UNKNOWN_STRING },
+                discNumber = discNumber,
+                trackNumber = discTrack,
+                genreUri = genreUri,
+                genreName = genre,
+                year = year.takeIf { it != 0 },
+                isFavorite = false,
+            )
         }.flatMapLatest { audios ->
             when (audios.isNotEmpty()) {
                 true -> database.getFavoriteDao().getAll()
@@ -1088,9 +1098,11 @@ class MediaStoreDataSource(
 
             val uri = ContentUris.withAppendedId(genresUri, genreId)
 
-            Genre.Builder(uri)
-                .setName(name)
-                .build()
+            Genre(
+                uri = uri,
+                thumbnail = null,
+                name = name,
+            )
         }
     }
 
@@ -1170,14 +1182,20 @@ class MediaStoreDataSource(
             .authority(FAVORITES_AUTHORITY)
             .build()
 
-        private val favoritesPlaylist = Playlist.Builder(favoritesUri)
-            .setType(Playlist.Type.FAVORITES)
-            .build()
+        private val favoritesPlaylist = Playlist(
+            uri = favoritesUri,
+            thumbnail = null,
+            name = null,
+            type = Playlist.Type.FAVORITES,
+        )
 
         private fun org.lineageos.twelve.database.entities.Playlist.toModel() =
-            Playlist.Builder(ContentUris.withAppendedId(playlistsBaseUri, id))
-                .setName(name)
-                .build()
+            Playlist(
+                uri = ContentUris.withAppendedId(playlistsBaseUri, id),
+                thumbnail = null,
+                name = name,
+                type = Playlist.Type.PLAYLIST,
+            )
 
         val ARG_VOLUME_NAME = ProviderArgument(
             "volume_name",
