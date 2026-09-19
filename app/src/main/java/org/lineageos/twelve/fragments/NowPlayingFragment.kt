@@ -193,6 +193,7 @@ class NowPlayingFragment : Fragment(R.layout.fragment_now_playing) {
         // Media controls
         playbackProgressSlider = PlaybackProgressSlider(
             progressSlider,
+            durationTimestampTextView,
             currentTimestampTextView,
         )
         progressSlider.setLabelFormatter {

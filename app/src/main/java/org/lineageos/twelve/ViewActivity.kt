@@ -80,6 +80,7 @@ class ViewActivity : AppCompatActivity(R.layout.activity_view) {
         // Media controls
         playbackProgressSlider = PlaybackProgressSlider(
             progressSlider,
+            durationTimestampTextView,
             currentTimestampTextView,
         )
         progressSlider.setLabelFormatter {

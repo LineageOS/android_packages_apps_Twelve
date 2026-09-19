@@ -21,6 +21,7 @@ import kotlin.math.abs
  */
 class PlaybackProgressSlider(
     private val slider: Slider,
+    private val durationTimestampTextView: TextView,
     private val currentTimestampTextView: TextView,
 ) : Choreographer.FrameCallback {
     private var isPlaying = false
@@ -137,6 +138,7 @@ class PlaybackProgressSlider(
         val position = positionMs.toFloat().coerceIn(slider.valueFrom, slider.valueTo)
         slider.value = position
         currentTimestampTextView.text = TimestampFormatter.formatTimestampMillis(position)
+        durationTimestampTextView.text = TimestampFormatter.formatTimestampMillis(slider.valueTo.toLong())
     }
 
     override fun doFrame(frameTimeNanos: Long) {
