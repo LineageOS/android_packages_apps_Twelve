@@ -992,6 +992,8 @@ class MediaStoreDataSource(
         val artistsUri = MediaStore.Audio.Artists.getContentUri(volumeName)
         val albumsUri = MediaStore.Audio.Albums.getContentUri(volumeName)
         val genresUri = MediaStore.Audio.Genres.getContentUri(volumeName)
+        val albumsArtUri = getAlbumsArtUri(volumeName)
+        val thumbnailCache = mutableMapOf<Long, Thumbnail>()
 
         mapEachRow { columnIndexCache ->
             val audioId = columnIndexCache.getLong(BaseColumns._ID)
@@ -1037,14 +1039,13 @@ class MediaStoreDataSource(
                 }
             } ?: (null to null)
 
-            val albumArtUri = uri.buildUpon()
-                .appendPath(AUDIO_ALBUMART)
-                .build()
-
-            val thumbnail = Thumbnail(
-                uri = albumArtUri,
-                type = Thumbnail.Type.FRONT_COVER,
-            )
+            val thumbnail = thumbnailCache.getOrPut(albumId) {
+                val albumArtUri = ContentUris.withAppendedId(albumsArtUri, albumId)
+                Thumbnail(
+                    uri = albumArtUri,
+                    type = Thumbnail.Type.FRONT_COVER,
+                )
+            }
 
             Audio(
                 uri = uri,
