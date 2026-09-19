@@ -893,10 +893,10 @@ class MediaStoreDataSource(
         )
             .mapEachRowToAudio(MediaStore.VOLUME_EXTERNAL)
             .mapLatest { audios ->
+                val audiosById = audios.associateBy { ContentUris.parseId(it.uri) }
+
                 audioUris.map { audioUri ->
-                    audios.firstOrNull {
-                        it.uri.lastPathSegment == audioUri.lastPathSegment
-                    }?.copy(uri = audioUri)
+                    audiosById[ContentUris.parseId(audioUri)]?.copy(uri = audioUri)
                 }
             }
     }
