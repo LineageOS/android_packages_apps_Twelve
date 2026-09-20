@@ -13,12 +13,6 @@
         app:tint="?attr/colorOnSurface" />
 
     <item
-        android:id="@+id/searchFragment"
-        android:icon="@drawable/ic_search"
-        android:title="@string/main_fragment_section_search"
-        app:tint="?attr/colorOnSurface" />
-
-    <item
         android:id="@+id/libraryFragment"
         android:icon="@drawable/ic_lineage_library"
         android:title="@string/main_fragment_section_library"
