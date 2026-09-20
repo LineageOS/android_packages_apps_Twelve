@@ -16,8 +16,10 @@ import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.stateIn
+import org.lineageos.twelve.models.Audio
 import org.lineageos.twelve.models.FlowResult
 import org.lineageos.twelve.models.FlowResult.Companion.asFlowResult
+import org.lineageos.twelve.models.FlowResult.Companion.getOrNull
 
 class ArtistViewModel(application: Application) : TwelveViewModel(application) {
     private val artistUri = MutableStateFlow<Uri?>(null)
@@ -36,7 +38,19 @@ class ArtistViewModel(application: Application) : TwelveViewModel(application) {
             FlowResult.Loading
         )
 
-    fun loadAlbum(artistUri: Uri) {
+    fun loadArtist(artistUri: Uri) {
         this.artistUri.value = artistUri
+    }
+
+    fun playArtist(startFrom: Audio? = null) {
+        artist.value.getOrNull()?.second?.audios?.takeUnless { it.isEmpty() }?.let {
+            playAudio(it, startFrom?.let { audio -> it.indexOf(audio) } ?: 0)
+        }
+    }
+
+    fun shufflePlayArtist() {
+        artist.value.getOrNull()?.second?.audios?.takeUnless { it.isEmpty() }?.let {
+            playAudio(it.shuffled(), 0)
+        }
     }
 }
