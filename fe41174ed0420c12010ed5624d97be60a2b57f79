@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "cadee55d_a98edbdd",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2026-09-20T06:57:06Z",
+      "side": 1,
+      "message": "it does match, but now the carousel items and the fab have the same \"left\" border that looks ugly",
+      "revId": "fe41174ed0420c12010ed5624d97be60a2b57f79",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
