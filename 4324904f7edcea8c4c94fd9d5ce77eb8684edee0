@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "aad5ffea_8f63f4df",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2026-09-20T07:10:24Z",
+      "side": 1,
+      "message": "Ditto for LLM, this is fine, but I probably want to go go to another UI first (as newly designed)",
+      "revId": "4324904f7edcea8c4c94fd9d5ce77eb8684edee0",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
