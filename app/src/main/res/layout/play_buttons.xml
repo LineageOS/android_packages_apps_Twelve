@@ -11,34 +11,68 @@
     android:gravity="center_vertical"
     android:orientation="horizontal">
 
-    <com.google.android.material.button.MaterialButtonGroup
+    <com.google.android.material.card.MaterialCardView
         android:id="@+id/buttonGroup"
+        style="?attr/materialCardViewFilledStyle"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center_horizontal">
+        android:layout_height="56dp"
+        app:cardBackgroundColor="?attr/colorSecondaryContainer"
+        app:cardCornerRadius="28dp"
+        app:cardElevation="0dp"
+        app:strokeWidth="0dp">
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/shufflePlayButton"
-            style="?attr/materialIconButtonFilledTonalStyle"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:contentDescription="@string/shuffle_play"
-            android:tooltipText="@string/shuffle_play"
-            app:icon="@drawable/ic_shuffle_play"
-            app:iconGravity="textStart"
-            app:materialSizeOverlay="@style/SizeOverlay.Material3Expressive.Button.IconButton.Medium" />
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:paddingHorizontal="12dp">
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/playAllButton"
-            style="?attr/materialButtonTonalStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/play_all"
-            android:textColor="?attr/colorOnTertiaryContainer"
-            app:backgroundTint="?attr/colorTertiaryContainer"
-            app:icon="@drawable/ic_play_arrow"
-            app:iconTint="?attr/colorOnTertiaryContainer"
-            app:materialSizeOverlay="@style/SizeOverlay.Material3Expressive.Button.Medium" />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/shufflePlayButton"
+                style="?attr/materialIconButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:contentDescription="@string/shuffle_play"
+                android:tooltipText="@string/shuffle_play"
+                app:icon="@drawable/ic_shuffle_play"
+                app:iconTint="?attr/colorOnSecondaryContainer" />
 
-    </com.google.android.material.button.MaterialButtonGroup>
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/addToQueue"
+                style="?attr/materialIconButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:contentDescription="@string/audio_add_to_queue"
+                android:tooltipText="@string/audio_add_to_queue"
+                app:icon="@drawable/ic_add_to_queue"
+                app:iconTint="?attr/colorOnSecondaryContainer" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/playNextButton"
+                style="?attr/materialIconButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:contentDescription="@string/audio_play_next"
+                android:tooltipText="@string/audio_play_next"
+                app:icon="@drawable/ic_queue_play_next"
+                app:iconTint="?attr/colorOnSecondaryContainer" />
+
+        </LinearLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/playAllButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:contentDescription="@string/play_all"
+        android:stateListAnimator="@null"
+        android:tooltipText="@string/play_all"
+        app:backgroundTint="?attr/colorTertiaryContainer"
+        app:elevation="0dp"
+        app:srcCompat="@drawable/ic_play_arrow"
+        app:tint="?attr/colorOnTertiaryContainer" />
+
 </LinearLayout>
