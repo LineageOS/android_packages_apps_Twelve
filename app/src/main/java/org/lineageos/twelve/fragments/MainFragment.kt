@@ -73,6 +73,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
     private val playRandomSongsButton by getViewProperty<MaterialButton>(R.id.playRandomSongsButton)
     private val providerMaterialButton by getViewProperty<MaterialButton>(R.id.providerMaterialButton)
     private val searchLinearProgressIndicator by getViewProperty<LinearProgressIndicator>(R.id.searchLinearProgressIndicator)
+    private val searchMaterialButton by getViewProperty<MaterialButton>(R.id.searchMaterialButton)
     private val searchNoElementsLinearLayout by getViewProperty<LinearLayout>(R.id.searchNoElementsLinearLayout)
     private val searchRecyclerView by getViewProperty<RecyclerView>(R.id.searchRecyclerView)
     private val searchView by getViewProperty<SearchView>(R.id.searchView)
@@ -90,14 +91,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
 
-                var offset = 0
-
-                // Search button
-                if (position >= 1) {
-                    offset += 1
-                }
-
-                navigationBarView.menu[position + offset].isChecked = true
+                navigationBarView.menu[position].isChecked = true
             }
         }
     }
@@ -336,6 +330,10 @@ class MainFragment : Fragment(R.layout.fragment_main) {
             startActivity(intent)
         }
 
+        searchMaterialButton.setOnClickListener {
+            searchView.show()
+        }
+
         playRandomSongsButton.setOnClickListener {
             viewLifecycleOwner.lifecycleScope.launch {
                 viewModel.playAllAudios().onError {
@@ -362,11 +360,6 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                 R.id.activityFragment -> {
                     viewPager2.currentItem = 0
                     true
-                }
-
-                R.id.searchFragment -> {
-                    searchView.show()
-                    false
                 }
 
                 R.id.libraryFragment -> {
