@@ -26,6 +26,7 @@ import androidx.navigation.ui.setupWithNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.MaterialToolbar
+import com.google.android.material.button.MaterialButton
 import com.google.android.material.progressindicator.LinearProgressIndicator
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -70,6 +71,9 @@ class GenreFragment : CollapsingToolbarLayoutFragment(R.layout.fragment_genre) {
     private val linearProgressIndicator by getViewProperty<LinearProgressIndicator>(R.id.linearProgressIndicator)
     private val nestedScrollView by getViewProperty<NestedScrollView>(R.id.nestedScrollView)
     private val noElementsNestedScrollView by getViewProperty<NestedScrollView>(R.id.noElementsNestedScrollView)
+    private val playAllButton by getViewProperty<MaterialButton>(R.id.playAllButton)
+    private val playButtonsLinearLayout by getViewProperty<LinearLayout>(R.id.playButtonsLinearLayout)
+    private val shufflePlayButton by getViewProperty<MaterialButton>(R.id.shufflePlayButton)
     private val thumbnailImageView by getViewProperty<ImageView>(R.id.thumbnailImageView)
     private val toolbar by getViewProperty<MaterialToolbar>(R.id.toolbar)
 
@@ -207,11 +211,30 @@ class GenreFragment : CollapsingToolbarLayoutFragment(R.layout.fragment_genre) {
             windowInsets
         }
 
+        ViewCompat.setOnApplyWindowInsetsListener(playButtonsLinearLayout) { v, windowInsets ->
+            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+
+            v.updatePadding(
+                insets,
+                bottom = true,
+            )
+
+            windowInsets
+        }
+
         toolbar.setupWithNavController(findNavController())
 
         appearsInAlbumsRecyclerView.adapter = appearsInAlbumsAdapter
         appearsInPlaylistsRecyclerView.adapter = appearsInPlaylistsAdapter
         audiosRecyclerView.adapter = audiosAdapter
+
+        playAllButton.setOnClickListener {
+            viewModel.playGenre()
+        }
+
+        shufflePlayButton.setOnClickListener {
+            viewModel.shufflePlayGenre()
+        }
 
         viewModel.loadGenre(genreUri)
 
@@ -277,6 +300,7 @@ class GenreFragment : CollapsingToolbarLayoutFragment(R.layout.fragment_genre) {
                     ).all { isEmpty -> isEmpty }
                     nestedScrollView.isVisible = !isEmpty
                     noElementsNestedScrollView.isVisible = isEmpty
+                    playButtonsLinearLayout.isVisible = genreContent.audios.isNotEmpty()
                 }
 
                 is FlowResult.Failure -> {
@@ -295,6 +319,7 @@ class GenreFragment : CollapsingToolbarLayoutFragment(R.layout.fragment_genre) {
 
                     nestedScrollView.isVisible = false
                     noElementsNestedScrollView.isVisible = true
+                    playButtonsLinearLayout.isVisible = false
 
                     if (it.error == Error.NOT_FOUND) {
                         // Get out of here
