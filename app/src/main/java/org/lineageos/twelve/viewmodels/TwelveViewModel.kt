@@ -109,16 +109,41 @@ abstract class TwelveViewModel(application: Application) : AndroidViewModel(appl
             }
         }
 
-    fun playAudio(audio: List<Audio>, position: Int) {
+    fun playAudio(audios: List<Audio>, position: Int) {
         mediaController.value?.apply {
             // Initialize shuffle and repeat modes
             shuffleModeEnabled = sharedPreferences.shuffleModeEnabled
             typedRepeatMode = sharedPreferences.typedRepeatMode
 
-            setMediaItems(audio.map { it.toMedia3MediaItem(resources) }, true)
+            setMediaItems(audios.map { it.toMedia3MediaItem(resources) }, true)
             prepare()
             seekToDefaultPosition(position)
             play()
+        }
+    }
+
+    fun addToQueue(audios: List<Audio>) {
+        mediaController.value?.apply {
+            addMediaItems(audios.map { it.toMedia3MediaItem(resources) })
+
+            // If the added items are the one, play it
+            if (mediaItemCount == audios.count()) {
+                play()
+            }
+        }
+    }
+
+    fun playNext(audios: List<Audio>) {
+        mediaController.value?.apply {
+            addMediaItems(
+                currentMediaItemIndex + 1,
+                audios.map { it.toMedia3MediaItem(resources) },
+            )
+
+            // If the added items are only one, play it
+            if (mediaItemCount == audios.count()) {
+                play()
+            }
         }
     }
 }
