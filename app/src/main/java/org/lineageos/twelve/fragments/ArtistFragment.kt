@@ -26,6 +26,7 @@ import androidx.navigation.ui.setupWithNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.MaterialToolbar
+import com.google.android.material.button.MaterialButton
 import com.google.android.material.progressindicator.LinearProgressIndicator
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -69,7 +70,10 @@ class ArtistFragment : CollapsingToolbarLayoutFragment(R.layout.fragment_artist)
     private val linearProgressIndicator by getViewProperty<LinearProgressIndicator>(R.id.linearProgressIndicator)
     private val nestedScrollView by getViewProperty<NestedScrollView>(R.id.nestedScrollView)
     private val noElementsNestedScrollView by getViewProperty<NestedScrollView>(R.id.noElementsNestedScrollView)
+    private val playAllButton by getViewProperty<MaterialButton>(R.id.playAllButton)
+    private val playButtonsLinearLayout by getViewProperty<LinearLayout>(R.id.playButtonsLinearLayout)
     private val thumbnailImageView by getViewProperty<ImageView>(R.id.thumbnailImageView)
+    private val shufflePlayButton by getViewProperty<MaterialButton>(R.id.shufflePlayButton)
     private val toolbar by getViewProperty<MaterialToolbar>(R.id.toolbar)
 
     // Recyclerview
@@ -187,13 +191,32 @@ class ArtistFragment : CollapsingToolbarLayoutFragment(R.layout.fragment_artist)
             windowInsets
         }
 
+        ViewCompat.setOnApplyWindowInsetsListener(playButtonsLinearLayout) { v, windowInsets ->
+            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+
+            v.updatePadding(
+                insets,
+                bottom = true,
+            )
+
+            windowInsets
+        }
+
         toolbar.setupWithNavController(findNavController())
 
         albumsRecyclerView.adapter = albumsAdapter
         appearsInAlbumRecyclerView.adapter = appearsInAlbumAdapter
         appearsInPlaylistRecyclerView.adapter = appearsInPlaylistAdapter
 
-        viewModel.loadAlbum(artistUri)
+        playAllButton.setOnClickListener {
+            viewModel.playArtist()
+        }
+
+        shufflePlayButton.setOnClickListener {
+            viewModel.shufflePlayArtist()
+        }
+
+        viewModel.loadArtist(artistUri)
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -257,6 +280,7 @@ class ArtistFragment : CollapsingToolbarLayoutFragment(R.layout.fragment_artist)
                     ).all { isEmpty -> isEmpty }
                     nestedScrollView.isVisible = !isEmpty
                     noElementsNestedScrollView.isVisible = isEmpty
+                    playButtonsLinearLayout.isVisible = artistWorks.audios.isNotEmpty()
                 }
 
                 is FlowResult.Failure -> {
@@ -270,6 +294,7 @@ class ArtistFragment : CollapsingToolbarLayoutFragment(R.layout.fragment_artist)
 
                     nestedScrollView.isVisible = false
                     noElementsNestedScrollView.isVisible = true
+                    playButtonsLinearLayout.isVisible = false
 
                     if (it.error == Error.NOT_FOUND) {
                         // Get out of here
