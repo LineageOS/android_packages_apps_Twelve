@@ -13,10 +13,10 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.LinearLayout
 import androidx.activity.BackEventCompat
 import androidx.activity.OnBackPressedCallback
+import androidx.annotation.IdRes
 import androidx.core.graphics.Insets
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.get
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
@@ -83,24 +83,6 @@ class MainFragment : Fragment(R.layout.fragment_main) {
     // System services
     private val inputMethodManager: InputMethodManager
         get() = requireContext().getSystemService(InputMethodManager::class.java)
-
-    // ViewPager2
-    private val onPageChangeCallback by lazy {
-        object : ViewPager2.OnPageChangeCallback() {
-            override fun onPageSelected(position: Int) {
-                super.onPageSelected(position)
-
-                var offset = 0
-
-                // Search button
-                if (position >= 1) {
-                    offset += 1
-                }
-
-                navigationBarView.menu[position + offset].isChecked = true
-            }
-        }
-    }
 
     // RecyclerView
     private val searchAdapter by lazy {
@@ -351,30 +333,24 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         // View pager
         viewPager2.isUserInputEnabled = false
         viewPager2.adapter = object : FragmentStateAdapter(this) {
-            override fun getItemCount() = fragments.size
-            override fun createFragment(position: Int) = fragments[position]()
+            override fun getItemCount() = Page.entries.size
+            override fun createFragment(position: Int) = Page.entries[position].createFragment()
         }
-        viewPager2.offscreenPageLimit = fragments.size
-        viewPager2.registerOnPageChangeCallback(onPageChangeCallback)
+        viewPager2.offscreenPageLimit = Page.entries.size
 
         navigationBarView.setOnItemSelectedListener { item ->
-            when (item.itemId) {
-                R.id.activityFragment -> {
-                    viewPager2.currentItem = 0
-                    true
-                }
+            if (item.itemId == R.id.searchFragment) {
+                searchView.show()
+                return@setOnItemSelectedListener false
+            }
 
-                R.id.searchFragment -> {
-                    searchView.show()
-                    false
-                }
+            val index = Page.entries.indexOfFirst { it.menuItemId == item.itemId }
 
-                R.id.libraryFragment -> {
-                    viewPager2.currentItem = 1
-                    true
-                }
-
-                else -> false
+            if (index >= 0) {
+                viewPager2.currentItem = index
+                true
+            } else {
+                false
             }
         }
 
@@ -452,14 +428,16 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         super.onDestroyView()
     }
 
+    private enum class Page(
+        @param:IdRes val menuItemId: Int,
+        val createFragment: () -> Fragment,
+    ) {
+        ACTIVITY(R.id.activityFragment, ::ActivityFragment),
+        LIBRARY(R.id.libraryFragment, ::LibraryFragment),
+    }
+
     companion object {
         private val LOG_TAG = MainFragment::class.simpleName!!
-
-        // Keep in sync with the BottomNavigationView menu
-        private val fragments = arrayOf(
-            { ActivityFragment() },
-            { LibraryFragment() },
-        )
 
         private val searchDiffCallback = object : DiffUtil.ItemCallback<MediaItem<*>>() {
             override fun areItemsTheSame(
