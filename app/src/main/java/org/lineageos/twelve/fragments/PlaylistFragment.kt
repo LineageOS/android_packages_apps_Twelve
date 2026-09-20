@@ -26,8 +26,9 @@ import androidx.navigation.ui.setupWithNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.MaterialToolbar
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.progressindicator.LinearProgressIndicator
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.collectLatest
@@ -62,15 +63,17 @@ class PlaylistFragment : CollapsingToolbarLayoutFragment(R.layout.fragment_playl
     private val viewModel by viewModels<PlaylistViewModel>()
 
     // Views
+    private val addToQueueButton by getViewProperty<MaterialButton>(R.id.addToQueue)
     override val appBarLayout by getViewProperty<AppBarLayout>(R.id.appBarLayout)
     override val coordinatorLayout by getViewProperty<CoordinatorLayout>(R.id.coordinatorLayout)
     private val fullscreenLoadingProgressBar by getViewProperty<FullscreenLoadingProgressBar>(R.id.fullscreenLoadingProgressBar)
     private val infoNestedScrollView by getViewProperty<NestedScrollView?>(R.id.infoNestedScrollView)
     private val linearProgressIndicator by getViewProperty<LinearProgressIndicator>(R.id.linearProgressIndicator)
     private val noElementsNestedScrollView by getViewProperty<NestedScrollView>(R.id.noElementsNestedScrollView)
-    private val playAllButton by getViewProperty<MaterialButton>(R.id.playAllButton)
+    private val playAllButton by getViewProperty<FloatingActionButton>(R.id.playAllButton)
     private val playlistNameTextView by getViewProperty<TextView>(R.id.playlistNameTextView)
     private val playButtonsLinearLayout by getViewProperty<LinearLayout>(R.id.playButtonsLinearLayout)
+    private val playNextButton by getViewProperty<MaterialButton>(R.id.playNextButton)
     private val recyclerView by getViewProperty<RecyclerView>(R.id.recyclerView)
     private val shufflePlayButton by getViewProperty<MaterialButton>(R.id.shufflePlayButton)
     private val thumbnailImageView by getViewProperty<ImageView>(R.id.thumbnailImageView)
@@ -208,8 +211,16 @@ class PlaylistFragment : CollapsingToolbarLayoutFragment(R.layout.fragment_playl
 
         recyclerView.adapter = adapter
 
+        addToQueueButton.setOnClickListener {
+            viewModel.addToQueue()
+        }
+
         playAllButton.setOnClickListener {
             viewModel.playPlaylist()
+        }
+
+        playNextButton.setOnClickListener {
+            viewModel.playNext()
         }
 
         shufflePlayButton.setOnClickListener {
