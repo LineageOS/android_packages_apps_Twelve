@@ -175,6 +175,8 @@
     <string name="sort_by_title">Tiêu đề</string>
     <string name="sort_by_unknown">Không rõ</string>
     <string name="activity_most_played_albums">Album được phát nhiều nhất</string>
+    <string name="activity_most_played_artists">Nghệ sĩ được phát nhiều nhất</string>
+    <string name="activity_most_played_genres">Thể loại được phát nhiều nhất</string>
     <string name="activity_most_played_songs">Bài hát được phát nhiều nhất</string>
     <string name="activity_random_albums">Album ngẫu nhiên</string>
     <string name="activity_random_artists">Nghệ sĩ ngẫu nhiên</string>

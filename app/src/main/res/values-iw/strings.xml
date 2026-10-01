@@ -179,6 +179,8 @@
     <string name="sort_by_title">כותרת</string>
     <string name="sort_by_unknown">לא ידוע</string>
     <string name="activity_most_played_albums">האלבום הנשמע ביותר</string>
+    <string name="activity_most_played_artists">האמנים המושמעים ביותר</string>
+    <string name="activity_most_played_genres">הז\'אנרים המושמעים ביותר</string>
     <string name="activity_most_played_songs">השירים המושמעים ביותר</string>
     <string name="activity_random_albums">אלבומים אקראיים</string>
     <string name="activity_random_artists">אמנים אקראיים</string>

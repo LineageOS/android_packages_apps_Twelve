@@ -182,6 +182,8 @@
     <string name="sort_by_title">Títol</string>
     <string name="sort_by_unknown">Desconegut</string>
     <string name="activity_most_played_albums">Àlbums més reproduïts</string>
+    <string name="activity_most_played_artists">Artistes més escoltats</string>
+    <string name="activity_most_played_genres">Gèneres més escoltats</string>
     <string name="activity_most_played_songs">Cançons més reproduïdes</string>
     <string name="activity_random_albums">Àlbums aleatoris</string>
     <string name="activity_random_artists">Artistes aleatoris</string>

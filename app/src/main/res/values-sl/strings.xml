@@ -181,6 +181,8 @@
     <string name="sort_by_title">Naslov</string>
     <string name="sort_by_unknown">Neznano</string>
     <string name="activity_most_played_albums">Največkrat predvajani albumi</string>
+    <string name="activity_most_played_artists">Največkrat predvajani izvajalci</string>
+    <string name="activity_most_played_genres">Največkrat predvajane zvrsti</string>
     <string name="activity_most_played_songs">Največkrat predvajane skladbe</string>
     <string name="activity_random_albums">Naključni albumi</string>
     <string name="activity_random_artists">Naključni izvajalci</string>

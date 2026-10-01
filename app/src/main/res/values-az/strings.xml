@@ -177,6 +177,8 @@
     <string name="sort_by_title">Başlıq</string>
     <string name="sort_by_unknown">Bilinmir</string>
     <string name="activity_most_played_albums">Ən çox oxudulan albomlar</string>
+    <string name="activity_most_played_artists">Ən çox oxudulan sənətçilər</string>
+    <string name="activity_most_played_genres">Ən çox oxudulan janrlar</string>
     <string name="activity_most_played_songs">Ən çox oxudulan mahnılar</string>
     <string name="activity_random_albums">Təsadüfi albomlar</string>
     <string name="activity_random_artists">Təsadüfi sənətçi</string>

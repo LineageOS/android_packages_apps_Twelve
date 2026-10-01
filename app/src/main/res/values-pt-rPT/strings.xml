@@ -177,6 +177,8 @@
     <string name="sort_by_title">Título</string>
     <string name="sort_by_unknown">Desconhecido</string>
     <string name="activity_most_played_albums">Álbuns mais reproduzidos</string>
+    <string name="activity_most_played_artists">Artistas mais reproduzidos</string>
+    <string name="activity_most_played_genres">Géneros mais reproduzidos</string>
     <string name="activity_most_played_songs">Músicas mais ouvidas</string>
     <string name="activity_random_albums">Álbuns aleatórios</string>
     <string name="activity_random_artists">Artistas aleatórios</string>

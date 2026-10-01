@@ -175,6 +175,8 @@
     <string name="sort_by_title">タイトル</string>
     <string name="sort_by_unknown">不明</string>
     <string name="activity_most_played_albums">最も再生されたアルバム</string>
+    <string name="activity_most_played_artists">最も再生されたアーティスト</string>
+    <string name="activity_most_played_genres">最も再生されたジャンル</string>
     <string name="activity_most_played_songs">最も再生された曲</string>
     <string name="activity_random_albums">ランダム アルバム</string>
     <string name="activity_random_artists">ランダム アーティスト</string>

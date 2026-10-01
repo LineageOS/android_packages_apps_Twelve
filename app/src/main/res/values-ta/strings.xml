@@ -177,6 +177,8 @@
     <string name="sort_by_title">தலைப்பு</string>
     <string name="sort_by_unknown">அறியாதது</string>
     <string name="activity_most_played_albums">மிக்கு இயங்கிய தொகுப்பு</string>
+    <string name="activity_most_played_artists">மிக்கு இயக்கிய இசையோர்</string>
+    <string name="activity_most_played_genres">மிக்கு இயக்கிய இசைவகை</string>
     <string name="activity_most_played_songs">மிக்கு இயங்கிய பாட்டு</string>
     <string name="activity_random_albums">சீரற்ற தொகுப்பு</string>
     <string name="activity_random_artists">சீரற்ற இசையோர்</string>

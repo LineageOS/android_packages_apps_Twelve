@@ -181,7 +181,9 @@
     <string name="sort_by_title">Заголовок</string>
     <string name="sort_by_unknown">Неизвестно</string>
     <string name="activity_most_played_albums">Самые популярные альбомы</string>
-    <string name="activity_most_played_songs">Самые воспроизводимые песни</string>
+    <string name="activity_most_played_artists">Самые популярные исполнители</string>
+    <string name="activity_most_played_genres">Самые популярные жанры</string>
+    <string name="activity_most_played_songs">Самые популярные треки</string>
     <string name="activity_random_albums">Случайные альбомы</string>
     <string name="activity_random_artists">Случайные исполнители</string>
     <string name="activity_random_genres">Случайные жанры</string>

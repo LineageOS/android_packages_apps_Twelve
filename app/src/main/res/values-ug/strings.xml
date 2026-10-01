@@ -177,6 +177,8 @@
     <string name="sort_by_title">ماۋزۇ</string>
     <string name="sort_by_unknown">يوچۇن</string>
     <string name="activity_most_played_albums">كۆپ قويۇلغان ناخشا توپلىمى</string>
+    <string name="activity_most_played_artists">كۆپ ياڭرىتىلغان سەنئەتكار</string>
+    <string name="activity_most_played_genres">كۆپ ياڭرىتىلغان ئېقىم</string>
     <string name="activity_most_played_songs">كۆپ قويۇلغان ناخشا</string>
     <string name="activity_random_albums">ئىختىيارى ناخشا توپلىمى</string>
     <string name="activity_random_artists">ئىختىيارى ىسەنئەتكار</string>

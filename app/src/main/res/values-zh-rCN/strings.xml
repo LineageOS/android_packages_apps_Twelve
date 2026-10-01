@@ -175,6 +175,8 @@
     <string name="sort_by_title">标题</string>
     <string name="sort_by_unknown">未知</string>
     <string name="activity_most_played_albums">最常播放的专辑</string>
+    <string name="activity_most_played_artists">最常播放的艺术家</string>
+    <string name="activity_most_played_genres">最常播放的流派</string>
     <string name="activity_most_played_songs">播放最多的歌曲</string>
     <string name="activity_random_albums">随机专辑</string>
     <string name="activity_random_artists">随机艺术家</string>

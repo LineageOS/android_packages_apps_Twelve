@@ -177,6 +177,8 @@
     <string name="sort_by_title">Cím</string>
     <string name="sort_by_unknown">Ismeretlen</string>
     <string name="activity_most_played_albums">A legtöbbet játszott lemezek</string>
+    <string name="activity_most_played_artists">A legtöbbször hallgatott előadók</string>
+    <string name="activity_most_played_genres">A legtöbbször lejátszott műfajok</string>
     <string name="activity_most_played_songs">Legtöbbször lejátszott zenék</string>
     <string name="activity_random_albums">Véletlenszerűen választott lemezek</string>
     <string name="activity_random_artists">Véletlenszerűen választott előadó</string>

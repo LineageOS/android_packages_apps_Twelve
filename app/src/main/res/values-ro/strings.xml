@@ -179,6 +179,8 @@
     <string name="sort_by_title">Titlu</string>
     <string name="sort_by_unknown">Necunoscut</string>
     <string name="activity_most_played_albums">Cele mai redate albume</string>
+    <string name="activity_most_played_artists">Cei mai ascultați artiști</string>
+    <string name="activity_most_played_genres">Cele mai ascultate genuri</string>
     <string name="activity_most_played_songs">Cele mai ascultate melodii</string>
     <string name="activity_random_albums">Albume aleatoare</string>
     <string name="activity_random_artists">Artişti aleatorii</string>

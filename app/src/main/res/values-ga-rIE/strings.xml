@@ -183,6 +183,8 @@
     <string name="sort_by_title">Teideal</string>
     <string name="sort_by_unknown">Anaithnid</string>
     <string name="activity_most_played_albums">Albam is mó seinnte</string>
+    <string name="activity_most_played_artists">Na healaíontóirí is mó a sheinntear</string>
+    <string name="activity_most_played_genres">Na seánraí is mó a sheinntear</string>
     <string name="activity_most_played_songs">Amhráin is mó a sheinntear</string>
     <string name="activity_random_albums">Albam randamach</string>
     <string name="activity_random_artists">Ealaíontóirí randamacha</string>
