@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "65670a71_966d4db6",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2026-10-02T10:29:11Z",
+      "side": 1,
+      "message": "Forgot about this, thanks for migrating the bar\n\nhttps://x0.at/sOO0LLzX0M.png in the future we might want to have something like this per mockup, but this is closer",
+      "revId": "b990491b478493b1fe207f7df7456590b297d14e",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
