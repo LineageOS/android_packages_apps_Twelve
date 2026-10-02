@@ -13,6 +13,7 @@ import android.view.animation.TranslateAnimation
 import androidx.core.graphics.Insets
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
+import androidx.recyclerview.widget.RecyclerView
 
 fun View.slide() {
     if (isVisible) {
@@ -142,3 +143,18 @@ fun View.updateMargin(
  * @see toPx
  */
 fun View.toPx(dp: Int) = resources.displayMetrics.toPx(dp)
+
+/**
+ * Registers an inline scroll listener on [RecyclerView] to detect scroll direction changes.
+ */
+inline fun RecyclerView.onScrollDirectionChanged(
+    crossinline onScroll: (isScrollingDown: Boolean) -> Unit
+) {
+    addOnScrollListener(object : RecyclerView.OnScrollListener() {
+        override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+            if (dy != 0) {
+                onScroll(dy > 0)
+            }
+        }
+    })
+}

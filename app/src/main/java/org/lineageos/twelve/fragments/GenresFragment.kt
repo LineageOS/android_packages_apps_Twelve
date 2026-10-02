@@ -13,6 +13,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -26,6 +27,7 @@ import kotlinx.coroutines.launch
 import org.lineageos.twelve.R
 import org.lineageos.twelve.ext.getViewProperty
 import org.lineageos.twelve.ext.navigateSafe
+import org.lineageos.twelve.ext.onScrollDirectionChanged
 import org.lineageos.twelve.ext.setProgressCompat
 import org.lineageos.twelve.ext.updatePadding
 import org.lineageos.twelve.models.FlowResult
@@ -38,12 +40,14 @@ import org.lineageos.twelve.ui.views.SortingChip
 import org.lineageos.twelve.utils.PermissionsChecker
 import org.lineageos.twelve.utils.PermissionsUtils
 import org.lineageos.twelve.viewmodels.GenresViewModel
+import org.lineageos.twelve.viewmodels.MainViewModel
 
 /**
  * View all music genres.
  */
 class GenresFragment : Fragment(R.layout.fragment_genres) {
     // View models
+    private val mainViewModel by activityViewModels<MainViewModel>()
     private val viewModel by viewModels<GenresViewModel>()
 
     // Views
@@ -119,6 +123,9 @@ class GenresFragment : Fragment(R.layout.fragment_genres) {
         }
 
         recyclerView.adapter = adapter
+        recyclerView.onScrollDirectionChanged { isScrollingDown ->
+            mainViewModel.setPlayButtonShrink(isScrollingDown)
+        }
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {

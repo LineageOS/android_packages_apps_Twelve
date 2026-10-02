@@ -13,6 +13,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -25,6 +26,7 @@ import kotlinx.coroutines.launch
 import org.lineageos.twelve.R
 import org.lineageos.twelve.ext.getViewProperty
 import org.lineageos.twelve.ext.navigateSafe
+import org.lineageos.twelve.ext.onScrollDirectionChanged
 import org.lineageos.twelve.ext.setProgressCompat
 import org.lineageos.twelve.ext.updatePadding
 import org.lineageos.twelve.models.ActivityTab
@@ -40,12 +42,14 @@ import org.lineageos.twelve.ui.views.ActivityTabView
 import org.lineageos.twelve.utils.PermissionsChecker
 import org.lineageos.twelve.utils.PermissionsUtils
 import org.lineageos.twelve.viewmodels.ActivityViewModel
+import org.lineageos.twelve.viewmodels.MainViewModel
 
 /**
  * User activity, notifications and recommendations.
  */
 class ActivityFragment : Fragment(R.layout.fragment_activity) {
     // View models
+    private val mainViewModel by activityViewModels<MainViewModel>()
     private val viewModel by viewModels<ActivityViewModel>()
 
     // Views
@@ -123,6 +127,9 @@ class ActivityFragment : Fragment(R.layout.fragment_activity) {
         }
 
         recyclerView.adapter = adapter
+        recyclerView.onScrollDirectionChanged { isScrollingDown ->
+            mainViewModel.setPlayButtonShrink(isScrollingDown)
+        }
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {

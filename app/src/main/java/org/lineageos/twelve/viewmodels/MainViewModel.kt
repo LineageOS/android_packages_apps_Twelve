@@ -12,6 +12,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
@@ -36,6 +37,13 @@ class MainViewModel(application: Application) : TwelveViewModel(application) {
         )
 
     private val searchQuery = MutableStateFlow("" to false)
+
+    private val _playButtonShrink = MutableStateFlow(false)
+    val playButtonShrink = _playButtonShrink.asStateFlow()
+
+    fun setPlayButtonShrink(shrink: Boolean) {
+        _playButtonShrink.value = shrink
+    }
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val searchResults = searchQuery
