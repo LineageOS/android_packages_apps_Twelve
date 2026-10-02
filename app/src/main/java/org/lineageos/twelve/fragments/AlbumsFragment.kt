@@ -14,6 +14,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -27,6 +28,7 @@ import kotlinx.coroutines.launch
 import org.lineageos.twelve.R
 import org.lineageos.twelve.ext.getViewProperty
 import org.lineageos.twelve.ext.navigateSafe
+import org.lineageos.twelve.ext.onScrollDirectionChanged
 import org.lineageos.twelve.ext.setProgressCompat
 import org.lineageos.twelve.ext.toPx
 import org.lineageos.twelve.models.Album
@@ -40,12 +42,14 @@ import org.lineageos.twelve.ui.views.SortingChip
 import org.lineageos.twelve.utils.PermissionsChecker
 import org.lineageos.twelve.utils.PermissionsUtils
 import org.lineageos.twelve.viewmodels.AlbumsViewModel
+import org.lineageos.twelve.viewmodels.MainViewModel
 
 /**
  * View all music albums.
  */
 class AlbumsFragment : Fragment(R.layout.fragment_albums) {
     // View models
+    private val mainViewModel by activityViewModels<MainViewModel>()
     private val viewModel by viewModels<AlbumsViewModel>()
 
     // Views
@@ -118,6 +122,9 @@ class AlbumsFragment : Fragment(R.layout.fragment_albums) {
 
         recyclerView.layoutManager = DisplayAwareGridLayoutManager(recyclerView.context, 2)
         recyclerView.adapter = adapter
+        recyclerView.onScrollDirectionChanged { isScrollingDown ->
+            mainViewModel.setPlayButtonShrink(isScrollingDown)
+        }
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {

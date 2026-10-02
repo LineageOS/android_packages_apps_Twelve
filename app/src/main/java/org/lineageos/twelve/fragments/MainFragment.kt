@@ -20,7 +20,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -32,6 +32,7 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.google.android.material.navigation.NavigationBarView
 import com.google.android.material.progressindicator.LinearProgressIndicator
 import com.google.android.material.search.SearchView
@@ -44,6 +45,7 @@ import org.lineageos.twelve.ext.getViewProperty
 import org.lineageos.twelve.ext.isLandscape
 import org.lineageos.twelve.ext.isRtl
 import org.lineageos.twelve.ext.navigateSafe
+import org.lineageos.twelve.ext.onScrollDirectionChanged
 import org.lineageos.twelve.ext.scheduleHideSoftInput
 import org.lineageos.twelve.ext.setProgressCompat
 import org.lineageos.twelve.ext.updatePadding
@@ -66,11 +68,11 @@ import org.lineageos.twelve.viewmodels.MainViewModel
  */
 class MainFragment : Fragment(R.layout.fragment_main) {
     // View models
-    private val viewModel by viewModels<MainViewModel>()
+    private val viewModel by activityViewModels<MainViewModel>()
 
     // Views
     private val navigationBarView by getViewProperty<NavigationBarView>(R.id.navigationBarView)
-    private val playRandomSongsButton by getViewProperty<MaterialButton>(R.id.playRandomSongsButton)
+    private val playRandomSongsButton by getViewProperty<ExtendedFloatingActionButton>(R.id.playRandomSongsButton)
     private val providerMaterialButton by getViewProperty<MaterialButton>(R.id.providerMaterialButton)
     private val searchLinearProgressIndicator by getViewProperty<LinearProgressIndicator>(R.id.searchLinearProgressIndicator)
     private val searchNoElementsLinearLayout by getViewProperty<LinearLayout>(R.id.searchNoElementsLinearLayout)
@@ -356,6 +358,9 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
         // Search
         searchRecyclerView.adapter = searchAdapter
+        searchRecyclerView.onScrollDirectionChanged { isScrollingDown ->
+            viewModel.setPlayButtonShrink(isScrollingDown)
+        }
 
         searchView.editText.addTextChangedListener { text ->
             viewModel.setSearchQuery(text.toString())
@@ -369,6 +374,16 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch {
+                    viewModel.playButtonShrink.collectLatest { shrink ->
+                        if (shrink) {
+                            playRandomSongsButton.shrink()
+                        } else {
+                            playRandomSongsButton.extend()
+                        }
+                    }
+                }
+
                 launch {
                     viewModel.navigationProvider.collectLatest {
                         it?.let {
@@ -423,6 +438,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         viewPager2.adapter = null
 
         // Search
+        searchRecyclerView.clearOnScrollListeners()
         searchRecyclerView.adapter = null
 
         super.onDestroyView()
