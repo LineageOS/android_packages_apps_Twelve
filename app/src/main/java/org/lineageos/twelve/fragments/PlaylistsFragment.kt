@@ -15,6 +15,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -28,6 +29,7 @@ import kotlinx.coroutines.launch
 import org.lineageos.twelve.R
 import org.lineageos.twelve.ext.getViewProperty
 import org.lineageos.twelve.ext.navigateSafe
+import org.lineageos.twelve.ext.onScrollDirectionChanged
 import org.lineageos.twelve.ext.setProgressCompat
 import org.lineageos.twelve.ext.updatePadding
 import org.lineageos.twelve.models.FlowResult
@@ -39,6 +41,7 @@ import org.lineageos.twelve.ui.views.ListItem
 import org.lineageos.twelve.ui.views.SortingChip
 import org.lineageos.twelve.utils.PermissionsChecker
 import org.lineageos.twelve.utils.PermissionsUtils
+import org.lineageos.twelve.viewmodels.MainViewModel
 import org.lineageos.twelve.viewmodels.PlaylistsViewModel
 
 /**
@@ -46,6 +49,7 @@ import org.lineageos.twelve.viewmodels.PlaylistsViewModel
  */
 class PlaylistsFragment : Fragment(R.layout.fragment_playlists) {
     // View models
+    private val mainViewModel by activityViewModels<MainViewModel>()
     private val viewModel by viewModels<PlaylistsViewModel>()
 
     // Views
@@ -147,6 +151,9 @@ class PlaylistsFragment : Fragment(R.layout.fragment_playlists) {
         }
 
         recyclerView.adapter = adapter
+        recyclerView.onScrollDirectionChanged { isScrollingDown ->
+            mainViewModel.setPlayButtonShrink(isScrollingDown)
+        }
 
         createNewPlaylistButton.setOnClickListener {
             findNavController().navigateSafe(
