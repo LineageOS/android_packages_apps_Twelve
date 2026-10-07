@@ -137,6 +137,8 @@
     <string name="title_activity_settings">Ρυθμίσεις</string>
     <string name="general_header">Γενικές</string>
     <string name="experimental_header">Πειραματικές</string>
+    <string name="fullscreen_mode">Λειτουργία πλήρης οθόνης</string>
+    <string name="fullscreen_mode_summary">Ενεργοποίηση λειτουργίας πλήρους οθόνης. Αυτό θα αποκρύψει τις γραμμές πλοήγησης και κατάστασης, αλλά θα διασφαλίσει ότι κανένα περιεχόμενο που μπορεί να αγγιχτεί δεν επικαλύπτεται με τις εγκοπές της οθόνης.</string>
     <string name="enable_offload">Ενεργοποίηση offload</string>
     <string name="enable_offload_summary">Χρήση της λειτουργίας offload για αναπαραγωγή ήχου. Η απενεργοποίηση αυτού μπορεί να αυξήσει τη χρήση ενέργειας, αλλά μπορεί να είναι χρήσιμη αν αντιμετωπίζετε προβλήματα με την αναπαραγωγή ήχου ή τα ηχητικά εφέ</string>
     <string name="enable_float_output">Ενεργοποίηση εξόδου 32-bit floating point</string>
@@ -175,7 +177,9 @@
     <string name="sort_by_title">Τίτλος</string>
     <string name="sort_by_unknown">Άγνωστο</string>
     <string name="activity_most_played_albums">Τα περισσότερο παιγμένα άλμπουμ</string>
-    <string name="activity_most_played_songs">Τα περισσότερο παιγμένα τραγούδια</string>
+    <string name="activity_most_played_artists">Πιο δημοφιλείς καλλιτέχνες</string>
+    <string name="activity_most_played_genres">Πιο δημοφιλή είδη</string>
+    <string name="activity_most_played_songs">Πιο δημοφιλή τραγούδια</string>
     <string name="activity_random_albums">Τυχαία άλμπουμ</string>
     <string name="activity_random_artists">Τυχαίοι καλλιτέχνες</string>
     <string name="activity_random_genres">Τυχαία είδη</string>
@@ -209,6 +213,7 @@
     <string name="jellyfin_operating_system">Λειτουργικό σύστημα</string>
     <string name="ampache_server">Διακομιστής</string>
     <string name="ampache_version">Έκδοση</string>
+    <string name="ampache_compatible">Συμβατό</string>
     <string name="playlist_name">Όνομα</string>
     <string name="provider">Πάροχος</string>
     <string name="create_playlist_error_empty_name">Δεν καθορίστηκε όνομα</string>

@@ -10,7 +10,6 @@
     <string name="main_fragment_section_activity">Aktiviteti</string>
     <string name="main_fragment_section_search">Kërko</string>
     <string name="main_fragment_section_library">Libraria</string>
-    <string name="play_random_songs">Luaj këngë të rastësishme</string>
     <string name="search_hint">Kerko…</string>
     <string name="library_fragment_menu_albums">Albumet</string>
     <string name="library_fragment_menu_artists">Artistët</string>
@@ -29,7 +28,6 @@
     <string name="no_results">Nuk ka resultate.</string>
     <string name="album_unknown">Album i panjohur</string>
     <string name="artist_unknown">Artist i panjohur</string>
-    <string name="audio_unknown">Audio e panjohur</string>
     <string name="genre_unknown">Zhanër i panjohur</string>
     <plurals name="tracks_count">
         <item quantity="one">%d këngë</item>

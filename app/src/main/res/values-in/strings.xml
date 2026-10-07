@@ -12,6 +12,9 @@
     <string name="play_random_songs">Putar lagu acak</string>
     <string name="library_fragment_menu_albums">Album</string>
     <string name="library_fragment_menu_artists">Artis</string>
+    <string name="library_fragment_menu_playlists">Daftar Putar</string>
+    <string name="create_playlist">Buat daftar putar baru</string>
+    <string name="create_playlist_suggestion">Buat baru?</string>
     <string name="create_playlist_confirm">Buat</string>
     <string name="no_activity">Tidak ada aktivitas</string>
     <string name="no_albums">Tidakk ada album</string>
