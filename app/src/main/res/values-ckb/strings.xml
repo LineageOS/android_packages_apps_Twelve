@@ -45,7 +45,7 @@
     <string name="artist_appears_in_playlist_header">لە لیستی پەخشدا دەردەکەوێت</string>
     <string name="action_play">لێدان</string>
     <string name="audio_play_next">لێدانی دواتر</string>
-    <string name="audio_add_to_queue">زیادکردن بۆ سەرە (Queue)</string>
+    <string name="audio_add_to_queue">زیادکردن بۆ سەرە</string>
     <string name="audio_remove_from_playlist">لابردن لە لیستی پەخش</string>
     <string name="audio_add_or_remove_from_playlists">زیادکردن یان لابردن لە لیستەکانی پەخش</string>
     <string name="open_album">کردنەوەی ئەلبووم</string>
@@ -92,7 +92,7 @@
     <string name="audio_output_device_type">جۆر</string>
     <string name="audio_output_device_type_unknown">نادیار</string>
     <string name="audio_output_device_type_builtin">ناوخۆیی</string>
-    <string name="audio_output_device_type_headphones">بیستۆک (Headphones)</string>
+    <string name="audio_output_device_type_headphones">بیستۆک</string>
     <string name="audio_output_device_type_external_speakers">بڵندگۆی دەرەکی</string>
     <string name="audio_output_device_type_bluetooth">بلوتووس</string>
     <string name="audio_output_device_type_hdmi">HDMI</string>
@@ -114,7 +114,7 @@
     <string name="provider_type_local">ناوخۆیی</string>
     <string name="provider_argument_server">سێرڤەر</string>
     <string name="provider_argument_username">ناوی بەکارهێنەر</string>
-    <string name="provider_argument_password">وشەی تێپەڕ</string>
+    <string name="provider_argument_password">تێپەڕەوشە</string>
     <string name="provider_argument_use_legacy_authentication">بەکارهێنانی شێوازی کۆنی ناسینەوە</string>
     <string name="provider_argument_volume_name">ناوی ڤۆلیۆم</string>
     <string name="provider_argument_validation_error_required">بڕێک پێویستە</string>
@@ -166,7 +166,7 @@
     <string name="genre_appears_in_albums_header">لە ئەلبوومەکاندا دەردەکەوێت</string>
     <string name="genre_appears_in_playlists_header">لە لیستەکانی پەخشدا دەردەکەوێت</string>
     <string name="genre_audios_header">دەنگەکان</string>
-    <string name="queue">سەرە (Queue)</string>
+    <string name="queue">سەرە</string>
     <string name="sort_by_artist_name">ناوی هونەرمەند</string>
     <string name="sort_by_creation_date">ڕێکەوتی دروستکردن</string>
     <string name="sort_by_last_modified">دوایین دەستکاری</string>
@@ -177,6 +177,8 @@
     <string name="sort_by_title">ناونیشان</string>
     <string name="sort_by_unknown">نادیار</string>
     <string name="activity_most_played_albums">زۆرترین لێدراو</string>
+    <string name="activity_most_played_artists">زۆرترین هونەرمەندە لێدراوەکان</string>
+    <string name="activity_most_played_genres">زۆرترین چەشنە لێدراوەکان</string>
     <string name="activity_most_played_songs">زۆرترین گۆرانیی لێدراو</string>
     <string name="activity_random_albums">ئەلبوومی هەڕەمەکی</string>
     <string name="activity_random_artists">هونەرمەندی هەڕەمەکی</string>
