@@ -207,6 +207,26 @@ class NowPlayingFragment : Fragment(R.layout.fragment_now_playing) {
             }
         )
 
+        albumTitleTextView.setOnClickListener {
+            viewModel.audio.value.getOrNull()?.let {
+                if (it.albumUri != null)
+                    findNavController().navigateSafe(
+                        R.id.action_nowPlayingFragment_to_fragment_album,
+                        AlbumFragment.createBundle(it.albumUri),
+                    )
+            }
+        }
+
+        artistNameTextView.setOnClickListener {
+            viewModel.audio.value.getOrNull()?.let {
+                if (it.artistUri != null)
+                    findNavController().navigateSafe(
+                        R.id.action_nowPlayingFragment_to_fragment_artist,
+                        ArtistFragment.createBundle(it.artistUri),
+                    )
+            }
+        }
+
         shuffleMaterialButton.setOnClickListener {
             viewModel.toggleShuffleMode()
         }
