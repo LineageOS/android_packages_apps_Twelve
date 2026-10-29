@@ -20,6 +20,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -27,11 +28,13 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
 import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.google.android.material.navigation.NavigationBarView
 import com.google.android.material.progressindicator.LinearProgressIndicator
 import com.google.android.material.search.SearchView
@@ -70,7 +73,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
     // Views
     private val navigationBarView by getViewProperty<NavigationBarView>(R.id.navigationBarView)
-    private val playRandomSongsButton by getViewProperty<MaterialButton>(R.id.playRandomSongsButton)
+    private val playRandomSongsButton by getViewProperty<ExtendedFloatingActionButton>(R.id.playRandomSongsButton)
     private val providerMaterialButton by getViewProperty<MaterialButton>(R.id.providerMaterialButton)
     private val searchLinearProgressIndicator by getViewProperty<LinearProgressIndicator>(R.id.searchLinearProgressIndicator)
     private val searchNoElementsLinearLayout by getViewProperty<LinearLayout>(R.id.searchNoElementsLinearLayout)
@@ -83,6 +86,43 @@ class MainFragment : Fragment(R.layout.fragment_main) {
     // System services
     private val inputMethodManager: InputMethodManager
         get() = requireContext().getSystemService(InputMethodManager::class.java)
+
+    private fun updateFabState(recyclerView: RecyclerView) {
+        val layoutManager = recyclerView.layoutManager as? LinearLayoutManager
+        val firstVisible = layoutManager?.findFirstVisibleItemPosition() ?: 0
+        if (firstVisible <= 0) {
+            playRandomSongsButton.extend()
+        } else {
+            playRandomSongsButton.shrink()
+        }
+    }
+
+    // Fragment lifecycle callbacks to attach scroll listeners
+    private val fragmentLifecycleCallbacks = object : FragmentManager.FragmentLifecycleCallbacks() {
+        override fun onFragmentViewCreated(
+            fm: FragmentManager,
+            f: Fragment,
+            v: View,
+            savedInstanceState: Bundle?,
+        ) {
+            val recyclerView = v.findViewById<RecyclerView>(R.id.recyclerView) ?: return
+            recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    updateFabState(recyclerView)
+                }
+            })
+            recyclerView.post {
+                updateFabState(recyclerView)
+            }
+        }
+
+        override fun onFragmentResumed(fm: FragmentManager, f: Fragment) {
+            val recyclerView = f.view?.findViewById<RecyclerView>(R.id.recyclerView) ?: return
+            recyclerView.post {
+                updateFabState(recyclerView)
+            }
+        }
+    }
 
     // RecyclerView
     private val searchAdapter by lazy {
@@ -331,6 +371,11 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         }
 
         // View pager
+        childFragmentManager.registerFragmentLifecycleCallbacks(
+            fragmentLifecycleCallbacks,
+            true,
+        )
+
         viewPager2.isUserInputEnabled = false
         viewPager2.adapter = object : FragmentStateAdapter(this) {
             override fun getItemCount() = Page.entries.size
@@ -356,6 +401,11 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
         // Search
         searchRecyclerView.adapter = searchAdapter
+        searchRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                updateFabState(recyclerView)
+            }
+        })
 
         searchView.editText.addTextChangedListener { text ->
             viewModel.setSearchQuery(text.toString())
@@ -419,6 +469,8 @@ class MainFragment : Fragment(R.layout.fragment_main) {
     }
 
     override fun onDestroyView() {
+        childFragmentManager.unregisterFragmentLifecycleCallbacks(fragmentLifecycleCallbacks)
+
         // View pager
         viewPager2.adapter = null
 
