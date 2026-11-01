@@ -177,7 +177,9 @@
     <string name="sort_by_title">Titre</string>
     <string name="sort_by_unknown">Inconnu</string>
     <string name="activity_most_played_albums">Albums les plus joués</string>
-    <string name="activity_most_played_songs">Sons les plus jouées</string>
+    <string name="activity_most_played_artists">Artistes les plus joués</string>
+    <string name="activity_most_played_genres">Styles les plus joués</string>
+    <string name="activity_most_played_songs">Titres les plus joués</string>
     <string name="activity_random_albums">Albums aléatoires</string>
     <string name="activity_random_artists">Artistes aléatoires</string>
     <string name="activity_random_genres">Styles aléatoires</string>
