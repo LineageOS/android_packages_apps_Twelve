@@ -150,7 +150,11 @@
     <string name="reset_local_stats_confirm_message">¿Seguro que quieres reiniciar todas las estadísticas de reproducción de medios locales? Esta acción no se puede deshacer.</string>
     <string name="reset_local_stats_confirm_positive">Reiniciar</string>
     <string name="reset_local_stats_success">Se han reiniciado las estadísticas de reproducción de medios locales</string>
+    <string name="rescan_media_store">Volver a analizar la base de datos MediaStore</string>
+    <string name="rescan_media_store_confirm_title">Volver a analizar la base de datos de MediaStore</string>
+    <string name="rescan_media_store_confirm_message">¿Quieres activar un nuevo análisis de la base de datos de MediaStore? Esto podría solucionar la falta de elementos multimedia locales</string>
     <string name="rescan_media_store_confirm_positive">Volver a analizar</string>
+    <string name="rescan_media_store_started">Iniciado un nuevo análisis de MediaStore</string>
     <string name="split_local_devices">Dividir dispositivos locales</string>
     <string name="split_local_devices_summary">Si está activada, el almacenamiento interno y los dispositivos externos (tarjetas SD, dispositivos USB, etc.) se mostrarán bajo diferentes proveedores.</string>
     <string name="now_playing_widget_description">Reproduciendo ahora</string>

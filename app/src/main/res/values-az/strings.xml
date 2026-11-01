@@ -191,7 +191,7 @@
     <string name="library_item_genres">Janrlar</string>
     <string name="library_item_playlists">Pleylistlər</string>
     <string name="library_item_change_provider">Provayderi dəyişdir</string>
-    <string name="library_item_provider_changed">Provayder dəyişdirildi, əsas menyuya qayıdın</string>
+    <string name="library_item_provider_changed">Provayder dəyişdirildi, ana menyuya qayıdın</string>
     <string name="yes">Bəli</string>
     <string name="no">Xeyr</string>
     <string name="unknown">Bilinmir</string>
