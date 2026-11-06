@@ -156,12 +156,25 @@ class JellyfinClient(
         ),
     ).execute(api).mapToError()
 
-    suspend fun getArtistWorks(id: UUID) = ApiRequest.get<QueryResult>(
+    suspend fun getArtistAlbums(id: UUID) = ApiRequest.get<QueryResult>(
         listOf("Items"),
         queryParameters = listOf(
-            "ArtistIds" to id,
+            "AlbumArtistIds" to id,
             "IncludeItemTypes" to "MusicAlbum",
             "Recursive" to true,
+            "SortBy" to "ProductionYear,PremiereDate,SortName",
+            "SortOrder" to "Descending",
+        ),
+    ).execute(api).mapToError()
+
+    suspend fun getArtistAppearsInAlbums(id: UUID) = ApiRequest.get<QueryResult>(
+        listOf("Items"),
+        queryParameters = listOf(
+            "ContributingArtistIds" to id,
+            "IncludeItemTypes" to "MusicAlbum",
+            "Recursive" to true,
+            "SortBy" to "ProductionYear,PremiereDate,SortName",
+            "SortOrder" to "Descending",
         ),
     ).execute(api).mapToError()
 

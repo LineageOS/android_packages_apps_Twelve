@@ -73,7 +73,7 @@ class ArtistFragment : CollapsingToolbarLayoutFragment(R.layout.fragment_artist)
     private val toolbar by getViewProperty<MaterialToolbar>(R.id.toolbar)
 
     // Recyclerview
-    private val createAlbumAdapter = {
+    private fun createAlbumAdapter(fromArtist: Boolean) =
         object : SimpleListAdapter<Album, HorizontalMediaItemView>(
             UniqueItemDiffCallback(),
             ::HorizontalMediaItemView,
@@ -90,7 +90,7 @@ class ArtistFragment : CollapsingToolbarLayoutFragment(R.layout.fragment_artist)
                         R.id.action_artistFragment_to_fragment_media_item_bottom_sheet_dialog,
                         MediaItemBottomSheetDialogFragment.createBundle(
                             item.uri,
-                            fromArtist = true,
+                            fromArtist = fromArtist,
                         )
                     )
                     true
@@ -99,9 +99,8 @@ class ArtistFragment : CollapsingToolbarLayoutFragment(R.layout.fragment_artist)
                 view.setItem(item)
             }
         }
-    }
-    private val albumsAdapter by lazy { createAlbumAdapter() }
-    private val appearsInAlbumAdapter by lazy { createAlbumAdapter() }
+    private val albumsAdapter by lazy { createAlbumAdapter(fromArtist = true) }
+    private val appearsInAlbumAdapter by lazy { createAlbumAdapter(fromArtist = false) }
     private val appearsInPlaylistAdapter by lazy {
         object : SimpleListAdapter<Playlist, HorizontalMediaItemView>(
             UniqueItemDiffCallback(),

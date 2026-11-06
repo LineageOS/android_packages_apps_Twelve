@@ -466,10 +466,12 @@ class JellyfinDataSource(
         val id = UUID.fromString(artistUri.lastPathSegment!!)
         client.getArtist(id).map { item ->
             item.toMediaItemArtist() to ArtistWorks(
-                albums = client.getArtistWorks(id).map { queryResult ->
+                albums = client.getArtistAlbums(id).map { queryResult ->
                     queryResult.items.map { it.toMediaItemAlbum() }
                 }.getOrNull().orEmpty(),
-                appearsInAlbum = listOf(),
+                appearsInAlbum = client.getArtistAppearsInAlbums(id).map { queryResult ->
+                    queryResult.items.map { it.toMediaItemAlbum() }
+                }.getOrNull().orEmpty(),
                 appearsInPlaylist = listOf(),
                 audios = client.getArtistAudios(id).map { queryResult ->
                     queryResult.items.map { it.toMediaItemAudio() }
