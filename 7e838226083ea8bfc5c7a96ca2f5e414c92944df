@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "94152df2_b8fbeef7",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 36371
+      },
+      "writtenOn": "2026-11-06T05:41:34Z",
+      "side": 1,
+      "message": "Not sure why this string is \"Appears in album\" instead of \"Appears in albums\" like the genre fragment. I don\u0027t know enough about how strings/translations work to confidently change it.",
+      "revId": "7e838226083ea8bfc5c7a96ca2f5e414c92944df",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
