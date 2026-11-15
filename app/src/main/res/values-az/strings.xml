@@ -55,7 +55,7 @@
     <string name="rename_playlist_positive">Yenidən adlandır</string>
     <string name="delete_playlist">Pleylisti sil</string>
     <string name="delete_playlist_message">Bu pleylisti silmək istədiyinizə əminsiniz?</string>
-    <string name="audio_information">Səs məlumatları</string>
+    <string name="audio_information">Səs bilgiləri</string>
     <string name="audio_effects">Səs effektləri</string>
     <string name="playback_speed">Oxutma sürəti</string>
     <string name="playback_speed_format">%1$s×</string>
