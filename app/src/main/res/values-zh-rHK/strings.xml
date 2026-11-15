@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     SPDX-FileCopyrightText: The LineageOS Project
+     SPDX-License-Identifier: Apache-2.0
+-->
+<resources>
+    <string name="app_name">音樂</string>
+    <string name="app_permissions_toast">使用者未授予權限。</string>
+    <string name="visualizer_permissions_toast">視覺效果器需要錄音權限。</string>
+    <string name="play_random_songs">隨機播放歌曲</string>
+    <string name="search_hint">搜尋…</string>
+    <string name="library_fragment_menu_albums">專輯</string>
+    <string name="library_fragment_menu_artists">歌手</string>
+    <string name="library_fragment_menu_playlists">播放清單</string>
+    <string name="create_playlist">新增播放清單</string>
+    <string name="no_playlists_comma">沒有播放清單，</string>
+    <plurals name="tracks_count">
+        <item quantity="other">%d 首曲目</item>
+    </plurals>
+    <plurals name="tracks_duration">
+        <item quantity="other">%d 分鐘</item>
+    </plurals>
+    <string name="audio_add_to_queue">加入佇列</string>
+    <string name="audio_add_or_remove_from_playlists">新增至播放清單或從播放清單移除</string>
+    <string name="audio_file_type_unknown">未知</string>
+    <string name="audio_sample_rate_unknown">未知</string>
+    <string name="audio_channel_count_unknown">未知</string>
+    <string name="audio_encoding">編碼格式</string>
+    <string name="audio_encoding_unknown">未知</string>
+    <string name="audio_output_mode_unknown">未知</string>
+    <string name="audio_bitrate">位元率</string>
+    <string name="audio_peak_bitrate">最大位元率</string>
+    <string name="audio_average_bitrate">平均位元率</string>
+    <string name="audio_bitrate_unknown">未知</string>
+    <string name="audio_bitrate_format">%1$s kbps</string>
+    <string name="audio_output_device_name">名稱</string>
+    <string name="audio_output_device_name_unknown">未知</string>
+    <string name="audio_output_device_type">類型</string>
+    <string name="audio_output_device_type_unknown">未知</string>
+    <string name="audio_output_device_type_builtin">內建</string>
+    <string name="audio_output_device_type_headphones">耳機</string>
+    <string name="audio_output_device_type_external_speakers">外部喇叭</string>
+    <string name="audio_output_device_type_bluetooth">藍牙</string>
+    <string name="audio_output_device_type_hdmi">HDMI</string>
+    <string name="audio_output_device_type_usb">USB</string>
+    <string name="audio_output_device_type_remote">遠端</string>
+    <string name="audio_output_device_type_hearing_aid">助聽器</string>
+    <string name="audio_format_compression_unknown">未知</string>
+    <string name="audio_format_compression_lossy">有損</string>
+    <string name="audio_format_compression_lossless">無損</string>
+    <string name="audio_format_compression_uncompressed">未壓縮</string>
+    <string name="audio_output_issue_downsampling">降取樣</string>
+    <string name="provider_argument_username">使用者名稱</string>
+    <string name="add_provider_action">新增</string>
+    <string name="save_provider_action">儲存</string>
+    <string name="delete_provider_action">刪除</string>
+    <string name="title_activity_settings">設定</string>
+    <string name="general_header">一般</string>
+    <string name="reset_local_stats_confirm_positive">重設</string>
+    <string name="now_playing_widget_dummy_artist">歌手</string>
+    <string name="genre_appears_in_albums_header">出現在專輯中</string>
+    <string name="sort_by_name">名稱</string>
+    <string name="sort_by_play_count">播放次數</string>
+    <string name="sort_by_release_date">發行日期</string>
+    <string name="sort_by_title">標題</string>
+    <string name="sort_by_unknown">未知</string>
+    <string name="activity_most_played_albums">最常播放的專輯</string>
+    <string name="activity_most_played_songs">最常播放的歌曲</string>
+    <string name="activity_random_albums">隨機專輯</string>
+    <string name="activity_random_playlists">隨機播放清單</string>
+    <string name="activity_random_songs">隨機歌曲</string>
+    <string name="library_item_albums">專輯</string>
+    <string name="library_item_artists">歌手</string>
+    <string name="library_item_playlists">播放清單</string>
+    <string name="yes">是</string>
+    <string name="no">否</string>
+    <string name="unknown">未知</string>
+    <string name="subsonic_version">Subsonic 版本</string>
+    <string name="add_to_favorites">加入我的最愛</string>
+</resources>
